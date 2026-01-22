@@ -1,13 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "node",
-  "prerelease": true,
   "bootstrap-sha": "b9ddaec73534d95b8146542e60932ca23b6a9189",
   "packages": {
     ".": {
-      "package-name": "@bgub/ts-base",
-      "extra-files": ["jsr.json"],
-      "prerelease-type": "alpha"
+      "package-name": "attio-ts-sdk",
+      "extra-files": ["jsr.json"]
     }
   }
 }

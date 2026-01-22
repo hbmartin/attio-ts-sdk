@@ -16,7 +16,9 @@
       "Bash(cat:*)",
       "Bash(find:*)",
       "Bash(tree:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh api:*)"
     ]
   }
 }

@@ -49,11 +49,3 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
           verbose: true
-
-  bundlephobia:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: carlesnunez/bundlephobia-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
