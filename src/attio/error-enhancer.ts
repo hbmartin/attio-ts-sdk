@@ -33,8 +33,8 @@ const updateKnownFieldValues = (field: string, values: string[]): void => {
 };
 
 const extractMismatchContext = (error: AttioError) => {
-  const data = error.data as Record<string, unknown> | undefined;
-  const message = error.message;
+  const { message, data: rawData } = error;
+  const data = rawData as Record<string, unknown> | undefined;
   const path =
     (Array.isArray(data?.path) ? data?.path[0] : data?.path) ??
     data?.field ??

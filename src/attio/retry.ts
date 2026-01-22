@@ -1,4 +1,5 @@
-import type { AttioError } from "./errors";
+import { z } from "zod";
+import { AttioError, AttioRetryError } from "./errors";
 
 interface RetryConfig {
   maxRetries: number;
@@ -14,6 +15,30 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
   maxDelayMs: 5000,
   retryableStatusCodes: [408, 429, 500, 502, 503, 504],
   respectRetryAfter: true,
+};
+
+const RetryErrorSchema = z.object({
+  status: z.number().optional(),
+  isNetworkError: z.boolean().optional(),
+  retryAfterMs: z.number().optional(),
+});
+
+type RetryErrorInfo = z.infer<typeof RetryErrorSchema>;
+
+const extractRetryErrorInfo = (error: unknown): RetryErrorInfo | undefined => {
+  if (error instanceof AttioError) {
+    return {
+      status: error.status,
+      isNetworkError: error.isNetworkError,
+      retryAfterMs: error.retryAfterMs,
+    };
+  }
+
+  const result = RetryErrorSchema.safeParse(error);
+  if (!result.success) {
+    return;
+  }
+  return result.data;
 };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -42,24 +67,16 @@ const isRetryableStatus = (
   return config.retryableStatusCodes.includes(status);
 };
 
-const isRetryableError = (
-  error: AttioError | unknown,
-  config: RetryConfig,
-): boolean => {
-  const typed = error as AttioError | undefined;
-  if (typed?.isNetworkError) {
+const isRetryableError = (error: unknown, config: RetryConfig): boolean => {
+  const info = extractRetryErrorInfo(error);
+  if (info?.isNetworkError) {
     return true;
   }
-  return isRetryableStatus(typed?.status, config);
+  return isRetryableStatus(info?.status, config);
 };
 
-const getRetryAfterMs = (error: AttioError | unknown): number | undefined => {
-  const typed = error as AttioError | undefined;
-  if (typed?.retryAfterMs) {
-    return typed.retryAfterMs;
-  }
-  return undefined;
-};
+const getRetryAfterMs = (error: unknown): number | undefined =>
+  extractRetryErrorInfo(error)?.retryAfterMs;
 
 const callWithRetry = async <T>(
   fn: () => Promise<T>,
@@ -92,7 +109,9 @@ const callWithRetry = async <T>(
     }
   }
 
-  throw new Error("Retry attempts exhausted.");
+  throw new AttioRetryError("Retry attempts exhausted.", {
+    code: "RETRY_EXHAUSTED",
+  });
 };
 
 export type { RetryConfig };

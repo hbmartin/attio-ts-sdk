@@ -17,6 +17,12 @@ const toPageResult = <T>(result: unknown): PageResult<T> => {
   return { items, nextCursor };
 };
 
+const isPageResult = <T>(page: unknown): page is PageResult<T> =>
+  page !== null &&
+  typeof page === "object" &&
+  "items" in page &&
+  Array.isArray((page as { items: unknown }).items);
+
 const paginate = async <T>(
   fetchPage: (cursor?: string | null) => Promise<PageResult<T> | unknown>,
   options: PaginationOptions = {},
@@ -29,12 +35,8 @@ const paginate = async <T>(
 
   while (pages < maxPages && items.length < maxItems) {
     const page = await fetchPage(cursor);
-    const isPageResult =
-      page !== null &&
-      typeof page === "object" &&
-      Array.isArray((page as PageResult<T>).items);
-    const { items: pageItems, nextCursor } = isPageResult
-      ? (page as PageResult<T>)
+    const { items: pageItems, nextCursor } = isPageResult<T>(page)
+      ? page
       : toPageResult<T>(page);
 
     items.push(...pageItems);

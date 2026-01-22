@@ -1,9 +1,11 @@
 import process from "node:process";
 import { z } from "zod";
 import type { Config, ResponseStyle } from "../generated/client";
+import { AttioConfigError } from "./errors";
 import type { RetryConfig } from "./retry";
 
 const TRAILING_SLASHES_REGEX = /\/+$/;
+const WHITESPACE_REGEX = /\s/;
 
 const DEFAULT_BASE_URL = "https://api.attio.com";
 
@@ -26,14 +28,13 @@ interface AttioClientConfig
 
 const getEnvValue = (key: string): string | undefined => {
   if (typeof process === "undefined") {
-    return undefined;
+    return;
   }
   return process.env?.[key];
 };
 
-const normalizeBaseUrl = (baseUrl: string): string => {
-  return baseUrl.replace(TRAILING_SLASHES_REGEX, "");
-};
+const normalizeBaseUrl = (baseUrl: string): string =>
+  baseUrl.replace(TRAILING_SLASHES_REGEX, "");
 
 const resolveBaseUrl = (config?: AttioClientConfig): string => {
   const candidate =
@@ -41,25 +42,38 @@ const resolveBaseUrl = (config?: AttioClientConfig): string => {
   return normalizeBaseUrl(candidate);
 };
 
-const resolveAuthToken = (config?: AttioClientConfig): string | undefined => {
-  return (
-    config?.apiKey ??
-    config?.accessToken ??
-    config?.authToken ??
-    getEnvValue("ATTIO_API_KEY") ??
-    getEnvValue("ATTIO_ACCESS_TOKEN")
-  );
-};
+const resolveAuthToken = (config?: AttioClientConfig): string | undefined =>
+  config?.apiKey ??
+  config?.accessToken ??
+  config?.authToken ??
+  getEnvValue("ATTIO_API_KEY") ??
+  getEnvValue("ATTIO_ACCESS_TOKEN");
+
+const MISSING_API_KEY_ERROR =
+  "Missing Attio API key. Set ATTIO_API_KEY or pass apiKey.";
 
 const AuthTokenSchema = z
-  .string({
-    required_error: "Missing Attio API key. Set ATTIO_API_KEY or pass apiKey.",
-  })
+  .string()
+  .min(1, MISSING_API_KEY_ERROR)
   .min(10, "Invalid Attio API key: too short.")
-  .refine((t) => !/\s/.test(t), "Invalid Attio API key: contains whitespace.");
+  .refine(
+    (t) => !WHITESPACE_REGEX.test(t),
+    "Invalid Attio API key: contains whitespace.",
+  );
 
 const validateAuthToken = (token: string | undefined): string => {
-  return AuthTokenSchema.parse(token);
+  if (token === undefined) {
+    throw new AttioConfigError(MISSING_API_KEY_ERROR, {
+      code: "MISSING_API_KEY",
+    });
+  }
+  const result = AuthTokenSchema.safeParse(token);
+  if (!result.success) {
+    throw new AttioConfigError(result.error.issues[0].message, {
+      code: "INVALID_API_KEY",
+    });
+  }
+  return result.data;
 };
 
 const resolveResponseStyle = (config?: AttioClientConfig): ResponseStyle =>

@@ -13,7 +13,7 @@ import {
   resolveThrowOnError,
   validateAuthToken,
 } from "./config";
-import { normalizeAttioError } from "./errors";
+import { AttioEnvironmentError, normalizeAttioError } from "./errors";
 import { callWithRetry, type RetryConfig } from "./retry";
 
 type AttioClient = Client;
@@ -35,13 +35,12 @@ interface CreateAttioClientParams {
 const combineSignalsWithAny = (
   initSignal: AbortSignal,
   controllerSignal: AbortSignal,
-): AbortSignal => {
-  return (
+): AbortSignal =>
+  (
     AbortSignal as typeof AbortSignal & {
       any: (signals: AbortSignal[]) => AbortSignal;
     }
   ).any([initSignal, controllerSignal]);
-};
 
 interface SignalCombinationResult {
   combinedSignal: AbortSignal;
@@ -69,7 +68,10 @@ const combineSignalsWithFallback = (
 const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
   const baseFetch = config?.fetch ?? globalThis.fetch;
   if (!baseFetch) {
-    throw new Error("Fetch is not available in this environment.");
+    throw new AttioEnvironmentError(
+      "Fetch is not available in this environment.",
+      { code: "FETCH_UNAVAILABLE" },
+    );
   }
 
   if (!config?.timeoutMs) {
@@ -89,12 +91,10 @@ const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
       if (supportsSignalAny) {
         combinedSignal = combineSignalsWithAny(init.signal, controller.signal);
       } else {
-        const result = combineSignalsWithFallback(
+        ({ combinedSignal, abortCombined } = combineSignalsWithFallback(
           init.signal,
           controller.signal,
-        );
-        combinedSignal = result.combinedSignal;
-        abortCombined = result.abortCombined;
+        ));
       }
     }
 
@@ -122,7 +122,7 @@ const buildClientCacheKey = ({
   if (config.cache?.key) {
     return `${config.cache.key}:${hashToken(authToken)}`;
   }
-  return undefined;
+  return;
 };
 
 const applyInterceptors = (client: AttioClient): void => {
@@ -135,8 +135,10 @@ const wrapClient = (
   base: AttioClient,
   retry?: Partial<RetryConfig>,
 ): AttioClient => {
-  const requestWithRetry: AttioClient["request"] = (options) => {
-    const { retry: retryOverride, ...rest } = options as AttioRequestOptions;
+  const requestWithRetry: AttioClient["request"] = (
+    options: AttioRequestOptions,
+  ) => {
+    const { retry: retryOverride, ...rest } = options;
     return callWithRetry(() => base.request(rest), {
       ...retry,
       ...retryOverride,
@@ -238,9 +240,8 @@ const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   return createAttioClientWithAuthToken({ config, authToken });
 };
 
-const resolveAttioClient = (input: AttioClientInput = {}): AttioClient => {
-  return input.client ?? getAttioClient(input.config ?? {});
-};
+const resolveAttioClient = (input: AttioClientInput = {}): AttioClient =>
+  input.client ?? getAttioClient(input.config ?? {});
 
 export type { AttioClient, AttioClientInput, AttioRequestOptions };
 export { createAttioClient, getAttioClient, resolveAttioClient };

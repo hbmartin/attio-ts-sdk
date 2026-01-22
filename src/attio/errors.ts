@@ -1,3 +1,4 @@
+// biome-ignore-all lint/security/noSecrets: false report
 import { enhanceAttioError } from "./error-enhancer";
 
 interface AttioErrorDetails {
@@ -34,6 +35,49 @@ class AttioError extends Error {
     this.code = details.code;
     this.type = details.type;
     this.data = details.data;
+  }
+}
+
+const applyDefaultCode = (
+  details: AttioErrorDetails,
+  code: string,
+): AttioErrorDetails => ({
+  ...details,
+  code: details.code ?? code,
+});
+
+class AttioBatchError extends AttioError {
+  constructor(message: string, details: AttioErrorDetails = {}) {
+    super(message, applyDefaultCode(details, "BATCH_ERROR"));
+    this.name = "AttioBatchError";
+  }
+}
+
+class AttioConfigError extends AttioError {
+  constructor(message: string, details: AttioErrorDetails = {}) {
+    super(message, applyDefaultCode(details, "CONFIG_ERROR"));
+    this.name = "AttioConfigError";
+  }
+}
+
+class AttioEnvironmentError extends AttioError {
+  constructor(message: string, details: AttioErrorDetails = {}) {
+    super(message, applyDefaultCode(details, "ENVIRONMENT_ERROR"));
+    this.name = "AttioEnvironmentError";
+  }
+}
+
+class AttioResponseError extends AttioError {
+  constructor(message: string, details: AttioErrorDetails = {}) {
+    super(message, applyDefaultCode(details, "RESPONSE_ERROR"));
+    this.name = "AttioResponseError";
+  }
+}
+
+class AttioRetryError extends AttioError {
+  constructor(message: string, details: AttioErrorDetails = {}) {
+    super(message, applyDefaultCode(details, "RETRY_ERROR"));
+    this.name = "AttioRetryError";
   }
 }
 
@@ -80,7 +124,7 @@ const parseRetryAfter = (response?: Response): number | undefined => {
   if (!Number.isNaN(dateMs)) {
     return Math.max(0, dateMs - Date.now());
   }
-  return undefined;
+  return;
 };
 
 const extractMessage = (error: unknown, fallback?: string): string => {
@@ -105,7 +149,7 @@ const extractStatusCode = (
   if (typeof payload.status === "number") {
     return payload.status;
   }
-  return undefined;
+  return;
 };
 
 const extractDetails = (error: unknown): AttioErrorDetails => {
@@ -156,4 +200,14 @@ const normalizeAttioError = (
 };
 
 export type { AttioErrorDetails, AttioErrorContext };
-export { AttioError, AttioApiError, AttioNetworkError, normalizeAttioError };
+export {
+  AttioError,
+  AttioApiError,
+  AttioBatchError,
+  AttioConfigError,
+  AttioEnvironmentError,
+  AttioNetworkError,
+  AttioResponseError,
+  AttioRetryError,
+  normalizeAttioError,
+};
