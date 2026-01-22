@@ -11,6 +11,7 @@
       "**",
       "!.release-please-manifest.json",
       "!jsr.json",
+      "!.claude/**",
       "!src/generated/**",
       "!dist/**",
       "!build/**",

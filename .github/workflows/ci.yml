@@ -30,14 +30,15 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
-
+      - run: pnpm audit --prod
       # Biome
       - uses: biomejs/setup-biome@v2
       - run: biome ci .
 
       # Build
       - run: pnpm build
-
+      - run: pnpm publint --pack npm
+      - run: pnpm attw --pack . --profile node16
       # Tests + coverage
       - run: pnpm test
 

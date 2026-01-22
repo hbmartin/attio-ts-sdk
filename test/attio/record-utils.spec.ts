@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { extractRecordId, normalizeRecord } from "../../src/attio/record-utils";
+import {
+  extractRecordId,
+  normalizeRecord,
+  normalizeRecords,
+} from "../../src/attio/record-utils";
 
 describe("record-utils", () => {
   it("returns undefined for invalid extractRecordId inputs", () => {
@@ -160,5 +164,69 @@ describe("record-utils", () => {
   it("returns empty values when allowEmpty is true", () => {
     const normalized = normalizeRecord({}, { allowEmpty: true });
     expect(normalized.values).toEqual({});
+  });
+
+  it("returns record unchanged when it already has valid id and values", () => {
+    const validRecord = {
+      id: { record_id: "rec-already-valid" },
+      values: { name: [{ value: "Test" }] },
+    };
+    const normalized = normalizeRecord(validRecord);
+    expect(normalized).toBe(validRecord);
+  });
+
+  it("extracts record_id from root level when id is a string", () => {
+    const record = { id: "rec-string-id" };
+    expect(extractRecordId(record)).toBe("rec-string-id");
+  });
+
+  it("extracts id keys from root level without nesting", () => {
+    expect(extractRecordId({ company_id: "comp-root" })).toBe("comp-root");
+    expect(extractRecordId({ person_id: "pers-root" })).toBe("pers-root");
+    expect(extractRecordId({ list_id: "list-root" })).toBe("list-root");
+    expect(extractRecordId({ task_id: "task-root" })).toBe("task-root");
+  });
+
+  describe("normalizeRecords", () => {
+    it("normalizes an array of records", () => {
+      const items = [
+        {
+          data: {
+            id: { record_id: "rec-1" },
+            values: { name: [{ value: "A" }] },
+          },
+        },
+        {
+          data: {
+            id: { record_id: "rec-2" },
+            values: { name: [{ value: "B" }] },
+          },
+        },
+      ];
+      const normalized = normalizeRecords(items);
+      expect(normalized).toHaveLength(2);
+      expect(normalized[0].id?.record_id).toBe("rec-1");
+      expect(normalized[1].id?.record_id).toBe("rec-2");
+    });
+
+    it("filters out non-object items", () => {
+      const items = [
+        { data: { id: { record_id: "rec-1" }, values: {} } },
+        null,
+        "string",
+        undefined,
+        { data: { id: { record_id: "rec-2" }, values: {} } },
+      ];
+      // @ts-expect-error intentional mixed types for testing
+      const normalized = normalizeRecords(items);
+      expect(normalized).toHaveLength(2);
+    });
+
+    it("passes options to normalizeRecord", () => {
+      const items = [{}];
+      const normalized = normalizeRecords(items, { allowEmpty: true });
+      expect(normalized).toHaveLength(1);
+      expect(normalized[0].values).toEqual({});
+    });
   });
 });

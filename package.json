@@ -13,15 +13,15 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
     },
     "./browser": {
-      "import": "./dist/browser.js",
-      "types": "./dist/browser.d.ts"
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
     }
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "browser": "./dist/browser.js",
   "sideEffects": false,
   "files": [
@@ -37,7 +37,10 @@
     "dupes": "jscpd"
   },
   "author": "Harold Martin <harold.martin@gmail.com>",
-  "repository": "https://github.com/hbmartin/attio-ts-sdk.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbmartin/attio-ts-sdk.git"
+  },
   "bugs": {
     "url": "https://github.com/hbmartin/attio-ts-sdk/issues"
   },
@@ -60,9 +63,11 @@
     "@size-limit/preset-small-lib": "^8.2.6",
     "@types/node": "^24.10.9",
     "@vitest/coverage-istanbul": "^4.0.17",
+    "attw": "^1.0.0",
     "jscpd": "^4.0.7",
+    "publint": "^0.3.17",
     "size-limit": "^8.2.6",
-    "tsdown": "^0.15.12",
+    "tsdown": "^0.20.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17",
     "zod": "^4.3.5"
