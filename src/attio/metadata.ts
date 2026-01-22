@@ -46,69 +46,74 @@ const extractTitles = (items: unknown[]): string[] =>
     return titles;
   }, []);
 
-export interface AttributeListInput extends AttioClientInput {
+interface AttributeListInput extends AttioClientInput {
   target: string;
   identifier: string;
   options?: Omit<Options, "client" | "path">;
 }
 
-export interface AttributeInput extends AttributeListInput {
+interface AttributeInput extends AttributeListInput {
   attribute: string;
 }
 
-namespace AttributeMetadata {
-  export interface Path {
-    target: string;
-    identifier: string;
-    attribute: string;
-  }
-
-  export interface FetchParams extends Omit<Options, "client" | "path"> {
-    client: AttioClient;
-    path: Path;
-  }
-
-  export interface RequestParams {
-    input: AttributeInput;
-    cache: TtlCache<string, unknown[]>;
-    fetcher: (params: FetchParams) => Promise<unknown>;
-  }
-
-  export const buildPath = (input: AttributeInput): Path => ({
-    target: input.target,
-    identifier: input.identifier,
-    attribute: input.attribute,
-  });
-
-  export const list = async ({
-    input,
-    cache,
-    fetcher,
-  }: RequestParams): Promise<unknown[]> => {
-    const cacheKey = buildKey(input.target, input.identifier, input.attribute);
-    const cached = cache.get(cacheKey);
-    if (cached) return cached;
-
-    const client = resolveAttioClient(input);
-    const result = await fetcher({
-      client,
-      path: buildPath(input),
-      ...input.options,
-    });
-
-    const items = unwrapItems(result);
-    const titles = extractTitles(items);
-
-    updateKnownFieldValues(input.attribute, titles);
-    cache.set(cacheKey, items);
-    return items;
-  };
+interface AttributeMetadataPath {
+  target: string;
+  identifier: string;
+  attribute: string;
 }
 
-export const listAttributes = async (input: AttributeListInput) => {
+interface AttributeMetadataFetchParams
+  extends Omit<Options, "client" | "path"> {
+  client: AttioClient;
+  path: AttributeMetadataPath;
+}
+
+interface AttributeMetadataRequestParams {
+  input: AttributeInput;
+  cache: TtlCache<string, unknown[]>;
+  fetcher: (params: AttributeMetadataFetchParams) => Promise<unknown>;
+}
+
+const buildAttributeMetadataPath = (
+  input: AttributeInput,
+): AttributeMetadataPath => ({
+  target: input.target,
+  identifier: input.identifier,
+  attribute: input.attribute,
+});
+
+const listAttributeMetadata = async ({
+  input,
+  cache,
+  fetcher,
+}: AttributeMetadataRequestParams): Promise<unknown[]> => {
+  const cacheKey = buildKey(input.target, input.identifier, input.attribute);
+  const cached = cache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const client = resolveAttioClient(input);
+  const result = await fetcher({
+    client,
+    path: buildAttributeMetadataPath(input),
+    ...input.options,
+  });
+
+  const items = unwrapItems(result);
+  const titles = extractTitles(items);
+
+  updateKnownFieldValues(input.attribute, titles);
+  cache.set(cacheKey, items);
+  return items;
+};
+
+const listAttributes = async (input: AttributeListInput) => {
   const cacheKey = buildKey(input.target, input.identifier);
   const cached = attributesCache.get(cacheKey);
-  if (cached) return cached;
+  if (cached) {
+    return cached;
+  }
 
   const client = resolveAttioClient(input);
   const result = await getV2ByTargetByIdentifierAttributes({
@@ -121,7 +126,7 @@ export const listAttributes = async (input: AttributeListInput) => {
   return items;
 };
 
-export const getAttribute = async (input: AttributeInput) => {
+const getAttribute = async (input: AttributeInput) => {
   const client = resolveAttioClient(input);
   const result = await getV2ByTargetByIdentifierAttributesByAttribute({
     client,
@@ -135,18 +140,26 @@ export const getAttribute = async (input: AttributeInput) => {
   return unwrapData(result);
 };
 
-export const getAttributeOptions = async (input: AttributeInput) => {
-  return AttributeMetadata.list({
+const getAttributeOptions = (input: AttributeInput) => {
+  return listAttributeMetadata({
     input,
     cache: optionsCache,
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeOptions,
   });
 };
 
-export const getAttributeStatuses = async (input: AttributeInput) => {
-  return AttributeMetadata.list({
+const getAttributeStatuses = (input: AttributeInput) => {
+  return listAttributeMetadata({
     input,
     cache: statusesCache,
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeStatuses,
   });
+};
+
+export type { AttributeListInput, AttributeInput };
+export {
+  listAttributes,
+  getAttribute,
+  getAttributeOptions,
+  getAttributeStatuses,
 };

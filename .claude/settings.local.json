@@ -9,7 +9,9 @@
       "Bash(gh pr list:*)",
       "Bash(gh run view:*)",
       "Bash(pnpm exec husky:*)",
-      "Bash(pnpm format:*)"
+      "Bash(pnpm format:*)",
+      "WebFetch(domain:biomejs.dev)",
+      "Bash(pnpm build:*)"
     ]
   }
 }

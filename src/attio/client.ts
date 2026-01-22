@@ -16,14 +16,14 @@ import {
 import { normalizeAttioError } from "./errors";
 import { callWithRetry, type RetryConfig } from "./retry";
 
-export type AttioClient = Client;
+type AttioClient = Client;
 
-export interface AttioClientInput {
+interface AttioClientInput {
   client?: AttioClient;
   config?: AttioClientConfig;
 }
 
-export interface AttioRequestOptions extends RequestOptions {
+interface AttioRequestOptions extends RequestOptions {
   retry?: Partial<RetryConfig>;
 }
 
@@ -31,6 +31,40 @@ interface CreateAttioClientParams {
   config?: AttioClientConfig;
   authToken: string;
 }
+
+const combineSignalsWithAny = (
+  initSignal: AbortSignal,
+  controllerSignal: AbortSignal,
+): AbortSignal => {
+  return (
+    AbortSignal as typeof AbortSignal & {
+      any: (signals: AbortSignal[]) => AbortSignal;
+    }
+  ).any([initSignal, controllerSignal]);
+};
+
+interface SignalCombinationResult {
+  combinedSignal: AbortSignal;
+  abortCombined?: () => void;
+}
+
+const combineSignalsWithFallback = (
+  initSignal: AbortSignal,
+  controllerSignal: AbortSignal,
+): SignalCombinationResult => {
+  const combinedController = new AbortController();
+
+  if (initSignal.aborted) {
+    combinedController.abort();
+    return { combinedSignal: combinedController.signal };
+  }
+
+  const abortCombined = () => combinedController.abort();
+  initSignal.addEventListener("abort", abortCombined, { once: true });
+  controllerSignal.addEventListener("abort", abortCombined, { once: true });
+
+  return { combinedSignal: combinedController.signal, abortCombined };
+};
 
 const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
   const baseFetch = config?.fetch ?? globalThis.fetch;
@@ -50,33 +84,22 @@ const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
     let abortCombined: (() => void) | undefined;
 
     if (init?.signal) {
-      if (typeof AbortSignal !== "undefined" && "any" in AbortSignal) {
-        combinedSignal = (
-          AbortSignal as typeof AbortSignal & {
-            any: (signals: AbortSignal[]) => AbortSignal;
-          }
-        ).any([init.signal, controller.signal]);
+      const supportsSignalAny =
+        typeof AbortSignal !== "undefined" && "any" in AbortSignal;
+      if (supportsSignalAny) {
+        combinedSignal = combineSignalsWithAny(init.signal, controller.signal);
       } else {
-        const combinedController = new AbortController();
-        combinedSignal = combinedController.signal;
-
-        if (init.signal.aborted) {
-          combinedController.abort();
-        } else {
-          abortCombined = () => combinedController.abort();
-          init.signal.addEventListener("abort", abortCombined, { once: true });
-          controller.signal.addEventListener("abort", abortCombined, {
-            once: true,
-          });
-        }
+        const result = combineSignalsWithFallback(
+          init.signal,
+          controller.signal,
+        );
+        combinedSignal = result.combinedSignal;
+        abortCombined = result.abortCombined;
       }
     }
 
     try {
-      return await baseFetch(input, {
-        ...init,
-        signal: combinedSignal,
-      });
+      return await baseFetch(input, { ...init, signal: combinedSignal });
     } finally {
       if (abortCombined) {
         init?.signal?.removeEventListener("abort", abortCombined);
@@ -96,7 +119,9 @@ const buildClientCacheKey = ({
   config,
   authToken,
 }: ClientCacheKeyParams): string | undefined => {
-  if (config.cache?.key) return `${config.cache.key}:${hashToken(authToken)}`;
+  if (config.cache?.key) {
+    return `${config.cache.key}:${hashToken(authToken)}`;
+  }
   return undefined;
 };
 
@@ -110,7 +135,7 @@ const wrapClient = (
   base: AttioClient,
   retry?: Partial<RetryConfig>,
 ): AttioClient => {
-  const requestWithRetry: AttioClient["request"] = async (options) => {
+  const requestWithRetry: AttioClient["request"] = (options) => {
     const { retry: retryOverride, ...rest } = options as AttioRequestOptions;
     return callWithRetry(() => base.request(rest), {
       ...retry,
@@ -139,6 +164,29 @@ const wrapClient = (
   } as AttioClient;
 };
 
+interface CleanedConfigResult {
+  cleanConfig: AttioClientConfig;
+  headers: AttioClientConfig["headers"];
+  retry: AttioClientConfig["retry"];
+  timeoutMs: AttioClientConfig["timeoutMs"];
+}
+
+const extractAndCleanConfig = (
+  config: AttioClientConfig,
+): CleanedConfigResult => {
+  const {
+    apiKey: _apiKey,
+    accessToken: _accessToken,
+    authToken: _authToken,
+    cache: _cache,
+    retry,
+    timeoutMs,
+    headers,
+    ...cleanConfig
+  } = config;
+  return { cleanConfig, headers, retry, timeoutMs };
+};
+
 const createAttioClientWithAuthToken = ({
   config = {},
   authToken,
@@ -147,18 +195,8 @@ const createAttioClientWithAuthToken = ({
   const responseStyle = resolveResponseStyle(config);
   const throwOnError = resolveThrowOnError(config);
 
-  const headers = config.headers;
-  const retry = config.retry;
-  const timeoutMs = config.timeoutMs;
-  const cleanConfig: AttioClientConfig = { ...config };
-  delete cleanConfig.apiKey;
-  delete cleanConfig.accessToken;
-  delete cleanConfig.authToken;
-  delete cleanConfig.cache;
-  delete cleanConfig.retry;
-  delete cleanConfig.timeoutMs;
-  delete cleanConfig.headers;
-
+  const { cleanConfig, headers, retry, timeoutMs } =
+    extractAndCleanConfig(config);
   const mergedHeaders = mergeHeaders({ Accept: "application/json" }, headers);
 
   const base = createClient({
@@ -176,14 +214,12 @@ const createAttioClientWithAuthToken = ({
   return wrapClient(base, retry);
 };
 
-export const createAttioClient = (
-  config: AttioClientConfig = {},
-): AttioClient => {
+const createAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   const authToken = validateAuthToken(resolveAuthToken(config));
   return createAttioClientWithAuthToken({ config, authToken });
 };
 
-export const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
+const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   const cacheEnabled = config.cache?.enabled ?? true;
   const authToken = validateAuthToken(resolveAuthToken(config));
   const cacheKey = buildClientCacheKey({ config, authToken });
@@ -202,8 +238,9 @@ export const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   return createAttioClientWithAuthToken({ config, authToken });
 };
 
-export const resolveAttioClient = (
-  input: AttioClientInput = {},
-): AttioClient => {
+const resolveAttioClient = (input: AttioClientInput = {}): AttioClient => {
   return input.client ?? getAttioClient(input.config ?? {});
 };
+
+export type { AttioClient, AttioClientInput, AttioRequestOptions };
+export { createAttioClient, getAttioClient, resolveAttioClient };

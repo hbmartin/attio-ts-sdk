@@ -1,6 +1,6 @@
 import type { AttioError } from "./errors";
 
-export interface AttioValueSuggestion {
+interface AttioValueSuggestion {
   field: string;
   attempted: string;
   bestMatch?: string;
@@ -9,13 +9,19 @@ export interface AttioValueSuggestion {
 
 const knownFieldValues = new Map<string, string[]>();
 
-export const getKnownFieldValues = (field: string): string[] | undefined =>
+const CONSTRAINT_PATTERN = /constraint:\s*([^,]+)/i;
+const OPTION_NAME_SINGLE_QUOTE_PATTERN = /option name\s+'([^']+)'/i;
+const OPTION_NAME_DOUBLE_QUOTE_PATTERN = /option name\s+"([^"]+)"/i;
+const VALUE_PATTERNS = [
+  CONSTRAINT_PATTERN,
+  OPTION_NAME_SINGLE_QUOTE_PATTERN,
+  OPTION_NAME_DOUBLE_QUOTE_PATTERN,
+];
+
+const getKnownFieldValues = (field: string): string[] | undefined =>
   knownFieldValues.get(field);
 
-export const updateKnownFieldValues = (
-  field: string,
-  values: string[],
-): void => {
+const updateKnownFieldValues = (field: string, values: string[]): void => {
   const unique = Array.from(
     new Set(values.map((value) => value.trim())),
   ).filter(Boolean);
@@ -35,16 +41,12 @@ const extractMismatchContext = (error: AttioError) => {
     data?.attribute ??
     undefined;
 
-  if (typeof message !== "string" || typeof path !== "string") return;
-
-  const patterns = [
-    /constraint:\s*([^,]+)/i,
-    /option name\s+'([^']+)'/i,
-    /option name\s+"([^"]+)"/i,
-  ];
+  if (typeof message !== "string" || typeof path !== "string") {
+    return;
+  }
 
   let value: string | undefined;
-  for (const pattern of patterns) {
+  for (const pattern of VALUE_PATTERNS) {
     const match = message.match(pattern);
     if (match?.[1]) {
       value = match[1].trim();
@@ -95,7 +97,7 @@ const scoreCandidates = (value: string, candidates: string[]): string[] => {
     .map((entry) => entry.candidate);
 };
 
-export const enhanceAttioError = (error: AttioError): AttioError => {
+const enhanceAttioError = (error: AttioError): AttioError => {
   if (!error?.isApiError) {
     return error;
   }
@@ -106,7 +108,7 @@ export const enhanceAttioError = (error: AttioError): AttioError => {
   }
 
   const candidates = knownFieldValues.get(context.field);
-  if (!candidates?.length) {
+  if (candidates === undefined || candidates.length === 0) {
     return error;
   }
 
@@ -121,3 +123,6 @@ export const enhanceAttioError = (error: AttioError): AttioError => {
   error.suggestions = suggestion;
   return error;
 };
+
+export type { AttioValueSuggestion };
+export { getKnownFieldValues, updateKnownFieldValues, enhanceAttioError };

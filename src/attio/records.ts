@@ -15,42 +15,42 @@ import {
 } from "./record-utils";
 import { unwrapData, unwrapItems } from "./response";
 
-export interface RecordCreateInput extends AttioClientInput {
+interface RecordCreateInput extends AttioClientInput {
   object: string;
   values: Record<string, unknown>;
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
-export interface RecordUpdateInput extends AttioClientInput {
+interface RecordUpdateInput extends AttioClientInput {
   object: string;
   recordId: string;
   values: Record<string, unknown>;
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
-export interface RecordUpsertInput extends AttioClientInput {
+interface RecordUpsertInput extends AttioClientInput {
   object: string;
   matchingAttribute: string;
   values: Record<string, unknown>;
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
-export interface RecordGetInput extends AttioClientInput {
+interface RecordGetInput extends AttioClientInput {
   object: string;
   recordId: string;
   options?: Omit<Options, "client" | "path">;
 }
 
-export interface RecordQueryInput extends AttioClientInput {
+interface RecordQueryInput extends AttioClientInput {
   object: string;
   filter?: Record<string, unknown>;
-  sorts?: Array<Record<string, unknown>>;
+  sorts?: Record<string, unknown>[];
   limit?: number;
   offset?: number;
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
-export const createRecord = async <T extends AttioRecordLike>(
+const createRecord = async <T extends AttioRecordLike>(
   input: RecordCreateInput,
 ): Promise<T> => {
   const client = resolveAttioClient(input);
@@ -67,7 +67,7 @@ export const createRecord = async <T extends AttioRecordLike>(
   return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
 };
 
-export const updateRecord = async <T extends AttioRecordLike>(
+const updateRecord = async <T extends AttioRecordLike>(
   input: RecordUpdateInput,
 ): Promise<T> => {
   const client = resolveAttioClient(input);
@@ -84,7 +84,7 @@ export const updateRecord = async <T extends AttioRecordLike>(
   return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
 };
 
-export const upsertRecord = async <T extends AttioRecordLike>(
+const upsertRecord = async <T extends AttioRecordLike>(
   input: RecordUpsertInput,
 ): Promise<T> => {
   const client = resolveAttioClient(input);
@@ -102,7 +102,7 @@ export const upsertRecord = async <T extends AttioRecordLike>(
   return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
 };
 
-export const getRecord = async <T extends AttioRecordLike>(
+const getRecord = async <T extends AttioRecordLike>(
   input: RecordGetInput,
 ): Promise<T> => {
   const client = resolveAttioClient(input);
@@ -114,7 +114,7 @@ export const getRecord = async <T extends AttioRecordLike>(
   return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
 };
 
-export const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
+const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
   const client = resolveAttioClient(input);
   await deleteV2ObjectsByObjectRecordsByRecordId({
     client,
@@ -125,7 +125,7 @@ export const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
   return true;
 };
 
-export const queryRecords = async <T extends AttioRecordLike>(
+const queryRecords = async <T extends AttioRecordLike>(
   input: RecordQueryInput,
 ): Promise<T[]> => {
   const client = resolveAttioClient(input);
@@ -143,4 +143,20 @@ export const queryRecords = async <T extends AttioRecordLike>(
 
   const items = unwrapItems<unknown>(result);
   return normalizeRecords<T>(items as Record<string, unknown>[]);
+};
+
+export type {
+  RecordCreateInput,
+  RecordUpdateInput,
+  RecordUpsertInput,
+  RecordGetInput,
+  RecordQueryInput,
+};
+export {
+  createRecord,
+  updateRecord,
+  upsertRecord,
+  getRecord,
+  deleteRecord,
+  queryRecords,
 };
