@@ -7,6 +7,15 @@ import {
 } from "../../src/attio/record-utils";
 
 describe("record-utils", () => {
+  const captureError = (action: () => void): unknown => {
+    try {
+      action();
+    } catch (error) {
+      return error;
+    }
+    throw new Error("Expected action to throw.");
+  };
+
   it("returns undefined for invalid extractRecordId inputs", () => {
     expect(extractRecordId(null)).toBeUndefined();
     expect(extractRecordId("nope")).toBeUndefined();
@@ -152,25 +161,30 @@ describe("record-utils", () => {
   });
 
   it("throws on invalid normalizeRecord inputs", () => {
-    const invalidInputs = [null, "nope"];
+    const invalidInputs = [null, "nope", []];
 
     for (const input of invalidInputs) {
-      expect(() => {
+      const error = captureError(() => {
         // @ts-expect-error intentional invalid input for runtime validation
         normalizeRecord(input);
-      }).toThrow(AttioResponseError);
-      expect(() => {
-        // @ts-expect-error intentional invalid input for runtime validation
-        normalizeRecord(input);
-      }).toThrow("Invalid API response: no data found");
+      });
+      expect(error).toBeInstanceOf(AttioResponseError);
+      if (!(error instanceof AttioResponseError)) {
+        throw error;
+      }
+      expect(error.message).toBe("Invalid API response: no data found");
+      expect(error.code).toBe("INVALID_RESPONSE");
     }
   });
 
   it("throws on empty object without allowEmpty", () => {
-    expect(() => normalizeRecord({})).toThrow(AttioResponseError);
-    expect(() => normalizeRecord({})).toThrow(
-      "Invalid API response: empty data object",
-    );
+    const error = captureError(() => normalizeRecord({}));
+    expect(error).toBeInstanceOf(AttioResponseError);
+    if (!(error instanceof AttioResponseError)) {
+      throw error;
+    }
+    expect(error.message).toBe("Invalid API response: empty data object");
+    expect(error.code).toBe("EMPTY_RESPONSE");
   });
 
   it("returns empty values when allowEmpty is true", () => {
