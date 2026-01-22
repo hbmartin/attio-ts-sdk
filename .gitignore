@@ -11,6 +11,7 @@ compiled
 docs
 
 dist
+stats.html
 
 package-lock.json
 yarn.lock

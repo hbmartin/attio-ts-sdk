@@ -18,7 +18,9 @@
       "Bash(tree:*)",
       "Bash(wc:*)",
       "Bash(gh pr view:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(pnpm exec attw:*)",
+      "Bash(du:*)"
     ]
   }
 }

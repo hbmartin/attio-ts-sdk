@@ -22,8 +22,14 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "types": "./dist/index.d.mts",
@@ -58,16 +64,17 @@
     "zod": "^4"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@biomejs/biome": "^2.3.11",
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
     "@hey-api/openapi-ts": "^0.90.8",
     "@types/node": "^24.10.9",
     "@vitest/coverage-istanbul": "^4.0.17",
-    "attw": "^1.0.0",
     "husky": "^9.1.7",
     "jscpd": "^4.0.7",
     "publint": "^0.3.17",
+    "rollup-plugin-visualizer": "^6.0.5",
     "tsdown": "^0.20.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17",
