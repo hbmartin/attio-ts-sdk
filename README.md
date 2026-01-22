@@ -437,7 +437,7 @@ try {
 - **tsdown**: ESM builds for Node
 - **CI**: lint, typecheck, test, coverage, and size comments/badges
 - **Deno-friendly**: `.ts` source imports for direct consumption
-- **OIDC + Provenance**: publish to npm and JSR via manual CI release
+- **OIDC + Provenance**: publish to npm via manual CI release
 
 ### Setup
 
@@ -451,11 +451,6 @@ pnpm lint
 pnpm test
 pnpm build
 ```
-
-### Releasing
-
-- Merge the automated Release PR created by Release Please
-- Manually run the "Release" workflow to publish to npm and JSR with provenance
 
 ## License
 
