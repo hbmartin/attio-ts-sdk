@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   type Client,
   createClient,
@@ -31,6 +32,42 @@ interface CreateAttioClientParams {
   config?: AttioClientConfig;
   authToken: string;
 }
+
+const AttioClientSchema = z.custom<AttioClient>(
+  (value) => {
+    if (typeof value !== "object" || value === null) {
+      return false;
+    }
+
+    const request = Reflect.get(value, "request");
+    if (typeof request !== "function") {
+      return false;
+    }
+
+    const interceptors = Reflect.get(value, "interceptors");
+    if (typeof interceptors !== "object" || interceptors === null) {
+      return false;
+    }
+
+    const error = Reflect.get(interceptors, "error");
+    const requestInterceptors = Reflect.get(interceptors, "request");
+    const response = Reflect.get(interceptors, "response");
+
+    const hasInterceptorUse = (candidate: unknown): boolean => {
+      if (typeof candidate !== "object" || candidate === null) {
+        return false;
+      }
+      return typeof Reflect.get(candidate, "use") === "function";
+    };
+
+    return (
+      hasInterceptorUse(error) &&
+      hasInterceptorUse(requestInterceptors) &&
+      hasInterceptorUse(response)
+    );
+  },
+  { message: "Invalid cached Attio client." },
+);
 
 const combineSignalsWithAny = (
   initSignal: AbortSignal,
@@ -227,7 +264,7 @@ const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   const cacheKey = buildClientCacheKey({ config, authToken });
 
   if (cacheEnabled && cacheKey) {
-    const cached = getCachedClient<AttioClient>(cacheKey);
+    const cached = getCachedClient<AttioClient>(cacheKey, AttioClientSchema);
     if (cached) {
       return cached;
     }

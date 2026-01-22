@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 
 import {
   clearClientCache,
@@ -104,27 +105,62 @@ describe("client cache functions", () => {
   });
 
   describe("setCachedClient and getCachedClient", () => {
+    const ClientSchema = z.object({ id: z.string() });
+
     it("stores and retrieves clients", () => {
       const client = { id: "test-client" };
       setCachedClient("key1", client);
 
-      expect(getCachedClient("key1")).toBe(client);
+      expect(getCachedClient("key1", ClientSchema)).toStrictEqual(client);
     });
 
     it("returns undefined for missing clients", () => {
-      expect(getCachedClient("nonexistent")).toBeUndefined();
+      expect(getCachedClient("nonexistent", ClientSchema)).toBeUndefined();
+    });
+
+    it("returns undefined for invalid cached clients", () => {
+      setCachedClient("key1", { id: 123 });
+
+      expect(getCachedClient("key1", ClientSchema)).toBeUndefined();
+    });
+
+    it("accepts function validators", () => {
+      const parseClient = (value: unknown) => {
+        const result = ClientSchema.safeParse(value);
+        if (!result.success) {
+          throw new Error("Invalid client");
+        }
+        return result.data;
+      };
+
+      const client = { id: "test-client" };
+      setCachedClient("key1", client);
+
+      expect(getCachedClient("key1", parseClient)).toStrictEqual(client);
+    });
+
+    it("returns undefined when function validators throw", () => {
+      const parseClient = (_value: unknown) => {
+        throw new Error("Invalid client");
+      };
+
+      setCachedClient("key1", { id: "test-client" });
+
+      expect(getCachedClient("key1", parseClient)).toBeUndefined();
     });
   });
 
   describe("clearClientCache", () => {
     it("removes all cached clients", () => {
+      const ClientSchema = z.object({ id: z.number() });
+
       setCachedClient("key1", { id: 1 });
       setCachedClient("key2", { id: 2 });
 
       clearClientCache();
 
-      expect(getCachedClient("key1")).toBeUndefined();
-      expect(getCachedClient("key2")).toBeUndefined();
+      expect(getCachedClient("key1", ClientSchema)).toBeUndefined();
+      expect(getCachedClient("key2", ClientSchema)).toBeUndefined();
     });
   });
 });

@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 
-import { paginate, toPageResult } from "../../src/attio/pagination";
+import {
+  createPageResultSchema,
+  paginate,
+  parsePageResult,
+  toPageResult,
+} from "../../src/attio/pagination";
 
 describe("toPageResult", () => {
   it("converts API response to PageResult format", () => {
@@ -18,6 +24,103 @@ describe("toPageResult", () => {
 
     expect(result.items).toEqual([]);
     expect(result.nextCursor).toBe(null);
+  });
+});
+
+describe("createPageResultSchema", () => {
+  it("creates schema that validates items with provided schema", () => {
+    const itemSchema = z.object({ id: z.number() });
+    const schema = createPageResultSchema(itemSchema);
+
+    const result = schema.safeParse({
+      items: [{ id: 1 }, { id: 2 }],
+      nextCursor: "cursor-123",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.items).toEqual([{ id: 1 }, { id: 2 }]);
+      expect(result.data.nextCursor).toBe("cursor-123");
+    }
+  });
+
+  it("rejects items that do not match schema", () => {
+    const itemSchema = z.object({ id: z.number() });
+    const schema = createPageResultSchema(itemSchema);
+
+    const result = schema.safeParse({
+      items: [{ id: "not-a-number" }],
+      nextCursor: null,
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts null and undefined nextCursor", () => {
+    const itemSchema = z.object({ id: z.number() });
+    const schema = createPageResultSchema(itemSchema);
+
+    const resultNull = schema.safeParse({ items: [], nextCursor: null });
+    const resultUndefined = schema.safeParse({ items: [] });
+
+    expect(resultNull.success).toBe(true);
+    expect(resultUndefined.success).toBe(true);
+  });
+});
+
+describe("parsePageResult", () => {
+  it("parses valid page result without itemSchema", () => {
+    const result = parsePageResult({
+      items: [{ id: 1 }, { id: 2 }],
+      nextCursor: "cursor-123",
+    });
+
+    expect(result).toEqual({
+      items: [{ id: 1 }, { id: 2 }],
+      nextCursor: "cursor-123",
+    });
+  });
+
+  it("parses valid page result with itemSchema", () => {
+    const itemSchema = z.object({ id: z.number() });
+    const result = parsePageResult(
+      {
+        items: [{ id: 1 }, { id: 2 }],
+        nextCursor: "cursor-123",
+      },
+      itemSchema,
+    );
+
+    expect(result).toEqual({
+      items: [{ id: 1 }, { id: 2 }],
+      nextCursor: "cursor-123",
+    });
+  });
+
+  it("returns undefined for invalid page structure", () => {
+    const result = parsePageResult({ foo: "bar" });
+
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined when items do not match schema", () => {
+    const itemSchema = z.object({ id: z.number() });
+    const result = parsePageResult(
+      {
+        items: [{ id: "not-a-number" }],
+        nextCursor: null,
+      },
+      itemSchema,
+    );
+
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined for non-object input", () => {
+    expect(parsePageResult(null)).toBeUndefined();
+    expect(parsePageResult(undefined)).toBeUndefined();
+    expect(parsePageResult("string")).toBeUndefined();
+    expect(parsePageResult(123)).toBeUndefined();
   });
 });
 
@@ -132,5 +235,36 @@ describe("paginate", () => {
 
     expect(items).toEqual([{ id: 1 }, { id: 2 }]);
     expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("validates items with itemSchema when provided", async () => {
+    const itemSchema = z.object({ id: z.number() });
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 2 }],
+        nextCursor: null,
+      });
+
+    const items = await paginate(fetchPage, { itemSchema });
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+  });
+
+  it("falls back to toPageResult when itemSchema validation fails", async () => {
+    const itemSchema = z.object({ id: z.number(), required: z.string() });
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      data: { items: [{ id: 1 }] },
+      pagination: { next_cursor: null },
+    });
+
+    const items = await paginate(fetchPage, { itemSchema });
+
+    expect(items).toEqual([{ id: 1 }]);
   });
 });

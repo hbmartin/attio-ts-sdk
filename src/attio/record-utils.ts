@@ -190,7 +190,7 @@ function normalizeRecord(
       code: "EMPTY_RESPONSE",
     });
   }
-
+  // Input already has valid record_id and values - return as-is
   if (hasValidRecordId(raw) && extractValuesObject(raw)) {
     return raw;
   }

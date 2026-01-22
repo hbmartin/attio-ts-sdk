@@ -12,7 +12,8 @@
       "Bash(pnpm format:*)",
       "WebFetch(domain:biomejs.dev)",
       "Bash(pnpm build:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(cat:*)"
     ]
   }
 }

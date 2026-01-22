@@ -1,3 +1,5 @@
+import type { ZodType } from "zod";
+import { z } from "zod";
 import { unwrapItems, unwrapPaginationCursor } from "./response";
 
 interface PageResult<T> {
@@ -5,11 +7,23 @@ interface PageResult<T> {
   nextCursor?: string | null;
 }
 
-interface PaginationOptions {
+interface PaginationOptions<T = unknown> {
   cursor?: string | null;
   maxPages?: number;
   maxItems?: number;
+  itemSchema?: ZodType<T>;
 }
+
+const createPageResultSchema = <T>(itemSchema: ZodType<T>) =>
+  z.object({
+    items: z.array(itemSchema),
+    nextCursor: z.string().nullish(),
+  });
+
+const basePageResultSchema = z.object({
+  items: z.array(z.unknown()),
+  nextCursor: z.string().nullish(),
+});
 
 const toPageResult = <T>(result: unknown): PageResult<T> => {
   const items = unwrapItems<T>(result);
@@ -17,15 +31,23 @@ const toPageResult = <T>(result: unknown): PageResult<T> => {
   return { items, nextCursor };
 };
 
-const isPageResult = <T>(page: unknown): page is PageResult<T> =>
-  page !== null &&
-  typeof page === "object" &&
-  "items" in page &&
-  Array.isArray((page as { items: unknown }).items);
+const parsePageResult = <T>(
+  page: unknown,
+  itemSchema?: ZodType<T>,
+): PageResult<T> | undefined => {
+  const schema = itemSchema
+    ? createPageResultSchema(itemSchema)
+    : basePageResultSchema;
+  const result = schema.safeParse(page);
+  if (!result.success) {
+    return;
+  }
+  return result.data as PageResult<T>;
+};
 
 const paginate = async <T>(
   fetchPage: (cursor?: string | null) => Promise<PageResult<T> | unknown>,
-  options: PaginationOptions = {},
+  options: PaginationOptions<T> = {},
 ): Promise<T[]> => {
   const items: T[] = [];
   let cursor = options.cursor ?? null;
@@ -35,9 +57,8 @@ const paginate = async <T>(
 
   while (pages < maxPages && items.length < maxItems) {
     const page = await fetchPage(cursor);
-    const { items: pageItems, nextCursor } = isPageResult<T>(page)
-      ? page
-      : toPageResult<T>(page);
+    const parsed = parsePageResult(page, options.itemSchema);
+    const { items: pageItems, nextCursor } = parsed ?? toPageResult<T>(page);
 
     items.push(...pageItems);
     pages += 1;
@@ -53,4 +74,4 @@ const paginate = async <T>(
 };
 
 export type { PageResult, PaginationOptions };
-export { toPageResult, paginate };
+export { createPageResultSchema, toPageResult, parsePageResult, paginate };

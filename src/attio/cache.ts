@@ -1,3 +1,5 @@
+import type { ZodSchema } from "zod";
+
 interface TtlCacheEntry<T> {
   value: T;
   expiresAt: number;
@@ -59,11 +61,34 @@ class TtlCache<K, V> {
 
 const clientCache = new Map<string, unknown>();
 
-const getCachedClient = <T>(key: string): T | undefined =>
-  clientCache.get(key) as T | undefined;
+type ClientCacheValidator<T> = ZodSchema<T> | ((value: unknown) => T);
+
+const getCachedClient = <T>(
+  key: string,
+  validator: ClientCacheValidator<T>,
+): T | undefined => {
+  const cached = clientCache.get(key);
+  if (cached === undefined) {
+    return;
+  }
+
+  try {
+    if (typeof validator === "function") {
+      return validator(cached);
+    }
+
+    const result = validator.safeParse(cached);
+    if (!result.success) {
+      return;
+    }
+    return result.data;
+  } catch {
+    return;
+  }
+};
 
 const setCachedClient = <T>(key: string, client: T): void => {
-  clientCache.set(key, client as unknown);
+  clientCache.set(key, client);
 };
 
 const clearClientCache = (): void => {
