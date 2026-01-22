@@ -1,3 +1,4 @@
+import type { Options } from "../generated";
 import {
   deleteV2TasksByTaskId,
   getV2Tasks,
@@ -5,8 +6,7 @@ import {
   patchV2TasksByTaskId,
   postV2Tasks,
 } from "../generated";
-import type { Options } from "../generated";
-import { resolveAttioClient, type AttioClientInput } from "./client";
+import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
 
 export interface TaskCreateInput extends AttioClientInput {

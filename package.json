@@ -1,13 +1,22 @@
 {
   "name": "attio-ts-sdk",
   "version": "0.0.0",
-  "description": "TypeScript SDK for Attio CRM based on Zod v4",
+  "description": "Type-safe TypeScript SDK for the Attio CRM API with Zod v4 runtime validation",
   "keywords": [
     "attio",
     "crm",
     "sdk",
     "typescript",
-    "zod"
+    "zod",
+    "api",
+    "api-client",
+    "rest",
+    "openapi",
+    "type-safe",
+    "validation",
+    "schema",
+    "contacts",
+    "sales"
   ],
   "homepage": "https://github.com/hbmartin/attio-ts-sdk",
   "type": "module",
@@ -15,14 +24,9 @@
     ".": {
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
-    },
-    "./browser": {
-      "types": "./dist/browser.d.ts",
-      "import": "./dist/browser.js"
     }
   },
   "types": "./dist/index.d.mts",
-  "browser": "./dist/browser.js",
   "sideEffects": false,
   "files": [
     "dist"
@@ -31,9 +35,9 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "lint": "biome check --error-on-warnings",
-    "format": "biome format --write",
+    "lint:report": "biome check . --reporter=json | jq -r '  .diagnostics[]  | .category' | sort | uniq -c | sort -nr",
+    "format": "biome check --write",
     "test": "vitest run --coverage",
-    "size": "size-limit",
     "dupes": "jscpd"
   },
   "author": "Harold Martin <harold.martin@gmail.com>",
@@ -48,25 +52,17 @@
   "engines": {
     "node": ">=24"
   },
-  "size-limit": [
-    {
-      "path": "dist/browser.js",
-      "limit": "3.5 KB"
-    }
-  ],
   "peerDependencies": {
     "zod": "^4"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.11",
     "@hey-api/openapi-ts": "^0.90.8",
-    "@size-limit/preset-small-lib": "^8.2.6",
     "@types/node": "^24.10.9",
     "@vitest/coverage-istanbul": "^4.0.17",
     "attw": "^1.0.0",
     "jscpd": "^4.0.7",
     "publint": "^0.3.17",
-    "size-limit": "^8.2.6",
     "tsdown": "^0.20.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17",

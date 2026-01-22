@@ -6,10 +6,11 @@ import {
   DEFAULT_RETRY_CONFIG,
   isRetryableError,
   isRetryableStatus,
+  type RetryConfig,
   sleep,
-} from "../../src/attio/retry";
+} from "../../src/attio/retry.ts";
 
-const config = {
+const config: RetryConfig = {
   maxRetries: 3,
   initialDelayMs: 500,
   maxDelayMs: 5000,
@@ -38,7 +39,7 @@ describe("retry", () => {
     });
 
     it("caps Retry-After to maxDelayMs", () => {
-      const delay = calculateRetryDelay(0, config, 10000);
+      const delay = calculateRetryDelay(0, config, 10_000);
       expect(delay).toBe(5000);
     });
 
@@ -122,7 +123,7 @@ describe("retry", () => {
 
       // Use real timers with very short delays to avoid async timing issues
       await expect(
-        callWithRetry(fn, { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 }),
+        callWithRetry(fn, { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 })
       ).rejects.toEqual(error);
       expect(fn).toHaveBeenCalledTimes(3);
     });

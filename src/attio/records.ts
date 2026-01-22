@@ -1,3 +1,4 @@
+import type { Options } from "../generated";
 import {
   deleteV2ObjectsByObjectRecordsByRecordId,
   getV2ObjectsByObjectRecordsByRecordId,
@@ -6,12 +7,11 @@ import {
   postV2ObjectsByObjectRecordsQuery,
   putV2ObjectsByObjectRecords,
 } from "../generated";
-import type { Options } from "../generated";
-import { resolveAttioClient, type AttioClientInput } from "./client";
+import { type AttioClientInput, resolveAttioClient } from "./client";
 import {
+  type AttioRecordLike,
   normalizeRecord,
   normalizeRecords,
-  type AttioRecordLike,
 } from "./record-utils";
 import { unwrapData, unwrapItems } from "./response";
 

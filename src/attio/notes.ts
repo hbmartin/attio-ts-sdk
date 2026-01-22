@@ -1,11 +1,11 @@
+import type { Options } from "../generated";
 import {
   deleteV2NotesByNoteId,
   getV2Notes,
   getV2NotesByNoteId,
   postV2Notes,
 } from "../generated";
-import type { Options } from "../generated";
-import { resolveAttioClient, type AttioClientInput } from "./client";
+import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
 
 export interface NoteCreateInput extends AttioClientInput {

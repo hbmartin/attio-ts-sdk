@@ -1,13 +1,13 @@
+import type { Options } from "../generated";
 import {
   deleteV2ListsByListEntriesByEntryId,
   getV2Lists,
   getV2ListsByList,
+  patchV2ListsByListEntriesByEntryId,
   postV2ListsByListEntries,
   postV2ListsByListEntriesQuery,
-  patchV2ListsByListEntriesByEntryId,
 } from "../generated";
-import type { Options } from "../generated";
-import { resolveAttioClient, type AttioClientInput } from "./client";
+import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
 
 export interface ListQueryInput extends AttioClientInput {

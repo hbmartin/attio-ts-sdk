@@ -1,11 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import {
-  getV2ByTargetByIdentifierAttributes,
-  getV2ByTargetByIdentifierAttributesByAttribute,
-  getV2ByTargetByIdentifierAttributesByAttributeOptions,
-  getV2ByTargetByIdentifierAttributesByAttributeStatuses,
-} from "../../src/generated";
 import { updateKnownFieldValues } from "../../src/attio/error-enhancer";
 import {
   getAttribute,
@@ -13,6 +6,12 @@ import {
   getAttributeStatuses,
   listAttributes,
 } from "../../src/attio/metadata";
+import {
+  getV2ByTargetByIdentifierAttributes,
+  getV2ByTargetByIdentifierAttributesByAttribute,
+  getV2ByTargetByIdentifierAttributesByAttributeOptions,
+  getV2ByTargetByIdentifierAttributesByAttributeStatuses,
+} from "../../src/generated";
 
 vi.mock("../../src/generated", () => ({
   getV2ByTargetByIdentifierAttributes: vi.fn(),

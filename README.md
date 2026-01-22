@@ -331,10 +331,10 @@ const { data: webhooks } = await getV2Webhooks({ client });
 
 ### Browser Usage
 
-For browsers, import from the `/browser` entry point:
+Use the standard entry point in browsers (requires a global `fetch`):
 
 ```typescript
-import { createClient, getV2Self } from 'attio-ts-sdk/browser';
+import { createClient, getV2Self } from 'attio-ts-sdk';
 
 const client = createClient({
   baseUrl: 'https://api.attio.com',
@@ -382,8 +382,7 @@ try {
 
 - **Biome**: lint and format with a single tool
 - **Vitest**: fast tests with coverage and thresholds
-- **Size Limit**: keep bundles tiny, with CI checks
-- **tsdown**: ESM builds for Node and a separate browser bundle
+- **tsdown**: ESM builds for Node
 - **CI**: lint, typecheck, test, coverage, and size comments/badges
 - **Deno-friendly**: `.ts` source imports for direct consumption
 - **OIDC + Provenance**: publish to npm and JSR via manual CI release

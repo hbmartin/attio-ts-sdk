@@ -1,11 +1,10 @@
 import { afterEach, describe, expect, it } from "vitest";
-
-import { AttioApiError, AttioNetworkError } from "../../src/attio/errors";
 import {
   enhanceAttioError,
   getKnownFieldValues,
   updateKnownFieldValues,
 } from "../../src/attio/error-enhancer";
+import { AttioApiError, AttioNetworkError } from "../../src/attio/errors";
 
 afterEach(() => {
   updateKnownFieldValues("stage", []);

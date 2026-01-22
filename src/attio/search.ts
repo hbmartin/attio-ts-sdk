@@ -1,7 +1,7 @@
-import { postV2ObjectsRecordsSearch } from "../generated";
 import type { Options } from "../generated";
-import { resolveAttioClient, type AttioClientInput } from "./client";
-import { normalizeRecords, type AttioRecordLike } from "./record-utils";
+import { postV2ObjectsRecordsSearch } from "../generated";
+import { type AttioClientInput, resolveAttioClient } from "./client";
+import { type AttioRecordLike, normalizeRecords } from "./record-utils";
 import { unwrapItems } from "./response";
 
 export interface RecordSearchInput extends AttioClientInput {
