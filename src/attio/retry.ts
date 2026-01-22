@@ -92,11 +92,15 @@ const callWithRetry = async <T>(
     try {
       return await fn();
     } catch (error) {
-      if (
-        !isRetryableError(error, retryConfig) ||
-        attempt >= retryConfig.maxRetries
-      ) {
+      if (!isRetryableError(error, retryConfig)) {
         throw error;
+      }
+
+      if (attempt >= retryConfig.maxRetries) {
+        throw new AttioRetryError("Retry attempts exhausted.", {
+          code: "RETRY_EXHAUSTED",
+          cause: error,
+        });
       }
 
       const delay = calculateRetryDelay(

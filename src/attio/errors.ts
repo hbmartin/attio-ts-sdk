@@ -7,6 +7,7 @@ interface AttioErrorDetails {
   status?: number;
   message?: string;
   data?: unknown;
+  cause?: unknown;
 }
 
 interface AttioErrorContext {
@@ -29,7 +30,7 @@ class AttioError extends Error {
   suggestions?: unknown;
 
   constructor(message: string, details: AttioErrorDetails = {}) {
-    super(message);
+    super(message, details.cause ? { cause: details.cause } : undefined);
     this.name = "AttioError";
     this.status = details.status;
     this.code = details.code;

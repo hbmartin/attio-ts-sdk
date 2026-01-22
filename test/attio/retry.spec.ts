@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-
+import { AttioRetryError } from "../../src/attio/errors.ts";
 import {
   calculateRetryDelay,
   callWithRetry,
@@ -117,15 +117,28 @@ describe("retry", () => {
       expect(fn).toHaveBeenCalledTimes(2);
     });
 
-    it("throws after max retries exceeded", async () => {
+    it("throws AttioRetryError after max retries exceeded", async () => {
       const error = { status: 500 };
       const fn = vi.fn().mockRejectedValue(error);
 
       // Use real timers with very short delays to avoid async timing issues
       await expect(
         callWithRetry(fn, { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 }),
-      ).rejects.toEqual(error);
-      expect(fn).toHaveBeenCalledTimes(3);
+      ).rejects.toThrow(AttioRetryError);
+
+      try {
+        await callWithRetry(fn, {
+          maxRetries: 2,
+          initialDelayMs: 1,
+          maxDelayMs: 5,
+        });
+      } catch (thrownError) {
+        expect(thrownError).toBeInstanceOf(AttioRetryError);
+        expect((thrownError as AttioRetryError).code).toBe("RETRY_EXHAUSTED");
+        expect((thrownError as AttioRetryError).cause).toEqual(error);
+      }
+      // 3 attempts from first call + 3 attempts from second call = 6 total
+      expect(fn).toHaveBeenCalledTimes(6);
     });
 
     it("throws immediately for non-retryable errors", async () => {

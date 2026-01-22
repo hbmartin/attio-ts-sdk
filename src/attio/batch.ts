@@ -26,7 +26,7 @@ interface BatchState<T> {
   stopped: boolean;
 }
 
-interface HandleSuccessParams<T> {
+interface RecordSuccessParams<T> {
   state: BatchState<T>;
   currentIndex: number;
   value: T;
@@ -34,7 +34,7 @@ interface HandleSuccessParams<T> {
   isCancelled?: () => boolean;
 }
 
-const handleSuccess = <T>(params: HandleSuccessParams<T>): void => {
+const recordSuccess = <T>(params: RecordSuccessParams<T>): void => {
   const { state, currentIndex, value, label, isCancelled } = params;
   if (isCancelled?.()) {
     return;
@@ -46,7 +46,7 @@ const handleSuccess = <T>(params: HandleSuccessParams<T>): void => {
   };
 };
 
-interface HandleErrorParams<T> {
+interface RecordFailureParams<T> {
   state: BatchState<T>;
   currentIndex: number;
   error: unknown;
@@ -57,7 +57,7 @@ interface HandleErrorParams<T> {
   reject: (err: unknown) => void;
 }
 
-const handleError = <T>(params: HandleErrorParams<T>): void => {
+const recordFailure = <T>(params: RecordFailureParams<T>): void => {
   const {
     state,
     currentIndex,
@@ -88,7 +88,7 @@ const handleError = <T>(params: HandleErrorParams<T>): void => {
   };
 };
 
-interface LaunchNextParams<T> {
+interface LaunchNextItemParams<T> {
   items: BatchItem<T>[];
   state: BatchState<T>;
   concurrency: number;
@@ -100,7 +100,7 @@ interface LaunchNextParams<T> {
   launchNext: () => void;
 }
 
-const processNextItem = <T>(params: LaunchNextParams<T>): void => {
+const launchNextItem = <T>(params: LaunchNextItemParams<T>): void => {
   const {
     items,
     state,
@@ -118,7 +118,7 @@ const processNextItem = <T>(params: LaunchNextParams<T>): void => {
   item
     .run(abortController ? { signal: abortController.signal } : undefined)
     .then((value) => {
-      handleSuccess({
+      recordSuccess({
         state,
         currentIndex,
         value,
@@ -127,7 +127,7 @@ const processNextItem = <T>(params: LaunchNextParams<T>): void => {
       });
     })
     .catch((error) => {
-      handleError({
+      recordFailure({
         state,
         currentIndex,
         error,
@@ -181,7 +181,7 @@ const runBatch = <T>(
       }
 
       while (state.active < concurrency && state.index < items.length) {
-        processNextItem({
+        launchNextItem({
           items,
           state,
           concurrency,
