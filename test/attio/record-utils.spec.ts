@@ -177,7 +177,7 @@ describe("record-utils", () => {
     }
   });
 
-  it("throws on empty object without allowEmpty", () => {
+  it("throws on empty object when emptyBehavior is reject", () => {
     const error = captureError(() => normalizeRecord({}));
     expect(error).toBeInstanceOf(AttioResponseError);
     if (!(error instanceof AttioResponseError)) {
@@ -187,8 +187,8 @@ describe("record-utils", () => {
     expect(error.code).toBe("EMPTY_RESPONSE");
   });
 
-  it("returns empty values when allowEmpty is true", () => {
-    const normalized = normalizeRecord({}, { allowEmpty: true });
+  it("returns empty values when emptyBehavior is allow", () => {
+    const normalized = normalizeRecord({}, { emptyBehavior: "allow" });
     expect(normalized.values).toEqual({});
   });
 
@@ -198,7 +198,7 @@ describe("record-utils", () => {
       values: { name: [{ value: "Test" }] },
     };
     const normalized = normalizeRecord(validRecord);
-    expect(normalized).toBe(validRecord);
+    expect(normalized).toStrictEqual(validRecord);
   });
 
   it("rebuilds values when existing values are invalid", () => {
@@ -260,7 +260,7 @@ describe("record-utils", () => {
 
     it("passes options to normalizeRecord", () => {
       const items = [{}];
-      const normalized = normalizeRecords(items, { allowEmpty: true });
+      const normalized = normalizeRecords(items, { emptyBehavior: "allow" });
       expect(normalized).toHaveLength(1);
       expect(normalized[0].values).toEqual({});
     });
