@@ -20,9 +20,9 @@ jobs:
         with:
           version: 9
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
@@ -37,7 +37,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet src/generated/; then
+          if [ -z "$(git status --porcelain src/generated/)" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -45,7 +45,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.changes.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: regenerate OpenAPI SDK"
