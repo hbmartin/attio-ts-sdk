@@ -168,35 +168,34 @@ interface NormalizeRecordOptions {
 }
 
 function normalizeRecord<T extends AttioRecordLike>(
-  raw: unknown,
+  raw: Record<string, unknown>,
   options?: NormalizeRecordOptions,
 ): T;
 function normalizeRecord(
-  raw: unknown,
+  raw: Record<string, unknown>,
   options?: NormalizeRecordOptions,
 ): AttioRecordLike;
 function normalizeRecord(
-  raw: unknown,
+  raw: Record<string, unknown>,
   options: NormalizeRecordOptions = {},
 ): AttioRecordLike {
-  const record = parseObject(raw);
-  if (!record) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw new AttioResponseError("Invalid API response: no data found", {
       code: "INVALID_RESPONSE",
     });
   }
 
-  if (!options.allowEmpty && Object.keys(record).length === 0) {
+  if (!options.allowEmpty && Object.keys(raw).length === 0) {
     throw new AttioResponseError("Invalid API response: empty data object", {
       code: "EMPTY_RESPONSE",
     });
   }
 
-  if (hasValidRecordId(record) && extractValuesObject(record)) {
-    return record;
+  if (hasValidRecordId(raw) && extractValuesObject(raw)) {
+    return raw;
   }
 
-  const result: UnknownObject = { ...record };
+  const result: UnknownObject = { ...raw };
 
   if (!hasValidRecordId(result)) {
     const extractedId = extractRecordId(result);
@@ -209,7 +208,8 @@ function normalizeRecord(
     }
   }
 
-  if (!result.values) {
+  const existingValues = extractValuesObject(result);
+  if (!existingValues) {
     result.values = extractNestedValues(result) ?? {};
   }
 

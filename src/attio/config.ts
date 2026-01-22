@@ -62,7 +62,7 @@ const AuthTokenSchema = z
   );
 
 const validateAuthToken = (token: string | undefined): string => {
-  if (token === undefined) {
+  if (token === undefined || token.length === 0) {
     throw new AttioConfigError(MISSING_API_KEY_ERROR, {
       code: "MISSING_API_KEY",
     });
