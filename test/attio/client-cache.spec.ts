@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { clearClientCache } from "../../src/attio/cache";
+import {
+  clearClientCache,
+  hashToken,
+  setCachedClient,
+} from "../../src/attio/cache";
 import {
   createAttioClient,
   getAttioClient,
@@ -34,6 +38,25 @@ describe("getAttioClient cache", () => {
     const second = getAttioClient(config);
 
     expect(first).toBe(second);
+  });
+
+  it("creates a new client when cached entry is invalid", () => {
+    const config = { authToken: TEST_TOKEN, cache: { key: "shared" } };
+    const cacheKey = `shared:${hashToken(TEST_TOKEN)}`;
+    const invalidClient = {
+      request: () => Promise.resolve(undefined),
+      interceptors: {
+        error: { use: "not-a-function" },
+        request: { use: () => undefined },
+        response: { use: () => undefined },
+      },
+    };
+
+    setCachedClient(cacheKey, invalidClient);
+
+    const client = getAttioClient(config);
+    expect(client).not.toBe(invalidClient);
+    expect(getAttioClient(config)).toBe(client);
   });
 
   it("keeps separate cached clients for different auth tokens", () => {
