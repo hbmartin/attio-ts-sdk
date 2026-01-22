@@ -198,7 +198,7 @@ describe("record-utils", () => {
       values: { name: [{ value: "Test" }] },
     };
     const normalized = normalizeRecord(validRecord);
-    expect(normalized).toBe(validRecord);
+    expect(normalized).toStrictEqual(validRecord);
   });
 
   it("rebuilds values when existing values are invalid", () => {

@@ -243,7 +243,7 @@ function normalizeRecord(
   const parsedRaw = parseRecordInput(raw, options);
   // Input already has valid record_id and values - return as-is
   if (hasValidRecordId(parsedRaw) && extractValuesObject(parsedRaw)) {
-    return raw;
+    return parsedRaw;
   }
 
   const result: UnknownObject = { ...parsedRaw };
