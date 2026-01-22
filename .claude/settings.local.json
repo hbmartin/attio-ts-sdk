@@ -3,10 +3,13 @@
     "allow": [
       "Bash(pnpm test)",
       "Bash(pnpm vitest run:*)",
-      "Bash(gh workflow:*)",
+      "Bash(gh workflow list:*)",
+      "Bash(gh workflow view:*)",
       "Bash(gh run list:*)",
       "Bash(gh pr list:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(pnpm exec husky:*)",
+      "Bash(pnpm format:*)"
     ]
   }
 }

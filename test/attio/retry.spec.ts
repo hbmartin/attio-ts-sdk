@@ -123,7 +123,7 @@ describe("retry", () => {
 
       // Use real timers with very short delays to avoid async timing issues
       await expect(
-        callWithRetry(fn, { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 })
+        callWithRetry(fn, { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 }),
       ).rejects.toEqual(error);
       expect(fn).toHaveBeenCalledTimes(3);
     });

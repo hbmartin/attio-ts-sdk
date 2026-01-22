@@ -5,6 +5,7 @@
 - Fix any pnpm format issues (even if they are unrelated)
 - Never edit files in src/generated/
 - Whenever there is any confusion or errors, suggest to me a guideline to add to AGENTS.md
+- Make commits after changes, always using conventional commits
 
 ## Goals
 

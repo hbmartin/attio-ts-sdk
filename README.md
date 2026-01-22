@@ -15,9 +15,7 @@ You still have full access to the generated, spec‑accurate endpoints.
 
 - **Full Attio API Coverage** - People, companies, lists, notes, tasks, meetings, webhooks, and more
 - **Runtime Validation** - Every request and response validated with Zod v4 schemas
-- **Tiny Bundle** - Browser build under 3.5KB gzipped
 - **Tree-Shakeable** - Import only what you need
-- **Isomorphic** - Works in Node.js, Bun, Deno, and browsers
 - **TypeScript First** - Complete type definitions generated from OpenAPI spec
 - **Attio-Aware Client** - Retries, normalized errors, caching, helpers
 - **Zero Config** - Sensible defaults, just add your API key
@@ -327,23 +325,6 @@ const { data: webhook } = await postV2Webhooks({
 
 // List all webhooks
 const { data: webhooks } = await getV2Webhooks({ client });
-```
-
-### Browser Usage
-
-Use the standard entry point in browsers (requires a global `fetch`):
-
-```typescript
-import { createClient, getV2Self } from 'attio-ts-sdk';
-
-const client = createClient({
-  baseUrl: 'https://api.attio.com',
-  headers: {
-    Authorization: `Bearer ${apiKey}`,
-  },
-});
-
-const { data: self } = await getV2Self({ client });
 ```
 
 ### Error Handling

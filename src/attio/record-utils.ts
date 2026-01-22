@@ -62,7 +62,7 @@ export const normalizeRecord = <T extends AttioRecordLike>(
 
   const result: Record<string, unknown> = { ...raw };
 
-  if (!result.id || !(result.id as Record<string, unknown>).record_id) {
+  if (!(result.id && (result.id as Record<string, unknown>).record_id)) {
     const extractedId = extractRecordId(result);
     if (extractedId) {
       result.id = {

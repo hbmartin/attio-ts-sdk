@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearClientCache } from "../../src/attio/cache";
-import { createAttioClient, resolveAttioClient } from "../../src/attio/client";
+import { createAttioClient } from "../../src/attio/client";
 
 const TEST_TOKEN = "attio_test_token_12345";
 

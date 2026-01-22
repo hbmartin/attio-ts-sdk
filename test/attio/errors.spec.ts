@@ -134,11 +134,11 @@ describe("normalizeAttioError", () => {
       { response },
     );
 
-    expect((error as AttioApiError).retryAfterMs).toBe(30000);
+    expect((error as AttioApiError).retryAfterMs).toBe(30_000);
   });
 
   it("parses Retry-After header as date", () => {
-    const futureDate = new Date(Date.now() + 60000);
+    const futureDate = new Date(Date.now() + 60_000);
     const response = new Response(null, {
       status: 429,
       headers: { "Retry-After": futureDate.toUTCString() },
@@ -149,7 +149,7 @@ describe("normalizeAttioError", () => {
     );
 
     expect((error as AttioApiError).retryAfterMs).toBeGreaterThan(0);
-    expect((error as AttioApiError).retryAfterMs).toBeLessThanOrEqual(60000);
+    expect((error as AttioApiError).retryAfterMs).toBeLessThanOrEqual(60_000);
   });
 
   it("handles invalid Retry-After header", () => {
