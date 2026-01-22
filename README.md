@@ -1,6 +1,15 @@
 # Attio CRM TypeScript SDK
 
-A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. Built with Zod v4 for bulletproof runtime validation on both requests and responses.
+A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. Built with Zod v4 and a new Attio‑aware client layer that adds retries, error normalization, caching, and higher‑level helpers on top of the generated OpenAPI client.
+
+- **Create an Attio client in one line** (`createAttioClient({ apiKey })`)
+- **Retry & rate‑limit aware** (exponential backoff + `Retry-After`)
+- **Normalized errors** (consistent shape + optional suggestions for select/status mismatches)
+- **Record normalization** (handles inconsistent response shapes)
+- **Metadata caching** (attributes, select options, statuses)
+- **Pagination helpers** (`paginate` + cursor handling)
+
+You still have full access to the generated, spec‑accurate endpoints.
 
 ## Features
 
@@ -10,6 +19,7 @@ A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. B
 - **Tree-Shakeable** - Import only what you need
 - **Isomorphic** - Works in Node.js, Bun, Deno, and browsers
 - **TypeScript First** - Complete type definitions generated from OpenAPI spec
+- **Attio-Aware Client** - Retries, normalized errors, caching, helpers
 - **Zero Config** - Sensible defaults, just add your API key
 
 ## Installing
@@ -32,17 +42,19 @@ bun add attio-ts-sdk zod
 
 ## Usage
 
+This SDK provides two layers:
+
+1) **Attio helpers** (recommended): `createAttioClient`, `createRecord`, `queryRecords`, etc.
+2) **Generated endpoints**: `getV2Objects`, `postV2ObjectsByObjectRecordsQuery`, etc.
+
 ### Quick Start
 
 ```typescript
-import { createClient, getV2Objects, postV2ObjectsByObjectRecordsQuery } from 'attio-ts-sdk';
+import { createAttioClient, getV2Objects, postV2ObjectsByObjectRecordsQuery } from 'attio-ts-sdk';
 
 // Configure the client with your API key
-const client = createClient({
-  baseUrl: 'https://api.attio.com',
-  headers: {
-    Authorization: `Bearer ${process.env.ATTIO_API_KEY}`,
-  },
+const client = createAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
 });
 
 // List all objects in your workspace
@@ -60,57 +72,148 @@ const { data: people } = await postV2ObjectsByObjectRecordsQuery({
 });
 ```
 
+### Attio Convenience Layer
+
+The Attio helpers wrap the generated endpoints with retries, error normalization,
+record normalization, and opinionated defaults.
+
+```typescript
+import { createAttioClient, createRecord, listLists, searchRecords } from 'attio-ts-sdk';
+
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
+
+const lists = await listLists({ client });
+
+const company = await createRecord({
+  client,
+  object: 'companies',
+  values: {
+    name: [{ value: 'Acme Corp' }],
+    domains: [{ domain: 'acme.com' }],
+  },
+});
+
+const matches = await searchRecords({
+  client,
+  query: 'acme.com',
+  objects: ['companies'],
+});
+```
+
+### Client Configuration
+
+```typescript
+import { createAttioClient } from 'attio-ts-sdk';
+
+const client = createAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  baseUrl: 'https://api.attio.com',
+  timeoutMs: 20_000,
+  retry: { maxRetries: 4 },
+  cache: { enabled: true },
+});
+```
+
+### Error Handling
+
+Errors are normalized to `AttioError` / `AttioApiError` / `AttioNetworkError`.
+
+```typescript
+import { createAttioClient, createRecord, AttioError } from 'attio-ts-sdk';
+
+try {
+  await createRecord({
+    object: 'companies',
+    values: { stage: [{ value: 'Prospectt' }] },
+  });
+} catch (err) {
+  const error = err as AttioError;
+  console.log(error.status, error.code, error.requestId, error.suggestions);
+}
+```
+
+### Pagination Helpers
+
+```typescript
+import { paginate } from 'attio-ts-sdk';
+import { getV2Meetings } from 'attio-ts-sdk';
+
+const meetings = await paginate(async (cursor) => {
+  const result = await getV2Meetings({
+    query: { cursor },
+  });
+  return result;
+});
+```
+
+### Metadata Helpers
+
+```typescript
+import { getAttributeOptions } from 'attio-ts-sdk';
+
+const options = await getAttributeOptions({
+  target: 'objects',
+  identifier: 'companies',
+  attribute: 'stage',
+});
+```
+
 ### Working with Records
 
 ```typescript
 import {
-  postV2ObjectsByObjectRecords,
-  putV2ObjectsByObjectRecords,
-  getV2ObjectsByObjectRecordsByRecordId,
-  deleteV2ObjectsByObjectRecordsByRecordId,
+  createRecord,
+  upsertRecord,
+  getRecord,
+  deleteRecord,
 } from 'attio-ts-sdk';
 
 // Create a new company
-const { data: newCompany } = await postV2ObjectsByObjectRecords({
+const newCompany = await createRecord({
   client,
-  path: { object: 'companies' },
-  body: {
-    data: {
-      values: {
-        name: [{ value: 'Acme Corp' }],
-        domains: [{ domain: 'acme.com' }],
-      },
-    },
+  object: 'companies',
+  values: {
+    name: [{ value: 'Acme Corp' }],
+    domains: [{ domain: 'acme.com' }],
   },
 });
 
 // Upsert a record (create or update based on matching attribute)
-const { data: upserted } = await putV2ObjectsByObjectRecords({
+const upserted = await upsertRecord({
   client,
-  path: { object: 'companies' },
-  body: {
-    data: {
-      values: {
-        name: [{ value: 'Acme Corp' }],
-        domains: [{ domain: 'acme.com' }],
-        description: [{ value: 'Updated description' }],
-      },
-    },
-    matching_attribute: 'domains',
+  object: 'companies',
+  matchingAttribute: 'domains',
+  values: {
+    name: [{ value: 'Acme Corp' }],
+    domains: [{ domain: 'acme.com' }],
+    description: [{ value: 'Updated description' }],
   },
 });
 
 // Get a specific record
-const { data: company } = await getV2ObjectsByObjectRecordsByRecordId({
+const company = await getRecord({
   client,
-  path: { object: 'companies', record_id: 'abc-123' },
+  object: 'companies',
+  recordId: 'abc-123',
 });
 
 // Delete a record
-await deleteV2ObjectsByObjectRecordsByRecordId({
+await deleteRecord({
   client,
-  path: { object: 'companies', record_id: 'abc-123' },
+  object: 'companies',
+  recordId: 'abc-123',
 });
+```
+
+### Using Generated Endpoints Directly
+
+You can always call the generated endpoints for full spec coverage:
+
+```typescript
+import { createAttioClient, getV2Objects } from 'attio-ts-sdk';
+
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
+const { data: objects } = await getV2Objects({ client });
 ```
 
 ### Managing Lists
