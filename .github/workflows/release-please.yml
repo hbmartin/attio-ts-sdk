@@ -24,6 +24,7 @@ jobs:
         uses: googleapis/release-please-action@v4
         with:
           config-file: release-please-config.json
+          versioning-strategy: always-bump-minor
 
   publish:
     needs: release-please
