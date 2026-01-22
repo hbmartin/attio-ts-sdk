@@ -40,8 +40,7 @@ export const runBatch = async <T>(
     ? new AbortController()
     : undefined;
 
-  const isCancelled = (): boolean =>
-    stopped || abortController?.signal.aborted === true;
+  const isCancelled = (): boolean => abortController?.signal.aborted ?? stopped;
 
   return new Promise((resolve, reject) => {
     const launchNext = () => {

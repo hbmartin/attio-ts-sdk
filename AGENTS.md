@@ -6,10 +6,6 @@
 - Never edit files in src/generated/
 - Whenever there is any confusion or errors, suggest to me a guideline to add to AGENTS.md
 
-# Architecture
-
-The basic architecture is a modular monolith with vertical slices.
-
 ## Goals
 
 - Explicit contracts at boundaries
