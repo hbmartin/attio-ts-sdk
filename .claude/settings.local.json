@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(pnpm test)",
-      "Bash(pnpm vitest run:*)"
+      "Bash(pnpm vitest run:*)",
+      "Bash(gh workflow:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh run view:*)"
     ]
   }
 }

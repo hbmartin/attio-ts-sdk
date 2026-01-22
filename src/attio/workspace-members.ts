@@ -2,7 +2,7 @@ import {
   getV2WorkspaceMembers,
   getV2WorkspaceMembersByWorkspaceMemberId,
 } from "../generated";
-import { resolveAttioClient, type AttioClientInput } from "./client";
+import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
 
 export const listWorkspaceMembers = async (input: AttioClientInput = {}) => {

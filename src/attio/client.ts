@@ -1,20 +1,20 @@
 import {
+  type Client,
   createClient,
   mergeHeaders,
-  type Client,
   type RequestOptions,
 } from "../generated/client";
+import { getCachedClient, hashToken, setCachedClient } from "./cache";
 import {
+  type AttioClientConfig,
   resolveAuthToken,
   resolveBaseUrl,
   resolveResponseStyle,
   resolveThrowOnError,
   validateAuthToken,
-  type AttioClientConfig,
 } from "./config";
-import { getCachedClient, hashToken, setCachedClient } from "./cache";
-import { callWithRetry, type RetryConfig } from "./retry";
 import { normalizeAttioError } from "./errors";
+import { callWithRetry, type RetryConfig } from "./retry";
 
 export type AttioClient = Client;
 

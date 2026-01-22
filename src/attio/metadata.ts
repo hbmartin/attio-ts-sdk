@@ -1,17 +1,16 @@
 import { z } from "zod";
-
+import type { Options } from "../generated";
 import {
   getV2ByTargetByIdentifierAttributes,
   getV2ByTargetByIdentifierAttributesByAttribute,
   getV2ByTargetByIdentifierAttributesByAttributeOptions,
   getV2ByTargetByIdentifierAttributesByAttributeStatuses,
 } from "../generated";
-import type { Options } from "../generated";
 import { createTtlCache, type TtlCache } from "./cache";
 import {
-  resolveAttioClient,
   type AttioClient,
   type AttioClientInput,
+  resolveAttioClient,
 } from "./client";
 import { updateKnownFieldValues } from "./error-enhancer";
 import { unwrapData, unwrapItems } from "./response";
