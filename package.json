@@ -39,7 +39,8 @@
     "format": "biome check --write",
     "test": "vitest run --coverage",
     "dupes": "jscpd",
-    "prepare": "husky"
+    "prepare": "husky",
+    "openapi-ts": "openapi-ts"
   },
   "author": "Harold Martin <harold.martin@gmail.com>",
   "repository": {
