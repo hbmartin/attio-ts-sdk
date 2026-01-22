@@ -1,6 +1,7 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createAttioClient } from "../../src/attio/client";
+import { createAttioClient, resolveAttioClient } from "../../src/attio/client";
+import { clearClientCache } from "../../src/attio/cache";
 
 const TEST_TOKEN = "attio_test_token_12345";
 
@@ -64,9 +65,87 @@ const getTimeoutFetch = (baseFetch: typeof fetch, timeoutMs: number) => {
   return fetchWithTimeout;
 };
 
+beforeEach(() => {
+  clearClientCache();
+});
+
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
+});
+
+describe("wrapClient", () => {
+  it("exposes HTTP methods that use retry logic", async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: "test" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+    });
+
+    // Test that wrapped methods exist and are callable
+    expect(client.get).toBeDefined();
+    expect(client.post).toBeDefined();
+    expect(client.put).toBeDefined();
+    expect(client.patch).toBeDefined();
+    expect(client.delete).toBeDefined();
+    expect(client.head).toBeDefined();
+    expect(client.options).toBeDefined();
+    expect(client.connect).toBeDefined();
+    expect(client.trace).toBeDefined();
+
+    // Call a method to ensure it works through retry wrapper
+    await client.get({ url: "/test" });
+    expect(mockFetch).toHaveBeenCalled();
+  });
+
+  it("calls request through retry wrapper", async () => {
+    let callCount = 0;
+    const mockFetch = vi.fn().mockImplementation(() => {
+      callCount++;
+      if (callCount === 1) {
+        return Promise.resolve(
+          new Response(JSON.stringify({ error: "rate limited" }), {
+            status: 500,
+          }),
+        );
+      }
+      return Promise.resolve(
+        new Response(JSON.stringify({ data: "success" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    });
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      retry: { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 },
+    });
+
+    await client.request({ url: "/test", method: "GET" });
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("applyInterceptors", () => {
+  it("normalizes errors through error interceptor", async () => {
+    const mockFetch = vi.fn().mockRejectedValue(new Error("Network error"));
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      throwOnError: true,
+    });
+
+    await expect(client.get({ url: "/test" })).rejects.toThrow();
+  });
 });
 
 describe("resolveFetch", () => {
