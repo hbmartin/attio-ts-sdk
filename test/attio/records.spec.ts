@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const deleteRecordRequest = vi.fn();
 const resolveAttioClient = vi.fn();
@@ -18,6 +18,12 @@ vi.mock("../../src/attio/client", () => ({
 }));
 
 describe("deleteRecord", () => {
+  let deleteRecord: typeof import("../../src/attio/records").deleteRecord;
+
+  beforeAll(async () => {
+    ({ deleteRecord } = await import("../../src/attio/records"));
+  });
+
   beforeEach(() => {
     deleteRecordRequest.mockReset();
     resolveAttioClient.mockReset();
@@ -26,8 +32,6 @@ describe("deleteRecord", () => {
 
   it("forces throwOnError true to surface delete failures", async () => {
     deleteRecordRequest.mockResolvedValue({});
-
-    const { deleteRecord } = await import("../../src/attio/records");
 
     await deleteRecord({
       object: "companies",
@@ -44,8 +48,6 @@ describe("deleteRecord", () => {
 
   it("returns true when delete succeeds", async () => {
     deleteRecordRequest.mockResolvedValue({});
-
-    const { deleteRecord } = await import("../../src/attio/records");
 
     const result = await deleteRecord({
       object: "companies",

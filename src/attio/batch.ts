@@ -1,5 +1,11 @@
+export namespace BatchItem {
+  export interface RunParams {
+    signal?: AbortSignal;
+  }
+}
+
 export interface BatchItem<T> {
-  run: () => Promise<T>;
+  run: (params?: BatchItem.RunParams) => Promise<T>;
   label?: string;
 }
 
@@ -15,19 +21,31 @@ export interface BatchOptions {
   stopOnError?: boolean;
 }
 
+/**
+ * Returns an empty results array when called with no items.
+ */
 export const runBatch = async <T>(
   items: BatchItem<T>[],
   options: BatchOptions = {},
 ): Promise<BatchResult<T>[]> => {
+  if (items.length === 0) {
+    return [];
+  }
   const concurrency = Math.max(1, options.concurrency ?? 4);
   const results: BatchResult<T>[] = [];
   let index = 0;
   let active = 0;
   let stopped = false;
+  const abortController = options.stopOnError
+    ? new AbortController()
+    : undefined;
+
+  const isCancelled = (): boolean =>
+    stopped || abortController?.signal.aborted === true;
 
   return new Promise((resolve, reject) => {
     const launchNext = () => {
-      if (stopped) {
+      if (isCancelled()) {
         return;
       }
       if (index >= items.length && active === 0) {
@@ -42,8 +60,11 @@ export const runBatch = async <T>(
         active += 1;
 
         item
-          .run()
+          .run(abortController ? { signal: abortController.signal } : undefined)
           .then((value) => {
+            if (isCancelled()) {
+              return;
+            }
             results[currentIndex] = {
               status: "fulfilled",
               value,
@@ -51,19 +72,30 @@ export const runBatch = async <T>(
             };
           })
           .catch((reason) => {
+            if (options.stopOnError) {
+              if (!stopped) {
+                stopped = true;
+                if (abortController && !abortController.signal.aborted) {
+                  abortController.abort();
+                }
+                reject(reason);
+              }
+              return;
+            }
+            if (isCancelled()) {
+              return;
+            }
             results[currentIndex] = {
               status: "rejected",
               reason,
               label: item.label,
             };
-            if (options.stopOnError) {
-              stopped = true;
-              reject(reason);
-              return;
-            }
           })
           .finally(() => {
             active -= 1;
+            if (isCancelled()) {
+              return;
+            }
             launchNext();
           });
       }

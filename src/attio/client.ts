@@ -27,6 +27,11 @@ export interface AttioRequestOptions extends RequestOptions {
   retry?: Partial<RetryConfig>;
 }
 
+interface CreateAttioClientParams {
+  config?: AttioClientConfig;
+  authToken: string;
+}
+
 const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
   const baseFetch = config?.fetch ?? globalThis.fetch;
   if (!baseFetch) {
@@ -126,10 +131,10 @@ const wrapClient = (
   } as AttioClient;
 };
 
-export const createAttioClient = (
-  config: AttioClientConfig = {},
-): AttioClient => {
-  const authToken = validateAuthToken(resolveAuthToken(config));
+const createAttioClientWithAuthToken = ({
+  config = {},
+  authToken,
+}: CreateAttioClientParams): AttioClient => {
   const baseUrl = resolveBaseUrl(config);
   const responseStyle = resolveResponseStyle(config);
   const throwOnError = resolveThrowOnError(config);
@@ -163,23 +168,30 @@ export const createAttioClient = (
   return wrapClient(base, retry);
 };
 
+export const createAttioClient = (
+  config: AttioClientConfig = {},
+): AttioClient => {
+  const authToken = validateAuthToken(resolveAuthToken(config));
+  return createAttioClientWithAuthToken({ config, authToken });
+};
+
 export const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   const cacheEnabled = config.cache?.enabled ?? true;
   const cacheKey = buildClientCacheKey(config);
+  const authToken = validateAuthToken(resolveAuthToken(config));
 
   if (cacheEnabled && cacheKey) {
-    validateAuthToken(resolveAuthToken(config));
     const cached = getCachedClient<AttioClient>(cacheKey);
     if (cached) {
       return cached;
     }
 
-    const client = createAttioClient(config);
+    const client = createAttioClientWithAuthToken({ config, authToken });
     setCachedClient(cacheKey, client);
     return client;
   }
 
-  return createAttioClient(config);
+  return createAttioClientWithAuthToken({ config, authToken });
 };
 
 export const resolveAttioClient = (

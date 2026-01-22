@@ -28,7 +28,7 @@ export const calculateRetryDelay = (
     return Math.min(retryAfterMs, config.maxDelayMs);
   }
 
-  const base = config.initialDelayMs * Math.pow(2, attempt);
+  const base = config.initialDelayMs * 2 ** attempt;
   const jitter = 0.75 + Math.random() * 0.5;
   return Math.min(base * jitter, config.maxDelayMs);
 };

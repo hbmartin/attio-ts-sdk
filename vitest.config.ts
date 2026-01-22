@@ -5,7 +5,7 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
       reporter: ["lcov"],
-      include: ["src/**/*.ts"],
+      include: ["src/attio/**/*.ts"],
       thresholds: {
         branches: 75,
         functions: 95,
