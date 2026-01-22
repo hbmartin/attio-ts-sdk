@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": "24.x"
+    "node": ">=24"
   },
   "size-limit": [
     {
@@ -80,12 +80,10 @@
       "**/node_modules/**",
       "**/dist/**",
       "**/coverage/**",
-      "**/tests/**",
-      "**/.next/**",
+      "**/test/**",
+      "**/src/generated/**",
       "**/*.json",
-      "**/*.tsx",
-      "**/*.test.ts",
-      "**/*.css"
+      "**/*.test.ts"
     ],
     "absolute": false
   }

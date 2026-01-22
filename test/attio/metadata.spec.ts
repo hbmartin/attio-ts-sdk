@@ -80,4 +80,22 @@ describe("metadata title extraction", () => {
       "Pending",
     ]);
   });
+
+  it("caches attribute options responses", async () => {
+    const optionsMock = vi.mocked(
+      getV2ByTargetByIdentifierAttributesByAttributeOptions,
+    );
+    const updateMock = vi.mocked(updateKnownFieldValues);
+
+    optionsMock.mockResolvedValue({ data: sampleItems });
+
+    const input = buildInput("priority");
+    const first = await getAttributeOptions(input);
+    const second = await getAttributeOptions(input);
+
+    expect(first).toEqual(sampleItems);
+    expect(second).toEqual(sampleItems);
+    expect(optionsMock).toHaveBeenCalledTimes(1);
+    expect(updateMock).toHaveBeenCalledTimes(1);
+  });
 });

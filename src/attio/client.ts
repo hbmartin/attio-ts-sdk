@@ -12,7 +12,7 @@ import {
   validateAuthToken,
   type AttioClientConfig,
 } from "./config";
-import { getCachedClient, setCachedClient } from "./cache";
+import { getCachedClient, hashToken, setCachedClient } from "./cache";
 import { callWithRetry, type RetryConfig } from "./retry";
 import { normalizeAttioError } from "./errors";
 
@@ -87,8 +87,16 @@ const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
   };
 };
 
-const buildClientCacheKey = (config: AttioClientConfig): string | undefined => {
-  if (config.cache?.key) return config.cache.key;
+interface ClientCacheKeyParams {
+  config: AttioClientConfig;
+  authToken: string;
+}
+
+const buildClientCacheKey = ({
+  config,
+  authToken,
+}: ClientCacheKeyParams): string | undefined => {
+  if (config.cache?.key) return `${config.cache.key}:${hashToken(authToken)}`;
   return undefined;
 };
 
@@ -177,8 +185,8 @@ export const createAttioClient = (
 
 export const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   const cacheEnabled = config.cache?.enabled ?? true;
-  const cacheKey = buildClientCacheKey(config);
   const authToken = validateAuthToken(resolveAuthToken(config));
+  const cacheKey = buildClientCacheKey({ config, authToken });
 
   if (cacheEnabled && cacheKey) {
     const cached = getCachedClient<AttioClient>(cacheKey);

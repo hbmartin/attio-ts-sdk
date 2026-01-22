@@ -2,13 +2,13 @@ import { defineConfig } from "tsdown";
 
 export default defineConfig([
   {
-    entry: ["./src/index.ts"],
+    entry: { index: "./src/index.ts" },
     platform: "node",
     dts: true,
     sourcemap: true,
   },
   {
-    entry: ["./src/browser.ts"],
+    entry: { browser: "./src/index.ts" },
     platform: "browser",
     dts: true,
     minify: true,
