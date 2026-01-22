@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-
+import { AttioResponseError } from "../../src/attio/errors";
 import {
   extractRecordId,
   normalizeRecord,
@@ -10,6 +10,13 @@ describe("record-utils", () => {
   it("returns undefined for invalid extractRecordId inputs", () => {
     expect(extractRecordId(null)).toBeUndefined();
     expect(extractRecordId("nope")).toBeUndefined();
+  });
+
+  it("ignores non-string id values", () => {
+    const invalidId = { id: { record_id: 123 } };
+    const invalidRootId = { record_id: 456 };
+    expect(extractRecordId(invalidId)).toBeUndefined();
+    expect(extractRecordId(invalidRootId)).toBeUndefined();
   });
 
   it("extracts record id from alternative id keys", () => {
@@ -151,11 +158,16 @@ describe("record-utils", () => {
       expect(() => {
         // @ts-expect-error intentional invalid input for runtime validation
         normalizeRecord(input);
+      }).toThrow(AttioResponseError);
+      expect(() => {
+        // @ts-expect-error intentional invalid input for runtime validation
+        normalizeRecord(input);
       }).toThrow("Invalid API response: no data found");
     }
   });
 
   it("throws on empty object without allowEmpty", () => {
+    expect(() => normalizeRecord({})).toThrow(AttioResponseError);
     expect(() => normalizeRecord({})).toThrow(
       "Invalid API response: empty data object",
     );
@@ -173,6 +185,16 @@ describe("record-utils", () => {
     };
     const normalized = normalizeRecord(validRecord);
     expect(normalized).toBe(validRecord);
+  });
+
+  it("rebuilds values when existing values are invalid", () => {
+    const record: Record<string, unknown> = {
+      id: { record_id: "rec-invalid-values" },
+      values: "nope",
+    };
+
+    const normalized = normalizeRecord(record);
+    expect(normalized.values).toEqual({});
   });
 
   it("extracts record_id from root level when id is a string", () => {

@@ -26,13 +26,16 @@ interface BatchState<T> {
   stopped: boolean;
 }
 
-const handleSuccess = <T>(
-  state: BatchState<T>,
-  currentIndex: number,
-  value: T,
-  label?: string,
-  isCancelled?: () => boolean,
-): void => {
+interface HandleSuccessParams<T> {
+  state: BatchState<T>;
+  currentIndex: number;
+  value: T;
+  label?: string;
+  isCancelled?: () => boolean;
+}
+
+const handleSuccess = <T>(params: HandleSuccessParams<T>): void => {
+  const { state, currentIndex, value, label, isCancelled } = params;
   if (isCancelled?.()) {
     return;
   }
@@ -43,23 +46,35 @@ const handleSuccess = <T>(
   };
 };
 
-const handleError = <T>(
-  state: BatchState<T>,
-  currentIndex: number,
-  reason: unknown,
-  label: string | undefined,
-  options: BatchOptions,
-  abortController: AbortController | undefined,
-  isCancelled: () => boolean,
-  reject: (reason: unknown) => void,
-): void => {
+interface HandleErrorParams<T> {
+  state: BatchState<T>;
+  currentIndex: number;
+  error: unknown;
+  label: string | undefined;
+  options: BatchOptions;
+  abortController: AbortController | undefined;
+  isCancelled: () => boolean;
+  reject: (err: unknown) => void;
+}
+
+const handleError = <T>(params: HandleErrorParams<T>): void => {
+  const {
+    state,
+    currentIndex,
+    error,
+    label,
+    options,
+    abortController,
+    isCancelled,
+    reject,
+  } = params;
   if (options.stopOnError) {
     if (!state.stopped) {
       state.stopped = true;
       if (abortController && !abortController.signal.aborted) {
         abortController.abort();
       }
-      reject(reason);
+      reject(error);
     }
     return;
   }
@@ -68,7 +83,7 @@ const handleError = <T>(
   }
   state.results[currentIndex] = {
     status: "rejected",
-    reason,
+    reason: error,
     label,
   };
 };
@@ -103,19 +118,25 @@ const processNextItem = <T>(params: LaunchNextParams<T>): void => {
   item
     .run(abortController ? { signal: abortController.signal } : undefined)
     .then((value) => {
-      handleSuccess(state, currentIndex, value, item.label, isCancelled);
-    })
-    .catch((reason) => {
-      handleError(
+      handleSuccess({
         state,
         currentIndex,
-        reason,
-        item.label,
+        value,
+        label: item.label,
+        isCancelled,
+      });
+    })
+    .catch((error) => {
+      handleError({
+        state,
+        currentIndex,
+        error,
+        label: item.label,
         options,
         abortController,
         isCancelled,
         reject,
-      );
+      });
     })
     .finally(() => {
       state.active -= 1;
@@ -137,7 +158,7 @@ const runBatch = <T>(
   }
   const concurrency = Math.max(1, options.concurrency ?? 4);
   const state: BatchState<T> = {
-    results: [],
+    results: new Array(items.length),
     index: 0,
     active: 0,
     stopped: false,

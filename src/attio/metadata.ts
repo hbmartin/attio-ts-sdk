@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Options } from "../generated";
+import type { Attribute, Options, SelectOption, Status } from "../generated";
 import {
   getV2ByTargetByIdentifierAttributes,
   getV2ByTargetByIdentifierAttributesByAttribute,
@@ -108,11 +108,13 @@ const listAttributeMetadata = async ({
   return items;
 };
 
-const listAttributes = async (input: AttributeListInput) => {
+const listAttributes = async (
+  input: AttributeListInput,
+): Promise<Attribute[]> => {
   const cacheKey = buildKey(input.target, input.identifier);
   const cached = attributesCache.get(cacheKey);
   if (cached) {
-    return cached;
+    return cached as Attribute[];
   }
 
   const client = resolveAttioClient(input);
@@ -121,12 +123,12 @@ const listAttributes = async (input: AttributeListInput) => {
     path: { target: input.target, identifier: input.identifier },
     ...input.options,
   });
-  const items = unwrapItems(result);
+  const items = unwrapItems(result) as Attribute[];
   attributesCache.set(cacheKey, items);
   return items;
 };
 
-const getAttribute = async (input: AttributeInput) => {
+const getAttribute = async (input: AttributeInput): Promise<Attribute> => {
   const client = resolveAttioClient(input);
   const result = await getV2ByTargetByIdentifierAttributesByAttribute({
     client,
@@ -137,29 +139,37 @@ const getAttribute = async (input: AttributeInput) => {
     },
     ...input.options,
   });
-  return unwrapData(result);
+  return unwrapData(result) as Attribute;
 };
 
-const getAttributeOptions = (input: AttributeInput) => {
-  return listAttributeMetadata({
+const getAttributeOptions = async (
+  input: AttributeInput,
+): Promise<SelectOption[]> =>
+  listAttributeMetadata({
     input,
     cache: optionsCache,
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeOptions,
-  });
-};
+  }) as Promise<SelectOption[]>;
 
-const getAttributeStatuses = (input: AttributeInput) => {
-  return listAttributeMetadata({
+const getAttributeStatuses = async (input: AttributeInput): Promise<Status[]> =>
+  listAttributeMetadata({
     input,
     cache: statusesCache,
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeStatuses,
-  });
-};
+  }) as Promise<Status[]>;
 
-export type { AttributeListInput, AttributeInput };
+export type {
+  AttributeListInput,
+  AttributeInput,
+  AttributeMetadataRequestParams,
+};
 export {
   listAttributes,
   getAttribute,
   getAttributeOptions,
   getAttributeStatuses,
+  listAttributeMetadata,
+  buildAttributeMetadataPath,
+  buildKey,
+  extractTitles,
 };

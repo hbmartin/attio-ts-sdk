@@ -59,9 +59,8 @@ class TtlCache<K, V> {
 
 const clientCache = new Map<string, unknown>();
 
-const getCachedClient = <T>(key: string): T | undefined => {
-  return clientCache.get(key) as T | undefined;
-};
+const getCachedClient = <T>(key: string): T | undefined =>
+  clientCache.get(key) as T | undefined;
 
 const setCachedClient = <T>(key: string, client: T): void => {
   clientCache.set(key, client as unknown);

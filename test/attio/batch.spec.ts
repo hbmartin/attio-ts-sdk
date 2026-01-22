@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { runBatch } from "../../src/attio/batch";
+import { AttioBatchError } from "../../src/attio/errors";
 
 describe("runBatch", () => {
   it("returns an empty result array for empty items", async () => {
@@ -21,7 +22,7 @@ describe("runBatch", () => {
           if (signal) {
             startedSignals.push(signal);
           }
-          throw new Error("boom");
+          throw new AttioBatchError("boom");
         },
       },
       {
@@ -59,9 +60,15 @@ describe("runBatch", () => {
       },
     ];
 
-    await expect(
-      runBatch(items, { concurrency: 2, stopOnError: true }),
-    ).rejects.toThrow("boom");
+    const error = await runBatch(items, {
+      concurrency: 2,
+      stopOnError: true,
+    }).catch((reason) => reason);
+
+    expect(error).toBeInstanceOf(AttioBatchError);
+    if (error instanceof AttioBatchError) {
+      expect(error.message).toBe("boom");
+    }
 
     expect(startedLabels).toEqual(["fail-fast", "wait-for-abort"]);
     expect(startedSignals).toHaveLength(2);
@@ -78,7 +85,7 @@ describe("runBatch", () => {
       {
         label: "second",
         run: async () => {
-          throw new Error("nope");
+          throw new AttioBatchError("nope");
         },
       },
       {
@@ -91,11 +98,15 @@ describe("runBatch", () => {
 
     expect(results).toEqual([
       { status: "fulfilled", value: "a", label: "first" },
-      { status: "rejected", reason: expect.any(Error), label: "second" },
+      {
+        status: "rejected",
+        reason: expect.any(AttioBatchError),
+        label: "second",
+      },
       { status: "fulfilled", value: "c", label: "third" },
     ]);
-    expect(results[1].reason).toBeInstanceOf(Error);
-    if (results[1].reason instanceof Error) {
+    expect(results[1].reason).toBeInstanceOf(AttioBatchError);
+    if (results[1].reason instanceof AttioBatchError) {
       expect(results[1].reason.message).toBe("nope");
     }
   });

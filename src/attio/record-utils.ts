@@ -1,95 +1,209 @@
+import { z } from "zod";
+import { AttioResponseError } from "./errors";
+
+const attioRecordIdSchema = z.string().brand<"AttioRecordId">();
+
+type AttioRecordId = z.infer<typeof attioRecordIdSchema>;
+
+interface AttioRecordIdFields {
+  record_id?: AttioRecordId;
+  company_id?: AttioRecordId;
+  person_id?: AttioRecordId;
+  list_id?: AttioRecordId;
+  task_id?: AttioRecordId;
+}
+
+interface UnknownObject extends Record<string, unknown> {}
+
+const unknownObjectSchema: z.ZodType<UnknownObject> = z
+  .object({})
+  .passthrough();
+const recordIdFieldsSchema: z.ZodType<AttioRecordIdFields> = z.object({
+  record_id: attioRecordIdSchema.optional(),
+  company_id: attioRecordIdSchema.optional(),
+  person_id: attioRecordIdSchema.optional(),
+  list_id: attioRecordIdSchema.optional(),
+  task_id: attioRecordIdSchema.optional(),
+});
+const unknownArraySchema = z.array(z.unknown());
+
+const extractIdFromFields = (
+  fields: AttioRecordIdFields,
+): AttioRecordId | undefined =>
+  fields.record_id ??
+  fields.company_id ??
+  fields.person_id ??
+  fields.list_id ??
+  fields.task_id;
+
+const parseObject = (value: unknown): UnknownObject | undefined => {
+  const parsed = unknownObjectSchema.safeParse(value);
+  return parsed.success ? parsed.data : undefined;
+};
+
+const parseId = (value: unknown): AttioRecordId | undefined => {
+  const parsed = attioRecordIdSchema.safeParse(value);
+  return parsed.success ? parsed.data : undefined;
+};
+
+const parseIdFields = (value: unknown): AttioRecordIdFields | undefined => {
+  const parsed = recordIdFieldsSchema.safeParse(value);
+  return parsed.success ? parsed.data : undefined;
+};
+
+const parseArray = (value: unknown): unknown[] | undefined => {
+  const parsed = unknownArraySchema.safeParse(value);
+  return parsed.success ? parsed.data : undefined;
+};
+
+const extractIdFromRecord = (
+  record: UnknownObject,
+): AttioRecordId | undefined => {
+  const idFields = parseIdFields(record.id);
+  const idFromObject = idFields ? extractIdFromFields(idFields) : undefined;
+  return (
+    idFromObject ??
+    parseId(record.id) ??
+    parseId(record.record_id) ??
+    parseId(record.company_id) ??
+    parseId(record.person_id) ??
+    parseId(record.list_id) ??
+    parseId(record.task_id)
+  );
+};
+
+const extractValuesObject = (
+  record: UnknownObject,
+): Record<string, unknown> | undefined => parseObject(record.values);
+
 interface AttioRecordLike {
-  id?: Record<string, unknown>;
+  id?: AttioRecordIdFields | AttioRecordId;
   values?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
-const extractAnyId = (obj: unknown): string | undefined => {
-  if (!obj || typeof obj !== "object") {
+const extractIdFromUnknown = (value: unknown): AttioRecordId | undefined => {
+  const record = parseObject(value);
+  if (!record) {
     return;
   }
-  const record = obj as Record<string, unknown>;
-  const idObj = record.id as Record<string, unknown> | undefined;
-  return (
-    (idObj?.record_id as string) ??
-    (idObj?.company_id as string) ??
-    (idObj?.person_id as string) ??
-    (idObj?.list_id as string) ??
-    (idObj?.task_id as string) ??
-    (typeof record.id === "string" ? record.id : undefined) ??
-    (record.record_id as string) ??
-    (record.company_id as string) ??
-    (record.person_id as string) ??
-    (record.list_id as string) ??
-    (record.task_id as string)
-  );
+  return extractIdFromRecord(record);
 };
 
 const extractValues = (obj: unknown): Record<string, unknown> | undefined => {
-  if (!obj || typeof obj !== "object") {
+  const record = parseObject(obj);
+  if (!record) {
     return;
   }
-  const record = obj as Record<string, unknown>;
-  const values = record.values;
-  if (!values || typeof values !== "object" || Array.isArray(values)) {
-    return;
-  }
-  return values as Record<string, unknown>;
+  return extractValuesObject(record);
 };
 
-const extractRecordId = (obj: unknown): string | undefined => {
-  if (!obj || typeof obj !== "object") {
-    return;
+const collectNestedCandidates = (record: UnknownObject): unknown[] => {
+  const candidates: unknown[] = [];
+  if (record.data !== undefined) {
+    candidates.push(record.data);
   }
-  const record = obj as Record<string, unknown>;
-  const nested =
-    extractAnyId(record) ??
-    extractAnyId(record.data) ??
-    extractAnyId((record.data as Record<string, unknown>)?.data) ??
-    extractAnyId((record.data as Record<string, unknown>)?.record) ??
-    extractAnyId((record.data as Record<string, unknown>)?.items?.[0]);
-  return nested;
+
+  const dataRecord = parseObject(record.data);
+  if (!dataRecord) {
+    return candidates;
+  }
+
+  if (dataRecord.data !== undefined) {
+    candidates.push(dataRecord.data);
+  }
+  if (dataRecord.record !== undefined) {
+    candidates.push(dataRecord.record);
+  }
+  const items = parseArray(dataRecord.items);
+  if (items && items.length > 0) {
+    candidates.push(items[0]);
+  }
+
+  return candidates;
 };
 
-const hasValidRecordId = (raw: Record<string, unknown>): boolean => {
-  return Boolean(raw.id && (raw.id as Record<string, unknown>).record_id);
+const findFirstId = (candidates: unknown[]): AttioRecordId | undefined => {
+  for (const candidate of candidates) {
+    const nested = extractIdFromUnknown(candidate);
+    if (nested) {
+      return nested;
+    }
+  }
+  return;
+};
+
+const extractRecordId = (obj: unknown): AttioRecordId | undefined => {
+  const record = parseObject(obj);
+  if (!record) {
+    return;
+  }
+  const direct = extractIdFromRecord(record);
+  if (direct) {
+    return direct;
+  }
+  return findFirstId(collectNestedCandidates(record));
+};
+
+const hasValidRecordId = (raw: UnknownObject): boolean => {
+  const idFields = parseIdFields(raw.id);
+  return Boolean(idFields?.record_id);
 };
 
 const extractNestedValues = (
-  result: Record<string, unknown>,
+  result: UnknownObject,
 ): Record<string, unknown> | undefined => {
-  const dataRecord = result.data as Record<string, unknown> | undefined;
-  return (
-    extractValues(result.data) ??
-    extractValues(dataRecord?.data) ??
-    extractValues(dataRecord?.record) ??
-    extractValues(dataRecord?.items?.[0])
-  );
+  const candidates = collectNestedCandidates(result);
+  for (const candidate of candidates) {
+    const values = extractValues(candidate);
+    if (values) {
+      return values;
+    }
+  }
+  return;
 };
 
-const normalizeRecord = <T extends AttioRecordLike>(
-  raw: Record<string, unknown>,
-  options: { allowEmpty?: boolean } = {},
-): T => {
-  if (!raw || typeof raw !== "object") {
-    throw new Error("Invalid API response: no data found");
+interface NormalizeRecordOptions {
+  allowEmpty?: boolean;
+}
+
+function normalizeRecord<T extends AttioRecordLike>(
+  raw: unknown,
+  options?: NormalizeRecordOptions,
+): T;
+function normalizeRecord(
+  raw: unknown,
+  options?: NormalizeRecordOptions,
+): AttioRecordLike;
+function normalizeRecord(
+  raw: unknown,
+  options: NormalizeRecordOptions = {},
+): AttioRecordLike {
+  const record = parseObject(raw);
+  if (!record) {
+    throw new AttioResponseError("Invalid API response: no data found", {
+      code: "INVALID_RESPONSE",
+    });
   }
 
-  if (!options.allowEmpty && Object.keys(raw).length === 0) {
-    throw new Error("Invalid API response: empty data object");
+  if (!options.allowEmpty && Object.keys(record).length === 0) {
+    throw new AttioResponseError("Invalid API response: empty data object", {
+      code: "EMPTY_RESPONSE",
+    });
   }
 
-  if (hasValidRecordId(raw) && raw.values) {
-    return raw as T;
+  if (hasValidRecordId(record) && extractValuesObject(record)) {
+    return record;
   }
 
-  const result: Record<string, unknown> = { ...raw };
+  const result: UnknownObject = { ...record };
 
   if (!hasValidRecordId(result)) {
     const extractedId = extractRecordId(result);
     if (extractedId) {
+      const existingId = parseObject(result.id);
       result.id = {
-        ...(result.id as Record<string, unknown>),
+        ...(existingId ?? {}),
         record_id: extractedId,
       };
     }
@@ -99,19 +213,30 @@ const normalizeRecord = <T extends AttioRecordLike>(
     result.values = extractNestedValues(result) ?? {};
   }
 
-  return result as T;
-};
+  return result;
+}
 
-const normalizeRecords = <T extends AttioRecordLike>(
+function normalizeRecords<T extends AttioRecordLike>(
   items: unknown[],
-  options: { allowEmpty?: boolean } = {},
-): T[] => {
-  return items
-    .filter((item) => item && typeof item === "object")
-    .map((item) =>
-      normalizeRecord<T>(item as Record<string, unknown>, options),
-    );
-};
+  options?: NormalizeRecordOptions,
+): T[];
+function normalizeRecords(
+  items: unknown[],
+  options?: NormalizeRecordOptions,
+): AttioRecordLike[];
+function normalizeRecords(
+  items: unknown[],
+  options: NormalizeRecordOptions = {},
+): AttioRecordLike[] {
+  const normalized: AttioRecordLike[] = [];
+  for (const item of items) {
+    const record = parseObject(item);
+    if (record) {
+      normalized.push(normalizeRecord(record, options));
+    }
+  }
+  return normalized;
+}
 
-export type { AttioRecordLike };
+export type { AttioRecordId, AttioRecordLike };
 export { extractRecordId, normalizeRecord, normalizeRecords };

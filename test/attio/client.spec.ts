@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearClientCache } from "../../src/attio/cache";
 import { createAttioClient } from "../../src/attio/client";
+import { AttioEnvironmentError } from "../../src/attio/errors";
 
 const TEST_TOKEN = "attio_test_token_12345";
 
@@ -58,7 +59,7 @@ const getTimeoutFetch = (baseFetch: typeof fetch, timeoutMs: number) => {
 
   const fetchWithTimeout = client.getConfig().fetch;
   if (!fetchWithTimeout) {
-    throw new Error("Fetch is not configured.");
+    throw new AttioEnvironmentError("Fetch is not configured.");
   }
 
   return fetchWithTimeout;

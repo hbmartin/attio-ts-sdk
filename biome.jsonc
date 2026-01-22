@@ -17,7 +17,8 @@
       "!build",
       "!out",
       "!.cache",
-      "!coverage"
+      "!coverage",
+      "!find-missing-rules.cjs"
     ]
   },
   "formatter": {
@@ -88,7 +89,10 @@
         "noInnerDeclarations": "error",
         "noInvalidBuiltinInstantiation": "error",
         "noInvalidConstructorSuper": "error",
+        "noInvalidPositionAtImportRule": "error",
         "noInvalidUseBeforeDeclaration": "error",
+        "noMissingVarFunction": "error",
+        "noNestedComponentDefinitions": "error",
         "noNonoctalDecimalEscape": "error",
         "noPrecisionLoss": "error",
         "noRestrictedElements": "error",
@@ -97,6 +101,7 @@
         "noStringCaseMismatch": "error",
         "noSwitchDeclarations": "error",
         "noUndeclaredVariables": "error",
+        "noUnknownFunction": "error",
         "noUnreachable": "error",
         "noUnreachableSuper": "error",
         "noUnsafeFinally": "error",
@@ -128,6 +133,46 @@
         "useImportExtensions": "off",
         "useJsonImportAttributes": "error"
       },
+      "nursery": {
+        "noContinue": "error",
+        "noTernary": "off", // ternaries are readable for simple conditionals
+        "noDeprecatedImports": "error",
+        "noDuplicateDependencies": "error",
+        "noDuplicatedSpreadProps": "error",
+        "noEmptySource": "error",
+        "noEqualsToNull": "error",
+        "noFloatingPromises": "error",
+        "noForIn": "error",
+        "noImportCycles": "error",
+        "noIncrementDecrement": "error",
+        "noMisusedPromises": "error",
+        "noMultiAssign": "error",
+        "noMultiStr": "error",
+        "noParametersOnlyUsedInRecursion": "error",
+        "noProto": "error",
+        "noReturnAssign": "error",
+        "noShadow": "error",
+        "noSyncScripts": "error",
+        "noUndeclaredEnvVars": "error",
+        "noUnnecessaryConditions": "error",
+        "noUnusedExpressions": "error",
+        "noUselessCatchBinding": "error",
+        "noUselessUndefined": "error",
+        "useArraySortCompare": "error",
+        "useConsistentArrowReturn": "error",
+        "useDeprecatedDate": "error",
+        "useDestructuring": "error",
+        "useExhaustiveSwitchCases": "error",
+        "useFind": "error",
+        "useMaxParams": "error",
+        "useRegexpExec": "error",
+        "useRequiredScripts": "error",
+        "useSortedClasses": "error",
+        "useSpread": "error",
+        "useUniqueArgumentNames": "error",
+        "useUniqueFieldDefinitionNames": "error",
+        "useUniqueVariableNames": "error"
+      },
       "performance": {
         "noAccumulatingSpread": "error",
         "noBarrelFile": "off",
@@ -144,9 +189,11 @@
         "noBlankTarget": "error",
         "noDangerouslySetInnerHtml": "error",
         "noDangerouslySetInnerHtmlWithChildren": "error",
-        "noGlobalEval": "error"
+        "noGlobalEval": "error",
+        "noSecrets": "error"
       },
       "style": {
+        "noDescendingSpecificity": "error",
         "noDoneCallback": "error",
         "noEnum": "error",
         "noExportedImports": "error",
@@ -164,6 +211,7 @@
         "noSubstr": "error",
         "noUnusedTemplateLiteral": "error",
         "noUselessElse": "error",
+        "noValueAtRule": "error",
         "noYodaExpression": "error",
         "useArrayLiterals": "error",
         "useAsConstAssertion": "error",
@@ -175,6 +223,7 @@
         "useConsistentBuiltinInstantiation": "error",
         "useConsistentMemberAccessibility": "error",
         "useConsistentObjectDefinitions": "error",
+        "useConsistentTypeDefinitions": "error",
         "useConst": "error",
         "useDefaultParameterLast": "error",
         "useDefaultSwitchClause": "error",
@@ -225,6 +274,7 @@
       "suspicious": {
         "noAlert": "error",
         "noApproximativeNumericConstant": "error",
+        "noArrayIndexKey": "error",
         "noAssignInExpressions": "error",
         "noAsyncPromiseExecutor": "error",
         "noBiomeFirstException": "error",
@@ -241,6 +291,7 @@
         "noDebugger": "error",
         "noDocumentCookie": "error",
         "noDoubleEquals": "error",
+        "noDuplicateAtImportRules": "error",
         "noDuplicateCase": "error",
         "noDuplicateClassMembers": "error",
         "noDuplicateElseIf": "error",
@@ -248,6 +299,7 @@
         "noDuplicateObjectKeys": "error",
         "noDuplicateParameters": "error",
         "noDuplicateTestHooks": "error",
+        "noEmptyBlock": "error",
         "noEmptyBlockStatements": "error",
         "noEmptyInterface": "error",
         "noEvolvingTypes": "error",
@@ -268,6 +320,7 @@
         "noMisleadingInstantiator": "error",
         "noMisplacedAssertion": "error",
         "noMisrefactoredShorthandAssign": "error",
+        "noNonNullAssertedOptionalChain": "error",
         "noOctalEscape": "error",
         "noPrototypeBuiltins": "error",
         "noQuickfixBiome": "error",
@@ -275,12 +328,14 @@
         "noRedundantUseStrict": "error",
         "noSelfCompare": "error",
         "noShadowRestrictedNames": "error",
+        "noShorthandPropertyOverrides": "error",
         "noSkippedTests": "error",
         "noSparseArray": "error",
         "noTemplateCurlyInString": "error",
         "noThenProperty": "error",
         "noTsIgnore": "error",
         "noUnassignedVariables": "error",
+        "noUnknownAtRules": "error",
         "noUnsafeDeclarationMerging": "error",
         "noUnsafeNegation": "error",
         "noUselessEscapeInString": "error",
@@ -320,7 +375,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.{test,spec}.ts"],
+      "includes": ["**/*.{test,spec}.ts", "test/**/*"],
       "linter": {
         "rules": {
           "correctness": {
@@ -342,6 +397,12 @@
             "noConsole": "off",
             "noExplicitAny": "off",
             "useAwait": "off"
+          },
+          "security": {
+            "noSecrets": "off"
+          },
+          "nursery": {
+            "noIncrementDecrement": "off"
           }
         }
       }
