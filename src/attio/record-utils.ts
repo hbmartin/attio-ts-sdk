@@ -21,9 +21,7 @@ interface NormalizeRecordOptions {
   emptyBehavior?: EmptyObjectBehavior;
 }
 
-interface ParseObjectOptions extends NormalizeRecordOptions {
-  emptyBehavior: EmptyObjectBehavior;
-}
+interface ParseObjectOptions extends NormalizeRecordOptions {}
 
 const defaultNormalizeRecordOptions: NormalizeRecordOptions = {
   emptyBehavior: "reject",
@@ -71,6 +69,7 @@ function parseObject(
   value: unknown,
   options?: ParseObjectOptions,
 ): UnknownObject | undefined {
+  // Internal helper defaults to permissive ("allow") for flexible parsing
   const emptyBehavior = options?.emptyBehavior ?? "allow";
   const schema =
     emptyBehavior === "allow" ? unknownObjectSchema : nonEmptyObjectSchema;
@@ -211,6 +210,7 @@ const parseRecordInput = (
   options: NormalizeRecordOptions,
 ): UnknownObject => {
   try {
+    // Public API defaults to strict ("reject") to catch invalid API responses
     const emptyBehavior = options.emptyBehavior ?? "reject";
     return parseObject(raw, { emptyBehavior });
   } catch (error) {
