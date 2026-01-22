@@ -1,11 +1,13 @@
-export interface AttioRecordLike {
+interface AttioRecordLike {
   id?: Record<string, unknown>;
   values?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
 const extractAnyId = (obj: unknown): string | undefined => {
-  if (!obj || typeof obj !== "object") return;
+  if (!obj || typeof obj !== "object") {
+    return;
+  }
   const record = obj as Record<string, unknown>;
   const idObj = record.id as Record<string, unknown> | undefined;
   return (
@@ -24,15 +26,21 @@ const extractAnyId = (obj: unknown): string | undefined => {
 };
 
 const extractValues = (obj: unknown): Record<string, unknown> | undefined => {
-  if (!obj || typeof obj !== "object") return;
+  if (!obj || typeof obj !== "object") {
+    return;
+  }
   const record = obj as Record<string, unknown>;
   const values = record.values;
-  if (!values || typeof values !== "object" || Array.isArray(values)) return;
+  if (!values || typeof values !== "object" || Array.isArray(values)) {
+    return;
+  }
   return values as Record<string, unknown>;
 };
 
-export const extractRecordId = (obj: unknown): string | undefined => {
-  if (!obj || typeof obj !== "object") return;
+const extractRecordId = (obj: unknown): string | undefined => {
+  if (!obj || typeof obj !== "object") {
+    return;
+  }
   const record = obj as Record<string, unknown>;
   const nested =
     extractAnyId(record) ??
@@ -43,7 +51,23 @@ export const extractRecordId = (obj: unknown): string | undefined => {
   return nested;
 };
 
-export const normalizeRecord = <T extends AttioRecordLike>(
+const hasValidRecordId = (raw: Record<string, unknown>): boolean => {
+  return Boolean(raw.id && (raw.id as Record<string, unknown>).record_id);
+};
+
+const extractNestedValues = (
+  result: Record<string, unknown>,
+): Record<string, unknown> | undefined => {
+  const dataRecord = result.data as Record<string, unknown> | undefined;
+  return (
+    extractValues(result.data) ??
+    extractValues(dataRecord?.data) ??
+    extractValues(dataRecord?.record) ??
+    extractValues(dataRecord?.items?.[0])
+  );
+};
+
+const normalizeRecord = <T extends AttioRecordLike>(
   raw: Record<string, unknown>,
   options: { allowEmpty?: boolean } = {},
 ): T => {
@@ -55,14 +79,13 @@ export const normalizeRecord = <T extends AttioRecordLike>(
     throw new Error("Invalid API response: empty data object");
   }
 
-  const hasValidId = raw.id && (raw.id as Record<string, unknown>).record_id;
-  if (hasValidId && raw.values) {
+  if (hasValidRecordId(raw) && raw.values) {
     return raw as T;
   }
 
   const result: Record<string, unknown> = { ...raw };
 
-  if (!(result.id && (result.id as Record<string, unknown>).record_id)) {
+  if (!hasValidRecordId(result)) {
     const extractedId = extractRecordId(result);
     if (extractedId) {
       result.id = {
@@ -73,19 +96,13 @@ export const normalizeRecord = <T extends AttioRecordLike>(
   }
 
   if (!result.values) {
-    const dataRecord = result.data as Record<string, unknown> | undefined;
-    const nested =
-      extractValues(result.data) ??
-      extractValues(dataRecord?.data) ??
-      extractValues(dataRecord?.record) ??
-      extractValues(dataRecord?.items?.[0]);
-    result.values = nested ?? {};
+    result.values = extractNestedValues(result) ?? {};
   }
 
   return result as T;
 };
 
-export const normalizeRecords = <T extends AttioRecordLike>(
+const normalizeRecords = <T extends AttioRecordLike>(
   items: unknown[],
   options: { allowEmpty?: boolean } = {},
 ): T[] => {
@@ -95,3 +112,6 @@ export const normalizeRecords = <T extends AttioRecordLike>(
       normalizeRecord<T>(item as Record<string, unknown>, options),
     );
 };
+
+export type { AttioRecordLike };
+export { extractRecordId, normalizeRecord, normalizeRecords };

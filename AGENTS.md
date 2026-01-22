@@ -1,7 +1,7 @@
 # Working Guide
 
 - After adding any code or functionality, write thorough unit tests and check coverage.
-- After making any changes always execute `pnpm format && pnpm test` to verify
+- After making any changes always execute `pnpm format && pnpm test && pnpm build` to verify
 - Fix any pnpm format issues (even if they are unrelated)
 - Never edit files in src/generated/
 - Whenever there is any confusion or errors, suggest to me a guideline to add to AGENTS.md

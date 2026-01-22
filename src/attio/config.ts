@@ -1,10 +1,13 @@
 import process from "node:process";
+import { z } from "zod";
 import type { Config, ResponseStyle } from "../generated/client";
 import type { RetryConfig } from "./retry";
 
-export const DEFAULT_BASE_URL = "https://api.attio.com";
+const TRAILING_SLASHES_REGEX = /\/+$/;
 
-export interface AttioClientConfig
+const DEFAULT_BASE_URL = "https://api.attio.com";
+
+interface AttioClientConfig
   extends Omit<Config, "auth" | "baseUrl" | "headers"> {
   apiKey?: string;
   accessToken?: string;
@@ -21,24 +24,24 @@ export interface AttioClientConfig
   throwOnError?: boolean;
 }
 
-export const getEnvValue = (key: string): string | undefined => {
-  if (typeof process === "undefined") return undefined;
+const getEnvValue = (key: string): string | undefined => {
+  if (typeof process === "undefined") {
+    return undefined;
+  }
   return process.env?.[key];
 };
 
-export const normalizeBaseUrl = (baseUrl: string): string => {
-  return baseUrl.replace(/\/+$/, "");
+const normalizeBaseUrl = (baseUrl: string): string => {
+  return baseUrl.replace(TRAILING_SLASHES_REGEX, "");
 };
 
-export const resolveBaseUrl = (config?: AttioClientConfig): string => {
+const resolveBaseUrl = (config?: AttioClientConfig): string => {
   const candidate =
     config?.baseUrl ?? getEnvValue("ATTIO_BASE_URL") ?? DEFAULT_BASE_URL;
   return normalizeBaseUrl(candidate);
 };
 
-export const resolveAuthToken = (
-  config?: AttioClientConfig,
-): string | undefined => {
+const resolveAuthToken = (config?: AttioClientConfig): string | undefined => {
   return (
     config?.apiKey ??
     config?.accessToken ??
@@ -48,25 +51,31 @@ export const resolveAuthToken = (
   );
 };
 
-export const validateAuthToken = (token: string | undefined): string => {
-  if (!token || typeof token !== "string") {
-    throw new Error("Missing Attio API key. Set ATTIO_API_KEY or pass apiKey.");
-  }
+const AuthTokenSchema = z
+  .string({
+    required_error: "Missing Attio API key. Set ATTIO_API_KEY or pass apiKey.",
+  })
+  .min(10, "Invalid Attio API key: too short.")
+  .refine((t) => !/\s/.test(t), "Invalid Attio API key: contains whitespace.");
 
-  if (/\s/.test(token)) {
-    throw new Error("Invalid Attio API key: contains whitespace.");
-  }
-
-  if (token.length < 10) {
-    throw new Error("Invalid Attio API key: too short.");
-  }
-
-  return token;
+const validateAuthToken = (token: string | undefined): string => {
+  return AuthTokenSchema.parse(token);
 };
 
-export const resolveResponseStyle = (
-  config?: AttioClientConfig,
-): ResponseStyle => config?.responseStyle ?? "fields";
+const resolveResponseStyle = (config?: AttioClientConfig): ResponseStyle =>
+  config?.responseStyle ?? "fields";
 
-export const resolveThrowOnError = (config?: AttioClientConfig): boolean =>
+const resolveThrowOnError = (config?: AttioClientConfig): boolean =>
   config?.throwOnError ?? true;
+
+export type { AttioClientConfig };
+export {
+  DEFAULT_BASE_URL,
+  getEnvValue,
+  normalizeBaseUrl,
+  resolveBaseUrl,
+  resolveAuthToken,
+  validateAuthToken,
+  resolveResponseStyle,
+  resolveThrowOnError,
+};

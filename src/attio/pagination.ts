@@ -1,23 +1,23 @@
 import { unwrapItems, unwrapPaginationCursor } from "./response";
 
-export interface PageResult<T> {
+interface PageResult<T> {
   items: T[];
   nextCursor?: string | null;
 }
 
-export interface PaginationOptions {
+interface PaginationOptions {
   cursor?: string | null;
   maxPages?: number;
   maxItems?: number;
 }
 
-export const toPageResult = <T>(result: unknown): PageResult<T> => {
+const toPageResult = <T>(result: unknown): PageResult<T> => {
   const items = unwrapItems<T>(result);
   const nextCursor = unwrapPaginationCursor(result);
   return { items, nextCursor };
 };
 
-export const paginate = async <T>(
+const paginate = async <T>(
   fetchPage: (cursor?: string | null) => Promise<PageResult<T> | unknown>,
   options: PaginationOptions = {},
 ): Promise<T[]> => {
@@ -49,3 +49,6 @@ export const paginate = async <T>(
 
   return items.slice(0, maxItems);
 };
+
+export type { PageResult, PaginationOptions };
+export { toPageResult, paginate };

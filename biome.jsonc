@@ -327,11 +327,16 @@
             "noProcessGlobal": "off"
           },
           "performance": {
-            "noDelete": "off"
+            "noDelete": "off",
+            "noNamespaceImport": "off",
+            "useTopLevelRegex": "off"
           },
           "complexity": {
             "noExcessiveCognitiveComplexity": "off",
             "noExcessiveLinesPerFunction": "off"
+          },
+          "style": {
+            "noProcessEnv": "off"
           },
           "suspicious": {
             "noConsole": "off",
@@ -352,6 +357,19 @@
         "rules": {
           "style": {
             "noDefaultExport": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/attio/config.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noNodejsModules": "off"
+          },
+          "style": {
+            "noProcessEnv": "off"
           }
         }
       }

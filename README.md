@@ -1,5 +1,12 @@
 # Attio CRM TypeScript SDK
 
+[![npm version](https://badge.fury.io/js/attio-ts-sdk.svg)](https://www.npmjs.com/package/attio-ts-sdk)
+[![ci](https://github.com/hbmartin/attio-ts-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/hbmartin/attio-ts-sdk/actions/workflows/ci.yml)[![codecov](https://codecov.io/gh/hbmartin/attio-ts-sdk/graph/badge.svg?token=Po1nDYEr5f)](https://codecov.io/gh/hbmartin/attio-ts-sdk)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/attio-ts-sdk)](https://bundlephobia.com/package/attio-ts-sdk)
+[![NPM License](https://img.shields.io/npm/l/attio-ts-sdk?color=blue)](https://github.com/hbmartin/attio-ts-sdk/blob/main/LICENSE)
+[![Context7](https://img.shields.io/badge/[]-Context7-059669)](https://context7.com/hbmartin/attio-ts-sdk)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/hbmartin/attio-ts-sdk)
+
 A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. Built with Zod v4 and a new Attio‑aware client layer that adds retries, error normalization, caching, and higher‑level helpers on top of the generated OpenAPI client.
 
 - **Create an Attio client in one line** (`createAttioClient({ apiKey })`)

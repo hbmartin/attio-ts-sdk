@@ -1,14 +1,14 @@
-export interface TtlCacheEntry<T> {
+interface TtlCacheEntry<T> {
   value: T;
   expiresAt: number;
 }
 
-export interface TtlCacheOptions {
+interface TtlCacheOptions {
   ttlMs: number;
   maxEntries?: number;
 }
 
-export class TtlCache<K, V> {
+class TtlCache<K, V> {
   private readonly ttlMs: number;
   private readonly maxEntries: number | undefined;
   private readonly store = new Map<K, TtlCacheEntry<V>>();
@@ -20,7 +20,9 @@ export class TtlCache<K, V> {
 
   get(key: K): V | undefined {
     const entry = this.store.get(key);
-    if (!entry) return;
+    if (!entry) {
+      return;
+    }
     if (Date.now() >= entry.expiresAt) {
       this.store.delete(key);
       return;
@@ -55,27 +57,39 @@ export class TtlCache<K, V> {
   }
 }
 
-export const createTtlCache = <K, V>(options: TtlCacheOptions) =>
-  new TtlCache<K, V>(options);
-
 const clientCache = new Map<string, unknown>();
 
-export const getCachedClient = <T>(key: string): T | undefined => {
+const getCachedClient = <T>(key: string): T | undefined => {
   return clientCache.get(key) as T | undefined;
 };
 
-export const setCachedClient = <T>(key: string, client: T): void => {
+const setCachedClient = <T>(key: string, client: T): void => {
   clientCache.set(key, client as unknown);
 };
 
-export const clearClientCache = (): void => {
+const clearClientCache = (): void => {
   clientCache.clear();
 };
 
-export const hashToken = (value: string): string => {
+const hashToken = (value: string): string => {
   let hash = 5381;
   for (let i = 0; i < value.length; i += 1) {
+    // biome-ignore lint/suspicious/noBitwiseOperators: XOR is required for djb2 hash algorithm
     hash = (hash * 33) ^ value.charCodeAt(i);
   }
+  // biome-ignore lint/suspicious/noBitwiseOperators: unsigned right shift converts to 32-bit unsigned integer
   return (hash >>> 0).toString(36);
+};
+
+const createTtlCache = <K, V>(options: TtlCacheOptions) =>
+  new TtlCache<K, V>(options);
+
+export type { TtlCacheEntry, TtlCacheOptions };
+export {
+  TtlCache,
+  createTtlCache,
+  getCachedClient,
+  setCachedClient,
+  clearClientCache,
+  hashToken,
 };
