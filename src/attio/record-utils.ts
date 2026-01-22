@@ -15,9 +15,25 @@ interface AttioRecordIdFields {
 
 interface UnknownObject extends Record<string, unknown> {}
 
+interface ParseObjectOptions {
+  allowEmpty?: boolean;
+}
+
+const emptyObjectIssueCode = "EMPTY_OBJECT";
+
 const unknownObjectSchema: z.ZodType<UnknownObject> = z
   .object({})
   .passthrough();
+const nonEmptyObjectSchema: z.ZodType<UnknownObject> =
+  unknownObjectSchema.superRefine((value, ctx) => {
+    if (Object.keys(value).length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Expected non-empty object",
+        params: { code: emptyObjectIssueCode },
+      });
+    }
+  });
 const recordIdFieldsSchema: z.ZodType<AttioRecordIdFields> = z.object({
   record_id: attioRecordIdSchema.optional(),
   company_id: attioRecordIdSchema.optional(),
@@ -36,10 +52,26 @@ const extractIdFromFields = (
   fields.list_id ??
   fields.task_id;
 
-const parseObject = (value: unknown): UnknownObject | undefined => {
-  const parsed = unknownObjectSchema.safeParse(value);
-  return parsed.success ? parsed.data : undefined;
-};
+function parseObject(value: unknown): UnknownObject | undefined;
+function parseObject(
+  value: unknown,
+  options: ParseObjectOptions,
+): UnknownObject;
+function parseObject(
+  value: unknown,
+  options?: ParseObjectOptions,
+): UnknownObject | undefined {
+  const allowEmpty = options ? options.allowEmpty === true : true;
+  const schema = allowEmpty ? unknownObjectSchema : nonEmptyObjectSchema;
+  const parsed = schema.safeParse(value);
+  if (parsed.success) {
+    return parsed.data;
+  }
+  if (options) {
+    throw parsed.error;
+  }
+  return;
+}
 
 const parseId = (value: unknown): AttioRecordId | undefined => {
   const parsed = attioRecordIdSchema.safeParse(value);
@@ -167,6 +199,35 @@ interface NormalizeRecordOptions {
   allowEmpty?: boolean;
 }
 
+const parseRecordInput = (
+  raw: Record<string, unknown>,
+  options: NormalizeRecordOptions,
+): UnknownObject => {
+  try {
+    return parseObject(raw, { allowEmpty: options.allowEmpty });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const isEmptyObject = error.issues.some(
+        (issue) =>
+          issue.code === z.ZodIssueCode.custom &&
+          issue.params?.code === emptyObjectIssueCode,
+      );
+      if (isEmptyObject) {
+        throw new AttioResponseError(
+          "Invalid API response: empty data object",
+          {
+            code: "EMPTY_RESPONSE",
+          },
+        );
+      }
+      throw new AttioResponseError("Invalid API response: no data found", {
+        code: "INVALID_RESPONSE",
+      });
+    }
+    throw error;
+  }
+};
+
 function normalizeRecord<T extends AttioRecordLike>(
   raw: Record<string, unknown>,
   options?: NormalizeRecordOptions,
@@ -179,23 +240,13 @@ function normalizeRecord(
   raw: Record<string, unknown>,
   options: NormalizeRecordOptions = {},
 ): AttioRecordLike {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-    throw new AttioResponseError("Invalid API response: no data found", {
-      code: "INVALID_RESPONSE",
-    });
-  }
-
-  if (!options.allowEmpty && Object.keys(raw).length === 0) {
-    throw new AttioResponseError("Invalid API response: empty data object", {
-      code: "EMPTY_RESPONSE",
-    });
-  }
+  const parsedRaw = parseRecordInput(raw, options);
   // Input already has valid record_id and values - return as-is
-  if (hasValidRecordId(raw) && extractValuesObject(raw)) {
+  if (hasValidRecordId(parsedRaw) && extractValuesObject(parsedRaw)) {
     return raw;
   }
 
-  const result: UnknownObject = { ...raw };
+  const result: UnknownObject = { ...parsedRaw };
 
   if (!hasValidRecordId(result)) {
     const extractedId = extractRecordId(result);

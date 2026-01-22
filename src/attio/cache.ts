@@ -1,4 +1,4 @@
-import type { ZodSchema } from "zod";
+import type { ZodType } from "zod";
 
 interface TtlCacheEntry<T> {
   value: T;
@@ -61,7 +61,7 @@ class TtlCache<K, V> {
 
 const clientCache = new Map<string, unknown>();
 
-type ClientCacheValidator<T> = ZodSchema<T> | ((value: unknown) => T);
+type ClientCacheValidator<T> = ZodType<T>;
 
 const getCachedClient = <T>(
   key: string,
@@ -73,10 +73,6 @@ const getCachedClient = <T>(
   }
 
   try {
-    if (typeof validator === "function") {
-      return validator(cached);
-    }
-
     const result = validator.safeParse(cached);
     if (!result.success) {
       return;

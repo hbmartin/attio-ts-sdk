@@ -124,29 +124,20 @@ describe("client cache functions", () => {
       expect(getCachedClient("key1", ClientSchema)).toBeUndefined();
     });
 
-    it("accepts function validators", () => {
-      const parseClient = (value: unknown) => {
-        const result = ClientSchema.safeParse(value);
-        if (!result.success) {
-          throw new Error("Invalid client");
-        }
-        return result.data;
-      };
-
-      const client = { id: "test-client" };
-      setCachedClient("key1", client);
-
-      expect(getCachedClient("key1", parseClient)).toStrictEqual(client);
-    });
-
-    it("returns undefined when function validators throw", () => {
-      const parseClient = (_value: unknown) => {
-        throw new Error("Invalid client");
-      };
+    it("returns transformed data from zod validators", () => {
+      const ClientSchemaWithTransform = z
+        .object({ id: z.string() })
+        .transform((value) => ({
+          ...value,
+          normalizedId: value.id.toUpperCase(),
+        }));
 
       setCachedClient("key1", { id: "test-client" });
 
-      expect(getCachedClient("key1", parseClient)).toBeUndefined();
+      expect(getCachedClient("key1", ClientSchemaWithTransform)).toStrictEqual({
+        id: "test-client",
+        normalizedId: "TEST-CLIENT",
+      });
     });
   });
 

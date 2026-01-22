@@ -33,41 +33,30 @@ interface CreateAttioClientParams {
   authToken: string;
 }
 
-const AttioClientSchema = z.custom<AttioClient>(
-  (value) => {
-    if (typeof value !== "object" || value === null) {
-      return false;
-    }
+const interceptorUseSchema = z
+  .object({
+    use: z.function(),
+  })
+  .passthrough();
 
-    const request = Reflect.get(value, "request");
-    if (typeof request !== "function") {
-      return false;
-    }
+const attioClientShapeSchema = z
+  .object({
+    request: z.function(),
+    interceptors: z
+      .object({
+        error: interceptorUseSchema,
+        request: interceptorUseSchema,
+        response: interceptorUseSchema,
+      })
+      .passthrough(),
+  })
+  .passthrough();
 
-    const interceptors = Reflect.get(value, "interceptors");
-    if (typeof interceptors !== "object" || interceptors === null) {
-      return false;
-    }
-
-    const error = Reflect.get(interceptors, "error");
-    const requestInterceptors = Reflect.get(interceptors, "request");
-    const response = Reflect.get(interceptors, "response");
-
-    const hasInterceptorUse = (candidate: unknown): boolean => {
-      if (typeof candidate !== "object" || candidate === null) {
-        return false;
-      }
-      return typeof Reflect.get(candidate, "use") === "function";
-    };
-
-    return (
-      hasInterceptorUse(error) &&
-      hasInterceptorUse(requestInterceptors) &&
-      hasInterceptorUse(response)
-    );
-  },
-  { message: "Invalid cached Attio client." },
-);
+const AttioClientSchema: z.ZodType<AttioClient> = z
+  .any()
+  .refine((value) => attioClientShapeSchema.safeParse(value).success, {
+    message: "Invalid cached Attio client.",
+  });
 
 const combineSignalsWithAny = (
   initSignal: AbortSignal,

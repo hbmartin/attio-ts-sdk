@@ -157,6 +157,69 @@ const meetings = await paginate(async (cursor) => {
 });
 ```
 
+### Caching
+
+The SDK includes two levels of caching to reduce API calls and improve performance:
+
+#### Metadata Caching
+
+Attribute metadata (attributes, select options, and statuses) is automatically cached with a 5-minute TTL. This reduces redundant API calls when working with the same objects repeatedly.
+
+```typescript
+import { getAttributeOptions, getAttributeStatuses, listAttributes } from 'attio-ts-sdk';
+
+// These calls are cached for 5 minutes
+const options = await getAttributeOptions({
+  client,
+  target: 'objects',
+  identifier: 'companies',
+  attribute: 'stage',
+});
+
+// Subsequent calls with the same parameters return cached data
+const optionsAgain = await getAttributeOptions({
+  client,
+  target: 'objects',
+  identifier: 'companies',
+  attribute: 'stage',
+}); // Returns cached result, no API call
+```
+
+The metadata caches have the following limits:
+- **Attributes cache**: 200 entries max
+- **Options cache**: 500 entries max
+- **Statuses cache**: 500 entries max
+
+When a cache reaches its limit, the oldest entry is evicted.
+
+#### Client Instance Caching
+
+You can cache `AttioClient` instances to reuse them across your application. This is useful when you want to avoid creating new client instances for repeated operations.
+
+```typescript
+import { getAttioClient } from 'attio-ts-sdk';
+
+// With cache.key set, the client instance is cached and reused
+const client = getAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  cache: { key: 'my-app' },
+});
+
+// Returns the same cached client instance
+const sameClient = getAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  cache: { key: 'my-app' },
+});
+
+// Disable caching if needed
+const freshClient = getAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  cache: { enabled: false },
+});
+```
+
+Note: `createAttioClient` always creates a new client instance. Use `getAttioClient` when you want caching behavior.
+
 ### Metadata Helpers
 
 ```typescript
