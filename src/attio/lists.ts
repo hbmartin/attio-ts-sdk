@@ -106,6 +106,7 @@ export const removeListEntry = async (
     client,
     path: { list: input.list, entry_id: input.entryId },
     ...input.options,
+    throwOnError: true,
   });
   return true;
 };

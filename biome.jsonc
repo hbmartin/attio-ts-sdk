@@ -7,7 +7,17 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!.release-please-manifest.json", "!jsr.json"]
+    "includes": [
+      "**",
+      "!.release-please-manifest.json",
+      "!jsr.json",
+      "!src/generated/**",
+      "!dist/**",
+      "!build/**",
+      "!out/**",
+      "!.cache/**",
+      "!coverage/**"
+    ]
   },
   "formatter": {
     "enabled": true,
