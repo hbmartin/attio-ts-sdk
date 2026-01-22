@@ -29,7 +29,11 @@ export class TtlCache<K, V> {
   }
 
   set(key: K, value: V): void {
-    if (this.maxEntries && this.store.size >= this.maxEntries) {
+    if (
+      this.maxEntries &&
+      this.store.size >= this.maxEntries &&
+      !this.store.has(key)
+    ) {
       const oldestKey = this.store.keys().next().value as K | undefined;
       if (oldestKey !== undefined) {
         this.store.delete(oldestKey);

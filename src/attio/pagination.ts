@@ -1,4 +1,4 @@
-import { unwrapItems, unwrapPaginationCursor } from './response';
+import { unwrapItems, unwrapPaginationCursor } from "./response";
 
 export interface PageResult<T> {
   items: T[];
@@ -30,7 +30,9 @@ export const paginate = async <T>(
   while (pages < maxPages && items.length < maxItems) {
     const page = await fetchPage(cursor);
     const isPageResult =
-      page !== null && typeof page === 'object' && 'items' in page;
+      page !== null &&
+      typeof page === "object" &&
+      Array.isArray((page as PageResult<T>).items);
     const { items: pageItems, nextCursor } = isPageResult
       ? (page as PageResult<T>)
       : toPageResult<T>(page);

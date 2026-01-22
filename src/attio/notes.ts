@@ -3,17 +3,17 @@ import {
   getV2Notes,
   getV2NotesByNoteId,
   postV2Notes,
-} from '../generated';
-import type { Options } from '../generated';
-import { resolveAttioClient, type AttioClientInput } from './client';
-import { unwrapData, unwrapItems } from './response';
+} from "../generated";
+import type { Options } from "../generated";
+import { resolveAttioClient, type AttioClientInput } from "./client";
+import { unwrapData, unwrapItems } from "./response";
 
 export interface NoteCreateInput extends AttioClientInput {
   parentObject: string;
   parentRecordId: string;
   title?: string;
   content?: string;
-  options?: Omit<Options, 'client' | 'body'>;
+  options?: Omit<Options, "client" | "body">;
 }
 
 export const listNotes = async (input: AttioClientInput = {}) => {
@@ -48,7 +48,9 @@ export const createNote = async (input: NoteCreateInput) => {
   return unwrapData(result);
 };
 
-export const deleteNote = async (input: { noteId: string } & AttioClientInput) => {
+export const deleteNote = async (
+  input: { noteId: string } & AttioClientInput,
+) => {
   const client = resolveAttioClient(input);
   await deleteV2NotesByNoteId({
     client,

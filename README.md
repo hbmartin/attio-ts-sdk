@@ -121,8 +121,11 @@ Errors are normalized to `AttioError` / `AttioApiError` / `AttioNetworkError`.
 ```typescript
 import { createAttioClient, createRecord, AttioError } from 'attio-ts-sdk';
 
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
+
 try {
   await createRecord({
+    client,
     object: 'companies',
     values: { stage: [{ value: 'Prospectt' }] },
   });
@@ -135,11 +138,14 @@ try {
 ### Pagination Helpers
 
 ```typescript
-import { paginate } from 'attio-ts-sdk';
-import { getV2Meetings } from 'attio-ts-sdk';
+import { createAttioClient, paginate, getV2Meetings } from 'attio-ts-sdk';
+
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
+
 
 const meetings = await paginate(async (cursor) => {
   const result = await getV2Meetings({
+    client,
     query: { cursor },
   });
   return result;
@@ -149,9 +155,12 @@ const meetings = await paginate(async (cursor) => {
 ### Metadata Helpers
 
 ```typescript
-import { getAttributeOptions } from 'attio-ts-sdk';
+import { createAttioClient, getAttributeOptions } from 'attio-ts-sdk';
+
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 
 const options = await getAttributeOptions({
+  client,
   target: 'objects',
   identifier: 'companies',
   attribute: 'stage',
@@ -162,11 +171,14 @@ const options = await getAttributeOptions({
 
 ```typescript
 import {
+  createAttioClient,
   createRecord,
   upsertRecord,
   getRecord,
   deleteRecord,
 } from 'attio-ts-sdk';
+
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 
 // Create a new company
 const newCompany = await createRecord({

@@ -1,14 +1,16 @@
+import { z } from "zod";
+
 import {
   getV2ByTargetByIdentifierAttributes,
   getV2ByTargetByIdentifierAttributesByAttribute,
   getV2ByTargetByIdentifierAttributesByAttributeOptions,
   getV2ByTargetByIdentifierAttributesByAttributeStatuses,
-} from '../generated';
-import type { Options } from '../generated';
-import { createTtlCache } from './cache';
-import { resolveAttioClient, type AttioClientInput } from './client';
-import { updateKnownFieldValues } from './error-enhancer';
-import { unwrapData, unwrapItems } from './response';
+} from "../generated";
+import type { Options } from "../generated";
+import { createTtlCache } from "./cache";
+import { resolveAttioClient, type AttioClientInput } from "./client";
+import { updateKnownFieldValues } from "./error-enhancer";
+import { unwrapData, unwrapItems } from "./response";
 
 const DEFAULT_TTL_MS = 5 * 60 * 1000;
 
@@ -28,12 +30,23 @@ const statusesCache = createTtlCache<string, unknown[]>({
 });
 
 const buildKey = (target: string, identifier: string, attribute?: string) =>
-  [target, identifier, attribute].filter(Boolean).join(':');
+  [target, identifier, attribute].filter(Boolean).join(":");
+
+const titleSchema = z.object({ title: z.string() }).passthrough();
+
+const extractTitles = (items: unknown[]): string[] =>
+  items.reduce<string[]>((titles, item) => {
+    const parsed = titleSchema.safeParse(item);
+    if (parsed.success) {
+      titles.push(parsed.data.title);
+    }
+    return titles;
+  }, []);
 
 export interface AttributeListInput extends AttioClientInput {
   target: string;
   identifier: string;
-  options?: Omit<Options, 'client' | 'path'>;
+  options?: Omit<Options, "client" | "path">;
 }
 
 export interface AttributeInput extends AttributeListInput {
@@ -87,13 +100,7 @@ export const getAttributeOptions = async (input: AttributeInput) => {
   });
 
   const items = unwrapItems(result);
-  const titles = items
-    .map((item) =>
-      typeof (item as { title?: unknown }).title === 'string'
-        ? ((item as { title?: string }).title as string)
-        : undefined,
-    )
-    .filter(Boolean) as string[];
+  const titles = extractTitles(items);
 
   updateKnownFieldValues(input.attribute, titles);
   optionsCache.set(cacheKey, items);
@@ -117,13 +124,7 @@ export const getAttributeStatuses = async (input: AttributeInput) => {
   });
 
   const items = unwrapItems(result);
-  const titles = items
-    .map((item) =>
-      typeof (item as { title?: unknown }).title === 'string'
-        ? ((item as { title?: string }).title as string)
-        : undefined,
-    )
-    .filter(Boolean) as string[];
+  const titles = extractTitles(items);
 
   updateKnownFieldValues(input.attribute, titles);
   statusesCache.set(cacheKey, items);

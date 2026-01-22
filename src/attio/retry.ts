@@ -1,4 +1,4 @@
-import type { AttioError } from './errors';
+import type { AttioError } from "./errors";
 
 export interface RetryConfig {
   maxRetries: number;
@@ -37,10 +37,7 @@ export const isRetryableStatus = (
   status: number | undefined,
   config: RetryConfig,
 ): boolean => {
-  if (!status) return true;
-  if (status >= 400 && status < 500 && status !== 408 && status !== 429) {
-    return false;
-  }
+  if (status === undefined) return true;
   return config.retryableStatusCodes.includes(status);
 };
 
@@ -73,7 +70,10 @@ export const callWithRetry = async <T>(
     try {
       return await fn();
     } catch (error) {
-      if (!isRetryableError(error, retryConfig) || attempt >= retryConfig.maxRetries) {
+      if (
+        !isRetryableError(error, retryConfig) ||
+        attempt >= retryConfig.maxRetries
+      ) {
         throw error;
       }
 
@@ -87,5 +87,5 @@ export const callWithRetry = async <T>(
     }
   }
 
-  throw new Error('Retry attempts exhausted.');
+  throw new Error("Retry attempts exhausted.");
 };
