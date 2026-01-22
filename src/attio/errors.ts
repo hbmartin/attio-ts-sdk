@@ -1,4 +1,4 @@
-import { enhanceAttioError } from './error-enhancer';
+import { enhanceAttioError } from "./error-enhancer";
 
 export interface AttioErrorDetails {
   code?: string;
@@ -29,7 +29,7 @@ export class AttioError extends Error {
 
   constructor(message: string, details: AttioErrorDetails = {}) {
     super(message);
-    this.name = 'AttioError';
+    this.name = "AttioError";
     this.status = details.status;
     this.code = details.code;
     this.type = details.type;
@@ -40,7 +40,7 @@ export class AttioError extends Error {
 export class AttioApiError extends AttioError {
   constructor(message: string, details: AttioErrorDetails = {}) {
     super(message, details);
-    this.name = 'AttioApiError';
+    this.name = "AttioApiError";
     this.isApiError = true;
   }
 }
@@ -48,7 +48,7 @@ export class AttioApiError extends AttioError {
 export class AttioNetworkError extends AttioError {
   constructor(message: string, details: AttioErrorDetails = {}) {
     super(message, details);
-    this.name = 'AttioNetworkError';
+    this.name = "AttioNetworkError";
     this.isNetworkError = true;
   }
 }
@@ -64,7 +64,7 @@ const getHeaderValue = (
 
 const parseRetryAfter = (response?: Response): number | undefined => {
   if (!response) return;
-  const raw = response.headers.get('Retry-After');
+  const raw = response.headers.get("Retry-After");
   if (!raw) return;
   const seconds = Number(raw);
   if (Number.isFinite(seconds)) {
@@ -78,29 +78,29 @@ const parseRetryAfter = (response?: Response): number | undefined => {
 };
 
 const extractMessage = (error: unknown, fallback?: string): string => {
-  if (typeof error === 'string') return error;
-  if (error && typeof error === 'object') {
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object") {
     const maybe = error as { message?: unknown };
-    if (typeof maybe.message === 'string') {
+    if (typeof maybe.message === "string") {
       return maybe.message;
     }
   }
-  return fallback ?? 'Request failed.';
+  return fallback ?? "Request failed.";
 };
 
 const extractDetails = (error: unknown): AttioErrorDetails => {
-  if (!error || typeof error !== 'object') return {};
+  if (!error || typeof error !== "object") return {};
   const payload = error as Record<string, unknown>;
   return {
-    code: typeof payload.code === 'string' ? payload.code : undefined,
-    type: typeof payload.type === 'string' ? payload.type : undefined,
+    code: typeof payload.code === "string" ? payload.code : undefined,
+    type: typeof payload.type === "string" ? payload.type : undefined,
     status:
-      typeof payload.status_code === 'number'
+      typeof payload.status_code === "number"
         ? payload.status_code
-        : typeof payload.status === 'number'
+        : typeof payload.status === "number"
           ? payload.status
           : undefined,
-    message: typeof payload.message === 'string' ? payload.message : undefined,
+    message: typeof payload.message === "string" ? payload.message : undefined,
     data: payload,
   };
 };
@@ -112,10 +112,13 @@ export const normalizeAttioError = (
   const { response, request } = context;
   const details = extractDetails(error);
   const status = response?.status ?? details.status;
-  const message = extractMessage(error, response?.statusText ?? details.message);
+  const message = extractMessage(
+    error,
+    response?.statusText ?? details.message,
+  );
   const requestId =
-    getHeaderValue(response, 'x-request-id') ??
-    getHeaderValue(response, 'x-attio-request-id');
+    getHeaderValue(response, "x-request-id") ??
+    getHeaderValue(response, "x-attio-request-id");
 
   if (response) {
     const apiError = new AttioApiError(message, {

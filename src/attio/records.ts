@@ -5,36 +5,40 @@ import {
   postV2ObjectsByObjectRecords,
   postV2ObjectsByObjectRecordsQuery,
   putV2ObjectsByObjectRecords,
-} from '../generated';
-import type { Options } from '../generated';
-import { resolveAttioClient, type AttioClientInput } from './client';
-import { normalizeRecord, normalizeRecords, type AttioRecordLike } from './record-utils';
-import { unwrapData, unwrapItems } from './response';
+} from "../generated";
+import type { Options } from "../generated";
+import { resolveAttioClient, type AttioClientInput } from "./client";
+import {
+  normalizeRecord,
+  normalizeRecords,
+  type AttioRecordLike,
+} from "./record-utils";
+import { unwrapData, unwrapItems } from "./response";
 
 export interface RecordCreateInput extends AttioClientInput {
   object: string;
   values: Record<string, unknown>;
-  options?: Omit<Options, 'client' | 'path' | 'body'>;
+  options?: Omit<Options, "client" | "path" | "body">;
 }
 
 export interface RecordUpdateInput extends AttioClientInput {
   object: string;
   recordId: string;
   values: Record<string, unknown>;
-  options?: Omit<Options, 'client' | 'path' | 'body'>;
+  options?: Omit<Options, "client" | "path" | "body">;
 }
 
 export interface RecordUpsertInput extends AttioClientInput {
   object: string;
   matchingAttribute: string;
   values: Record<string, unknown>;
-  options?: Omit<Options, 'client' | 'path' | 'body'>;
+  options?: Omit<Options, "client" | "path" | "body">;
 }
 
 export interface RecordGetInput extends AttioClientInput {
   object: string;
   recordId: string;
-  options?: Omit<Options, 'client' | 'path'>;
+  options?: Omit<Options, "client" | "path">;
 }
 
 export interface RecordQueryInput extends AttioClientInput {
@@ -43,7 +47,7 @@ export interface RecordQueryInput extends AttioClientInput {
   sorts?: Array<Record<string, unknown>>;
   limit?: number;
   offset?: number;
-  options?: Omit<Options, 'client' | 'path' | 'body'>;
+  options?: Omit<Options, "client" | "path" | "body">;
 }
 
 export const createRecord = async <T extends AttioRecordLike>(
@@ -110,14 +114,13 @@ export const getRecord = async <T extends AttioRecordLike>(
   return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
 };
 
-export const deleteRecord = async (
-  input: RecordGetInput,
-): Promise<boolean> => {
+export const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
   const client = resolveAttioClient(input);
   await deleteV2ObjectsByObjectRecordsByRecordId({
     client,
     path: { object: input.object, record_id: input.recordId },
     ...input.options,
+    throwOnError: true,
   });
   return true;
 };

@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { calculateRetryDelay, isRetryableStatus } from '../../src/attio/retry';
+import { calculateRetryDelay, isRetryableStatus } from "../../src/attio/retry";
 
 const config = {
   maxRetries: 3,
@@ -10,13 +10,14 @@ const config = {
   respectRetryAfter: true,
 };
 
-describe('retry', () => {
-  it('uses Retry-After when provided', () => {
+describe("retry", () => {
+  it("uses Retry-After when provided", () => {
     const delay = calculateRetryDelay(0, config, 2000);
     expect(delay).toBe(2000);
   });
 
-  it('does not retry standard 4xx except configured', () => {
+  it("relies on retryableStatusCodes and treats undefined as retryable", () => {
+    expect(isRetryableStatus(undefined, config)).toBe(true);
     expect(isRetryableStatus(400, config)).toBe(false);
     expect(isRetryableStatus(429, config)).toBe(true);
   });

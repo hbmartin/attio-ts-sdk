@@ -4,20 +4,20 @@ import {
   getV2TasksByTaskId,
   patchV2TasksByTaskId,
   postV2Tasks,
-} from '../generated';
-import type { Options } from '../generated';
-import { resolveAttioClient, type AttioClientInput } from './client';
-import { unwrapData, unwrapItems } from './response';
+} from "../generated";
+import type { Options } from "../generated";
+import { resolveAttioClient, type AttioClientInput } from "./client";
+import { unwrapData, unwrapItems } from "./response";
 
 export interface TaskCreateInput extends AttioClientInput {
   data: Record<string, unknown>;
-  options?: Omit<Options, 'client' | 'body'>;
+  options?: Omit<Options, "client" | "body">;
 }
 
 export interface TaskUpdateInput extends AttioClientInput {
   taskId: string;
   data: Record<string, unknown>;
-  options?: Omit<Options, 'client' | 'path' | 'body'>;
+  options?: Omit<Options, "client" | "path" | "body">;
 }
 
 export const listTasks = async (input: AttioClientInput = {}) => {
@@ -60,7 +60,9 @@ export const updateTask = async (input: TaskUpdateInput) => {
   return unwrapData(result);
 };
 
-export const deleteTask = async (input: { taskId: string } & AttioClientInput) => {
+export const deleteTask = async (
+  input: { taskId: string } & AttioClientInput,
+) => {
   const client = resolveAttioClient(input);
   await deleteV2TasksByTaskId({
     client,

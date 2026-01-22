@@ -1,4 +1,4 @@
-import type { AttioError } from './errors';
+import type { AttioError } from "./errors";
 
 export interface AttioValueSuggestion {
   field: string;
@@ -12,12 +12,17 @@ const knownFieldValues = new Map<string, string[]>();
 export const getKnownFieldValues = (field: string): string[] | undefined =>
   knownFieldValues.get(field);
 
-export const updateKnownFieldValues = (field: string, values: string[]): void => {
-  const unique = Array.from(new Set(values.map((value) => value.trim()))).filter(
-    Boolean,
-  );
+export const updateKnownFieldValues = (
+  field: string,
+  values: string[],
+): void => {
+  const unique = Array.from(
+    new Set(values.map((value) => value.trim())),
+  ).filter(Boolean);
   if (unique.length > 0) {
     knownFieldValues.set(field, unique);
+  } else {
+    knownFieldValues.delete(field);
   }
 };
 
@@ -30,7 +35,7 @@ const extractMismatchContext = (error: AttioError) => {
     data?.attribute ??
     undefined;
 
-  if (typeof message !== 'string' || typeof path !== 'string') return;
+  if (typeof message !== "string" || typeof path !== "string") return;
 
   const patterns = [
     /constraint:\s*([^,]+)/i,

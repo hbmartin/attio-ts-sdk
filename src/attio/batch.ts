@@ -4,7 +4,7 @@ export interface BatchItem<T> {
 }
 
 export interface BatchResult<T> {
-  status: 'fulfilled' | 'rejected';
+  status: "fulfilled" | "rejected";
   value?: T;
   reason?: unknown;
   label?: string;
@@ -45,14 +45,14 @@ export const runBatch = async <T>(
           .run()
           .then((value) => {
             results[currentIndex] = {
-              status: 'fulfilled',
+              status: "fulfilled",
               value,
               label: item.label,
             };
           })
           .catch((reason) => {
             results[currentIndex] = {
-              status: 'rejected',
+              status: "rejected",
               reason,
               label: item.label,
             };

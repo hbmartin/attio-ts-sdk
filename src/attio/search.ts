@@ -1,18 +1,18 @@
-import { postV2ObjectsRecordsSearch } from '../generated';
-import type { Options } from '../generated';
-import { resolveAttioClient, type AttioClientInput } from './client';
-import { normalizeRecords, type AttioRecordLike } from './record-utils';
-import { unwrapItems } from './response';
+import { postV2ObjectsRecordsSearch } from "../generated";
+import type { Options } from "../generated";
+import { resolveAttioClient, type AttioClientInput } from "./client";
+import { normalizeRecords, type AttioRecordLike } from "./record-utils";
+import { unwrapItems } from "./response";
 
 export interface RecordSearchInput extends AttioClientInput {
   query: string;
   objects: string[];
   requestAs?:
-    | { type: 'workspace' }
-    | { type: 'workspace-member'; workspace_member_id: string }
-    | { type: 'workspace-member'; email_address: string };
+    | { type: "workspace" }
+    | { type: "workspace-member"; workspace_member_id: string }
+    | { type: "workspace-member"; email_address: string };
   limit?: number;
-  options?: Omit<Options, 'client' | 'body'>;
+  options?: Omit<Options, "client" | "body">;
 }
 
 export const searchRecords = async <T extends AttioRecordLike>(
@@ -24,7 +24,7 @@ export const searchRecords = async <T extends AttioRecordLike>(
     body: {
       query: input.query,
       objects: input.objects,
-      request_as: input.requestAs ?? { type: 'workspace' },
+      request_as: input.requestAs ?? { type: "workspace" },
       limit: input.limit,
     },
     ...input.options,
