@@ -15,9 +15,19 @@ interface AttioRecordIdFields {
 
 interface UnknownObject extends Record<string, unknown> {}
 
-interface ParseObjectOptions {
-  allowEmpty?: boolean;
+type EmptyObjectBehavior = "allow" | "reject";
+
+interface NormalizeRecordOptions {
+  emptyBehavior?: EmptyObjectBehavior;
 }
+
+interface ParseObjectOptions extends NormalizeRecordOptions {
+  emptyBehavior: EmptyObjectBehavior;
+}
+
+const defaultNormalizeRecordOptions: NormalizeRecordOptions = {
+  emptyBehavior: "reject",
+};
 
 const emptyObjectIssueCode = "EMPTY_OBJECT";
 
@@ -61,8 +71,9 @@ function parseObject(
   value: unknown,
   options?: ParseObjectOptions,
 ): UnknownObject | undefined {
-  const allowEmpty = options ? options.allowEmpty === true : true;
-  const schema = allowEmpty ? unknownObjectSchema : nonEmptyObjectSchema;
+  const emptyBehavior = options?.emptyBehavior ?? "allow";
+  const schema =
+    emptyBehavior === "allow" ? unknownObjectSchema : nonEmptyObjectSchema;
   const parsed = schema.safeParse(value);
   if (parsed.success) {
     return parsed.data;
@@ -195,16 +206,13 @@ const extractNestedValues = (
   return;
 };
 
-interface NormalizeRecordOptions {
-  allowEmpty?: boolean;
-}
-
 const parseRecordInput = (
   raw: Record<string, unknown>,
   options: NormalizeRecordOptions,
 ): UnknownObject => {
   try {
-    return parseObject(raw, { allowEmpty: options.allowEmpty });
+    const emptyBehavior = options.emptyBehavior ?? "reject";
+    return parseObject(raw, { emptyBehavior });
   } catch (error) {
     if (error instanceof z.ZodError) {
       const isEmptyObject = error.issues.some(
@@ -238,7 +246,7 @@ function normalizeRecord(
 ): AttioRecordLike;
 function normalizeRecord(
   raw: Record<string, unknown>,
-  options: NormalizeRecordOptions = {},
+  options: NormalizeRecordOptions = defaultNormalizeRecordOptions,
 ): AttioRecordLike {
   const parsedRaw = parseRecordInput(raw, options);
   // Input already has valid record_id and values - return as-is
@@ -277,7 +285,7 @@ function normalizeRecords(
 ): AttioRecordLike[];
 function normalizeRecords(
   items: unknown[],
-  options: NormalizeRecordOptions = {},
+  options: NormalizeRecordOptions = defaultNormalizeRecordOptions,
 ): AttioRecordLike[] {
   const normalized: AttioRecordLike[] = [];
   for (const item of items) {
