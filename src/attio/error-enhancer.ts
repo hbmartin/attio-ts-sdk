@@ -101,7 +101,7 @@ export const enhanceAttioError = (error: AttioError): AttioError => {
   }
 
   const context = extractMismatchContext(error);
-  if (!context?.field || !context?.value) {
+  if (!(context?.field && context?.value)) {
     return error;
   }
 
