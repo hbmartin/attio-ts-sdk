@@ -15,6 +15,8 @@ A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. B
 - **Record normalization** (handles inconsistent response shapes)
 - **Metadata caching** (attributes, select options, statuses)
 - **Pagination helpers** (`paginate` + cursor handling)
+- **Response helpers** (`assertOk`, `toResult`)
+- **Offset pagination support** (`paginateOffset`)
 
 You still have full access to the generated, spec‑accurate endpoints.
 
@@ -77,6 +79,42 @@ const { data: people } = await postV2ObjectsByObjectRecordsQuery({
 });
 ```
 
+### Recommended Pattern
+
+Prefer the Attio convenience layer, throw on errors by default, and unwrap responses with helpers.
+This keeps request code compact and consistent.
+
+```typescript
+import {
+  assertOk,
+  createAttioClient,
+  createAttioSdk,
+  getV2Objects,
+  value,
+} from 'attio-ts-sdk';
+
+const client = createAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  responseStyle: 'data',
+  throwOnError: true,
+});
+
+const sdk = createAttioSdk({ client });
+
+const company = await sdk.records.create({
+  object: 'companies',
+  values: {
+    name: value.string('Acme Corp'),
+    domains: value.domain('acme.com'),
+    annual_revenue: value.currency(50000, 'USD'),
+  },
+});
+
+// Use assertOk with generated endpoints when you need raw access
+const objects = assertOk(await getV2Objects({ client }));
+console.log(objects);
+```
+
 ### Attio Convenience Layer
 
 The Attio helpers wrap the generated endpoints with retries, error normalization,
@@ -103,6 +141,36 @@ const matches = await searchRecords({
   query: 'acme.com',
   objects: ['companies'],
 });
+```
+
+### Schema Helpers
+
+Create a schema from cached metadata and use accessors to reduce raw string keys:
+
+```typescript
+import { createSchema } from 'attio-ts-sdk';
+
+const schema = await createSchema({
+  client,
+  target: 'objects',
+  identifier: 'companies',
+});
+
+const name = schema.getAccessorOrThrow('name').getFirstValue(company);
+```
+
+### Record Value Helpers
+
+```typescript
+import { getFirstValue, getValue, value } from 'attio-ts-sdk';
+
+const values = {
+  name: value.string('Acme'),
+  domains: value.domain('acme.com'),
+};
+
+const name = getFirstValue(company, 'name');
+const domains = getValue(company, 'domains');
 ```
 
 ### Client Configuration
@@ -140,10 +208,31 @@ try {
 }
 ```
 
+If you use the generated endpoints directly, you can normalize and unwrap responses:
+
+```typescript
+import { assertOk, toResult, getV2Objects } from 'attio-ts-sdk';
+
+const objects = assertOk(await getV2Objects({ client }));
+
+const result = toResult(await getV2Objects({ client }));
+if (result.ok) {
+  console.log(result.value);
+} else {
+  console.error(result.error);
+}
+```
+
 ### Pagination Helpers
 
 ```typescript
-import { createAttioClient, paginate, getV2Meetings } from 'attio-ts-sdk';
+import {
+  createAttioClient,
+  paginate,
+  paginateOffset,
+  getV2Meetings,
+  postV2ObjectsByObjectRecordsQuery,
+} from 'attio-ts-sdk';
 
 const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 
@@ -152,6 +241,15 @@ const meetings = await paginate(async (cursor) => {
   const result = await getV2Meetings({
     client,
     query: { cursor },
+  });
+  return result;
+});
+
+const offsetResults = await paginateOffset(async (offset, limit) => {
+  const result = await postV2ObjectsByObjectRecordsQuery({
+    client,
+    path: { object: 'companies' },
+    body: { offset, limit },
   });
   return result;
 });
@@ -185,12 +283,34 @@ const optionsAgain = await getAttributeOptions({
 }); // Returns cached result, no API call
 ```
 
-The metadata caches have the following limits:
+The metadata caches have the following defaults:
 - **Attributes cache**: 200 entries max
 - **Options cache**: 500 entries max
 - **Statuses cache**: 500 entries max
 
 When a cache reaches its limit, the oldest entry is evicted.
+
+You can customize TTL, max entries, and adapters per client:
+
+```typescript
+const client = createAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  cache: {
+    enabled: true,
+    metadata: {
+      ttlMs: 2 * 60 * 1000,
+      maxEntries: { attributes: 300, options: 800, statuses: 800 },
+      adapter: {
+        create: ({ ttlMs, maxEntries }) =>
+          new YourCacheAdapter({ ttlMs, maxEntries }),
+      },
+    },
+  },
+});
+
+// Clear metadata caches for this client
+client.cache.clear();
+```
 
 #### Client Instance Caching
 
@@ -215,6 +335,27 @@ const sameClient = getAttioClient({
 const freshClient = getAttioClient({
   apiKey: process.env.ATTIO_API_KEY,
   cache: { enabled: false },
+});
+```
+
+### Debug Hooks
+
+You can tap into request/response/error lifecycles for logging and tracing.
+
+```typescript
+const client = createAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  hooks: {
+    onRequest: ({ request }) => console.log("request", request.method, request.url),
+    onResponse: ({ response }) => console.log("response", response.status),
+    onError: ({ error }) => console.error("error", error.message),
+  },
+});
+
+// Or wire a logger (debug/info/warn/error)
+const clientWithLogger = createAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  logger: console,
 });
 ```
 

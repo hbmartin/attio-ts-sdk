@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
-
+import { z } from "zod";
+import { AttioResponseError } from "../../src/attio/errors";
 import {
+  assertOk,
+  toResult,
   unwrapData,
   unwrapItems,
   unwrapPaginationCursor,
@@ -19,6 +22,11 @@ describe("unwrapData", () => {
     expect(unwrapData({ data: inner })).toBe(inner);
   });
 
+  it("unwraps nested data properties", () => {
+    const inner = { foo: "bar" };
+    expect(unwrapData({ data: { data: inner } })).toBe(inner);
+  });
+
   it("returns object as-is when no data property", () => {
     const obj = { foo: "bar" };
     expect(unwrapData(obj)).toBe(obj);
@@ -34,6 +42,11 @@ describe("unwrapItems", () => {
   it("unwraps nested data array", () => {
     const items = [{ id: 1 }, { id: 2 }];
     expect(unwrapItems({ data: { data: items } })).toBe(items);
+  });
+
+  it("unwraps deeply nested items array", () => {
+    const items = [{ id: 1 }, { id: 2 }];
+    expect(unwrapItems({ data: { data: { items } } })).toBe(items);
   });
 
   it("unwraps nested items array", () => {
@@ -103,5 +116,59 @@ describe("unwrapPaginationCursor", () => {
 
   it("returns null when no pagination found", () => {
     expect(unwrapPaginationCursor({ data: { items: [] } })).toBe(null);
+  });
+});
+
+describe("assertOk", () => {
+  it("returns unwrapped data for successful response", () => {
+    const result = { data: { data: { id: "rec_123" } } };
+    expect(assertOk(result)).toEqual({ id: "rec_123" });
+  });
+
+  it("throws normalized errors when response has error", () => {
+    const request = new Request("https://example.com/test");
+    const response = new Response(JSON.stringify({ message: "fail" }), {
+      status: 400,
+    });
+    const result = { error: { message: "fail" }, request, response };
+
+    expect(() => assertOk(result)).toThrow("fail");
+  });
+
+  it("throws when schema validation fails", () => {
+    const schema = z.object({ id: z.string() });
+    expect(() => assertOk({ data: { id: 123 } }, { schema })).toThrow(
+      AttioResponseError,
+    );
+  });
+});
+
+describe("toResult", () => {
+  it("returns ok true with value on success", () => {
+    const result = toResult({ data: { data: { id: "rec_123" } } });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value).toEqual({ id: "rec_123" });
+    }
+  });
+
+  it("returns ok false with error on failure", () => {
+    const request = new Request("https://example.com/test");
+    const response = new Response(JSON.stringify({ message: "fail" }), {
+      status: 400,
+    });
+    const result = toResult({ error: { message: "fail" }, request, response });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toBeDefined();
+    }
+  });
+
+  it("returns ok false when schema validation fails", () => {
+    const schema = z.object({ id: z.string() });
+    const result = toResult({ data: { id: 123 } }, { schema });
+
+    expect(result.ok).toBe(false);
   });
 });

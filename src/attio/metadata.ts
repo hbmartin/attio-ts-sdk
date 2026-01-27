@@ -6,7 +6,7 @@ import {
   getV2ByTargetByIdentifierAttributesByAttributeOptions,
   getV2ByTargetByIdentifierAttributesByAttributeStatuses,
 } from "../generated";
-import { createTtlCache, type TtlCache } from "./cache";
+import type { CacheAdapter, MetadataCacheScope } from "./cache";
 import {
   type AttioClient,
   type AttioClientInput,
@@ -15,22 +15,11 @@ import {
 import { updateKnownFieldValues } from "./error-enhancer";
 import { unwrapData, unwrapItems } from "./response";
 
-const DEFAULT_TTL_MS = 5 * 60 * 1000;
-
-const attributesCache = createTtlCache<string, unknown[]>({
-  ttlMs: DEFAULT_TTL_MS,
-  maxEntries: 200,
-});
-
-const optionsCache = createTtlCache<string, unknown[]>({
-  ttlMs: DEFAULT_TTL_MS,
-  maxEntries: 500,
-});
-
-const statusesCache = createTtlCache<string, unknown[]>({
-  ttlMs: DEFAULT_TTL_MS,
-  maxEntries: 500,
-});
+const getMetadataCache = (
+  client: AttioClient,
+  scope: MetadataCacheScope,
+): CacheAdapter<string, unknown[]> | undefined =>
+  client.cache.metadata.get(scope);
 
 const buildKey = (target: string, identifier: string, attribute?: string) =>
   [target, identifier, attribute].filter(Boolean).join(":");
@@ -70,7 +59,7 @@ interface AttributeMetadataFetchParams
 
 interface AttributeMetadataRequestParams {
   input: AttributeInput;
-  cache: TtlCache<string, unknown[]>;
+  cache?: CacheAdapter<string, unknown[]>;
   fetcher: (params: AttributeMetadataFetchParams) => Promise<unknown>;
 }
 
@@ -88,9 +77,11 @@ const listAttributeMetadata = async ({
   fetcher,
 }: AttributeMetadataRequestParams): Promise<unknown[]> => {
   const cacheKey = buildKey(input.target, input.identifier, input.attribute);
-  const cached = cache.get(cacheKey);
-  if (cached) {
-    return cached;
+  if (cache) {
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
   }
 
   const client = resolveAttioClient(input);
@@ -104,27 +95,29 @@ const listAttributeMetadata = async ({
   const titles = extractTitles(items);
 
   updateKnownFieldValues(input.attribute, titles);
-  cache.set(cacheKey, items);
+  cache?.set(cacheKey, items);
   return items;
 };
 
 const listAttributes = async (
   input: AttributeListInput,
 ): Promise<Attribute[]> => {
-  const cacheKey = buildKey(input.target, input.identifier);
-  const cached = attributesCache.get(cacheKey);
-  if (cached) {
-    return cached as Attribute[];
-  }
-
   const client = resolveAttioClient(input);
+  const cache = getMetadataCache(client, "attributes");
+  const cacheKey = buildKey(input.target, input.identifier);
+  if (cache) {
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      return cached as Attribute[];
+    }
+  }
   const result = await getV2ByTargetByIdentifierAttributes({
     client,
     path: { target: input.target, identifier: input.identifier },
     ...input.options,
   });
   const items = unwrapItems(result) as Attribute[];
-  attributesCache.set(cacheKey, items);
+  cache?.set(cacheKey, items);
   return items;
 };
 
@@ -142,21 +135,25 @@ const getAttribute = async (input: AttributeInput): Promise<Attribute> => {
   return unwrapData(result) as Attribute;
 };
 
-const getAttributeOptions = async (
+const getAttributeOptions = (
   input: AttributeInput,
-): Promise<SelectOption[]> =>
-  listAttributeMetadata({
-    input,
-    cache: optionsCache,
+): Promise<SelectOption[]> => {
+  const client = resolveAttioClient(input);
+  return listAttributeMetadata({
+    input: { ...input, client },
+    cache: getMetadataCache(client, "options"),
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeOptions,
   }) as Promise<SelectOption[]>;
+};
 
-const getAttributeStatuses = async (input: AttributeInput): Promise<Status[]> =>
-  listAttributeMetadata({
-    input,
-    cache: statusesCache,
+const getAttributeStatuses = (input: AttributeInput): Promise<Status[]> => {
+  const client = resolveAttioClient(input);
+  return listAttributeMetadata({
+    input: { ...input, client },
+    cache: getMetadataCache(client, "statuses"),
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeStatuses,
   }) as Promise<Status[]>;
+};
 
 export type {
   AttributeListInput,

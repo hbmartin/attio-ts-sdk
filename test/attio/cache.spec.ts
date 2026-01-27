@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import {
   clearClientCache,
+  clearMetadataCacheRegistry,
+  createAttioCacheManager,
   createTtlCache,
   getCachedClient,
   hashToken,
@@ -178,5 +180,34 @@ describe("hashToken", () => {
     const hash = hashToken("");
     expect(typeof hash).toBe("string");
     expect(hash.length).toBeGreaterThan(0);
+  });
+});
+
+describe("metadata cache manager", () => {
+  afterEach(() => {
+    clearMetadataCacheRegistry();
+  });
+
+  it("stores and retrieves metadata entries", () => {
+    const manager = createAttioCacheManager("meta-key");
+    const cache = manager.metadata.get("attributes");
+
+    cache?.set("companies:attrs", [{ api_slug: "name" }]);
+    expect(cache?.get("companies:attrs")).toEqual([{ api_slug: "name" }]);
+  });
+
+  it("clears metadata entries", () => {
+    const manager = createAttioCacheManager("meta-key");
+    const cache = manager.metadata.get("options");
+
+    cache?.set("companies:stage", [{ title: "Active" }]);
+    manager.clear();
+
+    expect(cache?.get("companies:stage")).toBeUndefined();
+  });
+
+  it("disables metadata caching when configured", () => {
+    const manager = createAttioCacheManager("meta-key", { enabled: false });
+    expect(manager.metadata.get("statuses")).toBeUndefined();
   });
 });

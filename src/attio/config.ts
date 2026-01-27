@@ -1,5 +1,7 @@
 import process from "node:process";
 import type { Config, ResponseStyle } from "../generated/client";
+import type { AttioCacheConfig } from "./cache";
+import type { AttioClientHooks, AttioLogger } from "./hooks";
 import type { RetryConfig } from "./retry";
 
 const TRAILING_SLASHES_REGEX = /\/+$/;
@@ -15,10 +17,9 @@ interface AttioClientConfig
   headers?: Config["headers"];
   timeoutMs?: number;
   retry?: Partial<RetryConfig>;
-  cache?: {
-    enabled?: boolean;
-    key?: string;
-  };
+  cache?: AttioCacheConfig;
+  hooks?: AttioClientHooks;
+  logger?: AttioLogger;
   responseStyle?: ResponseStyle;
   throwOnError?: boolean;
 }
