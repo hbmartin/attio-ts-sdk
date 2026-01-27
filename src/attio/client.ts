@@ -12,7 +12,6 @@ import {
   resolveBaseUrl,
   resolveResponseStyle,
   resolveThrowOnError,
-  validateAuthToken,
 } from "./config";
 import { AttioEnvironmentError, normalizeAttioError } from "./errors";
 import { callWithRetry, type RetryConfig } from "./retry";
@@ -30,7 +29,7 @@ interface AttioRequestOptions extends RequestOptions {
 
 interface CreateAttioClientParams {
   config?: AttioClientConfig;
-  authToken: string;
+  authToken?: string;
 }
 
 const interceptorUseSchema = z
@@ -243,14 +242,16 @@ const createAttioClientWithAuthToken = ({
 };
 
 const createAttioClient = (config: AttioClientConfig = {}): AttioClient => {
-  const authToken = validateAuthToken(resolveAuthToken(config));
+  const authToken = resolveAuthToken(config);
   return createAttioClientWithAuthToken({ config, authToken });
 };
 
 const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   const cacheEnabled = config.cache?.enabled ?? true;
-  const authToken = validateAuthToken(resolveAuthToken(config));
-  const cacheKey = buildClientCacheKey({ config, authToken });
+  const authToken = resolveAuthToken(config);
+  const cacheKey = authToken
+    ? buildClientCacheKey({ config, authToken })
+    : undefined;
 
   if (cacheEnabled && cacheKey) {
     const cached = getCachedClient<AttioClient>(cacheKey, AttioClientSchema);

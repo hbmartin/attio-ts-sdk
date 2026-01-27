@@ -72,25 +72,6 @@ describe("getAttioClient cache", () => {
     expect(first).not.toBe(second);
   });
 
-  it("validates the auth token once when creating a cached client", () => {
-    const validateSpy = vi.spyOn(configModule, "validateAuthToken");
-    const config = { authToken: TEST_TOKEN, cache: { key: "shared" } };
-
-    getAttioClient(config);
-
-    expect(validateSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it("validates the auth token before returning a cached client", () => {
-    const config = { authToken: TEST_TOKEN, cache: { key: "shared" } };
-
-    getAttioClient(config);
-
-    expect(() => getAttioClient({ cache: { key: "shared" } })).toThrow(
-      /Missing Attio API key/i,
-    );
-  });
-
   it("creates new client when cache is disabled", () => {
     const config = {
       authToken: TEST_TOKEN,
