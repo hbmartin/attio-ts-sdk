@@ -10,12 +10,36 @@ import {
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
 
-export interface ListQueryInput extends AttioClientInput {
+interface ListQueryInput extends AttioClientInput {
   list: string;
   filter?: Record<string, unknown>;
   limit?: number;
   offset?: number;
   options?: Omit<Options, "client" | "path" | "body">;
+}
+
+interface GetListInput extends AttioClientInput {
+  list: string;
+}
+
+interface AddListEntryInput extends AttioClientInput {
+  list: string;
+  parentRecordId: string;
+  entryValues?: Record<string, unknown>;
+  options?: Omit<Options, "client" | "path" | "body">;
+}
+
+interface UpdateListEntryInput extends AttioClientInput {
+  list: string;
+  entryId: string;
+  entryValues: Record<string, unknown>;
+  options?: Omit<Options, "client" | "path" | "body">;
+}
+
+interface RemoveListEntryInput extends AttioClientInput {
+  list: string;
+  entryId: string;
+  options?: Omit<Options, "client" | "path">;
 }
 
 export const listLists = async (input: AttioClientInput = {}) => {
@@ -24,7 +48,7 @@ export const listLists = async (input: AttioClientInput = {}) => {
   return unwrapItems(result);
 };
 
-export const getList = async (input: { list: string } & AttioClientInput) => {
+export const getList = async (input: GetListInput) => {
   const client = resolveAttioClient(input);
   const result = await getV2ListsByList({
     client,
@@ -49,14 +73,7 @@ export const queryListEntries = async (input: ListQueryInput) => {
   return unwrapItems(result);
 };
 
-export const addListEntry = async (
-  input: {
-    list: string;
-    parentRecordId: string;
-    entryValues?: Record<string, unknown>;
-    options?: Omit<Options, "client" | "path" | "body">;
-  } & AttioClientInput,
-) => {
+export const addListEntry = async (input: AddListEntryInput) => {
   const client = resolveAttioClient(input);
   const result = await postV2ListsByListEntries({
     client,
@@ -72,14 +89,7 @@ export const addListEntry = async (
   return unwrapData(result);
 };
 
-export const updateListEntry = async (
-  input: {
-    list: string;
-    entryId: string;
-    entryValues: Record<string, unknown>;
-    options?: Omit<Options, "client" | "path" | "body">;
-  } & AttioClientInput,
-) => {
+export const updateListEntry = async (input: UpdateListEntryInput) => {
   const client = resolveAttioClient(input);
   const result = await patchV2ListsByListEntriesByEntryId({
     client,
@@ -94,13 +104,7 @@ export const updateListEntry = async (
   return unwrapData(result);
 };
 
-export const removeListEntry = async (
-  input: {
-    list: string;
-    entryId: string;
-    options?: Omit<Options, "client" | "path">;
-  } & AttioClientInput,
-) => {
+export const removeListEntry = async (input: RemoveListEntryInput) => {
   const client = resolveAttioClient(input);
   await deleteV2ListsByListEntriesByEntryId({
     client,
@@ -109,4 +113,12 @@ export const removeListEntry = async (
     throwOnError: true,
   });
   return true;
+};
+
+export type {
+  AddListEntryInput,
+  GetListInput,
+  ListQueryInput,
+  RemoveListEntryInput,
+  UpdateListEntryInput,
 };

@@ -2,9 +2,13 @@ import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import {
+  createOffsetPageResultSchema,
   createPageResultSchema,
   paginate,
+  paginateOffset,
+  parseOffsetPageResult,
   parsePageResult,
+  toOffsetPageResult,
   toPageResult,
 } from "../../src/attio/pagination";
 
@@ -65,6 +69,47 @@ describe("createPageResultSchema", () => {
 
     expect(resultNull.success).toBe(true);
     expect(resultUndefined.success).toBe(true);
+  });
+});
+
+describe("createOffsetPageResultSchema", () => {
+  it("creates schema that validates offset pages", () => {
+    const itemSchema = z.object({ id: z.number() });
+    const schema = createOffsetPageResultSchema(itemSchema);
+
+    const result = schema.safeParse({
+      items: [{ id: 1 }],
+      nextOffset: 10,
+      total: 50,
+    });
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe("toOffsetPageResult", () => {
+  it("converts API response to OffsetPageResult format", () => {
+    const result = toOffsetPageResult({
+      data: { items: [{ id: 1 }, { id: 2 }] },
+      pagination: { next_offset: 2 },
+    });
+
+    expect(result.items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(result.nextOffset).toBe(2);
+  });
+});
+
+describe("parseOffsetPageResult", () => {
+  it("parses valid offset page result", () => {
+    const result = parseOffsetPageResult({
+      items: [{ id: 1 }, { id: 2 }],
+      nextOffset: 3,
+    });
+
+    expect(result).toEqual({
+      items: [{ id: 1 }, { id: 2 }],
+      nextOffset: 3,
+    });
   });
 });
 
@@ -264,6 +309,38 @@ describe("paginate", () => {
     });
 
     const items = await paginate(fetchPage, { itemSchema });
+
+    expect(items).toEqual([{ id: 1 }]);
+  });
+});
+
+describe("paginateOffset", () => {
+  it("fetches pages until no next offset", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextOffset: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+        nextOffset: null,
+      });
+
+    const items = await paginateOffset(fetchPage, { limit: 2 });
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(fetchPage).toHaveBeenNthCalledWith(1, 0, 2);
+    expect(fetchPage).toHaveBeenNthCalledWith(2, 2, 2);
+  });
+
+  it("stops when maxItems reached", async () => {
+    const fetchPage = vi.fn().mockResolvedValue({
+      items: [{ id: 1 }, { id: 2 }],
+    });
+
+    const items = await paginateOffset(fetchPage, { maxItems: 1, limit: 2 });
 
     expect(items).toEqual([{ id: 1 }]);
   });

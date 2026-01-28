@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { TtlCache } from "../../src/attio/cache";
+import { clearMetadataCacheRegistry } from "../../src/attio/cache";
 import { resolveAttioClient } from "../../src/attio/client";
 import { updateKnownFieldValues } from "../../src/attio/error-enhancer";
 import {
@@ -71,6 +71,7 @@ const sampleItems = [
 describe("metadata", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearMetadataCacheRegistry();
   });
 
   describe("listAttributes", () => {

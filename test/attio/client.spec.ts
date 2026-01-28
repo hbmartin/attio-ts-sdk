@@ -146,6 +146,44 @@ describe("applyInterceptors", () => {
 
     await expect(client.get({ url: "/test" })).rejects.toThrow();
   });
+
+  it("invokes request and response hooks", async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: "ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    const onRequest = vi.fn();
+    const onResponse = vi.fn();
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      hooks: { onRequest, onResponse },
+    });
+
+    await client.get({ url: "/test" });
+
+    expect(onRequest).toHaveBeenCalledTimes(1);
+    expect(onResponse).toHaveBeenCalledTimes(1);
+  });
+
+  it("invokes error hooks", async () => {
+    const mockFetch = vi.fn().mockRejectedValue(new Error("Network error"));
+    const onError = vi.fn();
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      hooks: { onError },
+      retry: { maxRetries: 0 },
+      throwOnError: true,
+    });
+
+    await expect(client.get({ url: "/test" })).rejects.toThrow();
+    expect(onError).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("resolveFetch", () => {
