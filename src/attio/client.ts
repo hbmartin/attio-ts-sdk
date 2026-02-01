@@ -245,7 +245,7 @@ const resolveClientHooks = (config?: AttioClientConfig): AttioClientHooks => {
   };
 };
 
-const applyInterceptors = (client: Client, hooks: AttioClientHooks): void => {
+const applyInterceptors = (client: Client, hooks: AttioClientHooks): Client => {
   if (hooks.onRequest) {
     client.interceptors.request.use((request, options) => {
       hooks.onRequest?.({ request, options });
@@ -269,6 +269,8 @@ const applyInterceptors = (client: Client, hooks: AttioClientHooks): void => {
     hooks.onError?.({ error: normalized, response, request, options });
     return normalized;
   });
+
+  return client;
 };
 
 const wrapClient = (base: Client, retry?: Partial<RetryConfig>): Client => {

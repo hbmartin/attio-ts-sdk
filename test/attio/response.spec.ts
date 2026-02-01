@@ -31,6 +31,19 @@ describe("unwrapData", () => {
     const obj = { foo: "bar" };
     expect(unwrapData(obj)).toBe(obj);
   });
+
+  it("validates with schema when provided", () => {
+    const schema = z.object({ id: z.string() });
+    const result = unwrapData({ data: { id: "test" } }, { schema });
+    expect(result).toEqual({ id: "test" });
+  });
+
+  it("throws when schema validation fails", () => {
+    const schema = z.object({ id: z.string() });
+    expect(() => unwrapData({ data: { id: 123 } }, { schema })).toThrow(
+      AttioResponseError,
+    );
+  });
 });
 
 describe("unwrapItems", () => {
@@ -67,6 +80,20 @@ describe("unwrapItems", () => {
     expect(unwrapItems(null)).toEqual([]);
     expect(unwrapItems(undefined)).toEqual([]);
     expect(unwrapItems("string")).toEqual([]);
+  });
+
+  it("validates items with schema when provided", () => {
+    const schema = z.object({ id: z.number() });
+    const items = [{ id: 1 }, { id: 2 }];
+    const result = unwrapItems({ data: { items } }, { schema });
+    expect(result).toEqual([{ id: 1 }, { id: 2 }]);
+  });
+
+  it("throws when schema validation fails for items", () => {
+    const schema = z.object({ id: z.string() });
+    expect(() =>
+      unwrapItems({ data: { items: [{ id: 123 }] } }, { schema }),
+    ).toThrow(AttioResponseError);
   });
 });
 

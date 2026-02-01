@@ -46,78 +46,74 @@ import {
 } from "./records";
 import { createSchema, type SchemaInput } from "./schema";
 
+/** Helper type to omit client and config from input types for SDK methods */
+type SdkInput<T> = Omit<T, "client" | "config">;
+
+/** Type alias for delete record input (same shape as RecordGetInput) */
+type RecordDeleteInput = RecordGetInput;
+
 interface AttioSdk {
   client: AttioClient;
   objects: {
     list: (
-      input?: Omit<ListObjectsInput, "client" | "config">,
+      input?: SdkInput<ListObjectsInput>,
     ) => ReturnType<typeof listObjects>;
-    get: (
-      input: Omit<GetObjectInput, "client" | "config">,
-    ) => ReturnType<typeof getObject>;
+    get: (input: SdkInput<GetObjectInput>) => ReturnType<typeof getObject>;
     create: (
-      input: Omit<CreateObjectInput, "client" | "config">,
+      input: SdkInput<CreateObjectInput>,
     ) => ReturnType<typeof createObject>;
     update: (
-      input: Omit<UpdateObjectInput, "client" | "config">,
+      input: SdkInput<UpdateObjectInput>,
     ) => ReturnType<typeof updateObject>;
   };
   records: {
     create: (
-      input: Omit<RecordCreateInput, "client" | "config">,
+      input: SdkInput<RecordCreateInput>,
     ) => ReturnType<typeof createRecord>;
     update: (
-      input: Omit<RecordUpdateInput, "client" | "config">,
+      input: SdkInput<RecordUpdateInput>,
     ) => ReturnType<typeof updateRecord>;
     upsert: (
-      input: Omit<RecordUpsertInput, "client" | "config">,
+      input: SdkInput<RecordUpsertInput>,
     ) => ReturnType<typeof upsertRecord>;
-    get: (
-      input: Omit<RecordGetInput, "client" | "config">,
-    ) => ReturnType<typeof getRecord>;
+    get: (input: SdkInput<RecordGetInput>) => ReturnType<typeof getRecord>;
     delete: (
-      input: Omit<RecordGetInput, "client" | "config">,
+      input: SdkInput<RecordDeleteInput>,
     ) => ReturnType<typeof deleteRecord>;
     query: (
-      input: Omit<RecordQueryInput, "client" | "config">,
+      input: SdkInput<RecordQueryInput>,
     ) => ReturnType<typeof queryRecords>;
   };
   lists: {
-    list: (
-      input?: Omit<AttioClientInput, "client" | "config">,
-    ) => ReturnType<typeof listLists>;
-    get: (
-      input: Omit<GetListInput, "client" | "config">,
-    ) => ReturnType<typeof getList>;
+    list: (input?: SdkInput<AttioClientInput>) => ReturnType<typeof listLists>;
+    get: (input: SdkInput<GetListInput>) => ReturnType<typeof getList>;
     queryEntries: (
-      input: Omit<ListQueryInput, "client" | "config">,
+      input: SdkInput<ListQueryInput>,
     ) => ReturnType<typeof queryListEntries>;
     addEntry: (
-      input: Omit<AddListEntryInput, "client" | "config">,
+      input: SdkInput<AddListEntryInput>,
     ) => ReturnType<typeof addListEntry>;
     updateEntry: (
-      input: Omit<UpdateListEntryInput, "client" | "config">,
+      input: SdkInput<UpdateListEntryInput>,
     ) => ReturnType<typeof updateListEntry>;
     removeEntry: (
-      input: Omit<RemoveListEntryInput, "client" | "config">,
+      input: SdkInput<RemoveListEntryInput>,
     ) => ReturnType<typeof removeListEntry>;
   };
   metadata: {
     listAttributes: (
-      input: Omit<AttributeListInput, "client" | "config">,
+      input: SdkInput<AttributeListInput>,
     ) => ReturnType<typeof listAttributes>;
     getAttribute: (
-      input: Omit<AttributeInput, "client" | "config">,
+      input: SdkInput<AttributeInput>,
     ) => ReturnType<typeof getAttribute>;
     getAttributeOptions: (
-      input: Omit<AttributeInput, "client" | "config">,
+      input: SdkInput<AttributeInput>,
     ) => ReturnType<typeof getAttributeOptions>;
     getAttributeStatuses: (
-      input: Omit<AttributeInput, "client" | "config">,
+      input: SdkInput<AttributeInput>,
     ) => ReturnType<typeof getAttributeStatuses>;
-    schema: (
-      input: Omit<SchemaInput, "client" | "config">,
-    ) => ReturnType<typeof createSchema>;
+    schema: (input: SdkInput<SchemaInput>) => ReturnType<typeof createSchema>;
   };
 }
 
@@ -160,5 +156,5 @@ const createAttioSdk = (input: AttioClientInput = {}): AttioSdk => {
   };
 };
 
-export type { AttioSdk };
+export type { AttioSdk, RecordDeleteInput, SdkInput };
 export { createAttioSdk };

@@ -219,4 +219,64 @@ describe("createAttioSdk", () => {
       identifier: "companies",
     });
   });
+
+  it("returns underlying results from SDK methods", async () => {
+    const mockObjects = [{ api_slug: "companies" }, { api_slug: "people" }];
+    const mockRecord = { id: "rec_123", values: { name: "Test" } };
+
+    mocks.objects.listObjects.mockResolvedValue(mockObjects);
+    mocks.records.getRecord.mockResolvedValue(mockRecord);
+
+    const mockFetch: typeof fetch = () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ data: {} }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+
+    const client = createAttioClient({
+      authToken: "attio_test_token_12345",
+      fetch: mockFetch,
+    });
+
+    const sdk = createAttioSdk({ client });
+
+    const objectsResult = await sdk.objects.list();
+    expect(objectsResult).toEqual(mockObjects);
+
+    const recordResult = await sdk.records.get({
+      object: "companies",
+      recordId: "rec_123",
+    });
+    expect(recordResult).toEqual(mockRecord);
+  });
+
+  it("propagates errors from underlying methods", async () => {
+    const testError = new Error("API Error");
+    mocks.objects.createObject.mockRejectedValue(testError);
+
+    const mockFetch: typeof fetch = () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ data: {} }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+
+    const client = createAttioClient({
+      authToken: "attio_test_token_12345",
+      fetch: mockFetch,
+    });
+
+    const sdk = createAttioSdk({ client });
+
+    await expect(
+      sdk.objects.create({
+        apiSlug: "deals",
+        singularNoun: "Deal",
+        pluralNoun: "Deals",
+      }),
+    ).rejects.toThrow("API Error");
+  });
 });

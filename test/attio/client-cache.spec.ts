@@ -157,4 +157,13 @@ describe("resolveAttioClient", () => {
 
     expect(result).toBeDefined();
   });
+
+  it("creates client when called with no arguments", () => {
+    vi.spyOn(configModule, "resolveAuthToken").mockReturnValue(TEST_TOKEN);
+
+    const result = resolveAttioClient();
+
+    expect(result).toBeDefined();
+    expect(result.request).toBeDefined();
+  });
 });

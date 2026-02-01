@@ -10,8 +10,11 @@ import {
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
 
+type ListId = string & { readonly __brand: "ListId" };
+type EntryId = string & { readonly __brand: "EntryId" };
+
 interface ListQueryInput extends AttioClientInput {
-  list: string;
+  list: ListId;
   filter?: Record<string, unknown>;
   limit?: number;
   offset?: number;
@@ -19,26 +22,26 @@ interface ListQueryInput extends AttioClientInput {
 }
 
 interface GetListInput extends AttioClientInput {
-  list: string;
+  list: ListId;
 }
 
 interface AddListEntryInput extends AttioClientInput {
-  list: string;
+  list: ListId;
   parentRecordId: string;
   entryValues?: Record<string, unknown>;
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
 interface UpdateListEntryInput extends AttioClientInput {
-  list: string;
-  entryId: string;
+  list: ListId;
+  entryId: EntryId;
   entryValues: Record<string, unknown>;
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
 interface RemoveListEntryInput extends AttioClientInput {
-  list: string;
-  entryId: string;
+  list: ListId;
+  entryId: EntryId;
   options?: Omit<Options, "client" | "path">;
 }
 
@@ -117,7 +120,9 @@ export const removeListEntry = async (input: RemoveListEntryInput) => {
 
 export type {
   AddListEntryInput,
+  EntryId,
   GetListInput,
+  ListId,
   ListQueryInput,
   RemoveListEntryInput,
   UpdateListEntryInput,

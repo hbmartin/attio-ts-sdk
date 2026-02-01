@@ -186,7 +186,7 @@ const paginateOffset = async <T>(
       currentOffset: offset,
     });
 
-    if (resolvedOffset === null) {
+    if (resolvedOffset === null || resolvedOffset <= offset) {
       break;
     }
 
