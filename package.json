@@ -71,6 +71,7 @@
     "publint": "^0.3.17",
     "tsdown": "^0.20.1",
     "typescript": "^5.9.3",
+    "undici-types": "^7.20.0",
     "vitest": "^4.0.18",
     "zod": "^4.3.6"
   },
