@@ -250,7 +250,7 @@ const resolveClientHooks = (config?: AttioClientConfig): AttioClientHooks => {
   };
 };
 
-const applyInterceptors = (client: Client, hooks: AttioClientHooks): Client => {
+const applyInterceptors = (client: Client, hooks: AttioClientHooks): void => {
   if (hooks.onRequest) {
     client.interceptors.request.use((request, options) => {
       hooks.onRequest?.({ request, options });
@@ -274,8 +274,6 @@ const applyInterceptors = (client: Client, hooks: AttioClientHooks): Client => {
     hooks.onError?.({ error: normalized, response, request, options });
     return normalized;
   });
-
-  return client;
 };
 
 const wrapClient = (base: Client, retry?: Partial<RetryConfig>): Client => {
@@ -361,10 +359,9 @@ const createAttioClientWithAuthToken = ({
   applyInterceptors(base, hooks);
 
   const wrapped = wrapClient(base, retry);
-  const safeAuthToken = authToken ?? "";
   const metadataCacheKey = buildMetadataCacheKey({
     config,
-    authToken: safeAuthToken,
+    authToken,
     baseUrl,
   });
   const cache = createAttioCacheManager(metadataCacheKey, config.cache);
