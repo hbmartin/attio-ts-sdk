@@ -7,6 +7,7 @@ import {
   unwrapData,
   unwrapItems,
   unwrapPaginationCursor,
+  unwrapPaginationOffset,
 } from "../../src/attio/response";
 
 describe("unwrapData", () => {
@@ -143,6 +144,60 @@ describe("unwrapPaginationCursor", () => {
 
   it("returns null when no pagination found", () => {
     expect(unwrapPaginationCursor({ data: { items: [] } })).toBe(null);
+  });
+});
+
+describe("unwrapPaginationOffset", () => {
+  it("returns null when result is not an object", () => {
+    expect(unwrapPaginationOffset(null)).toBe(null);
+    expect(unwrapPaginationOffset(undefined)).toBe(null);
+    expect(unwrapPaginationOffset("string")).toBe(null);
+  });
+
+  it("extracts next_offset from root pagination", () => {
+    const result = { pagination: { next_offset: 50 } };
+    expect(unwrapPaginationOffset(result)).toBe(50);
+  });
+
+  it("extracts nextOffset from root pagination", () => {
+    const result = { pagination: { nextOffset: 100 } };
+    expect(unwrapPaginationOffset(result)).toBe(100);
+  });
+
+  it("extracts offset from nested data pagination", () => {
+    const result = { data: { pagination: { next_offset: 25 } } };
+    expect(unwrapPaginationOffset(result)).toBe(25);
+  });
+
+  it("returns null when pagination is not an object", () => {
+    expect(unwrapPaginationOffset({ pagination: null })).toBe(null);
+    expect(unwrapPaginationOffset({ pagination: "invalid" })).toBe(null);
+  });
+
+  it("returns null when offset is not a number", () => {
+    expect(unwrapPaginationOffset({ pagination: { next_offset: "50" } })).toBe(
+      null,
+    );
+    expect(unwrapPaginationOffset({ pagination: { next_offset: null } })).toBe(
+      null,
+    );
+  });
+
+  it("prioritizes root pagination over nested", () => {
+    const result = {
+      pagination: { next_offset: 10 },
+      data: { pagination: { next_offset: 20 } },
+    };
+    expect(unwrapPaginationOffset(result)).toBe(10);
+  });
+
+  it("returns null when no pagination found", () => {
+    expect(unwrapPaginationOffset({ data: { items: [] } })).toBe(null);
+  });
+
+  it("handles zero offset correctly", () => {
+    const result = { pagination: { next_offset: 0 } };
+    expect(unwrapPaginationOffset(result)).toBe(0);
   });
 });
 
