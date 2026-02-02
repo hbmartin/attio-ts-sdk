@@ -1,11 +1,9 @@
-import { z } from "zod";
 import type { Options } from "../generated";
 import { postV2ObjectsRecordsSearch } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type AttioRecordLike, normalizeRecords } from "./record-utils";
 import { unwrapItems } from "./response";
-
-const rawRecordSchema = z.record(z.string(), z.unknown());
+import { rawRecordSchema } from "./schemas";
 
 export interface RecordSearchInput extends AttioClientInput {
   query: string;

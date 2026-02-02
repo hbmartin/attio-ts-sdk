@@ -1,4 +1,3 @@
-import { z } from "zod";
 import type { Options } from "../generated";
 import {
   deleteV2ObjectsByObjectRecordsByRecordId,
@@ -15,8 +14,7 @@ import {
   normalizeRecords,
 } from "./record-utils";
 import { assertOk, unwrapItems } from "./response";
-
-const rawRecordSchema = z.record(z.string(), z.unknown());
+import { rawRecordSchema } from "./schemas";
 
 interface RecordCreateInput extends AttioClientInput {
   object: string;
