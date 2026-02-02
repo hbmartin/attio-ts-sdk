@@ -15,7 +15,7 @@ import {
   resolveAttioClient,
 } from "./client";
 import { updateKnownFieldValues } from "./error-enhancer";
-import { unwrapData, unwrapItems } from "./response";
+import { createSchemaError, unwrapData, unwrapItems } from "./response";
 
 const getMetadataCache = (
   client: AttioClient,
@@ -86,7 +86,11 @@ const listAttributeMetadata = async <T>({
   if (cache) {
     const cached = cache.get(cacheKey);
     if (cached) {
-      return arraySchema.parse(cached);
+      const parsed = arraySchema.safeParse(cached);
+      if (!parsed.success) {
+        throw createSchemaError(parsed.error);
+      }
+      return parsed.data;
     }
   }
 
@@ -116,7 +120,11 @@ const listAttributes = async (
   if (cache) {
     const cached = cache.get(cacheKey);
     if (cached) {
-      return arraySchema.parse(cached);
+      const parsed = arraySchema.safeParse(cached);
+      if (!parsed.success) {
+        throw createSchemaError(parsed.error);
+      }
+      return parsed.data;
     }
   }
   const result = await getV2ByTargetByIdentifierAttributes({

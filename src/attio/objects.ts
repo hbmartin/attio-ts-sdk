@@ -13,7 +13,7 @@ type ObjectSlug = string & { readonly __brand: "ObjectSlug" };
 type ObjectApiSlug = string & { readonly __brand: "ObjectApiSlug" };
 type ObjectNoun = string & { readonly __brand: "ObjectNoun" };
 
-const AttioObjectSchema = z
+const AttioObjectSchema: z.ZodType<AttioObject> = z
   .object({
     id: z.object({ workspace_id: z.string(), object_id: z.string() }),
     api_slug: z.string(),
@@ -52,7 +52,7 @@ const listObjects = async (
 ): Promise<AttioObject[]> => {
   const client = resolveAttioClient(input);
   const result = await getV2Objects({ client, ...input.options });
-  return unwrapItems(result, { schema: AttioObjectSchema }) as AttioObject[];
+  return unwrapItems(result, { schema: AttioObjectSchema });
 };
 
 const getObject = async (input: GetObjectInput): Promise<AttioObject> => {
@@ -62,7 +62,7 @@ const getObject = async (input: GetObjectInput): Promise<AttioObject> => {
     path: { object: input.object },
     ...input.options,
   });
-  return unwrapData(result, { schema: AttioObjectSchema }) as AttioObject;
+  return unwrapData(result, { schema: AttioObjectSchema });
 };
 
 const createObject = async (input: CreateObjectInput): Promise<AttioObject> => {
@@ -78,24 +78,18 @@ const createObject = async (input: CreateObjectInput): Promise<AttioObject> => {
     },
     ...input.options,
   });
-  return unwrapData(result, { schema: AttioObjectSchema }) as AttioObject;
+  return unwrapData(result, { schema: AttioObjectSchema });
 };
 
 const buildUpdateObjectData = (
   input: UpdateObjectInput,
-): Record<string, string> => {
-  const data: Record<string, string> = {};
-  if (input.apiSlug !== undefined) {
-    data.api_slug = input.apiSlug;
-  }
-  if (input.singularNoun !== undefined) {
-    data.singular_noun = input.singularNoun;
-  }
-  if (input.pluralNoun !== undefined) {
-    data.plural_noun = input.pluralNoun;
-  }
-  return data;
-};
+): Record<string, string> => ({
+  ...(input.apiSlug !== undefined && { api_slug: input.apiSlug }),
+  ...(input.singularNoun !== undefined && {
+    singular_noun: input.singularNoun,
+  }),
+  ...(input.pluralNoun !== undefined && { plural_noun: input.pluralNoun }),
+});
 
 const updateObject = async (input: UpdateObjectInput): Promise<AttioObject> => {
   const client = resolveAttioClient(input);
@@ -107,7 +101,7 @@ const updateObject = async (input: UpdateObjectInput): Promise<AttioObject> => {
     },
     ...input.options,
   });
-  return unwrapData(result, { schema: AttioObjectSchema }) as AttioObject;
+  return unwrapData(result, { schema: AttioObjectSchema });
 };
 
 export type {

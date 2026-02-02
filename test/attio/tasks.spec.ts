@@ -188,12 +188,12 @@ describe("tasks", () => {
   });
 
   describe("deleteTask", () => {
-    it("deletes task and returns true", async () => {
-      deleteTaskRequest.mockResolvedValue({});
+    it("deletes task and returns API result", async () => {
+      deleteTaskRequest.mockResolvedValue({ data: {} });
 
       const result = await deleteTask({ taskId: "task-1" });
 
-      expect(result).toBe(true);
+      expect(result).toEqual({});
       expect(deleteTaskRequest).toHaveBeenCalledWith({
         client: {},
         path: { task_id: "task-1" },

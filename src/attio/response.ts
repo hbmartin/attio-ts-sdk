@@ -72,6 +72,10 @@ interface UnwrapItemsOptions<T = unknown> {
   schema?: ZodType<T>;
 }
 
+/**
+ * Searches nested data structures for an array, checking `data`, `items`,
+ * and `records` keys at each level up to DEFAULT_UNWRAP_DEPTH.
+ */
 const findArrayInData = (initialData: unknown): unknown[] | undefined => {
   let data: unknown = initialData;
 
@@ -277,6 +281,7 @@ function toResult<T>(
 
 export {
   assertOk,
+  createSchemaError,
   toResult,
   unwrapData,
   unwrapItems,
