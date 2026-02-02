@@ -251,21 +251,44 @@ const createMetadataCacheManager = (
   return { get, clear };
 };
 
+const buildMetadataCacheFingerprint = (
+  config: MetadataCacheConfigEnabled,
+): string => {
+  const ttl = config.ttlMs ?? "default";
+  const max =
+    typeof config.maxEntries === "number"
+      ? config.maxEntries
+      : JSON.stringify(config.maxEntries ?? "default");
+  return `ttl:${ttl}|max:${max}`;
+};
+
 const getMetadataCacheManager = (
   key: string,
   config?: MetadataCacheConfig,
 ): MetadataCacheManager => {
-  if (config && isMetadataCacheDisabled(config)) {
+  // Disabled configs bypass registry entirely - return fresh disabled manager
+  if (config?.enabled === false) {
     return createMetadataCacheManager(config);
   }
 
-  const existing = metadataCacheRegistry.get(key);
+  // Custom adapters bypass registry - can't fingerprint functions
+  if (config?.adapter) {
+    return createMetadataCacheManager(config);
+  }
+
+  // Build registry key with config fingerprint for enabled configs
+  const fingerprint = config
+    ? buildMetadataCacheFingerprint(config)
+    : "default";
+  const registryKey = `${key}|${fingerprint}`;
+
+  const existing = metadataCacheRegistry.get(registryKey);
   if (existing) {
     return existing;
   }
 
   const manager = createMetadataCacheManager(config);
-  metadataCacheRegistry.set(key, manager);
+  metadataCacheRegistry.set(registryKey, manager);
   return manager;
 };
 

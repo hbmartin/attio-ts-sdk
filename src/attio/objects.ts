@@ -23,8 +23,6 @@ const AttioObjectSchema = z
   })
   .passthrough();
 
-const AttioObjectArraySchema = z.array(AttioObjectSchema);
-
 interface ListObjectsInput extends AttioClientInput {
   options?: Omit<Options, "client">;
 }
@@ -54,8 +52,7 @@ const listObjects = async (
 ): Promise<AttioObject[]> => {
   const client = resolveAttioClient(input);
   const result = await getV2Objects({ client, ...input.options });
-  const items = unwrapItems<AttioObject>(result);
-  return AttioObjectArraySchema.parse(items) as AttioObject[];
+  return unwrapItems(result, { schema: AttioObjectSchema }) as AttioObject[];
 };
 
 const getObject = async (input: GetObjectInput): Promise<AttioObject> => {
@@ -65,8 +62,7 @@ const getObject = async (input: GetObjectInput): Promise<AttioObject> => {
     path: { object: input.object },
     ...input.options,
   });
-  const data = unwrapData<AttioObject>(result);
-  return AttioObjectSchema.parse(data) as AttioObject;
+  return unwrapData(result, { schema: AttioObjectSchema }) as AttioObject;
 };
 
 const createObject = async (input: CreateObjectInput): Promise<AttioObject> => {
@@ -82,8 +78,7 @@ const createObject = async (input: CreateObjectInput): Promise<AttioObject> => {
     },
     ...input.options,
   });
-  const data = unwrapData<AttioObject>(result);
-  return AttioObjectSchema.parse(data) as AttioObject;
+  return unwrapData(result, { schema: AttioObjectSchema }) as AttioObject;
 };
 
 const buildUpdateObjectData = (
@@ -112,8 +107,7 @@ const updateObject = async (input: UpdateObjectInput): Promise<AttioObject> => {
     },
     ...input.options,
   });
-  const data = unwrapData<AttioObject>(result);
-  return AttioObjectSchema.parse(data) as AttioObject;
+  return unwrapData(result, { schema: AttioObjectSchema }) as AttioObject;
 };
 
 export type {

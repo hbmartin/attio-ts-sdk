@@ -1,3 +1,4 @@
+import type { ZodType } from "zod";
 import { z } from "zod";
 import type { Attribute, Options, SelectOption, Status } from "../generated";
 import {
@@ -6,6 +7,7 @@ import {
   getV2ByTargetByIdentifierAttributesByAttributeOptions,
   getV2ByTargetByIdentifierAttributesByAttributeStatuses,
 } from "../generated";
+import { zAttribute, zSelectOption, zStatus } from "../generated/zod.gen";
 import type { CacheAdapter, MetadataCacheScope } from "./cache";
 import {
   type AttioClient,
@@ -57,10 +59,11 @@ interface AttributeMetadataFetchParams
   path: AttributeMetadataPath;
 }
 
-interface AttributeMetadataRequestParams {
+interface AttributeMetadataRequestParams<T> {
   input: AttributeInput;
   cache?: CacheAdapter<string, unknown[]>;
   fetcher: (params: AttributeMetadataFetchParams) => Promise<unknown>;
+  itemSchema: ZodType<T>;
 }
 
 const buildAttributeMetadataPath = (
@@ -71,16 +74,19 @@ const buildAttributeMetadataPath = (
   attribute: input.attribute,
 });
 
-const listAttributeMetadata = async ({
+const listAttributeMetadata = async <T>({
   input,
   cache,
   fetcher,
-}: AttributeMetadataRequestParams): Promise<unknown[]> => {
+  itemSchema,
+}: AttributeMetadataRequestParams<T>): Promise<T[]> => {
   const cacheKey = buildKey(input.target, input.identifier, input.attribute);
+  const arraySchema = z.array(itemSchema);
+
   if (cache) {
     const cached = cache.get(cacheKey);
     if (cached) {
-      return cached;
+      return arraySchema.parse(cached);
     }
   }
 
@@ -91,7 +97,7 @@ const listAttributeMetadata = async ({
     ...input.options,
   });
 
-  const items = unwrapItems(result);
+  const items = unwrapItems(result, { schema: itemSchema });
   const titles = extractTitles(items);
 
   updateKnownFieldValues(input.attribute, titles);
@@ -105,10 +111,12 @@ const listAttributes = async (
   const client = resolveAttioClient(input);
   const cache = getMetadataCache(client, "attributes");
   const cacheKey = buildKey(input.target, input.identifier);
+  const arraySchema = z.array(zAttribute);
+
   if (cache) {
     const cached = cache.get(cacheKey);
     if (cached) {
-      return cached as Attribute[];
+      return arraySchema.parse(cached);
     }
   }
   const result = await getV2ByTargetByIdentifierAttributes({
@@ -116,7 +124,7 @@ const listAttributes = async (
     path: { target: input.target, identifier: input.identifier },
     ...input.options,
   });
-  const items = unwrapItems(result) as Attribute[];
+  const items = unwrapItems(result, { schema: zAttribute });
   cache?.set(cacheKey, items);
   return items;
 };
@@ -132,7 +140,7 @@ const getAttribute = async (input: AttributeInput): Promise<Attribute> => {
     },
     ...input.options,
   });
-  return unwrapData(result) as Attribute;
+  return unwrapData(result, { schema: zAttribute });
 };
 
 const getAttributeOptions = (
@@ -143,7 +151,8 @@ const getAttributeOptions = (
     input: { ...input, client },
     cache: getMetadataCache(client, "options"),
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeOptions,
-  }) as Promise<SelectOption[]>;
+    itemSchema: zSelectOption,
+  });
 };
 
 const getAttributeStatuses = (input: AttributeInput): Promise<Status[]> => {
@@ -152,7 +161,8 @@ const getAttributeStatuses = (input: AttributeInput): Promise<Status[]> => {
     input: { ...input, client },
     cache: getMetadataCache(client, "statuses"),
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeStatuses,
-  }) as Promise<Status[]>;
+    itemSchema: zStatus,
+  });
 };
 
 export type {

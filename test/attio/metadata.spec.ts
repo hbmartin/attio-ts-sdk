@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
+import type { TtlCache } from "../../src/attio/cache";
 import { clearMetadataCacheRegistry } from "../../src/attio/cache";
 import { resolveAttioClient } from "../../src/attio/client";
 import { updateKnownFieldValues } from "../../src/attio/error-enhancer";
@@ -13,12 +15,18 @@ import {
   listAttributes,
 } from "../../src/attio/metadata";
 import { unwrapItems } from "../../src/attio/response";
+import type { Attribute, SelectOption, Status } from "../../src/generated";
 import {
   getV2ByTargetByIdentifierAttributes,
   getV2ByTargetByIdentifierAttributesByAttribute,
   getV2ByTargetByIdentifierAttributesByAttributeOptions,
   getV2ByTargetByIdentifierAttributesByAttributeStatuses,
 } from "../../src/generated";
+import {
+  zAttribute,
+  zSelectOption,
+  zStatus,
+} from "../../src/generated/zod.gen";
 
 vi.mock("../../src/generated", () => ({
   getV2ByTargetByIdentifierAttributes: vi.fn(),
@@ -58,15 +66,58 @@ const buildInput = (attribute: string) => ({
   config: { apiKey },
 });
 
-const sampleItems = [
-  { title: "Active" },
-  { title: 123 },
-  { name: "Ignored" },
-  null,
-  "string",
-  { title: "Inactive", extra: true },
-  { title: "Pending" },
-];
+const createMockAttribute = (
+  overrides: Partial<Attribute> = {},
+): Attribute => ({
+  id: {
+    workspace_id: "ws-123",
+    object_id: "obj-123",
+    attribute_id: "attr-123",
+  },
+  title: "Test Attribute",
+  description: null,
+  api_slug: "test_attribute",
+  type: "text",
+  is_system_attribute: false,
+  is_writable: true,
+  is_required: false,
+  is_unique: false,
+  is_multiselect: false,
+  is_default_value_enabled: false,
+  is_archived: false,
+  default_value: null,
+  ...overrides,
+});
+
+const createMockSelectOption = (
+  overrides: Partial<SelectOption> = {},
+): SelectOption => ({
+  id: {
+    workspace_id: "ws-123",
+    object_id: "obj-123",
+    attribute_id: "attr-123",
+    option_id: "opt-123",
+  },
+  title: "Test Option",
+  is_archived: false,
+  ...overrides,
+});
+
+const createMockStatus = (overrides: Partial<Status> = {}): Status => ({
+  id: {
+    workspace_id: "ws-123",
+    object_id: "obj-123",
+    attribute_id: "attr-123",
+    status_id: "status-123",
+  },
+  title: "Test Status",
+  is_archived: false,
+  celebration_enabled: false,
+  target_time_in_status: null,
+  ...overrides,
+});
+
+const testItemSchema = z.object({ title: z.string() });
 
 describe("metadata", () => {
   beforeEach(() => {
@@ -77,7 +128,10 @@ describe("metadata", () => {
   describe("listAttributes", () => {
     it("fetches and caches attributes", async () => {
       const listMock = vi.mocked(getV2ByTargetByIdentifierAttributes);
-      const attributes = [{ api_slug: "name" }, { api_slug: "email" }];
+      const attributes = [
+        createMockAttribute({ api_slug: "name" }),
+        createMockAttribute({ api_slug: "email" }),
+      ];
       listMock.mockResolvedValue({ data: { data: attributes } });
 
       const input = {
@@ -110,12 +164,29 @@ describe("metadata", () => {
         }),
       );
     });
+
+    it("validates attributes against zAttribute schema", async () => {
+      const listMock = vi.mocked(getV2ByTargetByIdentifierAttributes);
+      const invalidAttribute = { api_slug: "invalid" };
+      listMock.mockResolvedValue({ data: { data: [invalidAttribute] } });
+
+      const input = {
+        target: "people",
+        identifier: "ppl-123",
+        config: { apiKey },
+      };
+
+      await expect(listAttributes(input)).rejects.toThrow();
+    });
   });
 
   describe("getAttribute", () => {
     it("fetches single attribute", async () => {
       const getMock = vi.mocked(getV2ByTargetByIdentifierAttributesByAttribute);
-      const attribute = { api_slug: "stage", type: "select" };
+      const attribute = createMockAttribute({
+        api_slug: "stage",
+        type: "select",
+      });
       getMock.mockResolvedValue({ data: attribute });
 
       const result = await getAttribute({
@@ -139,7 +210,7 @@ describe("metadata", () => {
 
     it("passes options to API call", async () => {
       const getMock = vi.mocked(getV2ByTargetByIdentifierAttributesByAttribute);
-      getMock.mockResolvedValue({ data: {} });
+      getMock.mockResolvedValue({ data: createMockAttribute() });
 
       await getAttribute({
         target: "companies",
@@ -155,6 +226,21 @@ describe("metadata", () => {
         }),
       );
     });
+
+    it("validates single attribute against zAttribute schema", async () => {
+      const getMock = vi.mocked(getV2ByTargetByIdentifierAttributesByAttribute);
+      const invalidAttribute = { api_slug: "invalid" };
+      getMock.mockResolvedValue({ data: invalidAttribute });
+
+      await expect(
+        getAttribute({
+          target: "companies",
+          identifier: "comp-123",
+          attribute: "stage",
+          config: { apiKey },
+        }),
+      ).rejects.toThrow();
+    });
   });
 
   describe("getAttributeOptions", () => {
@@ -164,12 +250,17 @@ describe("metadata", () => {
       );
       const updateMock = vi.mocked(updateKnownFieldValues);
 
-      optionsMock.mockResolvedValue({ data: sampleItems });
+      const options = [
+        createMockSelectOption({ title: "Active" }),
+        createMockSelectOption({ title: "Inactive" }),
+        createMockSelectOption({ title: "Pending" }),
+      ];
+      optionsMock.mockResolvedValue({ data: options });
 
       const input = buildInput("stage");
       const result = await getAttributeOptions(input);
 
-      expect(result).toEqual(sampleItems);
+      expect(result).toEqual(options);
       expect(updateMock).toHaveBeenCalledWith("stage", [
         "Active",
         "Inactive",
@@ -183,16 +274,31 @@ describe("metadata", () => {
       );
       const updateMock = vi.mocked(updateKnownFieldValues);
 
-      optionsMock.mockResolvedValue({ data: sampleItems });
+      const options = [
+        createMockSelectOption({ title: "High" }),
+        createMockSelectOption({ title: "Low" }),
+      ];
+      optionsMock.mockResolvedValue({ data: options });
 
       const input = buildInput("priority");
       const first = await getAttributeOptions(input);
       const second = await getAttributeOptions(input);
 
-      expect(first).toEqual(sampleItems);
-      expect(second).toEqual(sampleItems);
+      expect(first).toEqual(options);
+      expect(second).toEqual(options);
       expect(optionsMock).toHaveBeenCalledTimes(1);
       expect(updateMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("validates options against zSelectOption schema", async () => {
+      const optionsMock = vi.mocked(
+        getV2ByTargetByIdentifierAttributesByAttributeOptions,
+      );
+      const invalidOptions = [{ title: "Invalid" }];
+      optionsMock.mockResolvedValue({ data: invalidOptions });
+
+      const input = buildInput("stage");
+      await expect(getAttributeOptions(input)).rejects.toThrow();
     });
   });
 
@@ -203,12 +309,17 @@ describe("metadata", () => {
       );
       const updateMock = vi.mocked(updateKnownFieldValues);
 
-      statusesMock.mockResolvedValue({ data: sampleItems });
+      const statuses = [
+        createMockStatus({ title: "Active" }),
+        createMockStatus({ title: "Inactive" }),
+        createMockStatus({ title: "Pending" }),
+      ];
+      statusesMock.mockResolvedValue({ data: statuses });
 
       const input = buildInput("status");
       const result = await getAttributeStatuses(input);
 
-      expect(result).toEqual(sampleItems);
+      expect(result).toEqual(statuses);
       expect(updateMock).toHaveBeenCalledWith("status", [
         "Active",
         "Inactive",
@@ -221,15 +332,27 @@ describe("metadata", () => {
         getV2ByTargetByIdentifierAttributesByAttributeStatuses,
       );
 
-      statusesMock.mockResolvedValue({ data: [{ title: "Done" }] });
+      const statuses = [createMockStatus({ title: "Done" })];
+      statusesMock.mockResolvedValue({ data: statuses });
 
       const input = buildInput("workflow_status");
       const first = await getAttributeStatuses(input);
       const second = await getAttributeStatuses(input);
 
-      expect(first).toEqual([{ title: "Done" }]);
-      expect(second).toEqual([{ title: "Done" }]);
+      expect(first).toEqual(statuses);
+      expect(second).toEqual(statuses);
       expect(statusesMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("validates statuses against zStatus schema", async () => {
+      const statusesMock = vi.mocked(
+        getV2ByTargetByIdentifierAttributesByAttributeStatuses,
+      );
+      const invalidStatuses = [{ title: "Invalid" }];
+      statusesMock.mockResolvedValue({ data: invalidStatuses });
+
+      const input = buildInput("status");
+      await expect(getAttributeStatuses(input)).rejects.toThrow();
     });
   });
 
@@ -254,6 +377,7 @@ describe("metadata", () => {
           input,
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher,
+          itemSchema: testItemSchema,
         });
 
         expect(result).toEqual(cachedItems);
@@ -272,6 +396,7 @@ describe("metadata", () => {
           input: buildInput("cached_field"),
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher: vi.fn(),
+          itemSchema: testItemSchema,
         });
 
         expect(resolveClientMock).not.toHaveBeenCalled();
@@ -286,6 +411,7 @@ describe("metadata", () => {
           input: buildInput("cached_field"),
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher: vi.fn(),
+          itemSchema: testItemSchema,
         });
 
         expect(updateMock).not.toHaveBeenCalled();
@@ -300,9 +426,25 @@ describe("metadata", () => {
           input: buildInput("cached_field"),
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher: vi.fn(),
+          itemSchema: testItemSchema,
         });
 
         expect(unwrapMock).not.toHaveBeenCalled();
+      });
+
+      it("validates cached items against schema", async () => {
+        const invalidCachedItems = [{ notTitle: "Invalid" }];
+        const mockCache = createMockCache();
+        mockCache.get.mockReturnValue(invalidCachedItems);
+
+        await expect(
+          listAttributeMetadata({
+            input: buildInput("cached_field"),
+            cache: mockCache as unknown as TtlCache<string, unknown[]>,
+            fetcher: vi.fn(),
+            itemSchema: testItemSchema,
+          }),
+        ).rejects.toThrow();
       });
     });
 
@@ -329,6 +471,7 @@ describe("metadata", () => {
           input,
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher,
+          itemSchema: testItemSchema,
         });
 
         expect(fetcher).toHaveBeenCalledWith({
@@ -362,6 +505,7 @@ describe("metadata", () => {
           input,
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher,
+          itemSchema: testItemSchema,
         });
 
         const expectedKey = buildKey(
@@ -382,11 +526,7 @@ describe("metadata", () => {
           mockClient as ReturnType<typeof resolveAttioClient>,
         );
 
-        const unwrappedItems = [
-          { title: "Active" },
-          { title: "Inactive" },
-          { name: "NoTitle" },
-        ];
+        const unwrappedItems = [{ title: "Active" }, { title: "Inactive" }];
         vi.mocked(unwrapItems).mockReturnValue(unwrappedItems);
         const updateMock = vi.mocked(updateKnownFieldValues);
 
@@ -398,6 +538,7 @@ describe("metadata", () => {
           input,
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher,
+          itemSchema: testItemSchema,
         });
 
         expect(updateMock).toHaveBeenCalledWith("status_field", [
@@ -426,6 +567,7 @@ describe("metadata", () => {
           input,
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher,
+          itemSchema: testItemSchema,
         });
 
         expect(resolveClientMock).toHaveBeenCalledWith(input);
@@ -449,12 +591,13 @@ describe("metadata", () => {
           input: buildInput("result_attr"),
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher,
+          itemSchema: testItemSchema,
         });
 
         expect(result).toEqual(unwrappedItems);
       });
 
-      it("passes fetcher result to unwrapItems", async () => {
+      it("passes fetcher result and schema to unwrapItems", async () => {
         const mockCache = createMockCache();
         mockCache.get.mockReturnValue(undefined);
 
@@ -472,9 +615,12 @@ describe("metadata", () => {
           input: buildInput("unwrap_attr"),
           cache: mockCache as unknown as TtlCache<string, unknown[]>,
           fetcher,
+          itemSchema: testItemSchema,
         });
 
-        expect(unwrapMock).toHaveBeenCalledWith(fetcherResult);
+        expect(unwrapMock).toHaveBeenCalledWith(fetcherResult, {
+          schema: testItemSchema,
+        });
       });
     });
 
@@ -549,3 +695,8 @@ describe("metadata", () => {
     });
   });
 });
+
+// Reference schemas to prevent lint errors for unused imports
+void zAttribute;
+void zSelectOption;
+void zStatus;
