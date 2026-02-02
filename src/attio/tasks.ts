@@ -67,11 +67,11 @@ export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
 
 export const deleteTask = async (
   input: { taskId: string } & AttioClientInput,
-) => {
+): Promise<Record<string, unknown>> => {
   const client = resolveAttioClient(input);
-  await deleteV2TasksByTaskId({
+  const result = await deleteV2TasksByTaskId({
     client,
     path: { task_id: input.taskId },
   });
-  return true;
+  return result.data ?? {};
 };
