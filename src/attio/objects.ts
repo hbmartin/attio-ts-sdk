@@ -1,5 +1,12 @@
 import { z } from "zod";
-import type { Object as AttioObject, Options } from "../generated";
+import type {
+  Object as AttioObject,
+  GetV2ObjectsByObjectData,
+  GetV2ObjectsData,
+  Options,
+  PatchV2ObjectsByObjectData,
+  PostV2ObjectsData,
+} from "../generated";
 import {
   getV2Objects,
   getV2ObjectsByObject,
@@ -12,6 +19,7 @@ import { unwrapData, unwrapItems } from "./response";
 type ObjectSlug = string & { readonly __brand: "ObjectSlug" };
 type ObjectApiSlug = string & { readonly __brand: "ObjectApiSlug" };
 type ObjectNoun = string & { readonly __brand: "ObjectNoun" };
+type ObjectUpdateData = PatchV2ObjectsByObjectData["body"]["data"];
 
 const AttioObjectSchema: z.ZodType<AttioObject> = z
   .object({
@@ -24,19 +32,19 @@ const AttioObjectSchema: z.ZodType<AttioObject> = z
   .passthrough();
 
 interface ListObjectsInput extends AttioClientInput {
-  options?: Omit<Options, "client">;
+  options?: Omit<Options<GetV2ObjectsData>, "client">;
 }
 
 interface GetObjectInput extends AttioClientInput {
   object: ObjectSlug;
-  options?: Omit<Options, "client" | "path">;
+  options?: Omit<Options<GetV2ObjectsByObjectData>, "client" | "path">;
 }
 
 interface CreateObjectInput extends AttioClientInput {
   apiSlug: ObjectApiSlug;
   singularNoun: ObjectNoun;
   pluralNoun: ObjectNoun;
-  options?: Omit<Options, "client" | "body">;
+  options?: Omit<Options<PostV2ObjectsData>, "client" | "body">;
 }
 
 interface UpdateObjectInput extends AttioClientInput {
@@ -44,7 +52,10 @@ interface UpdateObjectInput extends AttioClientInput {
   apiSlug?: ObjectApiSlug;
   singularNoun?: ObjectNoun;
   pluralNoun?: ObjectNoun;
-  options?: Omit<Options, "client" | "path" | "body">;
+  options?: Omit<
+    Options<PatchV2ObjectsByObjectData>,
+    "client" | "path" | "body"
+  >;
 }
 
 const listObjects = async (
@@ -81,9 +92,7 @@ const createObject = async (input: CreateObjectInput): Promise<AttioObject> => {
   return unwrapData(result, { schema: AttioObjectSchema });
 };
 
-const buildUpdateObjectData = (
-  input: UpdateObjectInput,
-): Record<string, string> => ({
+const buildUpdateObjectData = (input: UpdateObjectInput): ObjectUpdateData => ({
   ...(input.apiSlug !== undefined && { api_slug: input.apiSlug }),
   ...(input.singularNoun !== undefined && {
     singular_noun: input.singularNoun,

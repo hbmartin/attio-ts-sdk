@@ -25,16 +25,31 @@ interface AttioClientHooks {
   onError?: (payload: AttioErrorHookPayload) => void;
 }
 
+type LogValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | LogValue[]
+  | { [key: string]: LogValue };
+
+interface LogContext {
+  [key: string]: LogValue;
+}
+
 interface AttioLogger {
-  debug?: (message: string, context?: unknown) => void;
-  info?: (message: string, context?: unknown) => void;
-  warn?: (message: string, context?: unknown) => void;
-  error?: (message: string, context?: unknown) => void;
+  debug?: (message: string, context?: LogContext) => void;
+  info?: (message: string, context?: LogContext) => void;
+  warn?: (message: string, context?: LogContext) => void;
+  error?: (message: string, context?: LogContext) => void;
 }
 
 export type {
   AttioClientHooks,
   AttioErrorHookPayload,
+  LogContext,
+  LogValue,
   AttioLogger,
   AttioRequestHookPayload,
   AttioResponseHookPayload,

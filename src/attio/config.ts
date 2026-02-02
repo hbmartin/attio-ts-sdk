@@ -9,7 +9,7 @@ const TRAILING_SLASHES_REGEX = /\/+$/;
 const DEFAULT_BASE_URL = "https://api.attio.com";
 
 interface AttioClientConfig
-  extends Omit<Config, "auth" | "baseUrl" | "headers"> {
+  extends Omit<Config, "auth" | "baseUrl" | "headers" | "cache"> {
   apiKey?: string;
   accessToken?: string;
   authToken?: string;

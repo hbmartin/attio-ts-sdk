@@ -1,5 +1,12 @@
 import type { z } from "zod";
-import type { Options } from "../generated";
+import type {
+  DeleteV2TasksByTaskIdData,
+  DeleteV2TasksByTaskIdResponse,
+  GetV2TasksByTaskIdData,
+  Options,
+  PatchV2TasksByTaskIdData,
+  PostV2TasksData,
+} from "../generated";
 import {
   deleteV2TasksByTaskId,
   getV2Tasks,
@@ -13,20 +20,29 @@ import { unwrapData, unwrapItems } from "./response";
 
 type Task = z.infer<typeof zTask>;
 
+type TaskId = string & { readonly __brand: "TaskId" };
+type TaskCreateData = PostV2TasksData["body"]["data"];
+type TaskUpdateData = PatchV2TasksByTaskIdData["body"]["data"];
+
 export interface TaskCreateInput extends AttioClientInput {
-  data: Record<string, unknown>;
-  options?: Omit<Options, "client" | "body">;
+  data: TaskCreateData;
+  options?: Omit<Options<PostV2TasksData>, "client" | "body">;
 }
 
 export interface TaskUpdateInput extends AttioClientInput {
-  taskId: string;
-  data: Record<string, unknown>;
-  options?: Omit<Options, "client" | "path" | "body">;
+  taskId: TaskId;
+  data: TaskUpdateData;
+  options?: Omit<Options<PatchV2TasksByTaskIdData>, "client" | "path" | "body">;
 }
 
 export interface TaskDeleteInput extends AttioClientInput {
-  taskId: string;
-  options?: Omit<Options, "client" | "path">;
+  taskId: TaskId;
+  options?: Omit<Options<DeleteV2TasksByTaskIdData>, "client" | "path">;
+}
+
+export interface TaskGetInput extends AttioClientInput {
+  taskId: TaskId;
+  options?: Omit<Options<GetV2TasksByTaskIdData>, "client" | "path">;
 }
 
 export const listTasks = async (
@@ -37,13 +53,12 @@ export const listTasks = async (
   return unwrapItems(result, { schema: zTask });
 };
 
-export const getTask = async (
-  input: { taskId: string } & AttioClientInput,
-): Promise<Task> => {
+export const getTask = async (input: TaskGetInput): Promise<Task> => {
   const client = resolveAttioClient(input);
   const result = await getV2TasksByTaskId({
     client,
     path: { task_id: input.taskId },
+    ...input.options,
   });
   return unwrapData(result, { schema: zTask });
 };
@@ -75,7 +90,7 @@ export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
 
 export const deleteTask = async (
   input: TaskDeleteInput,
-): Promise<Record<string, unknown>> => {
+): Promise<DeleteV2TasksByTaskIdResponse> => {
   const client = resolveAttioClient(input);
   const result = await deleteV2TasksByTaskId({
     client,
@@ -84,3 +99,5 @@ export const deleteTask = async (
   });
   return result.data ?? {};
 };
+
+export type { TaskCreateData, TaskId, TaskUpdateData };

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { RequestResult, ResponseStyle } from "../generated/client";
 import { AttioError, AttioRetryError } from "./errors";
 
 interface RetryConfig {
@@ -78,10 +79,23 @@ const isRetryableError = (error: unknown, config: RetryConfig): boolean => {
 const getRetryAfterMs = (error: unknown): number | undefined =>
   extractRetryErrorInfo(error)?.retryAfterMs;
 
-const callWithRetry = async <T>(
+function callWithRetry<T>(
   fn: () => Promise<T>,
   config?: Partial<RetryConfig>,
-): Promise<T> => {
+): Promise<T>;
+function callWithRetry<
+  TData,
+  TError,
+  ThrowOnError extends boolean,
+  TResponseStyle extends ResponseStyle,
+>(
+  fn: () => RequestResult<TData, TError, ThrowOnError, TResponseStyle>,
+  config?: Partial<RetryConfig>,
+): RequestResult<TData, TError, ThrowOnError, TResponseStyle>;
+async function callWithRetry<T>(
+  fn: () => Promise<T>,
+  config?: Partial<RetryConfig>,
+): Promise<T> {
   const retryConfig: RetryConfig = {
     ...DEFAULT_RETRY_CONFIG,
     ...config,
@@ -116,7 +130,7 @@ const callWithRetry = async <T>(
   throw new AttioRetryError("Retry attempts exhausted.", {
     code: "RETRY_EXHAUSTED",
   });
-};
+}
 
 export type { RetryConfig };
 export {

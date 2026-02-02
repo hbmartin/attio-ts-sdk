@@ -4,6 +4,7 @@ import {
   createClient,
   mergeHeaders,
   type RequestOptions,
+  type ResponseStyle,
 } from "../generated/client";
 import {
   type AttioCacheManager,
@@ -32,9 +33,12 @@ interface AttioClientInput {
   config?: AttioClientConfig;
 }
 
-interface AttioRequestOptions extends RequestOptions {
-  retry?: Partial<RetryConfig>;
-}
+interface AttioRequestOptions<
+  TData = unknown,
+  TResponseStyle extends ResponseStyle = "fields",
+  ThrowOnError extends boolean = boolean,
+  Url extends string = string,
+> extends RequestOptions<TData, TResponseStyle, ThrowOnError, Url> {}
 
 interface CreateAttioClientParams {
   config?: AttioClientConfig;
@@ -209,25 +213,27 @@ const createLoggerHooks = (logger?: AttioLogger): AttioClientHooks => {
     return {};
   }
 
+  const { debug, error: logError } = logger;
+
   return {
-    onRequest: logger.debug
+    onRequest: debug
       ? ({ request }) =>
-          logger.debug("attio.request", {
+          debug("attio.request", {
             method: request.method,
             url: request.url,
           })
       : undefined,
-    onResponse: logger.debug
+    onResponse: debug
       ? ({ response, request }) =>
-          logger.debug("attio.response", {
+          debug("attio.response", {
             method: request.method,
             url: request.url,
             status: response.status,
           })
       : undefined,
-    onError: logger.error
+    onError: logError
       ? ({ error, request, response }) =>
-          logger.error("attio.error", {
+          logError("attio.error", {
             message: error.message,
             code: error.code,
             status: error.status,
@@ -276,22 +282,40 @@ const applyInterceptors = (client: Client, hooks: AttioClientHooks): void => {
   });
 };
 
+type HttpMethod = NonNullable<RequestOptions["method"]>;
+type RequestWithMethodOptions<
+  TData,
+  TResponseStyle extends ResponseStyle,
+  ThrowOnError extends boolean,
+> = Omit<RequestOptions<TData, TResponseStyle, ThrowOnError>, "method"> &
+  Pick<Required<RequestOptions<TData, TResponseStyle, ThrowOnError>>, "method">;
+
 const wrapClient = (base: Client, retry?: Partial<RetryConfig>): Client => {
-  const requestWithRetry: Client["request"] = (
-    options: AttioRequestOptions,
+  const requestWithRetry: Client["request"] = <
+    TData = unknown,
+    TError = unknown,
+    ThrowOnError extends boolean = false,
+    TResponseStyle extends ResponseStyle = "fields",
+  >(
+    options: RequestWithMethodOptions<TData, TResponseStyle, ThrowOnError>,
   ) => {
     const { retry: retryOverride, ...rest } = options;
-    return callWithRetry(() => base.request(rest), {
-      ...retry,
-      ...retryOverride,
-    });
+    return callWithRetry(
+      () => base.request<TData, TError, ThrowOnError, TResponseStyle>(rest),
+      {
+        ...retry,
+        ...retryOverride,
+      },
+    );
   };
 
-  const makeMethod = (method: string) => (options: RequestOptions) =>
-    requestWithRetry({
-      ...options,
-      method: method as RequestOptions["method"],
-    });
+  const makeMethod =
+    (method: HttpMethod): Client["get"] =>
+    (options) =>
+      requestWithRetry({
+        ...options,
+        method,
+      });
 
   const client: Client = {
     ...base,
@@ -310,8 +334,19 @@ const wrapClient = (base: Client, retry?: Partial<RetryConfig>): Client => {
   return client;
 };
 
+type CleanClientConfig = Omit<
+  AttioClientConfig,
+  | "apiKey"
+  | "accessToken"
+  | "authToken"
+  | "cache"
+  | "retry"
+  | "timeoutMs"
+  | "headers"
+>;
+
 interface CleanedConfigResult {
-  cleanConfig: AttioClientConfig;
+  cleanConfig: CleanClientConfig;
   headers: AttioClientConfig["headers"];
   retry: AttioClientConfig["retry"];
   timeoutMs: AttioClientConfig["timeoutMs"];

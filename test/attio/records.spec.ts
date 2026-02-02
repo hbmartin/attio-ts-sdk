@@ -165,6 +165,8 @@ describe("records", () => {
           data: {
             values: { email: "test@example.com" },
           },
+        },
+        query: {
           matching_attribute: "email",
         },
       });
@@ -187,6 +189,8 @@ describe("records", () => {
           data: {
             values: { email: "test@example.com" },
           },
+        },
+        query: {
           matching_attribute: "email",
         },
         headers: { "X-Custom": "value" },
