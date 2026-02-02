@@ -24,6 +24,11 @@ export interface TaskUpdateInput extends AttioClientInput {
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
+export interface TaskDeleteInput extends AttioClientInput {
+  taskId: string;
+  options?: Omit<Options, "client" | "path">;
+}
+
 export const listTasks = async (
   input: AttioClientInput = {},
 ): Promise<Task[]> => {
@@ -69,12 +74,13 @@ export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
 };
 
 export const deleteTask = async (
-  input: { taskId: string } & AttioClientInput,
+  input: TaskDeleteInput,
 ): Promise<Record<string, unknown>> => {
   const client = resolveAttioClient(input);
   const result = await deleteV2TasksByTaskId({
     client,
     path: { task_id: input.taskId },
+    ...input.options,
   });
   return result.data ?? {};
 };

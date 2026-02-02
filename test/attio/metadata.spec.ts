@@ -438,19 +438,29 @@ describe("metadata", () => {
         expect(unwrapMock).not.toHaveBeenCalled();
       });
 
-      it("validates cached items against schema", async () => {
+      it("treats invalid cached items as cache miss and refetches", async () => {
         const invalidCachedItems = [{ notTitle: "Invalid" }];
         const mockCache = createMockCache();
         mockCache.get.mockReturnValue(invalidCachedItems);
 
-        await expect(
-          listAttributeMetadata({
-            input: buildInput("cached_field"),
-            cache: mockCache as unknown as TtlCache<string, unknown[]>,
-            fetcher: vi.fn(),
-            itemSchema: testItemSchema,
-          }),
-        ).rejects.toThrow();
+        const mockClient = { baseUrl: "https://api.attio.com" };
+        vi.mocked(resolveAttioClient).mockReturnValue(
+          mockClient as ReturnType<typeof resolveAttioClient>,
+        );
+
+        const fetchedData = { data: [{ title: "Fetched" }] };
+        const fetcher = vi.fn().mockResolvedValue(fetchedData);
+        vi.mocked(unwrapItems).mockReturnValue([{ title: "Fetched" }]);
+
+        const result = await listAttributeMetadata({
+          input: buildInput("cached_field"),
+          cache: mockCache as unknown as TtlCache<string, unknown[]>,
+          fetcher,
+          itemSchema: testItemSchema,
+        });
+
+        expect(fetcher).toHaveBeenCalled();
+        expect(result).toEqual([{ title: "Fetched" }]);
       });
     });
 
