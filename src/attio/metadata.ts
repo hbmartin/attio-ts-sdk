@@ -87,10 +87,10 @@ const listAttributeMetadata = async <T>({
     const cached = cache.get(cacheKey);
     if (cached) {
       const parsed = arraySchema.safeParse(cached);
-      if (!parsed.success) {
-        throw createSchemaError(parsed.error);
+      if (parsed.success) {
+        return parsed.data;
       }
-      return parsed.data;
+      // Treat parse failure as cache miss - will refetch from API
     }
   }
 
