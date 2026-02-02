@@ -33,13 +33,6 @@ interface AttioClientInput {
   config?: AttioClientConfig;
 }
 
-interface AttioRequestOptions<
-  TData = unknown,
-  TResponseStyle extends ResponseStyle = "fields",
-  ThrowOnError extends boolean = boolean,
-  Url extends string = string,
-> extends RequestOptions<TData, TResponseStyle, ThrowOnError, Url> {}
-
 interface CreateAttioClientParams {
   config?: AttioClientConfig;
   authToken?: string;
@@ -434,5 +427,5 @@ const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
 const resolveAttioClient = (input: AttioClientInput = {}): AttioClient =>
   input.client ?? getAttioClient(input.config ?? {});
 
-export type { AttioClient, AttioClientInput, AttioRequestOptions };
+export type { AttioClient, AttioClientInput };
 export { createAttioClient, getAttioClient, resolveAttioClient };
