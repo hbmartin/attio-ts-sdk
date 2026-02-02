@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import type { Task } from "../../src/generated";
 
 const getTasksRequest = vi.fn();
 const getTaskByIdRequest = vi.fn();
@@ -6,6 +7,24 @@ const postTasksRequest = vi.fn();
 const patchTaskRequest = vi.fn();
 const deleteTaskRequest = vi.fn();
 const resolveAttioClient = vi.fn();
+
+const createMockTask = (overrides: Partial<Task> = {}): Task => ({
+  id: {
+    workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+    task_id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+  },
+  content_plaintext: "Test task content",
+  deadline_at: null,
+  is_completed: false,
+  linked_records: [],
+  assignees: [],
+  created_by_actor: {
+    type: "workspace-member",
+    id: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+  },
+  created_at: "2024-01-01T00:00:00.000Z",
+  ...overrides,
+});
 
 vi.mock("../../src/generated", async () => {
   const actual = await vi.importActual<typeof import("../../src/generated")>(
@@ -45,7 +64,19 @@ describe("tasks", () => {
 
   describe("listTasks", () => {
     it("returns unwrapped items from response", async () => {
-      const tasks = [{ id: "task-1" }, { id: "task-2" }];
+      const task1 = createMockTask({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          task_id: "11111111-1111-4111-8111-111111111111",
+        },
+      });
+      const task2 = createMockTask({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          task_id: "22222222-2222-4222-8222-222222222222",
+        },
+      });
+      const tasks = [task1, task2];
       getTasksRequest.mockResolvedValue({ data: { data: tasks } });
 
       const result = await listTasks();
@@ -65,46 +96,53 @@ describe("tasks", () => {
 
   describe("getTask", () => {
     it("returns unwrapped task data", async () => {
-      const task = { id: "task-1", content: "Test task" };
+      const task = createMockTask({
+        content_plaintext: "Test task",
+      });
       getTaskByIdRequest.mockResolvedValue({ data: task });
 
-      const result = await getTask({ taskId: "task-1" });
+      const result = await getTask({
+        taskId: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+      });
 
       expect(result).toEqual(task);
       expect(getTaskByIdRequest).toHaveBeenCalledWith({
         client: {},
-        path: { task_id: "task-1" },
+        path: { task_id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e" },
       });
     });
   });
 
   describe("createTask", () => {
     it("creates task with provided data", async () => {
-      const newTask = { id: "task-new", content: "New task" };
+      const newTask = createMockTask({
+        content_plaintext: "New task",
+      });
       postTasksRequest.mockResolvedValue({ data: newTask });
 
       const result = await createTask({
-        data: { content: "New task" },
+        data: { content_plaintext: "New task" },
       });
 
       expect(result).toEqual(newTask);
       expect(postTasksRequest).toHaveBeenCalledWith({
         client: {},
-        body: { data: { content: "New task" } },
+        body: { data: { content_plaintext: "New task" } },
       });
     });
 
     it("passes additional options", async () => {
-      postTasksRequest.mockResolvedValue({ data: {} });
+      const task = createMockTask();
+      postTasksRequest.mockResolvedValue({ data: task });
 
       await createTask({
-        data: { content: "Task" },
+        data: { content_plaintext: "Task" },
         options: { headers: { "X-Custom": "value" } },
       });
 
       expect(postTasksRequest).toHaveBeenCalledWith({
         client: {},
-        body: { data: { content: "Task" } },
+        body: { data: { content_plaintext: "Task" } },
         headers: { "X-Custom": "value" },
       });
     });
@@ -112,35 +150,38 @@ describe("tasks", () => {
 
   describe("updateTask", () => {
     it("updates task with provided data", async () => {
-      const updatedTask = { id: "task-1", content: "Updated task" };
+      const updatedTask = createMockTask({
+        content_plaintext: "Updated task",
+      });
       patchTaskRequest.mockResolvedValue({ data: updatedTask });
 
       const result = await updateTask({
-        taskId: "task-1",
-        data: { content: "Updated task" },
+        taskId: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+        data: { content_plaintext: "Updated task" },
       });
 
       expect(result).toEqual(updatedTask);
       expect(patchTaskRequest).toHaveBeenCalledWith({
         client: {},
-        path: { task_id: "task-1" },
-        body: { data: { content: "Updated task" } },
+        path: { task_id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e" },
+        body: { data: { content_plaintext: "Updated task" } },
       });
     });
 
     it("passes additional options", async () => {
-      patchTaskRequest.mockResolvedValue({ data: {} });
+      const task = createMockTask({ is_completed: true });
+      patchTaskRequest.mockResolvedValue({ data: task });
 
       await updateTask({
-        taskId: "task-1",
-        data: { status: "completed" },
+        taskId: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+        data: { is_completed: true },
         options: { headers: { "X-Custom": "value" } },
       });
 
       expect(patchTaskRequest).toHaveBeenCalledWith({
         client: {},
-        path: { task_id: "task-1" },
-        body: { data: { status: "completed" } },
+        path: { task_id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e" },
+        body: { data: { is_completed: true } },
         headers: { "X-Custom": "value" },
       });
     });

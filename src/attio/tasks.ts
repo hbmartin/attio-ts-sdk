@@ -1,4 +1,4 @@
-import type { Options } from "../generated";
+import type { Options, Task } from "../generated";
 import {
   deleteV2TasksByTaskId,
   getV2Tasks,
@@ -6,6 +6,7 @@ import {
   patchV2TasksByTaskId,
   postV2Tasks,
 } from "../generated";
+import { zTask } from "../generated/zod.gen";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
 
@@ -20,22 +21,26 @@ export interface TaskUpdateInput extends AttioClientInput {
   options?: Omit<Options, "client" | "path" | "body">;
 }
 
-export const listTasks = async (input: AttioClientInput = {}) => {
+export const listTasks = async (
+  input: AttioClientInput = {},
+): Promise<Task[]> => {
   const client = resolveAttioClient(input);
   const result = await getV2Tasks({ client });
-  return unwrapItems(result);
+  return unwrapItems(result, { schema: zTask }) as Task[];
 };
 
-export const getTask = async (input: { taskId: string } & AttioClientInput) => {
+export const getTask = async (
+  input: { taskId: string } & AttioClientInput,
+): Promise<Task> => {
   const client = resolveAttioClient(input);
   const result = await getV2TasksByTaskId({
     client,
     path: { task_id: input.taskId },
   });
-  return unwrapData(result);
+  return unwrapData(result, { schema: zTask }) as Task;
 };
 
-export const createTask = async (input: TaskCreateInput) => {
+export const createTask = async (input: TaskCreateInput): Promise<Task> => {
   const client = resolveAttioClient(input);
   const result = await postV2Tasks({
     client,
@@ -44,10 +49,10 @@ export const createTask = async (input: TaskCreateInput) => {
     },
     ...input.options,
   });
-  return unwrapData(result);
+  return unwrapData(result, { schema: zTask }) as Task;
 };
 
-export const updateTask = async (input: TaskUpdateInput) => {
+export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
   const client = resolveAttioClient(input);
   const result = await patchV2TasksByTaskId({
     client,
@@ -57,7 +62,7 @@ export const updateTask = async (input: TaskUpdateInput) => {
     },
     ...input.options,
   });
-  return unwrapData(result);
+  return unwrapData(result, { schema: zTask }) as Task;
 };
 
 export const deleteTask = async (

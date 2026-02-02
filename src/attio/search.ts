@@ -1,8 +1,11 @@
+import { z } from "zod";
 import type { Options } from "../generated";
 import { postV2ObjectsRecordsSearch } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type AttioRecordLike, normalizeRecords } from "./record-utils";
 import { unwrapItems } from "./response";
+
+const rawRecordSchema = z.record(z.string(), z.unknown());
 
 export interface RecordSearchInput extends AttioClientInput {
   query: string;
@@ -30,6 +33,6 @@ export const searchRecords = async <T extends AttioRecordLike>(
     ...input.options,
   });
 
-  const items = unwrapItems<unknown>(result);
-  return normalizeRecords<T>(items as Record<string, unknown>[]);
+  const items = unwrapItems(result, { schema: rawRecordSchema });
+  return normalizeRecords<T>(items);
 };

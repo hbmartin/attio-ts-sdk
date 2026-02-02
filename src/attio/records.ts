@@ -144,8 +144,8 @@ const queryRecords = async <T extends AttioRecordLike>(
     ...input.options,
   });
 
-  const items = unwrapItems<unknown>(result);
-  return normalizeRecords<T>(items as Record<string, unknown>[]);
+  const items = unwrapItems(result, { schema: rawRecordSchema });
+  return normalizeRecords<T>(items);
 };
 
 export type {

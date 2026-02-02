@@ -22,11 +22,6 @@ import {
   getV2ByTargetByIdentifierAttributesByAttributeOptions,
   getV2ByTargetByIdentifierAttributesByAttributeStatuses,
 } from "../../src/generated";
-import {
-  zAttribute,
-  zSelectOption,
-  zStatus,
-} from "../../src/generated/zod.gen";
 
 vi.mock("../../src/generated", () => ({
   getV2ByTargetByIdentifierAttributes: vi.fn(),
@@ -70,9 +65,9 @@ const createMockAttribute = (
   overrides: Partial<Attribute> = {},
 ): Attribute => ({
   id: {
-    workspace_id: "ws-123",
-    object_id: "obj-123",
-    attribute_id: "attr-123",
+    workspace_id: "550e8400-e29b-41d4-a716-446655440000",
+    object_id: "550e8400-e29b-41d4-a716-446655440001",
+    attribute_id: "550e8400-e29b-41d4-a716-446655440002",
   },
   title: "Test Attribute",
   description: null,
@@ -86,6 +81,17 @@ const createMockAttribute = (
   is_default_value_enabled: false,
   is_archived: false,
   default_value: null,
+  relationship: null,
+  created_at: "2024-01-01T00:00:00.000Z",
+  config: {
+    currency: {
+      default_currency_code: "USD",
+      display_type: "symbol",
+    },
+    record_reference: {
+      allowed_object_ids: null,
+    },
+  },
   ...overrides,
 });
 
@@ -93,10 +99,10 @@ const createMockSelectOption = (
   overrides: Partial<SelectOption> = {},
 ): SelectOption => ({
   id: {
-    workspace_id: "ws-123",
-    object_id: "obj-123",
-    attribute_id: "attr-123",
-    option_id: "opt-123",
+    workspace_id: "550e8400-e29b-41d4-a716-446655440000",
+    object_id: "550e8400-e29b-41d4-a716-446655440001",
+    attribute_id: "550e8400-e29b-41d4-a716-446655440002",
+    option_id: "550e8400-e29b-41d4-a716-446655440003",
   },
   title: "Test Option",
   is_archived: false,
@@ -105,10 +111,10 @@ const createMockSelectOption = (
 
 const createMockStatus = (overrides: Partial<Status> = {}): Status => ({
   id: {
-    workspace_id: "ws-123",
-    object_id: "obj-123",
-    attribute_id: "attr-123",
-    status_id: "status-123",
+    workspace_id: "550e8400-e29b-41d4-a716-446655440000",
+    object_id: "550e8400-e29b-41d4-a716-446655440001",
+    attribute_id: "550e8400-e29b-41d4-a716-446655440002",
+    status_id: "550e8400-e29b-41d4-a716-446655440004",
   },
   title: "Test Status",
   is_archived: false,
@@ -695,8 +701,3 @@ describe("metadata", () => {
     });
   });
 });
-
-// Reference schemas to prevent lint errors for unused imports
-void zAttribute;
-void zSelectOption;
-void zStatus;
