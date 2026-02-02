@@ -1,5 +1,9 @@
 import type { ZodType } from "zod";
-import type { Attribute, Options } from "../generated";
+import type {
+  Attribute,
+  GetV2ByTargetByIdentifierAttributesData,
+  Options,
+} from "../generated";
 import type { AttioClientInput } from "./client";
 import { AttioResponseError } from "./errors";
 import { listAttributes } from "./metadata";
@@ -7,10 +11,17 @@ import type { AttioRecordLike } from "./record-utils";
 import type { ValueLookupOptions } from "./values";
 import { getFirstValue, getValue } from "./values";
 
+type SchemaTarget = GetV2ByTargetByIdentifierAttributesData["path"]["target"];
+type SchemaIdentifier =
+  GetV2ByTargetByIdentifierAttributesData["path"]["identifier"];
+
 interface SchemaInput extends AttioClientInput {
-  target: string;
-  identifier: string;
-  options?: Omit<Options, "client" | "path">;
+  target: SchemaTarget;
+  identifier: SchemaIdentifier;
+  options?: Omit<
+    Options<GetV2ByTargetByIdentifierAttributesData>,
+    "client" | "path"
+  >;
 }
 
 interface AttributeAccessor {
@@ -28,8 +39,8 @@ interface AttributeAccessor {
 }
 
 interface AttioSchema {
-  target: string;
-  identifier: string;
+  target: SchemaTarget;
+  identifier: SchemaIdentifier;
   attributes: Attribute[];
   attributeSlugs: string[];
   getAttribute: (slug: string) => Attribute | undefined;

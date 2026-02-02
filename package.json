@@ -32,7 +32,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown",
+    "build": "tsc --noEmit && tsdown",
+    "typecheck": "tsc --noEmit",
     "dev": "tsdown --watch",
     "lint": "biome check --error-on-warnings",
     "lint:report": "biome check . --reporter=json | jq -r '  .diagnostics[]  | .category' | sort | uniq -c | sort -nr",

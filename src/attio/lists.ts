@@ -1,4 +1,11 @@
-import type { Options } from "../generated";
+import type {
+  DeleteV2ListsByListEntriesByEntryIdData,
+  GetV2ListsByListData,
+  Options,
+  PatchV2ListsByListEntriesByEntryIdData,
+  PostV2ListsByListEntriesData,
+  PostV2ListsByListEntriesQueryData,
+} from "../generated";
 import {
   deleteV2ListsByListEntriesByEntryId,
   getV2Lists,
@@ -12,37 +19,56 @@ import { unwrapData, unwrapItems } from "./response";
 
 type ListId = string & { readonly __brand: "ListId" };
 type EntryId = string & { readonly __brand: "EntryId" };
+type ParentObjectId = string & { readonly __brand: "ParentObjectId" };
+type ParentRecordId = string & { readonly __brand: "ParentRecordId" };
+
+type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
+type ListEntryFilter = PostV2ListsByListEntriesQueryData["body"]["filter"];
 
 interface ListQueryInput extends AttioClientInput {
   list: ListId;
-  filter?: Record<string, unknown>;
+  filter?: ListEntryFilter;
   limit?: number;
   offset?: number;
-  options?: Omit<Options, "client" | "path" | "body">;
+  options?: Omit<
+    Options<PostV2ListsByListEntriesQueryData>,
+    "client" | "path" | "body"
+  >;
 }
 
 interface GetListInput extends AttioClientInput {
   list: ListId;
+  options?: Omit<Options<GetV2ListsByListData>, "client" | "path">;
 }
 
 interface AddListEntryInput extends AttioClientInput {
   list: ListId;
-  parentRecordId: string;
-  entryValues?: Record<string, unknown>;
-  options?: Omit<Options, "client" | "path" | "body">;
+  parentObject: ParentObjectId;
+  parentRecordId: ParentRecordId;
+  entryValues?: EntryValues;
+  options?: Omit<
+    Options<PostV2ListsByListEntriesData>,
+    "client" | "path" | "body"
+  >;
 }
 
 interface UpdateListEntryInput extends AttioClientInput {
   list: ListId;
   entryId: EntryId;
-  entryValues: Record<string, unknown>;
-  options?: Omit<Options, "client" | "path" | "body">;
+  entryValues: EntryValues;
+  options?: Omit<
+    Options<PatchV2ListsByListEntriesByEntryIdData>,
+    "client" | "path" | "body"
+  >;
 }
 
 interface RemoveListEntryInput extends AttioClientInput {
   list: ListId;
   entryId: EntryId;
-  options?: Omit<Options, "client" | "path">;
+  options?: Omit<
+    Options<DeleteV2ListsByListEntriesByEntryIdData, true>,
+    "client" | "path"
+  >;
 }
 
 export const listLists = async (input: AttioClientInput = {}) => {
@@ -56,6 +82,7 @@ export const getList = async (input: GetListInput) => {
   const result = await getV2ListsByList({
     client,
     path: { list: input.list },
+    ...input.options,
   });
   return unwrapData(result);
 };
@@ -83,6 +110,7 @@ export const addListEntry = async (input: AddListEntryInput) => {
     path: { list: input.list },
     body: {
       data: {
+        parent_object: input.parentObject,
         parent_record_id: input.parentRecordId,
         entry_values: input.entryValues ?? {},
       },
@@ -121,9 +149,13 @@ export const removeListEntry = async (input: RemoveListEntryInput) => {
 export type {
   AddListEntryInput,
   EntryId,
+  EntryValues,
   GetListInput,
   ListId,
+  ListEntryFilter,
   ListQueryInput,
+  ParentObjectId,
+  ParentRecordId,
   RemoveListEntryInput,
   UpdateListEntryInput,
 };

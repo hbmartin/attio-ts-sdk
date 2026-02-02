@@ -1,6 +1,15 @@
 import type { ZodType } from "zod";
 import { z } from "zod";
-import type { Attribute, Options, SelectOption, Status } from "../generated";
+import type {
+  Attribute,
+  GetV2ByTargetByIdentifierAttributesByAttributeData,
+  GetV2ByTargetByIdentifierAttributesByAttributeOptionsData,
+  GetV2ByTargetByIdentifierAttributesByAttributeStatusesData,
+  GetV2ByTargetByIdentifierAttributesData,
+  Options,
+  SelectOption,
+  Status,
+} from "../generated";
 import {
   getV2ByTargetByIdentifierAttributes,
   getV2ByTargetByIdentifierAttributesByAttribute,
@@ -23,8 +32,11 @@ const getMetadataCache = (
 ): CacheAdapter<string, unknown[]> | undefined =>
   client.cache.metadata.get(scope);
 
-const buildKey = (target: string, identifier: string, attribute?: string) =>
-  [target, identifier, attribute].filter(Boolean).join(":");
+const buildKey = (
+  target: AttributeTarget,
+  identifier: AttributeIdentifier,
+  attribute?: AttributeSlug,
+) => [target, identifier, attribute].filter(Boolean).join(":");
 
 const titleSchema = z.object({ title: z.string() }).passthrough();
 
@@ -37,49 +49,77 @@ const extractTitles = (items: unknown[]): string[] =>
     return titles;
   }, []);
 
-interface AttributeListInput extends AttioClientInput {
-  target: string;
-  identifier: string;
-  options?: Omit<Options, "client" | "path">;
+type AttributeTarget =
+  GetV2ByTargetByIdentifierAttributesData["path"]["target"];
+type AttributeIdentifier =
+  GetV2ByTargetByIdentifierAttributesData["path"]["identifier"];
+type AttributeSlug =
+  GetV2ByTargetByIdentifierAttributesByAttributeData["path"]["attribute"];
+type AttributeMetadataData =
+  | GetV2ByTargetByIdentifierAttributesByAttributeOptionsData
+  | GetV2ByTargetByIdentifierAttributesByAttributeStatusesData;
+
+interface AttributePathInput {
+  target: AttributeTarget;
+  identifier: AttributeIdentifier;
 }
 
-interface AttributeInput extends AttributeListInput {
-  attribute: string;
+interface AttributePathWithAttribute extends AttributePathInput {
+  attribute: AttributeSlug;
 }
 
-interface AttributeMetadataPath {
-  target: string;
-  identifier: string;
-  attribute: string;
+interface AttributeListInput extends AttioClientInput, AttributePathInput {
+  options?: Omit<
+    Options<GetV2ByTargetByIdentifierAttributesData>,
+    "client" | "path"
+  >;
 }
 
-interface AttributeMetadataFetchParams
-  extends Omit<Options, "client" | "path"> {
-  client: AttioClient;
-  path: AttributeMetadataPath;
+interface AttributeInput extends AttioClientInput, AttributePathWithAttribute {
+  options?: Omit<
+    Options<GetV2ByTargetByIdentifierAttributesByAttributeData>,
+    "client" | "path"
+  >;
 }
 
-interface AttributeMetadataRequestParams<T> {
-  input: AttributeInput;
+interface AttributeMetadataInput<TData extends AttributeMetadataData>
+  extends AttioClientInput,
+    AttributePathWithAttribute {
+  options?: Partial<Omit<Options<TData>, "client" | "path">>;
+}
+
+interface AttributeMetadataPath extends AttributePathWithAttribute {}
+
+type AttributeMetadataFetchParams<TData extends AttributeMetadataData> =
+  Partial<Omit<Options<TData>, "client" | "path">> & {
+    client: AttioClient;
+    path: AttributeMetadataPath;
+  };
+
+interface AttributeMetadataRequestParams<
+  TItem,
+  TData extends AttributeMetadataData,
+> {
+  input: AttributeMetadataInput<TData>;
   cache?: CacheAdapter<string, unknown[]>;
-  fetcher: (params: AttributeMetadataFetchParams) => Promise<unknown>;
-  itemSchema: ZodType<T>;
+  fetcher: (params: AttributeMetadataFetchParams<TData>) => Promise<unknown>;
+  itemSchema: ZodType<TItem>;
 }
 
 const buildAttributeMetadataPath = (
-  input: AttributeInput,
+  input: AttributePathWithAttribute,
 ): AttributeMetadataPath => ({
   target: input.target,
   identifier: input.identifier,
   attribute: input.attribute,
 });
 
-const listAttributeMetadata = async <T>({
+const listAttributeMetadata = async <T, TData extends AttributeMetadataData>({
   input,
   cache,
   fetcher,
   itemSchema,
-}: AttributeMetadataRequestParams<T>): Promise<T[]> => {
+}: AttributeMetadataRequestParams<T, TData>): Promise<T[]> => {
   const cacheKey = buildKey(input.target, input.identifier, input.attribute);
   const arraySchema = z.array(itemSchema);
 
@@ -90,15 +130,18 @@ const listAttributeMetadata = async <T>({
       if (parsed.success) {
         return parsed.data;
       }
-      // Treat parse failure as cache miss - will refetch from API
+      // Delete invalid cache entry to force refetch from API
+      cache.delete(cacheKey);
     }
   }
 
   const client = resolveAttioClient(input);
+  const options: Partial<Omit<Options<TData>, "client" | "path">> =
+    input.options ?? {};
   const result = await fetcher({
     client,
     path: buildAttributeMetadataPath(input),
-    ...input.options,
+    ...options,
   });
 
   const items = unwrapItems(result, { schema: itemSchema });
@@ -152,10 +195,13 @@ const getAttribute = async (input: AttributeInput): Promise<Attribute> => {
 };
 
 const getAttributeOptions = (
-  input: AttributeInput,
+  input: AttributeMetadataInput<GetV2ByTargetByIdentifierAttributesByAttributeOptionsData>,
 ): Promise<SelectOption[]> => {
   const client = resolveAttioClient(input);
-  return listAttributeMetadata({
+  return listAttributeMetadata<
+    SelectOption,
+    GetV2ByTargetByIdentifierAttributesByAttributeOptionsData
+  >({
     input: { ...input, client },
     cache: getMetadataCache(client, "options"),
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeOptions,
@@ -163,9 +209,14 @@ const getAttributeOptions = (
   });
 };
 
-const getAttributeStatuses = (input: AttributeInput): Promise<Status[]> => {
+const getAttributeStatuses = (
+  input: AttributeMetadataInput<GetV2ByTargetByIdentifierAttributesByAttributeStatusesData>,
+): Promise<Status[]> => {
   const client = resolveAttioClient(input);
-  return listAttributeMetadata({
+  return listAttributeMetadata<
+    Status,
+    GetV2ByTargetByIdentifierAttributesByAttributeStatusesData
+  >({
     input: { ...input, client },
     cache: getMetadataCache(client, "statuses"),
     fetcher: getV2ByTargetByIdentifierAttributesByAttributeStatuses,

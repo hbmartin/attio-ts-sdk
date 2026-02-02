@@ -1,4 +1,11 @@
-import type { Options } from "../generated";
+import type {
+  GetV2ObjectsByObjectRecordsByRecordIdData,
+  Options,
+  PatchV2ObjectsByObjectRecordsByRecordIdData,
+  PostV2ObjectsByObjectRecordsData,
+  PostV2ObjectsByObjectRecordsQueryData,
+  PutV2ObjectsByObjectRecordsData,
+} from "../generated";
 import {
   deleteV2ObjectsByObjectRecordsByRecordId,
   getV2ObjectsByObjectRecordsByRecordId,
@@ -16,39 +23,62 @@ import {
 import { assertOk, unwrapItems } from "./response";
 import { rawRecordSchema } from "./schemas";
 
+type RecordObjectId = string & { readonly __brand: "RecordObjectId" };
+type RecordId = string & { readonly __brand: "RecordId" };
+type MatchingAttribute = string & { readonly __brand: "MatchingAttribute" };
+
+type RecordValues = PostV2ObjectsByObjectRecordsData["body"]["data"]["values"];
+type RecordFilter = PostV2ObjectsByObjectRecordsQueryData["body"]["filter"];
+type RecordSorts = PostV2ObjectsByObjectRecordsQueryData["body"]["sorts"];
+
 interface RecordCreateInput extends AttioClientInput {
-  object: string;
-  values: Record<string, unknown>;
-  options?: Omit<Options, "client" | "path" | "body">;
+  object: RecordObjectId;
+  values: RecordValues;
+  options?: Omit<
+    Options<PostV2ObjectsByObjectRecordsData>,
+    "client" | "path" | "body"
+  >;
 }
 
 interface RecordUpdateInput extends AttioClientInput {
-  object: string;
-  recordId: string;
-  values: Record<string, unknown>;
-  options?: Omit<Options, "client" | "path" | "body">;
+  object: RecordObjectId;
+  recordId: RecordId;
+  values: RecordValues;
+  options?: Omit<
+    Options<PatchV2ObjectsByObjectRecordsByRecordIdData>,
+    "client" | "path" | "body"
+  >;
 }
 
 interface RecordUpsertInput extends AttioClientInput {
-  object: string;
-  matchingAttribute: string;
-  values: Record<string, unknown>;
-  options?: Omit<Options, "client" | "path" | "body">;
+  object: RecordObjectId;
+  matchingAttribute: MatchingAttribute;
+  values: RecordValues;
+  options?: Omit<
+    Options<PutV2ObjectsByObjectRecordsData>,
+    "client" | "path" | "body"
+  >;
 }
 
 interface RecordGetInput extends AttioClientInput {
-  object: string;
-  recordId: string;
-  options?: Omit<Options, "client" | "path">;
+  object: RecordObjectId;
+  recordId: RecordId;
+  options?: Omit<
+    Options<GetV2ObjectsByObjectRecordsByRecordIdData>,
+    "client" | "path"
+  >;
 }
 
 interface RecordQueryInput extends AttioClientInput {
-  object: string;
-  filter?: Record<string, unknown>;
-  sorts?: Record<string, unknown>[];
+  object: RecordObjectId;
+  filter?: RecordFilter;
+  sorts?: RecordSorts;
   limit?: number;
   offset?: number;
-  options?: Omit<Options, "client" | "path" | "body">;
+  options?: Omit<
+    Options<PostV2ObjectsByObjectRecordsQueryData>,
+    "client" | "path" | "body"
+  >;
 }
 
 const createRecord = async <T extends AttioRecordLike>(
@@ -96,6 +126,8 @@ const upsertRecord = async <T extends AttioRecordLike>(
       data: {
         values: input.values,
       },
+    },
+    query: {
       matching_attribute: input.matchingAttribute,
     },
     ...input.options,
@@ -147,11 +179,17 @@ const queryRecords = async <T extends AttioRecordLike>(
 };
 
 export type {
+  MatchingAttribute,
+  RecordFilter,
+  RecordId,
   RecordCreateInput,
+  RecordObjectId,
   RecordUpdateInput,
   RecordUpsertInput,
   RecordGetInput,
   RecordQueryInput,
+  RecordSorts,
+  RecordValues,
 };
 export {
   createRecord,
