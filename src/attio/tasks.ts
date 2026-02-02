@@ -1,4 +1,5 @@
-import type { Options, Task } from "../generated";
+import type { z } from "zod";
+import type { Options } from "../generated";
 import {
   deleteV2TasksByTaskId,
   getV2Tasks,
@@ -9,6 +10,8 @@ import {
 import { zTask } from "../generated/zod.gen";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { unwrapData, unwrapItems } from "./response";
+
+type Task = z.infer<typeof zTask>;
 
 export interface TaskCreateInput extends AttioClientInput {
   data: Record<string, unknown>;
@@ -26,7 +29,7 @@ export const listTasks = async (
 ): Promise<Task[]> => {
   const client = resolveAttioClient(input);
   const result = await getV2Tasks({ client });
-  return unwrapItems(result, { schema: zTask }) as Task[];
+  return unwrapItems(result, { schema: zTask });
 };
 
 export const getTask = async (
@@ -37,7 +40,7 @@ export const getTask = async (
     client,
     path: { task_id: input.taskId },
   });
-  return unwrapData(result, { schema: zTask }) as Task;
+  return unwrapData(result, { schema: zTask });
 };
 
 export const createTask = async (input: TaskCreateInput): Promise<Task> => {
@@ -49,7 +52,7 @@ export const createTask = async (input: TaskCreateInput): Promise<Task> => {
     },
     ...input.options,
   });
-  return unwrapData(result, { schema: zTask }) as Task;
+  return unwrapData(result, { schema: zTask });
 };
 
 export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
@@ -62,7 +65,7 @@ export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
     },
     ...input.options,
   });
-  return unwrapData(result, { schema: zTask }) as Task;
+  return unwrapData(result, { schema: zTask });
 };
 
 export const deleteTask = async (
