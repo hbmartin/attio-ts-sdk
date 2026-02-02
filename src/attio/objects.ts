@@ -83,19 +83,13 @@ const createObject = async (input: CreateObjectInput): Promise<AttioObject> => {
 
 const buildUpdateObjectData = (
   input: UpdateObjectInput,
-): Record<string, string> => {
-  const data: Record<string, string> = {};
-  if (input.apiSlug !== undefined) {
-    data.api_slug = input.apiSlug;
-  }
-  if (input.singularNoun !== undefined) {
-    data.singular_noun = input.singularNoun;
-  }
-  if (input.pluralNoun !== undefined) {
-    data.plural_noun = input.pluralNoun;
-  }
-  return data;
-};
+): Record<string, string> => ({
+  ...(input.apiSlug !== undefined && { api_slug: input.apiSlug }),
+  ...(input.singularNoun !== undefined && {
+    singular_noun: input.singularNoun,
+  }),
+  ...(input.pluralNoun !== undefined && { plural_noun: input.pluralNoun }),
+});
 
 const updateObject = async (input: UpdateObjectInput): Promise<AttioObject> => {
   const client = resolveAttioClient(input);
