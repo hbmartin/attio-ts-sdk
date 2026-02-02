@@ -90,7 +90,8 @@ const listAttributeMetadata = async <T>({
       if (parsed.success) {
         return parsed.data;
       }
-      // Treat parse failure as cache miss - will refetch from API
+      // Delete invalid cache entry to force refetch from API
+      cache.delete(cacheKey);
     }
   }
 

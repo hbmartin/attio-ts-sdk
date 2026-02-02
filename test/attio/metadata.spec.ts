@@ -462,6 +462,33 @@ describe("metadata", () => {
         expect(fetcher).toHaveBeenCalled();
         expect(result).toEqual([{ title: "Fetched" }]);
       });
+
+      it("deletes invalid cache entry when schema parsing fails", async () => {
+        const invalidCachedItems = [{ notTitle: "Invalid" }];
+        const mockCache = createMockCache();
+        mockCache.get.mockReturnValue(invalidCachedItems);
+
+        const mockClient = { baseUrl: "https://api.attio.com" };
+        vi.mocked(resolveAttioClient).mockReturnValue(
+          mockClient as ReturnType<typeof resolveAttioClient>,
+        );
+
+        vi.mocked(unwrapItems).mockReturnValue([{ title: "Fetched" }]);
+        const fetcher = vi
+          .fn()
+          .mockResolvedValue({ data: [{ title: "Fetched" }] });
+
+        await listAttributeMetadata({
+          input: buildInput("cached_field"),
+          cache: mockCache as unknown as TtlCache<string, unknown[]>,
+          fetcher,
+          itemSchema: testItemSchema,
+        });
+
+        expect(mockCache.delete).toHaveBeenCalledWith(
+          "companies:comp-123:cached_field",
+        );
+      });
     });
 
     describe("cache miss behavior", () => {
