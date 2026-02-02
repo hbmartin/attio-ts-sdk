@@ -26,7 +26,7 @@ interface MetadataCacheMaxEntries {
 }
 
 interface MetadataCacheConfigEnabled {
-  enabled: true;
+  enabled?: true;
   ttlMs?: number;
   maxEntries?: number | MetadataCacheMaxEntries;
   adapter?: CacheAdapterFactory<string, unknown[]>;
@@ -36,20 +36,12 @@ interface MetadataCacheConfigDisabled {
   enabled: false;
 }
 
-interface MetadataCacheConfigDefault {
-  enabled?: undefined;
-  ttlMs?: number;
-  maxEntries?: number | MetadataCacheMaxEntries;
-  adapter?: CacheAdapterFactory<string, unknown[]>;
-}
-
 type MetadataCacheConfig =
   | MetadataCacheConfigEnabled
-  | MetadataCacheConfigDisabled
-  | MetadataCacheConfigDefault;
+  | MetadataCacheConfigDisabled;
 
 interface AttioCacheConfigEnabled {
-  enabled: true;
+  enabled?: true;
   key?: string;
   metadata?: MetadataCacheConfig;
 }
@@ -59,16 +51,7 @@ interface AttioCacheConfigDisabled {
   key?: string;
 }
 
-interface AttioCacheConfigDefault {
-  enabled?: undefined;
-  key?: string;
-  metadata?: MetadataCacheConfig;
-}
-
-type AttioCacheConfig =
-  | AttioCacheConfigEnabled
-  | AttioCacheConfigDisabled
-  | AttioCacheConfigDefault;
+type AttioCacheConfig = AttioCacheConfigEnabled | AttioCacheConfigDisabled;
 
 interface MetadataCacheManager {
   get(scope: MetadataCacheScope): CacheAdapter<string, unknown[]> | undefined;
@@ -293,10 +276,14 @@ const clearMetadataCacheRegistry = (): void => {
   metadataCacheRegistry.clear();
 };
 
+const isAttioCacheDisabled = (
+  config: AttioCacheConfig | undefined,
+): config is AttioCacheConfigDisabled => config?.enabled === false;
+
 const resolveMetadataCacheConfig = (
   config?: AttioCacheConfig,
 ): MetadataCacheConfig => {
-  if (config?.enabled === false) {
+  if (isAttioCacheDisabled(config)) {
     return { enabled: false };
   }
   const metadataBase = config?.metadata;
@@ -305,11 +292,9 @@ const resolveMetadataCacheConfig = (
   }
   return {
     enabled: true,
-    ttlMs: metadataBase?.enabled !== false ? metadataBase?.ttlMs : undefined,
-    maxEntries:
-      metadataBase?.enabled !== false ? metadataBase?.maxEntries : undefined,
-    adapter:
-      metadataBase?.enabled !== false ? metadataBase?.adapter : undefined,
+    ttlMs: metadataBase?.ttlMs,
+    maxEntries: metadataBase?.maxEntries,
+    adapter: metadataBase?.adapter,
   };
 };
 
@@ -327,7 +312,6 @@ const createAttioCacheManager = (
 
 export type {
   AttioCacheConfig,
-  AttioCacheConfigDefault,
   AttioCacheConfigDisabled,
   AttioCacheConfigEnabled,
   AttioCacheManager,
@@ -335,7 +319,6 @@ export type {
   CacheAdapterFactory,
   CacheAdapterParams,
   MetadataCacheConfig,
-  MetadataCacheConfigDefault,
   MetadataCacheConfigDisabled,
   MetadataCacheConfigEnabled,
   MetadataCacheManager,
