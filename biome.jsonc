@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -169,9 +169,9 @@
         "useRequiredScripts": "error",
         "useSortedClasses": "error",
         "useSpread": "error",
-        "useUniqueArgumentNames": "error",
-        "useUniqueFieldDefinitionNames": "error",
-        "useUniqueVariableNames": "error"
+        "noDuplicateArgumentNames": "error",
+        "noDuplicateFieldDefinitionNames": "error",
+        "noDuplicateVariableNames": "error"
       },
       "performance": {
         "noAccumulatingSpread": "error",
