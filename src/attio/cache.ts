@@ -177,12 +177,7 @@ const clearClientCache = (): void => {
   clientCache.clear();
 };
 
-const ANONYMOUS_HASH = "anon";
-
-const hashToken = (value: string | undefined): string => {
-  if (value === undefined) {
-    return ANONYMOUS_HASH;
-  }
+const hashToken = (value: string): string => {
   let hash = 5381;
   for (let i = 0; i < value.length; i += 1) {
     // biome-ignore lint/suspicious/noBitwiseOperators: XOR is required for djb2 hash algorithm

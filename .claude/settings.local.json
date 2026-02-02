@@ -21,7 +21,8 @@
       "Bash(gh api:*)",
       "Bash(pnpm biome check:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(gh repo view:*)"
     ]
   }
 }
