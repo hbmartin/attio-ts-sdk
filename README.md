@@ -301,8 +301,8 @@ const client = createAttioClient({
       ttlMs: 2 * 60 * 1000,
       maxEntries: { attributes: 300, options: 800, statuses: 800 },
       adapter: {
-        create: ({ ttlMs, maxEntries }) =>
-          new YourCacheAdapter({ ttlMs, maxEntries }),
+        create: ({ scope, ttlMs, maxEntries }) =>
+          new YourCacheAdapter({ scope, ttlMs, maxEntries }),
       },
     },
   },

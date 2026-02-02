@@ -3,8 +3,9 @@ import { z } from "zod";
 import type { AttioError } from "./errors";
 import { AttioResponseError, normalizeAttioError } from "./errors";
 
-interface UnwrapOptions {
+interface UnwrapOptions<T = unknown> {
   maxDepth?: number;
+  schema?: ZodType<T>;
 }
 
 interface ResponseEnvelope {
@@ -37,44 +38,91 @@ const responseEnvelopeSchema: z.ZodType<ResponseEnvelope> = z
   })
   .passthrough();
 
-const unwrapData = <T>(result: unknown, options: UnwrapOptions = {}): T => {
+function unwrapData<T>(
+  result: unknown,
+  options: UnwrapOptions<T> & { schema: ZodType<T> },
+): T;
+function unwrapData<T>(result: unknown, options?: UnwrapOptions<T>): T;
+function unwrapData<T>(result: unknown, options: UnwrapOptions<T> = {}): T {
   const maxDepth = options.maxDepth ?? DEFAULT_UNWRAP_DEPTH;
   let current: unknown = result;
 
   for (let depth = 0; depth < maxDepth; depth += 1) {
     if (!current || typeof current !== "object") {
-      return current as T;
+      break;
     }
     if (!("data" in current)) {
-      return current as T;
+      break;
     }
     current = (current as { data: unknown }).data;
   }
 
-  return current as T;
-};
+  if (options.schema) {
+    const parsed = options.schema.safeParse(current);
+    if (!parsed.success) {
+      throw createSchemaError(parsed.error);
+    }
+    return parsed.data;
+  }
 
-const unwrapItems = <T>(result: unknown): T[] => {
-  let data: unknown = unwrapData<unknown>(result);
+  return current as T;
+}
+
+interface UnwrapItemsOptions<T = unknown> {
+  schema?: ZodType<T>;
+}
+
+const findArrayInData = (initialData: unknown): unknown[] | undefined => {
+  let data: unknown = initialData;
 
   for (let depth = 0; depth < DEFAULT_UNWRAP_DEPTH; depth += 1) {
     if (Array.isArray(data)) {
-      return data as T[];
+      return data;
     }
-    if (data && typeof data === "object") {
-      const record = data as Record<string, unknown>;
-      const nested = record.data ?? record.items ?? record.records;
-      if (nested === undefined) {
-        break;
-      }
-      data = nested;
-    } else {
-      break;
+    if (!data || typeof data !== "object") {
+      return;
     }
+    const record = data as Record<string, unknown>;
+    const nested = record.data ?? record.items ?? record.records;
+    if (nested === undefined) {
+      return;
+    }
+    data = nested;
+  }
+  return;
+};
+
+const validateItemsArray = <T>(items: unknown[], schema: ZodType<T>): T[] => {
+  const arraySchema = z.array(schema);
+  const parsed = arraySchema.safeParse(items);
+  if (!parsed.success) {
+    throw createSchemaError(parsed.error);
+  }
+  return parsed.data;
+};
+
+function unwrapItems<T>(
+  result: unknown,
+  options: UnwrapItemsOptions<T> & { schema: ZodType<T> },
+): T[];
+function unwrapItems<T>(result: unknown, options?: UnwrapItemsOptions<T>): T[];
+function unwrapItems<T>(
+  result: unknown,
+  options: UnwrapItemsOptions<T> = {},
+): T[] {
+  const data = unwrapData<unknown>(result);
+  const items = findArrayInData(data);
+
+  if (!items) {
+    return [];
   }
 
-  return [];
-};
+  if (options.schema) {
+    return validateItemsArray(items, options.schema);
+  }
+
+  return items as T[];
+}
 
 const readPaginationCursor = (pagination: unknown): string | null => {
   if (!pagination || typeof pagination !== "object") {
@@ -157,7 +205,9 @@ function assertOk<T>(result: unknown, options?: ResultOptions<T>): unknown {
     });
   }
 
-  const unwrapped = unwrapData(envelope?.data ?? result, options);
+  const unwrapped = unwrapData(envelope?.data ?? result, {
+    maxDepth: options?.maxDepth,
+  });
   if (!options?.schema) {
     return unwrapped;
   }
@@ -195,7 +245,9 @@ function toResult<T>(
     };
   }
 
-  const unwrapped = unwrapData(envelope?.data ?? result, options);
+  const unwrapped = unwrapData(envelope?.data ?? result, {
+    maxDepth: options?.maxDepth,
+  });
   if (!options?.schema) {
     return {
       ok: true,
@@ -231,4 +283,4 @@ export {
   unwrapPaginationCursor,
   unwrapPaginationOffset,
 };
-export type { AttioResult, ResultOptions, UnwrapOptions };
+export type { AttioResult, ResultOptions, UnwrapItemsOptions, UnwrapOptions };

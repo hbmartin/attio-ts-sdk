@@ -25,18 +25,33 @@ interface MetadataCacheMaxEntries {
   statuses?: number;
 }
 
-interface MetadataCacheConfig {
-  enabled?: boolean;
+interface MetadataCacheConfigEnabled {
+  enabled?: true;
   ttlMs?: number;
   maxEntries?: number | MetadataCacheMaxEntries;
   adapter?: CacheAdapterFactory<string, unknown[]>;
 }
 
-interface AttioCacheConfig {
-  enabled?: boolean;
+interface MetadataCacheConfigDisabled {
+  enabled: false;
+}
+
+type MetadataCacheConfig =
+  | MetadataCacheConfigEnabled
+  | MetadataCacheConfigDisabled;
+
+interface AttioCacheConfigEnabled {
+  enabled?: true;
   key?: string;
   metadata?: MetadataCacheConfig;
 }
+
+interface AttioCacheConfigDisabled {
+  enabled: false;
+  key?: string;
+}
+
+type AttioCacheConfig = AttioCacheConfigEnabled | AttioCacheConfigDisabled;
 
 interface MetadataCacheManager {
   get(scope: MetadataCacheScope): CacheAdapter<string, unknown[]> | undefined;
@@ -190,11 +205,14 @@ const resolveMaxEntries = (
   return DEFAULT_METADATA_CACHE_MAX_ENTRIES[scope];
 };
 
+const isMetadataCacheDisabled = (
+  config: MetadataCacheConfig,
+): config is MetadataCacheConfigDisabled => config.enabled === false;
+
 const createMetadataCacheManager = (
   config: MetadataCacheConfig = {},
 ): MetadataCacheManager => {
-  const enabled = config.enabled ?? true;
-  if (!enabled) {
+  if (isMetadataCacheDisabled(config)) {
     return {
       get: () => undefined,
       clear: () => undefined,
@@ -233,17 +251,44 @@ const createMetadataCacheManager = (
   return { get, clear };
 };
 
+const buildMetadataCacheFingerprint = (
+  config: MetadataCacheConfigEnabled,
+): string => {
+  const ttl = config.ttlMs ?? "default";
+  const max =
+    typeof config.maxEntries === "number"
+      ? config.maxEntries
+      : JSON.stringify(config.maxEntries ?? "default");
+  return `ttl:${ttl}|max:${max}`;
+};
+
 const getMetadataCacheManager = (
   key: string,
   config?: MetadataCacheConfig,
 ): MetadataCacheManager => {
-  const existing = metadataCacheRegistry.get(key);
+  // Disabled configs bypass registry entirely - return fresh disabled manager
+  if (config?.enabled === false) {
+    return createMetadataCacheManager(config);
+  }
+
+  // Custom adapters bypass registry - can't fingerprint functions
+  if (config?.adapter) {
+    return createMetadataCacheManager(config);
+  }
+
+  // Build registry key with config fingerprint for enabled configs
+  const fingerprint = config
+    ? buildMetadataCacheFingerprint(config)
+    : "default";
+  const registryKey = `${key}|${fingerprint}`;
+
+  const existing = metadataCacheRegistry.get(registryKey);
   if (existing) {
     return existing;
   }
 
   const manager = createMetadataCacheManager(config);
-  metadataCacheRegistry.set(key, manager);
+  metadataCacheRegistry.set(registryKey, manager);
   return manager;
 };
 
@@ -254,15 +299,33 @@ const clearMetadataCacheRegistry = (): void => {
   metadataCacheRegistry.clear();
 };
 
+const isAttioCacheDisabled = (
+  config: AttioCacheConfig | undefined,
+): config is AttioCacheConfigDisabled => config?.enabled === false;
+
+const resolveMetadataCacheConfig = (
+  config?: AttioCacheConfig,
+): MetadataCacheConfig => {
+  if (isAttioCacheDisabled(config)) {
+    return { enabled: false };
+  }
+  const metadataBase = config?.metadata;
+  if (metadataBase?.enabled === false) {
+    return { enabled: false };
+  }
+  return {
+    enabled: true,
+    ttlMs: metadataBase?.ttlMs,
+    maxEntries: metadataBase?.maxEntries,
+    adapter: metadataBase?.adapter,
+  };
+};
+
 const createAttioCacheManager = (
   key: string,
   config?: AttioCacheConfig,
 ): AttioCacheManager => {
-  const metadataConfig: MetadataCacheConfig = {
-    ...(config?.metadata ?? {}),
-    enabled:
-      config?.enabled === false ? false : (config?.metadata?.enabled ?? true),
-  };
+  const metadataConfig = resolveMetadataCacheConfig(config);
   const metadata = getMetadataCacheManager(key, metadataConfig);
   const clear = () => {
     metadata.clear();
@@ -272,11 +335,15 @@ const createAttioCacheManager = (
 
 export type {
   AttioCacheConfig,
+  AttioCacheConfigDisabled,
+  AttioCacheConfigEnabled,
   AttioCacheManager,
   CacheAdapter,
   CacheAdapterFactory,
   CacheAdapterParams,
   MetadataCacheConfig,
+  MetadataCacheConfigDisabled,
+  MetadataCacheConfigEnabled,
   MetadataCacheManager,
   MetadataCacheMaxEntries,
   MetadataCacheScope,

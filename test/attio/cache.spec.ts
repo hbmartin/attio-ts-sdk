@@ -210,4 +210,69 @@ describe("metadata cache manager", () => {
     const manager = createAttioCacheManager("meta-key", { enabled: false });
     expect(manager.metadata.get("statuses")).toBeUndefined();
   });
+
+  it("disables metadata caching via nested metadata config", () => {
+    const manager = createAttioCacheManager("meta-key-nested", {
+      metadata: { enabled: false },
+    });
+    expect(manager.metadata.get("attributes")).toBeUndefined();
+  });
+
+  it("returns fresh manager when metadata is disabled even with same key", () => {
+    const enabledManager = createAttioCacheManager("shared-key", {
+      enabled: true,
+    });
+    const enabledCache = enabledManager.metadata.get("attributes");
+    expect(enabledCache).toBeDefined();
+
+    const disabledManager = createAttioCacheManager("shared-key", {
+      enabled: false,
+    });
+    expect(disabledManager.metadata.get("attributes")).toBeUndefined();
+  });
+
+  it("uses custom maxEntries when provided", () => {
+    const manager = createAttioCacheManager("custom-max", {
+      metadata: {
+        enabled: true,
+        maxEntries: { attributes: 5, options: 10, statuses: 15 },
+      },
+    });
+    const cache = manager.metadata.get("attributes");
+    expect(cache).toBeDefined();
+  });
+
+  it("supports enabled: true configuration explicitly", () => {
+    const manager = createAttioCacheManager("explicit-enabled", {
+      enabled: true,
+      metadata: { enabled: true, ttlMs: 60_000 },
+    });
+    const cache = manager.metadata.get("options");
+    expect(cache).toBeDefined();
+  });
+
+  it("clear method clears metadata caches", () => {
+    const manager = createAttioCacheManager("clear-test");
+    const cache = manager.metadata.get("attributes");
+    cache?.set("test-key", [{ id: 1 }]);
+    expect(cache?.get("test-key")).toEqual([{ id: 1 }]);
+
+    manager.clear();
+    expect(cache?.get("test-key")).toBeUndefined();
+  });
+
+  it("clear method works even when no caches exist", () => {
+    const manager = createAttioCacheManager("empty-clear-test");
+    expect(() => manager.clear()).not.toThrow();
+  });
+
+  it("clear function is callable multiple times", () => {
+    const manager = createAttioCacheManager("multi-clear-test");
+    const cache = manager.metadata.get("options");
+    cache?.set("key", [{ value: 1 }]);
+
+    manager.clear();
+    manager.clear();
+    expect(cache?.get("key")).toBeUndefined();
+  });
 });

@@ -344,4 +344,94 @@ describe("paginateOffset", () => {
 
     expect(items).toEqual([{ id: 1 }]);
   });
+
+  it("respects maxPages option", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextOffset: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }, { id: 4 }],
+        nextOffset: 4,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 5 }],
+        nextOffset: null,
+      });
+
+    const items = await paginateOffset(fetchPage, { maxPages: 2, limit: 2 });
+
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+  });
+
+  it("starts from non-zero offset", async () => {
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 3 }, { id: 4 }],
+      nextOffset: null,
+    });
+
+    const items = await paginateOffset(fetchPage, { offset: 10, limit: 2 });
+
+    expect(fetchPage).toHaveBeenCalledWith(10, 2);
+    expect(items).toEqual([{ id: 3 }, { id: 4 }]);
+  });
+
+  it("uses pageSize fallback when limit is not provided", async () => {
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 1 }],
+      nextOffset: null,
+    });
+
+    await paginateOffset(fetchPage, { pageSize: 25 });
+
+    expect(fetchPage).toHaveBeenCalledWith(0, 25);
+  });
+
+  it("uses default page size when neither limit nor pageSize provided", async () => {
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 1 }],
+      nextOffset: null,
+    });
+
+    await paginateOffset(fetchPage);
+
+    expect(fetchPage).toHaveBeenCalledWith(0, 50);
+  });
+
+  it("terminates when page items length is less than limit", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+      });
+
+    const items = await paginateOffset(fetchPage, { limit: 2 });
+
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+  });
+
+  it("terminates when nextOffset is non-advancing", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextOffset: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }, { id: 4 }],
+        nextOffset: 2,
+      });
+
+    const items = await paginateOffset(fetchPage, { limit: 2 });
+
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+  });
 });

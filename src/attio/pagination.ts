@@ -33,29 +33,35 @@ interface OffsetPaginationOptions<T = unknown> {
   itemSchema?: ZodType<T>;
 }
 
-const createPageResultSchema = <T>(itemSchema: ZodType<T>) =>
+const createPageResultSchema = <T>(
+  itemSchema: ZodType<T>,
+): ZodType<PageResult<T>> =>
   z.object({
     items: z.array(itemSchema),
     nextCursor: z.string().nullish(),
-  });
+  }) as ZodType<PageResult<T>>;
 
-const basePageResultSchema = z.object({
+const basePageResultSchema: ZodType<PageResult<unknown>> = z.object({
   items: z.array(z.unknown()),
   nextCursor: z.string().nullish(),
-});
+}) as ZodType<PageResult<unknown>>;
 
-const createOffsetPageResultSchema = <T>(itemSchema: ZodType<T>) =>
+const createOffsetPageResultSchema = <T>(
+  itemSchema: ZodType<T>,
+): ZodType<OffsetPageResult<T>> =>
   z.object({
     items: z.array(itemSchema),
     nextOffset: z.number().nullish(),
     total: z.number().optional(),
-  });
+  }) as ZodType<OffsetPageResult<T>>;
 
-const baseOffsetPageResultSchema = z.object({
-  items: z.array(z.unknown()),
-  nextOffset: z.number().nullish(),
-  total: z.number().optional(),
-});
+const baseOffsetPageResultSchema: ZodType<OffsetPageResult<unknown>> = z.object(
+  {
+    items: z.array(z.unknown()),
+    nextOffset: z.number().nullish(),
+    total: z.number().optional(),
+  },
+) as ZodType<OffsetPageResult<unknown>>;
 
 const toPageResult = <T>(result: unknown): PageResult<T> => {
   const items = unwrapItems<T>(result);
@@ -73,28 +79,28 @@ const parsePageResult = <T>(
   page: unknown,
   itemSchema?: ZodType<T>,
 ): PageResult<T> | undefined => {
-  const schema = itemSchema
+  const schema: ZodType<PageResult<T>> = itemSchema
     ? createPageResultSchema(itemSchema)
-    : basePageResultSchema;
+    : (basePageResultSchema as ZodType<PageResult<T>>);
   const result = schema.safeParse(page);
   if (!result.success) {
     return;
   }
-  return result.data as PageResult<T>;
+  return result.data;
 };
 
 const parseOffsetPageResult = <T>(
   page: unknown,
   itemSchema?: ZodType<T>,
 ): OffsetPageResult<T> | undefined => {
-  const schema = itemSchema
+  const schema: ZodType<OffsetPageResult<T>> = itemSchema
     ? createOffsetPageResultSchema(itemSchema)
-    : baseOffsetPageResultSchema;
+    : (baseOffsetPageResultSchema as ZodType<OffsetPageResult<T>>);
   const result = schema.safeParse(page);
   if (!result.success) {
     return;
   }
-  return result.data as OffsetPageResult<T>;
+  return result.data;
 };
 
 const paginate = async <T>(
@@ -186,7 +192,7 @@ const paginateOffset = async <T>(
       currentOffset: offset,
     });
 
-    if (resolvedOffset === null) {
+    if (resolvedOffset === null || resolvedOffset <= offset) {
       break;
     }
 

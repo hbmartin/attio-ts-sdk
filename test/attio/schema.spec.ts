@@ -69,4 +69,30 @@ describe("createSchema", () => {
       AttioResponseError,
     );
   });
+
+  it("returns undefined for getAccessor with unknown slug", async () => {
+    const mockList = vi.mocked(listAttributes);
+    mockList.mockResolvedValue([]);
+
+    const schema = await createSchema({
+      target: "objects",
+      identifier: "companies",
+    });
+
+    expect(schema.getAccessor("unknown")).toBeUndefined();
+  });
+
+  it("throws when getAccessorOrThrow is called with unknown slug", async () => {
+    const mockList = vi.mocked(listAttributes);
+    mockList.mockResolvedValue([]);
+
+    const schema = await createSchema({
+      target: "objects",
+      identifier: "companies",
+    });
+
+    expect(() => schema.getAccessorOrThrow("unknown")).toThrow(
+      AttioResponseError,
+    );
+  });
 });

@@ -40,7 +40,7 @@ const value: ValueFactory = {
   email: (input) => wrapSingle({ email_address: emailSchema.parse(input) }),
   currency: (input, currencyCode) => {
     const currency_value = finiteNumberSchema.parse(input);
-    if (!currencyCode) {
+    if (currencyCode === undefined) {
       return wrapSingle({ currency_value });
     }
     return wrapSingle({

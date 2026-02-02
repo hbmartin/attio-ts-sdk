@@ -18,7 +18,10 @@
       "Bash(tree:*)",
       "Bash(wc:*)",
       "Bash(gh pr view:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(pnpm biome check:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

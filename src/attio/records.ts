@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { Options } from "../generated";
 import {
   deleteV2ObjectsByObjectRecordsByRecordId,
@@ -13,7 +14,9 @@ import {
   normalizeRecord,
   normalizeRecords,
 } from "./record-utils";
-import { unwrapData, unwrapItems } from "./response";
+import { assertOk, unwrapItems } from "./response";
+
+const rawRecordSchema = z.record(z.string(), z.unknown());
 
 interface RecordCreateInput extends AttioClientInput {
   object: string;
@@ -64,7 +67,7 @@ const createRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
+  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
 };
 
 const updateRecord = async <T extends AttioRecordLike>(
@@ -81,7 +84,7 @@ const updateRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
+  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
 };
 
 const upsertRecord = async <T extends AttioRecordLike>(
@@ -99,7 +102,7 @@ const upsertRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
+  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
 };
 
 const getRecord = async <T extends AttioRecordLike>(
@@ -111,7 +114,7 @@ const getRecord = async <T extends AttioRecordLike>(
     path: { object: input.object, record_id: input.recordId },
     ...input.options,
   });
-  return normalizeRecord<T>(unwrapData(result) as Record<string, unknown>);
+  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
 };
 
 const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
@@ -141,8 +144,8 @@ const queryRecords = async <T extends AttioRecordLike>(
     ...input.options,
   });
 
-  const items = unwrapItems<unknown>(result);
-  return normalizeRecords<T>(items as Record<string, unknown>[]);
+  const items = unwrapItems(result, { schema: rawRecordSchema });
+  return normalizeRecords<T>(items);
 };
 
 export type {

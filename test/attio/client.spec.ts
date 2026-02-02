@@ -147,7 +147,7 @@ describe("applyInterceptors", () => {
     await expect(client.get({ url: "/test" })).rejects.toThrow();
   });
 
-  it("invokes request and response hooks", async () => {
+  it("invokes request and response hooks with expected payloads", async () => {
     const mockFetch = vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ data: "ok" }), {
         status: 200,
@@ -166,10 +166,21 @@ describe("applyInterceptors", () => {
     await client.get({ url: "/test" });
 
     expect(onRequest).toHaveBeenCalledTimes(1);
+    const [[requestPayload]] = onRequest.mock.calls;
+    expect(requestPayload).toHaveProperty("request");
+    expect(requestPayload).toHaveProperty("options");
+    expect(requestPayload.request).toBeInstanceOf(Request);
+    expect(requestPayload.request.url).toContain("/test");
+
     expect(onResponse).toHaveBeenCalledTimes(1);
+    const [[responsePayload]] = onResponse.mock.calls;
+    expect(responsePayload).toHaveProperty("response");
+    expect(responsePayload).toHaveProperty("request");
+    expect(responsePayload.response).toBeInstanceOf(Response);
+    expect(responsePayload.response.status).toBe(200);
   });
 
-  it("invokes error hooks", async () => {
+  it("invokes error hooks with error payload", async () => {
     const mockFetch = vi.fn().mockRejectedValue(new Error("Network error"));
     const onError = vi.fn();
 
@@ -183,6 +194,10 @@ describe("applyInterceptors", () => {
 
     await expect(client.get({ url: "/test" })).rejects.toThrow();
     expect(onError).toHaveBeenCalledTimes(1);
+    const [[errorPayload]] = onError.mock.calls;
+    expect(errorPayload).toHaveProperty("error");
+    expect(errorPayload.error).toHaveProperty("message");
+    expect(errorPayload.error.message).toContain("Network error");
   });
 });
 
