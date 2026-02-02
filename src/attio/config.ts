@@ -12,7 +12,7 @@ interface AttioClientConfig
   extends Omit<Config, "auth" | "baseUrl" | "headers"> {
   apiKey?: string;
   accessToken?: string;
-  authToken: string;
+  authToken?: string;
   baseUrl?: string;
   headers?: Config["headers"];
   timeoutMs?: number;

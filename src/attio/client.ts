@@ -38,7 +38,7 @@ interface AttioRequestOptions extends RequestOptions {
 
 interface CreateAttioClientParams {
   config?: AttioClientConfig;
-  authToken: string;
+  authToken?: string;
 }
 
 const interceptorUseSchema = z
@@ -162,12 +162,12 @@ const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
 
 interface ClientCacheKeyParams {
   config: AttioClientConfig;
-  authToken: string;
+  authToken?: string;
 }
 
 interface MetadataCacheKeyParams {
   config: AttioClientConfig;
-  authToken: string;
+  authToken?: string;
   baseUrl: string;
 }
 
