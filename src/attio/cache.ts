@@ -1,5 +1,60 @@
 import type { ZodType } from "zod";
 
+type MetadataCacheScope = "attributes" | "options" | "statuses";
+
+interface CacheAdapter<K, V> {
+  get(key: K): V | undefined;
+  set(key: K, value: V): void;
+  delete(key: K): void;
+  clear(): void;
+}
+
+interface CacheAdapterParams {
+  scope: MetadataCacheScope;
+  ttlMs: number;
+  maxEntries?: number;
+}
+
+interface CacheAdapterFactory<K, V> {
+  create(params: CacheAdapterParams): CacheAdapter<K, V>;
+}
+
+interface MetadataCacheMaxEntries {
+  attributes?: number;
+  options?: number;
+  statuses?: number;
+}
+
+interface MetadataCacheConfig {
+  enabled?: boolean;
+  ttlMs?: number;
+  maxEntries?: number | MetadataCacheMaxEntries;
+  adapter?: CacheAdapterFactory<string, unknown[]>;
+}
+
+interface AttioCacheConfig {
+  enabled?: boolean;
+  key?: string;
+  metadata?: MetadataCacheConfig;
+}
+
+interface MetadataCacheManager {
+  get(scope: MetadataCacheScope): CacheAdapter<string, unknown[]> | undefined;
+  clear(): void;
+}
+
+interface AttioCacheManager {
+  metadata: MetadataCacheManager;
+  clear(): void;
+}
+
+const DEFAULT_METADATA_CACHE_TTL_MS = 5 * 60 * 1000;
+const DEFAULT_METADATA_CACHE_MAX_ENTRIES: MetadataCacheMaxEntries = {
+  attributes: 200,
+  options: 500,
+  statuses: 500,
+};
+
 interface TtlCacheEntry<T> {
   value: T;
   expiresAt: number;
@@ -59,6 +114,22 @@ class TtlCache<K, V> {
   }
 }
 
+const createTtlCacheAdapter = (
+  params: CacheAdapterParams,
+): CacheAdapter<string, unknown[]> => {
+  const cache = new TtlCache<string, unknown[]>({
+    ttlMs: params.ttlMs,
+    maxEntries: params.maxEntries,
+  });
+
+  return {
+    get: (key) => cache.get(key),
+    set: (key, value) => cache.set(key, value),
+    delete: (key) => cache.delete(key),
+    clear: () => cache.clear(),
+  };
+};
+
 const clientCache = new Map<string, unknown>();
 
 type ClientCacheValidator<T> = ZodType<T>;
@@ -104,10 +175,122 @@ const hashToken = (value: string): string => {
 const createTtlCache = <K, V>(options: TtlCacheOptions) =>
   new TtlCache<K, V>(options);
 
-export type { TtlCacheEntry, TtlCacheOptions };
+const metadataCacheRegistry = new Map<string, MetadataCacheManager>();
+
+const resolveMaxEntries = (
+  maxEntries: number | MetadataCacheMaxEntries | undefined,
+  scope: MetadataCacheScope,
+): number | undefined => {
+  if (typeof maxEntries === "number") {
+    return maxEntries;
+  }
+  if (maxEntries && maxEntries[scope] !== undefined) {
+    return maxEntries[scope];
+  }
+  return DEFAULT_METADATA_CACHE_MAX_ENTRIES[scope];
+};
+
+const createMetadataCacheManager = (
+  config: MetadataCacheConfig = {},
+): MetadataCacheManager => {
+  const enabled = config.enabled ?? true;
+  if (!enabled) {
+    return {
+      get: () => undefined,
+      clear: () => undefined,
+    };
+  }
+
+  const ttlMs = config.ttlMs ?? DEFAULT_METADATA_CACHE_TTL_MS;
+  const adapterFactory = config.adapter ?? {
+    create: (params: CacheAdapterParams) => createTtlCacheAdapter(params),
+  };
+
+  const caches = new Map<MetadataCacheScope, CacheAdapter<string, unknown[]>>();
+
+  const get = (scope: MetadataCacheScope) => {
+    const existing = caches.get(scope);
+    if (existing) {
+      return existing;
+    }
+
+    const adapter = adapterFactory.create({
+      scope,
+      ttlMs,
+      maxEntries: resolveMaxEntries(config.maxEntries, scope),
+    });
+    caches.set(scope, adapter);
+    return adapter;
+  };
+
+  const clear = () => {
+    for (const adapter of caches.values()) {
+      adapter.clear();
+    }
+    caches.clear();
+  };
+
+  return { get, clear };
+};
+
+const getMetadataCacheManager = (
+  key: string,
+  config?: MetadataCacheConfig,
+): MetadataCacheManager => {
+  const existing = metadataCacheRegistry.get(key);
+  if (existing) {
+    return existing;
+  }
+
+  const manager = createMetadataCacheManager(config);
+  metadataCacheRegistry.set(key, manager);
+  return manager;
+};
+
+const clearMetadataCacheRegistry = (): void => {
+  for (const manager of metadataCacheRegistry.values()) {
+    manager.clear();
+  }
+  metadataCacheRegistry.clear();
+};
+
+const createAttioCacheManager = (
+  key: string,
+  config?: AttioCacheConfig,
+): AttioCacheManager => {
+  const metadataConfig: MetadataCacheConfig = {
+    ...(config?.metadata ?? {}),
+    enabled:
+      config?.enabled === false ? false : (config?.metadata?.enabled ?? true),
+  };
+  const metadata = getMetadataCacheManager(key, metadataConfig);
+  const clear = () => {
+    metadata.clear();
+  };
+  return { metadata, clear };
+};
+
+export type {
+  AttioCacheConfig,
+  AttioCacheManager,
+  CacheAdapter,
+  CacheAdapterFactory,
+  CacheAdapterParams,
+  MetadataCacheConfig,
+  MetadataCacheManager,
+  MetadataCacheMaxEntries,
+  MetadataCacheScope,
+  TtlCacheEntry,
+  TtlCacheOptions,
+};
 export {
+  DEFAULT_METADATA_CACHE_MAX_ENTRIES,
+  DEFAULT_METADATA_CACHE_TTL_MS,
   TtlCache,
   createTtlCache,
+  createTtlCacheAdapter,
+  createAttioCacheManager,
+  clearMetadataCacheRegistry,
   getCachedClient,
   setCachedClient,
   clearClientCache,

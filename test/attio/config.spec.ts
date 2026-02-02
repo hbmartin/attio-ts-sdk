@@ -8,9 +8,7 @@ import {
   resolveBaseUrl,
   resolveResponseStyle,
   resolveThrowOnError,
-  validateAuthToken,
 } from "../../src/attio/config";
-import { AttioConfigError } from "../../src/attio/errors";
 
 describe("getEnvValue", () => {
   const originalEnv = process.env;
@@ -153,48 +151,6 @@ describe("resolveAuthToken", () => {
 
   it("returns undefined when no token found", () => {
     expect(resolveAuthToken()).toBeUndefined();
-  });
-});
-
-describe("validateAuthToken", () => {
-  it("returns valid token unchanged", () => {
-    expect(validateAuthToken("valid_token_12345")).toBe("valid_token_12345");
-  });
-
-  it("throws when token is undefined", () => {
-    expect(() => validateAuthToken(undefined)).toThrow(AttioConfigError);
-    expect(() => validateAuthToken(undefined)).toThrow(
-      "Missing Attio API key. Set ATTIO_API_KEY or pass apiKey.",
-    );
-  });
-
-  it("throws when token is empty string", () => {
-    expect(() => validateAuthToken("")).toThrow(AttioConfigError);
-    expect(() => validateAuthToken("")).toThrow(
-      "Missing Attio API key. Set ATTIO_API_KEY or pass apiKey.",
-    );
-  });
-
-  it("throws when token contains whitespace", () => {
-    expect(() => validateAuthToken("token with space")).toThrow(
-      AttioConfigError,
-    );
-    expect(() => validateAuthToken("token with space")).toThrow(
-      "Invalid Attio API key: contains whitespace.",
-    );
-    expect(() => validateAuthToken("token\twith\ttab")).toThrow(
-      AttioConfigError,
-    );
-    expect(() => validateAuthToken("token\twith\ttab")).toThrow(
-      "Invalid Attio API key: contains whitespace.",
-    );
-  });
-
-  it("throws when token is too short", () => {
-    expect(() => validateAuthToken("short")).toThrow(AttioConfigError);
-    expect(() => validateAuthToken("short")).toThrow(
-      "Invalid Attio API key: too short.",
-    );
   });
 });
 

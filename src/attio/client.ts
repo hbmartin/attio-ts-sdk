@@ -5,19 +5,27 @@ import {
   mergeHeaders,
   type RequestOptions,
 } from "../generated/client";
-import { getCachedClient, hashToken, setCachedClient } from "./cache";
+import {
+  type AttioCacheManager,
+  createAttioCacheManager,
+  getCachedClient,
+  hashToken,
+  setCachedClient,
+} from "./cache";
 import {
   type AttioClientConfig,
   resolveAuthToken,
   resolveBaseUrl,
   resolveResponseStyle,
   resolveThrowOnError,
-  validateAuthToken,
 } from "./config";
 import { AttioEnvironmentError, normalizeAttioError } from "./errors";
+import type { AttioClientHooks, AttioLogger } from "./hooks";
 import { callWithRetry, type RetryConfig } from "./retry";
 
-type AttioClient = Client;
+interface AttioClient extends Client {
+  cache: AttioCacheManager;
+}
 
 interface AttioClientInput {
   client?: AttioClient;
@@ -30,7 +38,7 @@ interface AttioRequestOptions extends RequestOptions {
 
 interface CreateAttioClientParams {
   config?: AttioClientConfig;
-  authToken: string;
+  authToken?: string;
 }
 
 const interceptorUseSchema = z
@@ -42,6 +50,17 @@ const interceptorUseSchema = z
 const attioClientShapeSchema = z
   .object({
     request: z.function(),
+    cache: z
+      .object({
+        metadata: z
+          .object({
+            get: z.function(),
+            clear: z.function(),
+          })
+          .passthrough(),
+        clear: z.function(),
+      })
+      .passthrough(),
     interceptors: z
       .object({
         error: interceptorUseSchema,
@@ -141,6 +160,12 @@ interface ClientCacheKeyParams {
   authToken: string;
 }
 
+interface MetadataCacheKeyParams {
+  config: AttioClientConfig;
+  authToken: string;
+  baseUrl: string;
+}
+
 const buildClientCacheKey = ({
   config,
   authToken,
@@ -151,17 +176,103 @@ const buildClientCacheKey = ({
   return;
 };
 
-const applyInterceptors = (client: AttioClient): void => {
-  client.interceptors.error.use((error, response, request, options) =>
-    normalizeAttioError(error, { response, request, options }),
-  );
+const buildMetadataCacheKey = ({
+  config,
+  authToken,
+  baseUrl,
+}: MetadataCacheKeyParams): string =>
+  `${config.cache?.key ?? "attio"}:${hashToken(authToken)}:${baseUrl}`;
+
+const composeHook = <T>(
+  first?: (payload: T) => void,
+  second?: (payload: T) => void,
+): ((payload: T) => void) | undefined => {
+  if (!first) {
+    return second;
+  }
+  if (!second) {
+    return first;
+  }
+  return (payload) => {
+    first(payload);
+    second(payload);
+  };
 };
 
-const wrapClient = (
-  base: AttioClient,
-  retry?: Partial<RetryConfig>,
-): AttioClient => {
-  const requestWithRetry: AttioClient["request"] = (
+const createLoggerHooks = (logger?: AttioLogger): AttioClientHooks => {
+  if (!logger) {
+    return {};
+  }
+
+  return {
+    onRequest: logger.debug
+      ? ({ request }) =>
+          logger.debug("attio.request", {
+            method: request.method,
+            url: request.url,
+          })
+      : undefined,
+    onResponse: logger.debug
+      ? ({ response, request }) =>
+          logger.debug("attio.response", {
+            method: request.method,
+            url: request.url,
+            status: response.status,
+          })
+      : undefined,
+    onError: logger.error
+      ? ({ error, request, response }) =>
+          logger.error("attio.error", {
+            message: error.message,
+            code: error.code,
+            status: error.status,
+            requestId: error.requestId,
+            url: request?.url,
+            responseStatus: response?.status,
+          })
+      : undefined,
+  };
+};
+
+const resolveClientHooks = (config?: AttioClientConfig): AttioClientHooks => {
+  const loggerHooks = createLoggerHooks(config?.logger);
+  const customHooks = config?.hooks ?? {};
+
+  return {
+    onRequest: composeHook(loggerHooks.onRequest, customHooks.onRequest),
+    onResponse: composeHook(loggerHooks.onResponse, customHooks.onResponse),
+    onError: composeHook(loggerHooks.onError, customHooks.onError),
+  };
+};
+
+const applyInterceptors = (client: Client, hooks: AttioClientHooks): void => {
+  if (hooks.onRequest) {
+    client.interceptors.request.use((request, options) => {
+      hooks.onRequest?.({ request, options });
+      return request;
+    });
+  }
+
+  if (hooks.onResponse) {
+    client.interceptors.response.use((response, request, options) => {
+      hooks.onResponse?.({ response, request, options });
+      return response;
+    });
+  }
+
+  client.interceptors.error.use((error, response, request, options) => {
+    const normalized = normalizeAttioError(error, {
+      response,
+      request,
+      options,
+    });
+    hooks.onError?.({ error: normalized, response, request, options });
+    return normalized;
+  });
+};
+
+const wrapClient = (base: Client, retry?: Partial<RetryConfig>): Client => {
+  const requestWithRetry: Client["request"] = (
     options: AttioRequestOptions,
   ) => {
     const { retry: retryOverride, ...rest } = options;
@@ -177,7 +288,7 @@ const wrapClient = (
       method: method as RequestOptions["method"],
     });
 
-  return {
+  const client: Client = {
     ...base,
     request: requestWithRetry,
     connect: makeMethod("CONNECT"),
@@ -189,7 +300,9 @@ const wrapClient = (
     post: makeMethod("POST"),
     put: makeMethod("PUT"),
     trace: makeMethod("TRACE"),
-  } as AttioClient;
+  };
+
+  return client;
 };
 
 interface CleanedConfigResult {
@@ -222,6 +335,7 @@ const createAttioClientWithAuthToken = ({
   const baseUrl = resolveBaseUrl(config);
   const responseStyle = resolveResponseStyle(config);
   const throwOnError = resolveThrowOnError(config);
+  const hooks = resolveClientHooks(config);
 
   const { cleanConfig, headers, retry, timeoutMs } =
     extractAndCleanConfig(config);
@@ -237,20 +351,32 @@ const createAttioClientWithAuthToken = ({
     throwOnError,
   });
 
-  applyInterceptors(base);
+  applyInterceptors(base, hooks);
 
-  return wrapClient(base, retry);
+  const wrapped = wrapClient(base, retry);
+  const safeAuthToken = authToken ?? "";
+  const metadataCacheKey = buildMetadataCacheKey({
+    config,
+    authToken: safeAuthToken,
+    baseUrl,
+  });
+  const cache = createAttioCacheManager(metadataCacheKey, config.cache);
+
+  const client: AttioClient = Object.assign(wrapped, { cache });
+  return client;
 };
 
 const createAttioClient = (config: AttioClientConfig = {}): AttioClient => {
-  const authToken = validateAuthToken(resolveAuthToken(config));
+  const authToken = resolveAuthToken(config);
   return createAttioClientWithAuthToken({ config, authToken });
 };
 
 const getAttioClient = (config: AttioClientConfig = {}): AttioClient => {
   const cacheEnabled = config.cache?.enabled ?? true;
-  const authToken = validateAuthToken(resolveAuthToken(config));
-  const cacheKey = buildClientCacheKey({ config, authToken });
+  const authToken = resolveAuthToken(config);
+  const cacheKey = authToken
+    ? buildClientCacheKey({ config, authToken })
+    : undefined;
 
   if (cacheEnabled && cacheKey) {
     const cached = getCachedClient<AttioClient>(cacheKey, AttioClientSchema);
