@@ -38,7 +38,7 @@ interface AttioRequestOptions extends RequestOptions {
 
 interface CreateAttioClientParams {
   config?: AttioClientConfig;
-  authToken?: string;
+  authToken: string;
 }
 
 const interceptorUseSchema = z
@@ -77,35 +77,38 @@ const AttioClientSchema: z.ZodType<AttioClient> = z
     message: "Invalid cached Attio client.",
   });
 
-const combineSignalsWithAny = (
-  initSignal: AbortSignal,
-  controllerSignal: AbortSignal,
-): AbortSignal =>
-  (
-    AbortSignal as typeof AbortSignal & {
-      any: (signals: AbortSignal[]) => AbortSignal;
-    }
-  ).any([initSignal, controllerSignal]);
+interface CombineSignalsParams {
+  requestSignal: AbortSignal;
+  timeoutSignal: AbortSignal;
+}
+
+const combineSignalsWithAny = ({
+  requestSignal,
+  timeoutSignal,
+}: CombineSignalsParams): AbortSignal =>
+  AbortSignal.any([requestSignal, timeoutSignal]);
 
 interface SignalCombinationResult {
   combinedSignal: AbortSignal;
   abortCombined?: () => void;
 }
 
-const combineSignalsWithFallback = (
-  initSignal: AbortSignal,
-  controllerSignal: AbortSignal,
-): SignalCombinationResult => {
+// Fallback for environments without AbortSignal.any (pre-Node 20, older browsers).
+// Creates a proxy controller that aborts when either source signal fires.
+const combineSignalsWithFallback = ({
+  requestSignal,
+  timeoutSignal,
+}: CombineSignalsParams): SignalCombinationResult => {
   const combinedController = new AbortController();
 
-  if (initSignal.aborted) {
+  if (requestSignal.aborted) {
     combinedController.abort();
     return { combinedSignal: combinedController.signal };
   }
 
   const abortCombined = () => combinedController.abort();
-  initSignal.addEventListener("abort", abortCombined, { once: true });
-  controllerSignal.addEventListener("abort", abortCombined, { once: true });
+  requestSignal.addEventListener("abort", abortCombined, { once: true });
+  timeoutSignal.addEventListener("abort", abortCombined, { once: true });
 
   return { combinedSignal: combinedController.signal, abortCombined };
 };
@@ -131,15 +134,17 @@ const resolveFetch = (config?: AttioClientConfig): typeof fetch => {
     let abortCombined: (() => void) | undefined;
 
     if (init?.signal) {
+      const signals = {
+        requestSignal: init.signal,
+        timeoutSignal: controller.signal,
+      };
       const supportsSignalAny =
         typeof AbortSignal !== "undefined" && "any" in AbortSignal;
       if (supportsSignalAny) {
-        combinedSignal = combineSignalsWithAny(init.signal, controller.signal);
+        combinedSignal = combineSignalsWithAny(signals);
       } else {
-        ({ combinedSignal, abortCombined } = combineSignalsWithFallback(
-          init.signal,
-          controller.signal,
-        ));
+        ({ combinedSignal, abortCombined } =
+          combineSignalsWithFallback(signals));
       }
     }
 
