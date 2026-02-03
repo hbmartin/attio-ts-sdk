@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.2.0...attio-ts-sdk-v1.2.1) (2026-02-03)
+
+
+### Bug Fixes
+
+* make all enums nullable to handle null values from API ([b0bb56d](https://github.com/hbmartin/attio-ts-sdk/commit/b0bb56dd47aec168aee9cac230c7469ee49e596d))
+* make all enums nullable to handle null values from API ([8e82e6e](https://github.com/hbmartin/attio-ts-sdk/commit/8e82e6e352c2ed3bf495f0f1dfa80a72fc252e35))
+
 ## [1.2.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.1.1...attio-ts-sdk-v1.2.0) (2026-02-03)
 
 
