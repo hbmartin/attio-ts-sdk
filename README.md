@@ -7,7 +7,7 @@
 [![Context7](https://img.shields.io/badge/[]-Context7-059669)](https://context7.com/hbmartin/attio-ts-sdk)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/hbmartin/attio-ts-sdk)
 
-A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. Built with Zod v4 and a new Attio‑aware client layer that adds retries, error normalization, caching, and higher‑level helpers on top of the generated OpenAPI client.
+A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. Built with Zod v4 and a client layer that adds retries, error normalization, caching, and higher‑level helpers on top of the generated OpenAPI client.
 
 - **Create an Attio client in one line** (`createAttioClient({ apiKey })`)
 - **Retry & rate‑limit aware** (exponential backoff + `Retry-After`)
@@ -28,6 +28,11 @@ You still have full access to the generated, spec‑accurate endpoints.
 - **TypeScript First** - Complete type definitions generated from OpenAPI spec
 - **Attio-Aware Client** - Retries, normalized errors, caching, helpers
 - **Zero Config** - Sensible defaults, just add your API key
+
+## See Also
+
+- [attio-js](https://github.com/d-stoll/attio-js) - an alternative SDK generated with Speakeasy
+- [attio-tui](https://github.com/hbmartin/attio-tui) - a TUI for using Attio built with the library
 
 ## Installing
 

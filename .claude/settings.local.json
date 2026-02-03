@@ -29,7 +29,10 @@
       "WebFetch(domain:docs.attio.com)",
       "WebFetch(domain:api.attio.com)",
       "WebSearch",
-      "WebFetch(domain:zod.dev)"
+      "WebFetch(domain:zod.dev)",
+      "WebFetch(domain:heyapi.dev)",
+      "Bash(pnpm openapi-ts:*)",
+      "Bash(grep:*)"
     ]
   }
 }
