@@ -12,6 +12,7 @@
       "!.release-please-manifest.json",
       "!jsr.json",
       "!.claude",
+      "!scripts",
       "!src/generated",
       "!dist",
       "!build",

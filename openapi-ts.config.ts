@@ -8,8 +8,8 @@ export default defineConfig({
     // matching Attio's API behavior where optional fields may return null.
     postProcess: [
       {
-        command: "sed",
-        args: ["-i", "", "s/z\\.optional(/z.nullish(/g", "{{path}}/zod.gen.ts"],
+        command: "node",
+        args: ["scripts/post-generate.js"],
       },
     ],
   },
