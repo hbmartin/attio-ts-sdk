@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.1.1...attio-ts-sdk-v1.2.0) (2026-02-03)
+
+
+### Features
+
+* make SDK compatible with Deno and other non-Node runtimes ([ce90bcb](https://github.com/hbmartin/attio-ts-sdk/commit/ce90bcb95cad5595c4a761a05a45079da5df0b24))
+* make SDK compatible with Deno and other non-Node runtimes ([7d3c66e](https://github.com/hbmartin/attio-ts-sdk/commit/7d3c66e32201b4d0ac90a3744d5b080e5d801fd5))
+* replace z.optional with z.nullish to accept null values from API ([e2e583c](https://github.com/hbmartin/attio-ts-sdk/commit/e2e583c6e66fc0b58b888439781333efa5740e19))
+* replace z.optional with z.nullish to accept null values from API ([f6a5264](https://github.com/hbmartin/attio-ts-sdk/commit/f6a5264f6a792d41e57bd9f2369eed616d5dbd48))
+
+
+### Bug Fixes
+
+* add attw config to ignore cjs-resolves-to-esm for ESM-only package ([14b430e](https://github.com/hbmartin/attio-ts-sdk/commit/14b430e9d9cf238326ed9a523c1115b734b818e2))
+
 ## [1.1.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.1.0...attio-ts-sdk-v1.1.1) (2026-02-03)
 
 
