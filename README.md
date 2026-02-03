@@ -13,13 +13,13 @@ A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. B
 - **Create a client in one line** - `createAttioClient({ apiKey })`
 - **Retry & rate‑limit aware** - exponential backoff + `Retry-After`
 - **Normalized errors** - consistent shape + optional suggestions for select/status mismatches
-- **Record normalization** - handles inconsistent response shapes)
+- **Record normalization** - handles inconsistent response shapes
 - **Metadata caching** - attributes, select options, statuses
 - **Pagination helpers** - `paginate` + `paginateOffset` + cursor handling
 - **Runtime Validation** - Every request and response validated with Zod v4 schemas
 - **Tree-Shakeable** - Import only what you need
 - **TypeScript First** - Complete type definitions generated from OpenAPI spec
-- 
+
 You still have full access to the generated, spec‑accurate endpoints.
 
 ### See Also
@@ -333,6 +333,9 @@ try {
 } catch (err) {
   if (err instanceof AttioError) {
     console.log(err.status, err.code, err.requestId, err.suggestions);
+  } else {
+    // Re-throw if it's not an error we specifically handle
+    throw err;
   }
 }
 ```
@@ -390,33 +393,89 @@ const { data } = await postV2ObjectsByObjectRecords({
 
 ### Pagination Helpers
 
+The SDK provides two pagination strategies. Use the one that matches the endpoint:
+
+| Strategy | Helper | Endpoints |
+| --- | --- | --- |
+| **Offset-based** | `paginateOffset` | Record queries (`postV2ObjectsByObjectRecordsQuery`), list entry queries (`postV2ListsByListEntriesQuery`) |
+| **Cursor-based** | `paginate` | Meetings (`getV2Meetings`), notes (`getV2Notes`), tasks (`getV2Tasks`), webhooks, and most `GET` list endpoints |
+
+Both helpers automatically extract items and pagination metadata from raw API responses — pass the generated endpoint call directly and the helper does the rest.
+
+> **Note:** The convenience functions `queryRecords` / `sdk.records.query` and `queryListEntries` / `sdk.lists.queryEntries` return a single page of unwrapped results. To collect **all** pages, use the pagination helpers with the generated endpoints as shown below.
+
+#### Paginating record queries (offset-based)
+
 ```typescript
 import {
   createAttioClient,
-  paginate,
   paginateOffset,
-  getV2Meetings,
   postV2ObjectsByObjectRecordsQuery,
 } from 'attio-ts-sdk';
 
 const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 
-
-const meetings = await paginate(async (cursor) => {
-  const result = await getV2Meetings({
-    client,
-    query: { cursor },
-  });
-  return result;
-});
-
-const offsetResults = await paginateOffset(async (offset, limit) => {
-  const result = await postV2ObjectsByObjectRecordsQuery({
+// Collect all companies matching a filter across every page
+const allCompanies = await paginateOffset(async (offset, limit) => {
+  return postV2ObjectsByObjectRecordsQuery({
     client,
     path: { object: 'companies' },
-    body: { offset, limit },
+    body: {
+      offset,
+      limit,
+      filter: { attribute: 'name', value: 'Acme' },
+      sorts: [{ attribute: 'created_at', direction: 'desc' }],
+    },
   });
-  return result;
+});
+```
+
+#### Paginating list entry queries (offset-based)
+
+```typescript
+import { paginateOffset, postV2ListsByListEntriesQuery } from 'attio-ts-sdk';
+
+const allEntries = await paginateOffset(async (offset, limit) => {
+  return postV2ListsByListEntriesQuery({
+    client,
+    path: { list: 'sales-pipeline' },
+    body: {
+      offset,
+      limit,
+      filter: { attribute: 'stage', value: 'negotiation' },
+    },
+  });
+});
+```
+
+#### Paginating cursor-based endpoints
+
+```typescript
+import { paginate, getV2Meetings } from 'attio-ts-sdk';
+
+const allMeetings = await paginate(async (cursor) => {
+  return getV2Meetings({ client, query: { cursor } });
+});
+```
+
+#### Pagination options
+
+Both helpers accept an options object to control limits:
+
+```typescript
+// Offset-based options
+const records = await paginateOffset(fetchPage, {
+  offset: 0,         // starting offset (default: 0)
+  limit: 100,        // items per page (default: 50)
+  maxPages: 5,       // stop after N pages
+  maxItems: 200,     // stop after N total items
+});
+
+// Cursor-based options
+const meetings = await paginate(fetchPage, {
+  cursor: null,      // starting cursor (default: null)
+  maxPages: 10,      // stop after N pages
+  maxItems: 500,     // stop after N total items
 });
 ```
 
