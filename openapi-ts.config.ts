@@ -28,6 +28,16 @@ export default defineConfig({
             ctx.nodes.format = () => $(z).attr("iso").attr("datetime").call();
           }
         },
+        // Attio's API returns null for some required enum fields (e.g. country_code in locations)
+        // but the OpenAPI spec doesn't mark them as nullable. Override the nullable node to
+        // always wrap enums in z.nullable() so null values pass validation.
+        enum(ctx) {
+          ctx.nodes.nullable = (innerCtx) => {
+            const { $, symbols } = innerCtx;
+            const { z } = symbols;
+            return $(z).attr("nullable").call(innerCtx.chain.current);
+          };
+        },
       },
     },
     {
