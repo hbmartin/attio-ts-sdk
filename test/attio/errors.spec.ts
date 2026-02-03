@@ -2,8 +2,13 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   AttioApiError,
+  AttioBatchError,
+  AttioConfigError,
+  AttioEnvironmentError,
   AttioError,
   AttioNetworkError,
+  AttioResponseError,
+  AttioRetryError,
   normalizeAttioError,
 } from "../../src/attio/errors";
 
@@ -229,5 +234,92 @@ describe("normalizeAttioError", () => {
   it("handles non-object errors", () => {
     const error = normalizeAttioError(undefined);
     expect(error.message).toBe("Request failed.");
+  });
+
+  it("ignores non-string code and type fields", () => {
+    const error = normalizeAttioError({ message: "test", code: 42, type: 99 });
+    expect(error.code).toBeUndefined();
+    expect(error.type).toBeUndefined();
+  });
+
+  it("returns undefined for getHeaderValue when header is not present", () => {
+    const response = new Response(null, { status: 400 });
+    const error = normalizeAttioError({ message: "test" }, { response });
+    // No x-request-id or x-attio-request-id headers set
+    expect((error as AttioApiError).requestId).toBeUndefined();
+  });
+});
+
+describe("AttioBatchError", () => {
+  it("creates a batch error with default code", () => {
+    const error = new AttioBatchError("batch failed");
+    expect(error.name).toBe("AttioBatchError");
+    expect(error.code).toBe("BATCH_ERROR");
+    expect(error.message).toBe("batch failed");
+    expect(error).toBeInstanceOf(AttioError);
+  });
+
+  it("preserves custom code when provided", () => {
+    const error = new AttioBatchError("batch failed", {
+      code: "CUSTOM_BATCH",
+    });
+    expect(error.code).toBe("CUSTOM_BATCH");
+  });
+});
+
+describe("AttioConfigError", () => {
+  it("creates a config error with default code", () => {
+    const error = new AttioConfigError("invalid config");
+    expect(error.name).toBe("AttioConfigError");
+    expect(error.code).toBe("CONFIG_ERROR");
+    expect(error.message).toBe("invalid config");
+    expect(error).toBeInstanceOf(AttioError);
+  });
+
+  it("preserves custom code when provided", () => {
+    const error = new AttioConfigError("invalid config", {
+      code: "CUSTOM_CONFIG",
+    });
+    expect(error.code).toBe("CUSTOM_CONFIG");
+  });
+});
+
+describe("AttioEnvironmentError", () => {
+  it("creates an environment error with default code", () => {
+    const error = new AttioEnvironmentError("missing env");
+    expect(error.name).toBe("AttioEnvironmentError");
+    expect(error.code).toBe("ENVIRONMENT_ERROR");
+    expect(error).toBeInstanceOf(AttioError);
+  });
+});
+
+describe("AttioResponseError", () => {
+  it("creates a response error with default code", () => {
+    const error = new AttioResponseError("bad response");
+    expect(error.name).toBe("AttioResponseError");
+    expect(error.code).toBe("RESPONSE_ERROR");
+    expect(error).toBeInstanceOf(AttioError);
+  });
+});
+
+describe("AttioRetryError", () => {
+  it("creates a retry error with default code", () => {
+    const error = new AttioRetryError("retry exhausted");
+    expect(error.name).toBe("AttioRetryError");
+    expect(error.code).toBe("RETRY_ERROR");
+    expect(error).toBeInstanceOf(AttioError);
+  });
+});
+
+describe("AttioError cause", () => {
+  it("passes cause option to Error constructor", () => {
+    const cause = new Error("root cause");
+    const error = new AttioError("wrapper", { cause });
+    expect(error.cause).toBe(cause);
+  });
+
+  it("does not set cause when not provided", () => {
+    const error = new AttioError("no cause");
+    expect(error.cause).toBeUndefined();
   });
 });

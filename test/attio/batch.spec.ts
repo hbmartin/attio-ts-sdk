@@ -207,6 +207,64 @@ describe("runBatch", () => {
     expect(abortObserved).toBe(true);
   });
 
+  it("does not launch new items after stopOnError triggers from finally handler", async () => {
+    const startedLabels: string[] = [];
+
+    const items: BatchItem<string>[] = [
+      {
+        label: "fail-immediately",
+        run: async () => {
+          startedLabels.push("fail-immediately");
+          throw new AttioBatchError("stop");
+        },
+      },
+      {
+        label: "slow-item",
+        run: async () => {
+          startedLabels.push("slow-item");
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          return "slow";
+        },
+      },
+      {
+        label: "never-started-1",
+        run: async () => {
+          startedLabels.push("never-started-1");
+          return "never";
+        },
+      },
+      {
+        label: "never-started-2",
+        run: async () => {
+          startedLabels.push("never-started-2");
+          return "never";
+        },
+      },
+    ];
+
+    await runBatch(items, { concurrency: 2, stopOnError: true }).catch(
+      () => undefined,
+    );
+
+    // Items 3 and 4 should never start because launchNext returns early
+    // when isCancelled() is true after the first error
+    expect(startedLabels).not.toContain("never-started-1");
+    expect(startedLabels).not.toContain("never-started-2");
+  });
+
+  it("handles negative concurrency by clamping to 1", async () => {
+    const items: BatchItem<string>[] = [
+      { label: "a", run: async () => "a" },
+      { label: "b", run: async () => "b" },
+    ];
+
+    const results = await runBatch(items, { concurrency: -5 });
+
+    expect(results).toHaveLength(2);
+    expect(results[0].status).toBe("fulfilled");
+    expect(results[1].status).toBe("fulfilled");
+  });
+
   it("collects all results when stopOnError is false", async () => {
     const items = [
       {

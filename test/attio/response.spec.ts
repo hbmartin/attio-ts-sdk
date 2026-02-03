@@ -253,4 +253,56 @@ describe("toResult", () => {
 
     expect(result.ok).toBe(false);
   });
+
+  it("returns ok true with validated data when schema passes", () => {
+    const schema = z.object({ id: z.string() });
+    const result = toResult({ data: { id: "valid" } }, { schema });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value).toEqual({ id: "valid" });
+    }
+  });
+
+  it("includes request and response from envelope on success with schema", () => {
+    const request = new Request("https://example.com/test");
+    const response = new Response(null, { status: 200 });
+    const schema = z.object({ id: z.string() });
+    const result = toResult(
+      { data: { id: "ok" }, request, response },
+      { schema },
+    );
+
+    expect(result.ok).toBe(true);
+    expect(result.request).toBe(request);
+    expect(result.response).toBe(response);
+  });
+});
+
+describe("findArrayInData edge cases", () => {
+  it("returns empty when findArrayInData exhausts DEFAULT_UNWRAP_DEPTH", () => {
+    // unwrapData strips the outer `data` key, leaving:
+    //   { items: { records: { data: { items: [1, 2, 3] } } } }
+    // findArrayInData then traverses items → records → data but exhausts
+    // depth 3 before reaching the inner array.
+    const result = unwrapItems({
+      data: { items: { records: { data: { items: [1, 2, 3] } } } },
+    });
+    expect(result).toEqual([]);
+  });
+});
+
+describe("parseResponseEnvelope edge cases", () => {
+  it("handles non-object input gracefully in assertOk", () => {
+    // When result is a primitive that fails the envelope schema parse,
+    // assertOk should still return the unwrapped value
+    const result = assertOk(42);
+    expect(result).toBe(42);
+  });
+
+  it("handles non-object input gracefully in toResult", () => {
+    const result = toResult(42);
+    expect(result.ok).toBe(true);
+    expect(result.value).toBe(42);
+  });
 });

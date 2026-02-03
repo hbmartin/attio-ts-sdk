@@ -33,7 +33,10 @@
       "WebFetch(domain:heyapi.dev)",
       "Bash(pnpm openapi-ts:*)",
       "Bash(grep:*)",
-      "Bash(git status:*)"
+      "Bash(git status:*)",
+      "Bash(npx vitest run --coverage --reporter=verbose)",
+      "Bash(npx vitest run --coverage)",
+      "Bash(npx vitest run --coverage --coverage.reporter=text)"
     ]
   }
 }

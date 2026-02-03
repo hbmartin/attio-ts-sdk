@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearClientCache } from "../../src/attio/cache";
-import { createAttioClient } from "../../src/attio/client";
+import { createAttioClient, getAttioClient } from "../../src/attio/client";
+import * as configModule from "../../src/attio/config";
 import { AttioEnvironmentError } from "../../src/attio/errors";
 import type { AttioLogger } from "../../src/attio/hooks";
 
@@ -73,6 +74,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 describe("wrapClient", () => {
@@ -360,6 +362,27 @@ describe("resolveFetch", () => {
     });
 
     expect(mockFetch).toHaveBeenCalled();
+  });
+});
+
+describe("getAttioClient without auth token", () => {
+  it("skips client cache when no auth token is resolved", () => {
+    vi.spyOn(configModule, "resolveAuthToken").mockReturnValue(undefined);
+
+    const first = getAttioClient({});
+    const second = getAttioClient({});
+
+    // Without auth token, no cacheKey is built, so each call creates a new client
+    expect(first).not.toBe(second);
+  });
+
+  it("skips client cache when no auth token even with cache key configured", () => {
+    vi.spyOn(configModule, "resolveAuthToken").mockReturnValue(undefined);
+
+    const first = getAttioClient({ cache: { key: "shared" } });
+    const second = getAttioClient({ cache: { key: "shared" } });
+
+    expect(first).not.toBe(second);
   });
 });
 
