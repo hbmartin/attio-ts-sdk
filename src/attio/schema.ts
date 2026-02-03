@@ -1,12 +1,11 @@
 import type { ZodType } from "zod";
 import type {
-  Attribute,
   GetV2ByTargetByIdentifierAttributesData,
   Options,
 } from "../generated";
 import type { AttioClientInput } from "./client";
 import { AttioResponseError } from "./errors";
-import { listAttributes } from "./metadata";
+import { listAttributes, type ZodAttribute } from "./metadata";
 import type { AttioRecordLike } from "./record-utils";
 import type { ValueLookupOptions } from "./values";
 import { getFirstValue, getValue } from "./values";
@@ -25,7 +24,7 @@ interface SchemaInput extends AttioClientInput {
 }
 
 interface AttributeAccessor {
-  attribute: Attribute;
+  attribute: ZodAttribute;
   getValue: (record: AttioRecordLike) => unknown[] | undefined;
   getFirstValue: (record: AttioRecordLike) => unknown | undefined;
   getValueAs: <T>(
@@ -41,15 +40,15 @@ interface AttributeAccessor {
 interface AttioSchema {
   target: SchemaTarget;
   identifier: SchemaIdentifier;
-  attributes: Attribute[];
+  attributes: ZodAttribute[];
   attributeSlugs: string[];
-  getAttribute: (slug: string) => Attribute | undefined;
-  getAttributeOrThrow: (slug: string) => Attribute;
+  getAttribute: (slug: string) => ZodAttribute | undefined;
+  getAttributeOrThrow: (slug: string) => ZodAttribute;
   getAccessor: (slug: string) => AttributeAccessor | undefined;
   getAccessorOrThrow: (slug: string) => AttributeAccessor;
 }
 
-const createAccessor = (attribute: Attribute): AttributeAccessor => ({
+const createAccessor = (attribute: ZodAttribute): AttributeAccessor => ({
   attribute,
   getValue: (record) => getValue(record, attribute.api_slug),
   getFirstValue: (record) => getFirstValue(record, attribute.api_slug),
@@ -64,7 +63,7 @@ const createSchema = async (input: SchemaInput): Promise<AttioSchema> => {
     ...input,
     options: input.options,
   });
-  const attributeMap = new Map<string, Attribute>();
+  const attributeMap = new Map<string, ZodAttribute>();
   const attributeSlugs: string[] = [];
 
   for (const attribute of attributes) {

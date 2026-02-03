@@ -792,11 +792,6 @@ pnpm test
 pnpm build
 ```
 
-### Releasing
-
-- Merge the automated Release PR created by Release Please
-- Manually run the "Release" workflow to publish to npm and JSR with provenance
-
 ## License
 
-MIT © Harold Martin
+[MIT](LICENSE) © [Harold Martin](https://www.linkedin.com/in/harold-martin-98526971/)

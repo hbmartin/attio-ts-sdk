@@ -2,7 +2,17 @@ import { defineConfig } from "@hey-api/openapi-ts";
 
 export default defineConfig({
   input: "https://api.attio.com/openapi/api",
-  output: "src/generated",
+  output: {
+    path: "src/generated",
+    // Replace z.optional with z.nullish so optional fields also accept null,
+    // matching Attio's API behavior where optional fields may return null.
+    postProcess: [
+      {
+        command: "sed",
+        args: ["-i", "", "s/z\\.optional(/z.nullish(/g", "{{path}}/zod.gen.ts"],
+      },
+    ],
+  },
   plugins: [
     "@hey-api/typescript",
     {

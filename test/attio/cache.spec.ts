@@ -402,6 +402,35 @@ describe("metadata cache manager", () => {
     expect(first).toBe(second);
   });
 
+  it("uses default maxEntries when metadata maxEntries is an empty object", () => {
+    const manager = createAttioCacheManager("empty-max-obj", {
+      metadata: { maxEntries: {} },
+    });
+    const cache = manager.metadata.get("attributes");
+    expect(cache).toBeDefined();
+  });
+
+  it("creates manager with default config when no cache config is provided", () => {
+    const manager = createAttioCacheManager("no-config-key");
+    const cache = manager.metadata.get("statuses");
+    expect(cache).toBeDefined();
+
+    cache?.set("test-key", [{ value: 1 }]);
+    expect(cache?.get("test-key")).toEqual([{ value: 1 }]);
+  });
+
+  it("uses default fingerprint when metadata config is undefined", () => {
+    // Two calls with undefined metadata config should share a registry entry
+    const first = createAttioCacheManager("default-fingerprint");
+    const second = createAttioCacheManager("default-fingerprint");
+
+    const firstCache = first.metadata.get("attributes");
+    firstCache?.set("shared", [{ data: true }]);
+
+    const secondCache = second.metadata.get("attributes");
+    expect(secondCache?.get("shared")).toEqual([{ data: true }]);
+  });
+
   it("clearMetadataCacheRegistry clears all registered managers", () => {
     const manager = createAttioCacheManager("registry-clear-test");
     const cache = manager.metadata.get("attributes");
