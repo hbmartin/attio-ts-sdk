@@ -9,30 +9,48 @@
 
 A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. Built with Zod v4 and a client layer that adds retries, error normalization, caching, and higher‑level helpers on top of the generated OpenAPI client.
 
-- **Create an Attio client in one line** (`createAttioClient({ apiKey })`)
-- **Retry & rate‑limit aware** (exponential backoff + `Retry-After`)
-- **Normalized errors** (consistent shape + optional suggestions for select/status mismatches)
-- **Record normalization** (handles inconsistent response shapes)
-- **Metadata caching** (attributes, select options, statuses)
-- **Pagination helpers** (`paginate` + cursor handling)
-- **Response helpers** (`assertOk`, `toResult`)
-- **Offset pagination support** (`paginateOffset`)
-
-You still have full access to the generated, spec‑accurate endpoints.
-
-## Features
-
 - **Full Attio API Coverage** - People, companies, lists, notes, tasks, meetings, webhooks, and more
+- **Create a client in one line** - `createAttioClient({ apiKey })`
+- **Retry & rate‑limit aware** - exponential backoff + `Retry-After`
+- **Normalized errors** - consistent shape + optional suggestions for select/status mismatches
+- **Record normalization** - handles inconsistent response shapes)
+- **Metadata caching** - attributes, select options, statuses
+- **Pagination helpers** - `paginate` + `paginateOffset` + cursor handling
 - **Runtime Validation** - Every request and response validated with Zod v4 schemas
 - **Tree-Shakeable** - Import only what you need
 - **TypeScript First** - Complete type definitions generated from OpenAPI spec
-- **Attio-Aware Client** - Retries, normalized errors, caching, helpers
-- **Zero Config** - Sensible defaults, just add your API key
+- 
+You still have full access to the generated, spec‑accurate endpoints.
 
-## See Also
+### See Also
 
 - [attio-js](https://github.com/d-stoll/attio-js) - an alternative SDK generated with Speakeasy
 - [attio-tui](https://github.com/hbmartin/attio-tui) - a TUI for using Attio built with the library
+
+## Table of Contents
+
+- [Installing](#installing)
+- [Getting Your API Key](#getting-your-api-key)
+- [Usage](#usage)
+  - [Quick Start](#quick-start)
+  - [Recommended Pattern](#recommended-pattern)
+  - [Attio SDK](#attio-sdk)
+  - [Attio Convenience Layer](#attio-convenience-layer)
+  - [Value Helpers](#value-helpers)
+  - [Record Value Accessors](#record-value-accessors)
+  - [Schema Helpers](#schema-helpers)
+  - [Client Configuration](#client-configuration)
+  - [Error Handling](#error-handling)
+  - [Pagination Helpers](#pagination-helpers)
+  - [Caching](#caching)
+  - [Debug Hooks](#debug-hooks)
+  - [Metadata Helpers](#metadata-helpers)
+  - [Working with Records](#working-with-records)
+  - [Using Generated Endpoints Directly](#using-generated-endpoints-directly)
+  - [Managing Lists](#managing-lists)
+  - [Notes and Tasks](#notes-and-tasks)
+  - [Webhooks](#webhooks)
+- [Development](#development)
 
 ## Installing
 
@@ -51,6 +69,19 @@ bun add attio-ts-sdk zod
 ```
 
 > **Note:** Zod v4 is a peer dependency - install it alongside the SDK.
+
+## Getting Your API Key
+
+1. Log in to your [Attio](https://attio.com) workspace.
+2. Navigate to **Workspace Settings → Developers** (or visit `https://app.attio.com/settings/developers` directly).
+3. Click **Create a new integration**, give it a name, and select the scopes your application needs.
+4. Copy the generated API token and store it securely (e.g. in an environment variable).
+
+```bash
+export ATTIO_API_KEY="your-api-key-here"
+```
+
+The SDK reads the key from whatever you pass to `createAttioClient({ apiKey })` — it does **not** read environment variables automatically, so you control exactly how the secret is loaded.
 
 ## Usage
 
@@ -120,10 +151,46 @@ const objects = assertOk(await getV2Objects({ client }));
 console.log(objects);
 ```
 
+### Attio SDK
+
+`createAttioSdk` builds on top of the convenience layer and the generated endpoints to provide a single, namespaced object you can pass around your application. It binds the client once so you don't repeat `{ client }` on every call, and groups operations by resource.
+
+```typescript
+import { createAttioSdk } from 'attio-ts-sdk';
+
+const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
+```
+
+The returned `sdk` object exposes these namespaces:
+
+| Namespace | Methods |
+| --- | --- |
+| `sdk.objects` | `list`, `get`, `create`, `update` |
+| `sdk.records` | `create`, `update`, `upsert`, `get`, `delete`, `query` |
+| `sdk.lists` | `list`, `get`, `queryEntries`, `addEntry`, `updateEntry`, `removeEntry` |
+| `sdk.metadata` | `listAttributes`, `getAttribute`, `getAttributeOptions`, `getAttributeStatuses`, `schema` |
+
+The underlying `AttioClient` is also available as `sdk.client` when you need to drop down to the generated endpoints.
+
+```typescript
+const companies = await sdk.records.query({
+  object: 'companies',
+  filter: { attribute: 'name', value: 'Acme' },
+});
+
+const attributes = await sdk.metadata.listAttributes({
+  target: 'objects',
+  identifier: 'companies',
+});
+
+// Use the generated endpoints when you need full spec access
+const { data } = await getV2Objects({ client: sdk.client });
+```
+
 ### Attio Convenience Layer
 
-The Attio helpers wrap the generated endpoints with retries, error normalization,
-record normalization, and opinionated defaults.
+The standalone helper functions wrap the generated endpoints with retries, error normalization,
+record normalization, and opinionated defaults. They are the same functions that `createAttioSdk` uses under the hood — use them directly when you prefer explicit `{ client }` threading.
 
 ```typescript
 import { createAttioClient, createRecord, listLists, searchRecords } from 'attio-ts-sdk';
@@ -148,6 +215,55 @@ const matches = await searchRecords({
 });
 ```
 
+### Value Helpers
+
+The `value` namespace provides factory functions that build correctly shaped field-value arrays for record creation and updates. Each helper validates its input with Zod before returning, so typos and bad data fail fast at the call site rather than in the API response.
+
+```typescript
+import { value } from 'attio-ts-sdk';
+```
+
+| Helper | Signature | Description |
+| --- | --- | --- |
+| `value.string` | `(value: string) => ValueInput[]` | Non-empty string field. |
+| `value.number` | `(value: number) => ValueInput[]` | Finite numeric field. |
+| `value.boolean` | `(value: boolean) => ValueInput[]` | Boolean field. |
+| `value.domain` | `(value: string) => ValueInput[]` | Domain field (non-empty string). |
+| `value.email` | `(value: string) => ValueInput[]` | Email field (validated format). |
+| `value.currency` | `(value: number, currencyCode?: string) => ValueInput[]` | Currency field. `currencyCode` is an optional ISO 4217 code (e.g. `"USD"`). |
+
+```typescript
+const values = {
+  name: value.string('Acme Corp'),
+  domains: value.domain('acme.com'),
+  contact_email: value.email('hello@acme.com'),
+  employee_count: value.number(150),
+  is_customer: value.boolean(true),
+  annual_revenue: value.currency(50000, 'USD'),
+};
+
+await sdk.records.create({ object: 'companies', values });
+```
+
+### Record Value Accessors
+
+`getValue` and `getFirstValue` extract attribute values from a record object. Pass an optional Zod schema to get typed, validated results.
+
+```typescript
+import { getFirstValue, getValue } from 'attio-ts-sdk';
+
+// Untyped — returns unknown
+const name = getFirstValue(company, 'name');
+const domains = getValue(company, 'domains');
+
+// Typed — returns parsed values or throws on mismatch
+import { z } from 'zod';
+
+const nameSchema = z.object({ value: z.string() });
+const typedName = getFirstValue(company, 'name', { schema: nameSchema });
+//    ^? { value: string } | undefined
+```
+
 ### Schema Helpers
 
 Create a schema from cached metadata and use accessors to reduce raw string keys:
@@ -162,20 +278,6 @@ const schema = await createSchema({
 });
 
 const name = schema.getAccessorOrThrow('name').getFirstValue(company);
-```
-
-### Record Value Helpers
-
-```typescript
-import { getFirstValue, getValue, value } from 'attio-ts-sdk';
-
-const values = {
-  name: value.string('Acme'),
-  domains: value.domain('acme.com'),
-};
-
-const name = getFirstValue(company, 'name');
-const domains = getValue(company, 'domains');
 ```
 
 ### Client Configuration
@@ -194,7 +296,28 @@ const client = createAttioClient({
 
 ### Error Handling
 
-Errors are normalized to `AttioError` / `AttioApiError` / `AttioNetworkError`.
+All errors thrown by the convenience layer and `createAttioSdk` are normalized into a hierarchy rooted at `AttioError`:
+
+| Class | Default Code | When |
+| --- | --- | --- |
+| `AttioApiError` | *(from response)* | HTTP error responses (4xx / 5xx). Includes `response`, `requestId`, and optional `retryAfterMs`. |
+| `AttioNetworkError` | *(from cause)* | Connection failures, DNS errors, timeouts. |
+| `AttioRetryError` | `RETRY_ERROR` | All retry attempts exhausted. |
+| `AttioResponseError` | `RESPONSE_ERROR` | Response body failed Zod validation. |
+| `AttioConfigError` | `CONFIG_ERROR` | Invalid client configuration. |
+| `AttioBatchError` | `BATCH_ERROR` | A batch operation partially or fully failed. |
+
+Every `AttioError` carries these optional fields:
+
+```typescript
+error.status       // HTTP status code
+error.code         // machine-readable error code
+error.requestId    // Attio x-request-id header
+error.retryAfterMs // parsed Retry-After (milliseconds)
+error.suggestions  // fuzzy-match suggestions for value mismatches (see below)
+```
+
+#### Catching errors from the convenience layer
 
 ```typescript
 import { createAttioClient, createRecord, AttioError } from 'attio-ts-sdk';
@@ -208,24 +331,61 @@ try {
     values: { stage: [{ value: 'Prospectt' }] },
   });
 } catch (err) {
-  const error = err as AttioError;
-  console.log(error.status, error.code, error.requestId, error.suggestions);
+  if (err instanceof AttioError) {
+    console.log(err.status, err.code, err.requestId, err.suggestions);
+  }
 }
 ```
 
-If you use the generated endpoints directly, you can normalize and unwrap responses:
+#### Smart suggestions for value mismatches
+
+When an API error indicates a select option or status mismatch, the SDK automatically attaches a `suggestions` object with up to three fuzzy-matched alternatives:
+
+```typescript
+error.suggestions
+// {
+//   field: 'stage',
+//   attempted: 'Prospectt',
+//   bestMatch: 'Prospect',
+//   matches: ['Prospect', 'Prospecting', 'Closed']
+// }
+```
+
+#### Response helpers for generated endpoints
+
+When using the generated endpoints directly, use `assertOk` or `toResult` to unwrap responses:
 
 ```typescript
 import { assertOk, toResult, getV2Objects } from 'attio-ts-sdk';
 
+// Throws on error, returns the data payload
 const objects = assertOk(await getV2Objects({ client }));
 
+// Returns a discriminated union { ok: true, value } | { ok: false, error }
 const result = toResult(await getV2Objects({ client }));
 if (result.ok) {
   console.log(result.value);
 } else {
   console.error(result.error);
 }
+```
+
+#### throwOnError mode
+
+You can also opt into exceptions at the client level:
+
+```typescript
+const client = createAttioClient({
+  apiKey: process.env.ATTIO_API_KEY,
+  throwOnError: true,
+});
+
+// Generated endpoints now throw instead of returning { error }
+const { data } = await postV2ObjectsByObjectRecords({
+  client,
+  path: { object: 'companies' },
+  body: { data: { values: { name: [{ value: 'Test' }] } } },
+});
 ```
 
 ### Pagination Helpers
@@ -543,35 +703,10 @@ const { data: webhook } = await postV2Webhooks({
 const { data: webhooks } = await getV2Webhooks({ client });
 ```
 
-### Error Handling
+## See Also
 
-```typescript
-import { postV2ObjectsByObjectRecords } from 'attio-ts-sdk';
-
-const result = await postV2ObjectsByObjectRecords({
-  client,
-  path: { object: 'companies' },
-  body: { data: { values: { name: [{ value: 'Test' }] } } },
-});
-
-if (result.error) {
-  console.error('API Error:', result.error);
-} else {
-  console.log('Created:', result.data);
-}
-
-// Or use throwOnError for exceptions
-try {
-  const { data } = await postV2ObjectsByObjectRecords({
-    client,
-    path: { object: 'companies' },
-    body: { data: { values: { name: [{ value: 'Test' }] } } },
-    throwOnError: true,
-  });
-} catch (error) {
-  console.error('Request failed:', error);
-}
-```
+- [attio-js](https://github.com/d-stoll/attio-js) - an alternative SDK generated with Speakeasy
+- [attio-tui](https://github.com/hbmartin/attio-tui) - a TUI for using Attio built with this library
 
 ## Development
 

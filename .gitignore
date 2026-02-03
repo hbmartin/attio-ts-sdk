@@ -16,3 +16,4 @@ package-lock.json
 yarn.lock
 report/
 stats.html
+attio_openapi.json

@@ -32,7 +32,8 @@
       "WebFetch(domain:zod.dev)",
       "WebFetch(domain:heyapi.dev)",
       "Bash(pnpm openapi-ts:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git status:*)"
     ]
   }
 }
