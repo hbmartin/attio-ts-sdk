@@ -1,11 +1,13 @@
 import { defineConfig } from "@hey-api/openapi-ts";
 
 export default defineConfig({
-  input: "https://api.attio.com/openapi/api", // sign up at app.heyapi.dev
+  input: "https://api.attio.com/openapi/api",
   output: "src/generated",
   plugins: [
     "@hey-api/typescript",
-    "zod",
+    {
+      name: "zod",
+    },
     {
       name: "@hey-api/sdk",
       validator: true,
