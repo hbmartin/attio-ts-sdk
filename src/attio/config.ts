@@ -1,8 +1,11 @@
-import process from "node:process";
 import type { Config, ResponseStyle } from "../generated/client";
 import type { AttioCacheConfig } from "./cache";
 import type { AttioClientHooks, AttioLogger } from "./hooks";
 import type { RetryConfig } from "./retry";
+
+declare const Deno:
+  | { env: { get(key: string): string | undefined } }
+  | undefined;
 
 const TRAILING_SLASHES_REGEX = /\/+$/;
 
@@ -25,10 +28,13 @@ interface AttioClientConfig
 }
 
 const getEnvValue = (key: string): string | undefined => {
-  if (typeof process === "undefined") {
-    return;
+  if (typeof Deno !== "undefined") {
+    return Deno.env.get(key);
   }
-  return process.env?.[key];
+  if (typeof process !== "undefined") {
+    return process.env?.[key];
+  }
+  return;
 };
 
 const normalizeBaseUrl = (baseUrl: string): string =>
