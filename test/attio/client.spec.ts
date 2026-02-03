@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearClientCache } from "../../src/attio/cache";
 import { createAttioClient } from "../../src/attio/client";
 import { AttioEnvironmentError } from "../../src/attio/errors";
+import type { AttioLogger } from "../../src/attio/hooks";
 
 const TEST_TOKEN = "attio_test_token_12345";
 
@@ -254,5 +255,212 @@ describe("resolveFetch", () => {
     expect(aborted).toBe(true);
 
     await fetchPromise;
+  });
+
+  it("throws AttioEnvironmentError when fetch is unavailable", () => {
+    const originalFetch = globalThis.fetch;
+    vi.stubGlobal("fetch", undefined);
+
+    try {
+      expect(() =>
+        createAttioClient({
+          authToken: TEST_TOKEN,
+          fetch: undefined,
+        }),
+      ).toThrow(AttioEnvironmentError);
+    } finally {
+      vi.stubGlobal("fetch", originalFetch);
+    }
+  });
+
+  it("uses timeout with AbortSignal.any when available", async () => {
+    vi.useFakeTimers();
+
+    const timeoutMs = 10;
+    const fallbackDelayMs = 50;
+    const { baseFetch, getState } = createFetchHarness(fallbackDelayMs);
+    const fetchWithTimeout = getTimeoutFetch(baseFetch, timeoutMs);
+
+    const externalController = new AbortController();
+
+    const fetchPromise = fetchWithTimeout("https://example.com", {
+      signal: externalController.signal,
+    });
+
+    try {
+      await vi.advanceTimersByTimeAsync(timeoutMs);
+
+      const { capturedSignal } = getState();
+      expect(capturedSignal).toBeDefined();
+    } finally {
+      await vi.advanceTimersByTimeAsync(fallbackDelayMs);
+      await fetchPromise;
+    }
+  });
+
+  it("handles timeout without external signal", async () => {
+    vi.useFakeTimers();
+
+    const timeoutMs = 10;
+    const fallbackDelayMs = 50;
+    const { baseFetch, getState } = createFetchHarness(fallbackDelayMs);
+    const fetchWithTimeout = getTimeoutFetch(baseFetch, timeoutMs);
+
+    const fetchPromise = fetchWithTimeout("https://example.com", {});
+
+    try {
+      await vi.advanceTimersByTimeAsync(timeoutMs);
+
+      const { capturedSignal } = getState();
+      expect(capturedSignal).toBeDefined();
+    } finally {
+      await vi.advanceTimersByTimeAsync(fallbackDelayMs);
+      await fetchPromise;
+    }
+  });
+
+  it("uses globalThis.fetch when no custom fetch is provided", async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: "ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    vi.stubGlobal("fetch", mockFetch);
+
+    const client = createAttioClient({ authToken: TEST_TOKEN });
+    await client.get({ url: "/test" });
+
+    expect(mockFetch).toHaveBeenCalled();
+  });
+
+  it("combines fallback with pre-aborted signal", async () => {
+    vi.stubGlobal("AbortSignal", undefined);
+
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValue(new Response("ok", { status: 200 }));
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      timeoutMs: 5000,
+    });
+
+    const fetchFn = client.getConfig().fetch;
+    if (!fetchFn) {
+      throw new Error("fetch not configured");
+    }
+
+    const preAbortedController = new AbortController();
+    preAbortedController.abort();
+
+    await fetchFn("https://example.com", {
+      signal: preAbortedController.signal,
+    });
+
+    expect(mockFetch).toHaveBeenCalled();
+  });
+});
+
+describe("logger hooks", () => {
+  it("invokes debug logger on request and response", async () => {
+    const debugFn = vi.fn();
+    const logger: AttioLogger = { debug: debugFn };
+
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: "ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      logger,
+    });
+
+    await client.get({ url: "/test" });
+
+    const requestCalls = debugFn.mock.calls.filter(
+      ([msg]: [string]) => msg === "attio.request",
+    );
+    const responseCalls = debugFn.mock.calls.filter(
+      ([msg]: [string]) => msg === "attio.response",
+    );
+
+    expect(requestCalls).toHaveLength(1);
+    expect(requestCalls[0][1]).toHaveProperty("method");
+    expect(requestCalls[0][1]).toHaveProperty("url");
+
+    expect(responseCalls).toHaveLength(1);
+    expect(responseCalls[0][1]).toHaveProperty("status", 200);
+  });
+
+  it("invokes error logger on error", async () => {
+    const errorFn = vi.fn();
+    const logger: AttioLogger = { error: errorFn };
+
+    const mockFetch = vi.fn().mockRejectedValue(new Error("fail"));
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      logger,
+      retry: { maxRetries: 0 },
+      throwOnError: true,
+    });
+
+    await expect(client.get({ url: "/test" })).rejects.toThrow();
+
+    const errorCalls = errorFn.mock.calls.filter(
+      ([msg]: [string]) => msg === "attio.error",
+    );
+    expect(errorCalls).toHaveLength(1);
+    expect(errorCalls[0][1]).toHaveProperty("message");
+  });
+
+  it("composes logger hooks with custom hooks", async () => {
+    const debugFn = vi.fn();
+    const customOnRequest = vi.fn();
+    const customOnResponse = vi.fn();
+    const logger: AttioLogger = { debug: debugFn };
+
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: "ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      logger,
+      hooks: { onRequest: customOnRequest, onResponse: customOnResponse },
+    });
+
+    await client.get({ url: "/test" });
+
+    expect(debugFn).toHaveBeenCalled();
+    expect(customOnRequest).toHaveBeenCalledTimes(1);
+    expect(customOnResponse).toHaveBeenCalledTimes(1);
+  });
+
+  it("works with no logger or hooks configured", async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: "ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+    });
+
+    await expect(client.get({ url: "/test" })).resolves.toBeDefined();
   });
 });

@@ -2,10 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import {
+  type CacheAdapterParams,
   clearClientCache,
   clearMetadataCacheRegistry,
   createAttioCacheManager,
   createTtlCache,
+  createTtlCacheAdapter,
   getCachedClient,
   hashToken,
   setCachedClient,
@@ -181,6 +183,47 @@ describe("hashToken", () => {
     expect(typeof hash).toBe("string");
     expect(hash.length).toBeGreaterThan(0);
   });
+
+  it("returns anonymous hash for undefined token", () => {
+    const hash = hashToken(undefined);
+    expect(hash).toBe("anon_");
+  });
+});
+
+describe("createTtlCacheAdapter", () => {
+  it("wraps a TtlCache with the CacheAdapter interface", () => {
+    const adapter = createTtlCacheAdapter({
+      scope: "attributes",
+      ttlMs: 5000,
+      maxEntries: 10,
+    });
+
+    adapter.set("key1", [{ id: 1 }]);
+    expect(adapter.get("key1")).toEqual([{ id: 1 }]);
+
+    adapter.delete("key1");
+    expect(adapter.get("key1")).toBeUndefined();
+
+    adapter.set("key2", [{ id: 2 }]);
+    adapter.clear();
+    expect(adapter.get("key2")).toBeUndefined();
+  });
+});
+
+describe("getCachedClient edge cases", () => {
+  afterEach(() => {
+    clearClientCache();
+  });
+
+  it("returns undefined when validator throws", () => {
+    const throwingSchema = z.string().transform(() => {
+      throw new Error("parse explosion");
+    });
+
+    setCachedClient("key-throws", "valid-string");
+
+    expect(getCachedClient("key-throws", throwingSchema)).toBeUndefined();
+  });
 });
 
 describe("metadata cache manager", () => {
@@ -209,6 +252,14 @@ describe("metadata cache manager", () => {
   it("disables metadata caching when configured", () => {
     const manager = createAttioCacheManager("meta-key", { enabled: false });
     expect(manager.metadata.get("statuses")).toBeUndefined();
+  });
+
+  it("disabled metadata manager clear is callable", () => {
+    const manager = createAttioCacheManager("disabled-clear", {
+      enabled: false,
+    });
+    expect(() => manager.metadata.clear()).not.toThrow();
+    expect(() => manager.clear()).not.toThrow();
   });
 
   it("disables metadata caching via nested metadata config", () => {
@@ -274,5 +325,94 @@ describe("metadata cache manager", () => {
     manager.clear();
     manager.clear();
     expect(cache?.get("key")).toBeUndefined();
+  });
+
+  it("reuses the same manager from registry for identical config", () => {
+    const first = createAttioCacheManager("registry-reuse", {
+      metadata: { ttlMs: 30_000 },
+    });
+    const second = createAttioCacheManager("registry-reuse", {
+      metadata: { ttlMs: 30_000 },
+    });
+
+    const firstCache = first.metadata.get("attributes");
+    firstCache?.set("shared-key", [{ shared: true }]);
+
+    const secondCache = second.metadata.get("attributes");
+    expect(secondCache?.get("shared-key")).toEqual([{ shared: true }]);
+  });
+
+  it("creates separate managers for different config fingerprints", () => {
+    const first = createAttioCacheManager("fingerprint-test", {
+      metadata: { ttlMs: 10_000 },
+    });
+    const second = createAttioCacheManager("fingerprint-test", {
+      metadata: { ttlMs: 60_000 },
+    });
+
+    const firstCache = first.metadata.get("attributes");
+    firstCache?.set("key", [{ a: 1 }]);
+
+    const secondCache = second.metadata.get("attributes");
+    expect(secondCache?.get("key")).toBeUndefined();
+  });
+
+  it("bypasses registry when custom adapter is provided", () => {
+    const createCalls: CacheAdapterParams[] = [];
+    const customAdapter = {
+      create: (params: CacheAdapterParams) => {
+        createCalls.push(params);
+        return createTtlCacheAdapter(params);
+      },
+    };
+
+    const first = createAttioCacheManager("custom-adapter-test", {
+      metadata: { adapter: customAdapter },
+    });
+    const second = createAttioCacheManager("custom-adapter-test", {
+      metadata: { adapter: customAdapter },
+    });
+
+    first.metadata.get("attributes");
+    second.metadata.get("attributes");
+
+    // Each manager creates its own adapter since custom adapters bypass registry
+    expect(createCalls).toHaveLength(2);
+  });
+
+  it("resolves maxEntries as a number for all scopes", () => {
+    const manager = createAttioCacheManager("numeric-max", {
+      metadata: { maxEntries: 42 },
+    });
+
+    const attrCache = manager.metadata.get("attributes");
+    const optCache = manager.metadata.get("options");
+    const statusCache = manager.metadata.get("statuses");
+
+    expect(attrCache).toBeDefined();
+    expect(optCache).toBeDefined();
+    expect(statusCache).toBeDefined();
+  });
+
+  it("returns same cache adapter on repeated scope access", () => {
+    const manager = createAttioCacheManager("scope-reuse");
+    const first = manager.metadata.get("attributes");
+    const second = manager.metadata.get("attributes");
+
+    expect(first).toBe(second);
+  });
+
+  it("clearMetadataCacheRegistry clears all registered managers", () => {
+    const manager = createAttioCacheManager("registry-clear-test");
+    const cache = manager.metadata.get("attributes");
+    cache?.set("key", [{ data: 1 }]);
+
+    clearMetadataCacheRegistry();
+
+    // After clearing the registry, creating a new manager with the same key
+    // should not share data with the old one
+    const newManager = createAttioCacheManager("registry-clear-test");
+    const newCache = newManager.metadata.get("attributes");
+    expect(newCache?.get("key")).toBeUndefined();
   });
 });
