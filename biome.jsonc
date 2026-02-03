@@ -427,7 +427,7 @@
       "linter": {
         "rules": {
           "correctness": {
-            "noNodejsModules": "off"
+            "noProcessGlobal": "off"
           },
           "style": {
             "noProcessEnv": "off"
