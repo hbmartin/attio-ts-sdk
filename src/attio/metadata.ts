@@ -1,7 +1,6 @@
 import type { ZodType } from "zod";
 import { z } from "zod";
 import type {
-  Attribute,
   GetV2ByTargetByIdentifierAttributesByAttributeData,
   GetV2ByTargetByIdentifierAttributesByAttributeOptionsData,
   GetV2ByTargetByIdentifierAttributesByAttributeStatusesData,
@@ -17,6 +16,9 @@ import {
   getV2ByTargetByIdentifierAttributesByAttributeStatuses,
 } from "../generated";
 import { zAttribute, zSelectOption, zStatus } from "../generated/zod.gen";
+
+type ZodAttribute = z.output<typeof zAttribute>;
+
 import type { CacheAdapter, MetadataCacheScope } from "./cache";
 import {
   type AttioClient,
@@ -154,7 +156,7 @@ const listAttributeMetadata = async <T, TData extends AttributeMetadataData>({
 
 const listAttributes = async (
   input: AttributeListInput,
-): Promise<Attribute[]> => {
+): Promise<ZodAttribute[]> => {
   const client = resolveAttioClient(input);
   const cache = getMetadataCache(client, "attributes");
   const cacheKey = buildKey(input.target, input.identifier);
@@ -180,7 +182,7 @@ const listAttributes = async (
   return items;
 };
 
-const getAttribute = async (input: AttributeInput): Promise<Attribute> => {
+const getAttribute = async (input: AttributeInput): Promise<ZodAttribute> => {
   const client = resolveAttioClient(input);
   const result = await getV2ByTargetByIdentifierAttributesByAttribute({
     client,
@@ -228,6 +230,7 @@ export type {
   AttributeListInput,
   AttributeInput,
   AttributeMetadataRequestParams,
+  ZodAttribute,
 };
 export {
   listAttributes,
