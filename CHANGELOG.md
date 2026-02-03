@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.1.0...attio-ts-sdk-v1.1.1) (2026-02-03)
+
+
+### Bug Fixes
+
+* **codegen:** resolve date format mismatch for timestamp fields ([d4c171d](https://github.com/hbmartin/attio-ts-sdk/commit/d4c171d87f779d0bd3d31f0bb48b5f946651827e))
+* **codegen:** resolve date format mismatch for timestamp fields ([f2a7589](https://github.com/hbmartin/attio-ts-sdk/commit/f2a7589d4520b77eae6f72edc26458c1a77e3b95))
+
 ## [1.1.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.0.0...attio-ts-sdk-v1.1.0) (2026-02-02)
 
 
