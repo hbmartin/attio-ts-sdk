@@ -366,9 +366,11 @@ describe("resolveFetch", () => {
 });
 
 describe("getAttioClient without auth token", () => {
-  it("skips client cache when no auth token is resolved", () => {
+  beforeEach(() => {
     vi.spyOn(configModule, "resolveAuthToken").mockReturnValue(undefined);
+  });
 
+  it("skips client cache when no auth token is resolved", () => {
     const first = getAttioClient({});
     const second = getAttioClient({});
 
@@ -377,8 +379,6 @@ describe("getAttioClient without auth token", () => {
   });
 
   it("skips client cache when no auth token even with cache key configured", () => {
-    vi.spyOn(configModule, "resolveAuthToken").mockReturnValue(undefined);
-
     const first = getAttioClient({ cache: { key: "shared" } });
     const second = getAttioClient({ cache: { key: "shared" } });
 
