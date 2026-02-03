@@ -22,7 +22,14 @@
       "Bash(pnpm biome check:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(gh repo view:*)"
+      "Bash(gh repo view:*)",
+      "Bash(pnpm biome:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm tsc:*)",
+      "WebFetch(domain:docs.attio.com)",
+      "WebFetch(domain:api.attio.com)",
+      "WebSearch",
+      "WebFetch(domain:zod.dev)"
     ]
   }
 }

@@ -177,7 +177,7 @@ const clearClientCache = (): void => {
   clientCache.clear();
 };
 
-const ANONYMOUS_HASH = "anon";
+const ANONYMOUS_HASH = "anon_";
 
 const hashToken = (value: string | undefined): string => {
   if (value === undefined) {
