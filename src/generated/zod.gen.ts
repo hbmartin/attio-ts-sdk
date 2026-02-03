@@ -923,7 +923,7 @@ export const zInputValue = z.union([
         value: z.string()
     }),
     z.object({
-        value: z.iso.date()
+        value: z.iso.datetime()
     })
 ]);
 
@@ -1625,7 +1625,7 @@ export const zOutputValue = z.union([
     }),
     z.object({
         attribute_type: z.enum(['timestamp']),
-        value: z.iso.date()
+        value: z.iso.datetime()
     })
 ]);
 
@@ -3433,7 +3433,7 @@ export const zPostV2ObjectsByObjectRecordsQueryResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     }))
@@ -4388,7 +4388,7 @@ export const zPostV2ObjectsByObjectRecordsResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -5345,7 +5345,7 @@ export const zPutV2ObjectsByObjectRecordsResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -6311,7 +6311,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -7267,7 +7267,7 @@ export const zPatchV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -8223,7 +8223,7 @@ export const zPutV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -9172,7 +9172,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 ]))
             }),
             attribute_type: z.enum(['timestamp']),
-            value: z.iso.date()
+            value: z.iso.datetime()
         })
     ]))
 });
@@ -10326,7 +10326,7 @@ export const zPostV2ListsByListEntriesQueryResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     }))
@@ -11284,7 +11284,7 @@ export const zPostV2ListsByListEntriesResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -12242,7 +12242,7 @@ export const zPutV2ListsByListEntriesResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -13209,7 +13209,7 @@ export const zGetV2ListsByListEntriesByEntryIdResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -14166,7 +14166,7 @@ export const zPatchV2ListsByListEntriesByEntryIdResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -15123,7 +15123,7 @@ export const zPutV2ListsByListEntriesByEntryIdResponse = z.object({
                     ]))
                 }),
                 attribute_type: z.enum(['timestamp']),
-                value: z.iso.date()
+                value: z.iso.datetime()
             })
         ])))
     })
@@ -16072,7 +16072,7 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 ]))
             }),
             attribute_type: z.enum(['timestamp']),
-            value: z.iso.date()
+            value: z.iso.datetime()
         })
     ]))
 });
