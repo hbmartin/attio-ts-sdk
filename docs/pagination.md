@@ -883,6 +883,7 @@ Queries records with optional auto-pagination.
 | `input.maxPages` | `number` | Maximum pages (when paginating) |
 | `input.maxItems` | `number` | Maximum items (when paginating) |
 | `input.signal` | `AbortSignal` | Cancel signal (stream mode only) |
+| `input.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
 
 **Returns:**
 - `Promise<T[]>` when `paginate` is `undefined`, `false`, or `true`
@@ -907,6 +908,7 @@ Queries list entries with optional auto-pagination.
 | `input.maxPages` | `number` | Maximum pages (when paginating) |
 | `input.maxItems` | `number` | Maximum items (when paginating) |
 | `input.signal` | `AbortSignal` | Cancel signal (stream mode only) |
+| `input.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
 
 **Returns:**
 - `Promise<T[]>` when `paginate` is `undefined`, `false`, or `true`
