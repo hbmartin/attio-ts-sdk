@@ -38,6 +38,7 @@ interface ListQueryBaseInput extends AttioClientInput {
   filter?: ListEntryFilter;
   limit?: number;
   offset?: number;
+  signal?: AbortSignal;
   itemSchema?: ZodType<Record<string, unknown>>;
   options?: Omit<
     Options<PostV2ListsByListEntriesQueryData>,
@@ -53,14 +54,12 @@ interface ListQueryCollectInput extends ListQueryBaseInput {
   paginate: true;
   maxPages?: number;
   maxItems?: number;
-  signal?: AbortSignal;
 }
 
 interface ListQueryStreamInput extends ListQueryBaseInput {
   paginate: "stream";
   maxPages?: number;
   maxItems?: number;
-  signal?: AbortSignal;
 }
 
 type ListQueryPaginationInput = SharedPaginationInput;
@@ -186,7 +185,7 @@ export function queryListEntries<T extends AttioRecordLike>(
     );
   }
 
-  return fetchEntries(input.offset, input.limit);
+  return fetchEntries(input.offset, input.limit, input.signal);
 }
 
 export const addListEntry = async (input: AddListEntryInput) => {

@@ -80,6 +80,7 @@ interface RecordQueryBaseInput extends AttioClientInput {
   sorts?: RecordSorts;
   limit?: number;
   offset?: number;
+  signal?: AbortSignal;
   options?: Omit<
     Options<PostV2ObjectsByObjectRecordsQueryData>,
     "client" | "path" | "body"
@@ -94,14 +95,12 @@ interface RecordQueryCollectInput extends RecordQueryBaseInput {
   paginate: true;
   maxPages?: number;
   maxItems?: number;
-  signal?: AbortSignal;
 }
 
 interface RecordQueryStreamInput extends RecordQueryBaseInput {
   paginate: "stream";
   maxPages?: number;
   maxItems?: number;
-  signal?: AbortSignal;
 }
 
 type RecordQueryPaginationInput = SharedPaginationInput;
@@ -253,7 +252,7 @@ function queryRecords<T extends AttioRecordLike>(
     );
   }
 
-  return fetchRecords(input.offset, input.limit);
+  return fetchRecords(input.offset, input.limit, input.signal);
 }
 
 export type {
