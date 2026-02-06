@@ -7,6 +7,7 @@ const addEntryRequest = vi.fn();
 const updateEntryRequest = vi.fn();
 const deleteEntryRequest = vi.fn();
 const resolveAttioClient = vi.fn();
+const normalizeRecords = vi.fn((records) => records);
 
 vi.mock("../../src/generated", async () => {
   const actual = await vi.importActual<typeof import("../../src/generated")>(
@@ -28,7 +29,7 @@ vi.mock("../../src/attio/client", () => ({
 }));
 
 vi.mock("../../src/attio/record-utils", () => ({
-  normalizeRecords: vi.fn((records) => records),
+  normalizeRecords,
 }));
 
 describe("lists", () => {
@@ -53,6 +54,7 @@ describe("lists", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     resolveAttioClient.mockReturnValue({});
+    normalizeRecords.mockImplementation((records) => records);
   });
 
   describe("listLists", () => {
