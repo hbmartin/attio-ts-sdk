@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 
 const createRecordRequest = vi.fn();
 const updateRecordRequest = vi.fn();
@@ -550,6 +551,73 @@ describe("records", () => {
         }
 
         expect(records).toEqual([{ id: "rec-1" }]);
+      });
+    });
+
+    describe("with itemSchema", () => {
+      const customRecordSchema = z.object({
+        id: z.object({
+          record_id: z.string(),
+        }),
+        name: z.string(),
+      });
+
+      it("validates items against custom schema", async () => {
+        const records = [
+          { id: { record_id: "rec-1" }, name: "Acme" },
+          { id: { record_id: "rec-2" }, name: "Beta" },
+        ];
+        queryRecordsRequest.mockResolvedValue({ data: { data: records } });
+
+        const result = await queryRecords({
+          object: "companies",
+          itemSchema: customRecordSchema,
+        });
+
+        expect(result).toEqual(records);
+      });
+
+      it("throws error when items fail schema validation", async () => {
+        const invalidRecords = [{ invalid: "structure" }];
+        queryRecordsRequest.mockResolvedValue({
+          data: { data: invalidRecords },
+        });
+
+        await expect(
+          queryRecords({
+            object: "companies",
+            itemSchema: customRecordSchema,
+          }),
+        ).rejects.toThrow("Invalid API response");
+      });
+
+      it("uses custom schema with paginate: true", async () => {
+        const records = [{ id: { record_id: "rec-1" }, name: "Acme" }];
+        queryRecordsRequest.mockResolvedValueOnce({ data: { data: records } });
+
+        const result = await queryRecords({
+          object: "companies",
+          paginate: true,
+          itemSchema: customRecordSchema,
+        });
+
+        expect(result).toEqual(records);
+      });
+
+      it("uses custom schema with paginate: 'stream'", async () => {
+        const records = [{ id: { record_id: "rec-1" }, name: "Acme" }];
+        queryRecordsRequest.mockResolvedValueOnce({ data: { data: records } });
+
+        const collected: z.infer<typeof customRecordSchema>[] = [];
+        for await (const record of queryRecords({
+          object: "companies",
+          paginate: "stream",
+          itemSchema: customRecordSchema,
+        })) {
+          collected.push(record);
+        }
+
+        expect(collected).toEqual(records);
       });
     });
   });
