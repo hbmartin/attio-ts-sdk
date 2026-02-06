@@ -113,57 +113,46 @@ export function queryListEntries<T = unknown>(
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
 
-  if (input.paginate === "stream" || input.paginate === true) {
-    const fetchPage = async (offset: number, limit: number) => {
-      const result = await postV2ListsByListEntriesQuery({
-        client,
-        path: { list: input.list },
-        body: {
-          filter: input.filter,
-          limit,
-          offset,
-        },
-        ...input.options,
-      });
-
-      const items = unwrapItems(result) as T[];
-      return { items };
-    };
-
-    if (input.paginate === "stream") {
-      return paginateOffsetAsync<T>(fetchPage, {
-        offset: input.offset,
-        limit: input.limit,
-        maxPages: input.maxPages,
-        maxItems: input.maxItems,
-        signal: input.signal,
-      });
-    }
-
-    return paginateOffset<T>(fetchPage, {
-      offset: input.offset,
-      limit: input.limit,
-      maxPages: input.maxPages,
-      maxItems: input.maxItems,
-    });
-  }
-
-  const fetchSinglePage = async () => {
+  const fetchEntries = async (offset?: number, limit?: number) => {
     const result = await postV2ListsByListEntriesQuery({
       client,
       path: { list: input.list },
       body: {
         filter: input.filter,
-        limit: input.limit,
-        offset: input.offset,
+        limit,
+        offset,
       },
       ...input.options,
     });
-
     return unwrapItems(result) as T[];
   };
 
-  return fetchSinglePage();
+  if (input.paginate === "stream") {
+    return paginateOffsetAsync<T>(
+      async (offset, limit) => ({ items: await fetchEntries(offset, limit) }),
+      {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+        signal: input.signal,
+      },
+    );
+  }
+
+  if (input.paginate === true) {
+    return paginateOffset<T>(
+      async (offset, limit) => ({ items: await fetchEntries(offset, limit) }),
+      {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+      },
+    );
+  }
+
+  return fetchEntries(input.offset, input.limit);
 }
 
 export const addListEntry = async (input: AddListEntryInput) => {
