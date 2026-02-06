@@ -344,8 +344,8 @@ For memory-efficient processing of large datasets, the SDK provides async genera
 import { paginateAsync, getV2Meetings } from 'attio-ts-sdk';
 
 // Stream all meetings one at a time
-for await (const meeting of paginateAsync(async (cursor) => {
-  return getV2Meetings({ client, query: { cursor, limit: 50 } });
+for await (const meeting of paginateAsync(async (cursor, signal) => {
+  return getV2Meetings({ client, query: { cursor, limit: 50 }, signal });
 })) {
   console.log(meeting.id);
 
@@ -354,22 +354,27 @@ for await (const meeting of paginateAsync(async (cursor) => {
 }
 ```
 
+The `signal` parameter is forwarded from the options, enabling in-flight request cancellation when using `AbortSignal`.
+
 ### `paginateOffsetAsync()` - Offset-Based Streaming
 
 ```typescript
 import { paginateOffsetAsync, postV2ObjectsByObjectRecordsQuery } from 'attio-ts-sdk';
 
 // Stream all company records one at a time
-for await (const company of paginateOffsetAsync(async (offset, limit) => {
+for await (const company of paginateOffsetAsync(async (offset, limit, signal) => {
   return postV2ObjectsByObjectRecordsQuery({
     client,
     path: { object: 'companies' },
     body: { offset, limit },
+    signal, // Enables in-flight request cancellation
   });
 })) {
   await processCompany(company);
 }
 ```
+
+The `signal` parameter is forwarded from the options, enabling in-flight request cancellation when using `AbortSignal`.
 
 ### Async Options
 
@@ -387,6 +392,8 @@ interface OffsetPaginationAsyncOptions<T> extends OffsetPaginationOptions<T> {
 
 ### Cancellation with AbortSignal
 
+The signal is forwarded to your `fetchPage` callback, enabling cancellation of in-flight HTTP requests. This means when the signal is aborted, the current fetch operation can be cancelled immediately rather than waiting for it to complete.
+
 ```typescript
 const controller = new AbortController();
 
@@ -394,9 +401,18 @@ const controller = new AbortController();
 setTimeout(() => controller.abort(), 30000);
 
 try {
-  for await (const record of paginateOffsetAsync(fetchPage, {
-    signal: controller.signal,
-  })) {
+  for await (const record of paginateOffsetAsync(
+    async (offset, limit, signal) => {
+      // Signal is forwarded - pass it to your HTTP client
+      return postV2ObjectsByObjectRecordsQuery({
+        client,
+        path: { object: 'companies' },
+        body: { offset, limit },
+        signal, // Enables in-flight request cancellation
+      });
+    },
+    { signal: controller.signal }
+  )) {
     await processRecord(record);
   }
 } catch (error) {
@@ -405,6 +421,13 @@ try {
   }
 }
 ```
+
+**How signal forwarding works:**
+
+1. You pass an `AbortSignal` in the options
+2. The signal is forwarded to every `fetchPage` call
+3. When aborted, the current HTTP request can be cancelled immediately
+4. No more pages are fetched after abort
 
 ### Early Exit
 
@@ -589,11 +612,12 @@ for await (const company of queryRecords({
 Use async generator helpers for more control:
 
 ```typescript
-for await (const company of paginateOffsetAsync(async (offset, limit) => {
+for await (const company of paginateOffsetAsync(async (offset, limit, signal) => {
   return postV2ObjectsByObjectRecordsQuery({
     client,
     path: { object: 'companies' },
     body: { offset, limit },
+    signal, // Forward signal for in-flight cancellation
   });
 })) {
   await processCompany(company);
@@ -713,10 +737,11 @@ Or with the low-level helper for more control:
 
 ```typescript
 for await (const company of paginateOffsetAsync(
-  async (offset, limit) => postV2ObjectsByObjectRecordsQuery({
+  async (offset, limit, signal) => postV2ObjectsByObjectRecordsQuery({
     client,
     path: { object: 'companies' },
     body: { offset, limit },
+    signal,
   }),
   { limit: 100 }
 )) {
@@ -778,14 +803,16 @@ Streams items using cursor-based pagination via async generator.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `fetchPage` | `(cursor?: string \| null) => Promise<PageResult<T> \| unknown>` | Function that fetches a page given a cursor |
+| `fetchPage` | `(cursor: string \| null \| undefined, signal: AbortSignal \| undefined) => Promise<PageResult<T> \| unknown>` | Function that fetches a page given a cursor and signal |
 | `options.cursor` | `string \| null` | Starting cursor (default: `null`) |
 | `options.maxPages` | `number` | Maximum pages to fetch |
 | `options.maxItems` | `number` | Maximum total items to yield |
 | `options.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
-| `options.signal` | `AbortSignal` | Cancel pagination when aborted |
+| `options.signal` | `AbortSignal` | Cancel pagination when aborted (forwarded to fetchPage) |
 
 **Returns:** `AsyncIterable<T>` - Async iterable yielding items one at a time
+
+**Note:** The signal is forwarded to the `fetchPage` callback, enabling cancellation of in-flight HTTP requests.
 
 ---
 
@@ -817,16 +844,18 @@ Streams items using offset-based pagination via async generator.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `fetchPage` | `(offset: number, limit: number) => Promise<OffsetPageResult<T> \| unknown>` | Function that fetches a page given offset and limit |
+| `fetchPage` | `(offset: number, limit: number, signal: AbortSignal \| undefined) => Promise<OffsetPageResult<T> \| unknown>` | Function that fetches a page given offset, limit, and signal |
 | `options.offset` | `number` | Starting offset (default: `0`) |
 | `options.limit` | `number` | Items per page (default: `50`) |
 | `options.pageSize` | `number` | Alias for `limit` |
 | `options.maxPages` | `number` | Maximum pages to fetch |
 | `options.maxItems` | `number` | Maximum total items to yield |
 | `options.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
-| `options.signal` | `AbortSignal` | Cancel pagination when aborted |
+| `options.signal` | `AbortSignal` | Cancel pagination when aborted (forwarded to fetchPage) |
 
 **Returns:** `AsyncIterable<T>` - Async iterable yielding items one at a time
+
+**Note:** The signal is forwarded to the `fetchPage` callback, enabling cancellation of in-flight HTTP requests.
 
 ---
 

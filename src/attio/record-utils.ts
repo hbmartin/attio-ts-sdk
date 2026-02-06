@@ -276,15 +276,15 @@ function normalizeRecord(
 }
 
 function normalizeRecords<T extends AttioRecordLike>(
-  items: unknown[],
+  items: Record<string, unknown>[],
   options?: NormalizeRecordOptions,
 ): T[];
 function normalizeRecords(
-  items: unknown[],
+  items: Record<string, unknown>[],
   options?: NormalizeRecordOptions,
 ): AttioRecordLike[];
 function normalizeRecords(
-  items: unknown[],
+  items: Record<string, unknown>[],
   options: NormalizeRecordOptions = defaultNormalizeRecordOptions,
 ): AttioRecordLike[] {
   const normalized: AttioRecordLike[] = [];
