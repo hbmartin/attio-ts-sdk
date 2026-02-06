@@ -27,6 +27,10 @@ vi.mock("../../src/attio/client", () => ({
   resolveAttioClient,
 }));
 
+vi.mock("../../src/attio/record-utils", () => ({
+  normalizeRecords: vi.fn((records) => records),
+}));
+
 describe("lists", () => {
   let listLists: typeof import("../../src/attio/lists").listLists;
   let getList: typeof import("../../src/attio/lists").getList;

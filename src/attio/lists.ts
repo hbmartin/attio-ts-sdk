@@ -1,3 +1,4 @@
+import type { ZodType } from "zod";
 import type {
   DeleteV2ListsByListEntriesByEntryIdData,
   GetV2ListsByListData,
@@ -16,7 +17,9 @@ import {
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { paginateOffset, paginateOffsetAsync } from "./pagination";
+import { type AttioRecordLike, normalizeRecords } from "./record-utils";
 import { unwrapData, unwrapItems } from "./response";
+import { rawRecordSchema } from "./schemas";
 
 type ListId = string & { readonly __brand: "ListId" };
 type EntryId = string & { readonly __brand: "EntryId" };
@@ -31,6 +34,7 @@ interface ListQueryBaseInput extends AttioClientInput {
   filter?: ListEntryFilter;
   limit?: number;
   offset?: number;
+  itemSchema?: ZodType<Record<string, unknown>>;
   options?: Omit<
     Options<PostV2ListsByListEntriesQueryData>,
     "client" | "path" | "body"
@@ -99,21 +103,26 @@ export const getList = async (input: GetListInput) => {
   return unwrapData(result);
 };
 
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput & { paginate: "stream" },
 ): AsyncIterable<T>;
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput & { paginate?: false | true },
 ): Promise<T[]>;
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput,
 ): Promise<T[]> | AsyncIterable<T>;
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput,
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
+  const schema = input.itemSchema ?? rawRecordSchema;
 
-  const fetchEntries = async (offset?: number, limit?: number) => {
+  const fetchEntries = async (
+    offset?: number,
+    limit?: number,
+    signal?: AbortSignal,
+  ) => {
     const result = await postV2ListsByListEntriesQuery({
       client,
       path: { list: input.list },
@@ -123,13 +132,17 @@ export function queryListEntries<T = unknown>(
         offset,
       },
       ...input.options,
+      signal,
     });
-    return unwrapItems(result) as T[];
+    const items = unwrapItems(result, { schema });
+    return normalizeRecords<T>(items);
   };
 
   if (input.paginate === "stream") {
     return paginateOffsetAsync<T>(
-      async (offset, limit) => ({ items: await fetchEntries(offset, limit) }),
+      async (offset, limit, signal) => ({
+        items: await fetchEntries(offset, limit, signal),
+      }),
       {
         offset: input.offset,
         limit: input.limit,
