@@ -36,7 +36,11 @@
       "Bash(git status:*)",
       "Bash(npx vitest run --coverage --reporter=verbose)",
       "Bash(npx vitest run --coverage)",
-      "Bash(npx vitest run --coverage --coverage.reporter=text)"
+      "Bash(npx vitest run --coverage --coverage.reporter=text)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(xargs cat:*)",
+      "Bash(xargs ls:*)"
     ]
   }
 }
