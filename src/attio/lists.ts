@@ -15,6 +15,7 @@ import {
   postV2ListsByListEntriesQuery,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
+import { paginateOffset, paginateOffsetAsync } from "./pagination";
 import { unwrapData, unwrapItems } from "./response";
 
 type ListId = string & { readonly __brand: "ListId" };
@@ -25,7 +26,7 @@ type ParentRecordId = string & { readonly __brand: "ParentRecordId" };
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
 type ListEntryFilter = PostV2ListsByListEntriesQueryData["body"]["filter"];
 
-interface ListQueryInput extends AttioClientInput {
+interface ListQueryBaseInput extends AttioClientInput {
   list: ListId;
   filter?: ListEntryFilter;
   limit?: number;
@@ -35,6 +36,17 @@ interface ListQueryInput extends AttioClientInput {
     "client" | "path" | "body"
   >;
 }
+
+interface ListQueryPaginationInput {
+  maxPages?: number;
+  maxItems?: number;
+  signal?: AbortSignal;
+}
+
+type ListQueryInput = ListQueryBaseInput &
+  ListQueryPaginationInput & {
+    paginate?: boolean | "stream";
+  };
 
 interface GetListInput extends AttioClientInput {
   list: ListId;
@@ -87,21 +99,72 @@ export const getList = async (input: GetListInput) => {
   return unwrapData(result);
 };
 
-export const queryListEntries = async (input: ListQueryInput) => {
+export function queryListEntries<T = unknown>(
+  input: ListQueryInput & { paginate: "stream" },
+): AsyncIterable<T>;
+export function queryListEntries<T = unknown>(
+  input: ListQueryInput & { paginate?: false | true },
+): Promise<T[]>;
+export function queryListEntries<T = unknown>(
+  input: ListQueryInput,
+): Promise<T[]> | AsyncIterable<T>;
+export function queryListEntries<T = unknown>(
+  input: ListQueryInput,
+): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
-  const result = await postV2ListsByListEntriesQuery({
-    client,
-    path: { list: input.list },
-    body: {
-      filter: input.filter,
-      limit: input.limit,
-      offset: input.offset,
-    },
-    ...input.options,
-  });
 
-  return unwrapItems(result);
-};
+  if (input.paginate === "stream" || input.paginate === true) {
+    const fetchPage = async (offset: number, limit: number) => {
+      const result = await postV2ListsByListEntriesQuery({
+        client,
+        path: { list: input.list },
+        body: {
+          filter: input.filter,
+          limit,
+          offset,
+        },
+        ...input.options,
+      });
+
+      const items = unwrapItems(result) as T[];
+      return { items };
+    };
+
+    if (input.paginate === "stream") {
+      return paginateOffsetAsync<T>(fetchPage, {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+        signal: input.signal,
+      });
+    }
+
+    return paginateOffset<T>(fetchPage, {
+      offset: input.offset,
+      limit: input.limit,
+      maxPages: input.maxPages,
+      maxItems: input.maxItems,
+    });
+  }
+
+  const fetchSinglePage = async () => {
+    const result = await postV2ListsByListEntriesQuery({
+      client,
+      path: { list: input.list },
+      body: {
+        filter: input.filter,
+        limit: input.limit,
+        offset: input.offset,
+      },
+      ...input.options,
+    });
+
+    return unwrapItems(result) as T[];
+  };
+
+  return fetchSinglePage();
+}
 
 export const addListEntry = async (input: AddListEntryInput) => {
   const client = resolveAttioClient(input);
@@ -153,7 +216,9 @@ export type {
   GetListInput,
   ListId,
   ListEntryFilter,
+  ListQueryBaseInput,
   ListQueryInput,
+  ListQueryPaginationInput,
   ParentObjectId,
   ParentRecordId,
   RemoveListEntryInput,
