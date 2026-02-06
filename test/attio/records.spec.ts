@@ -52,7 +52,7 @@ describe("records", () => {
   });
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     resolveAttioClient.mockReturnValue({});
   });
 
@@ -343,6 +343,175 @@ describe("records", () => {
           offset: undefined,
         },
         headers: { "X-Custom": "value" },
+      });
+    });
+
+    describe("with paginate: true", () => {
+      it("fetches all pages and returns combined results", async () => {
+        queryRecordsRequest
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "rec-1" }, { id: "rec-2" }] },
+          })
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "rec-3" }] },
+          });
+
+        const result = await queryRecords({
+          object: "companies",
+          paginate: true,
+          limit: 2,
+        });
+
+        expect(result).toEqual([
+          { id: "rec-1" },
+          { id: "rec-2" },
+          { id: "rec-3" },
+        ]);
+        expect(queryRecordsRequest).toHaveBeenCalledTimes(2);
+      });
+
+      it("respects maxItems option", async () => {
+        queryRecordsRequest.mockResolvedValue({
+          data: { data: [{ id: "rec-1" }, { id: "rec-2" }] },
+        });
+
+        const result = await queryRecords({
+          object: "companies",
+          paginate: true,
+          limit: 2,
+          maxItems: 1,
+        });
+
+        expect(result).toEqual([{ id: "rec-1" }]);
+      });
+
+      it("respects maxPages option", async () => {
+        queryRecordsRequest
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "rec-1" }, { id: "rec-2" }] },
+          })
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "rec-3" }, { id: "rec-4" }] },
+          });
+
+        const result = await queryRecords({
+          object: "companies",
+          paginate: true,
+          limit: 2,
+          maxPages: 1,
+        });
+
+        expect(result).toEqual([{ id: "rec-1" }, { id: "rec-2" }]);
+        expect(queryRecordsRequest).toHaveBeenCalledTimes(1);
+      });
+
+      it("passes filter and sorts to each page request", async () => {
+        queryRecordsRequest.mockResolvedValueOnce({
+          data: { data: [{ id: "rec-1" }] },
+        });
+
+        await queryRecords({
+          object: "companies",
+          paginate: true,
+          filter: { status: { $eq: "active" } },
+          sorts: [{ field: "name", direction: "asc" }],
+          limit: 10,
+        });
+
+        expect(queryRecordsRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            body: expect.objectContaining({
+              filter: { status: { $eq: "active" } },
+              sorts: [{ field: "name", direction: "asc" }],
+            }),
+          }),
+        );
+      });
+    });
+
+    describe("with paginate: 'stream'", () => {
+      it("returns an async iterable that yields records", async () => {
+        queryRecordsRequest
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "rec-1" }, { id: "rec-2" }] },
+          })
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "rec-3" }] },
+          });
+
+        const records: { id: string }[] = [];
+        for await (const record of queryRecords({
+          object: "companies",
+          paginate: "stream",
+          limit: 2,
+        })) {
+          records.push(record);
+        }
+
+        expect(records).toEqual([
+          { id: "rec-1" },
+          { id: "rec-2" },
+          { id: "rec-3" },
+        ]);
+      });
+
+      it("allows early exit from iteration", async () => {
+        queryRecordsRequest.mockResolvedValueOnce({
+          data: { data: [{ id: "rec-1" }, { id: "rec-2" }, { id: "rec-3" }] },
+        });
+
+        const records: { id: string }[] = [];
+        for await (const record of queryRecords({
+          object: "companies",
+          paginate: "stream",
+          limit: 10,
+        })) {
+          records.push(record);
+          if (records.length === 2) {
+            break;
+          }
+        }
+
+        expect(records).toEqual([{ id: "rec-1" }, { id: "rec-2" }]);
+        expect(queryRecordsRequest).toHaveBeenCalledTimes(1);
+      });
+
+      it("respects maxItems option", async () => {
+        queryRecordsRequest.mockResolvedValue({
+          data: { data: [{ id: "rec-1" }, { id: "rec-2" }] },
+        });
+
+        const records: { id: string }[] = [];
+        for await (const record of queryRecords({
+          object: "companies",
+          paginate: "stream",
+          limit: 2,
+          maxItems: 1,
+        })) {
+          records.push(record);
+        }
+
+        expect(records).toEqual([{ id: "rec-1" }]);
+      });
+
+      it("supports AbortSignal cancellation", async () => {
+        const controller = new AbortController();
+        queryRecordsRequest.mockResolvedValueOnce({
+          data: { data: [{ id: "rec-1" }, { id: "rec-2" }] },
+        });
+
+        const records: { id: string }[] = [];
+        for await (const record of queryRecords({
+          object: "companies",
+          paginate: "stream",
+          limit: 2,
+          signal: controller.signal,
+        })) {
+          records.push(record);
+          controller.abort();
+        }
+
+        expect(records).toEqual([{ id: "rec-1" }]);
       });
     });
   });
