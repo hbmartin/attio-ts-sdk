@@ -333,8 +333,8 @@ describe("paginateOffset", () => {
 
     expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
     expect(fetchPage).toHaveBeenCalledTimes(2);
-    expect(fetchPage).toHaveBeenNthCalledWith(1, 0, 2);
-    expect(fetchPage).toHaveBeenNthCalledWith(2, 2, 2);
+    expect(fetchPage).toHaveBeenNthCalledWith(1, 0, 2, undefined);
+    expect(fetchPage).toHaveBeenNthCalledWith(2, 2, 2, undefined);
   });
 
   it("stops when maxItems reached", async () => {
@@ -377,7 +377,7 @@ describe("paginateOffset", () => {
 
     const items = await paginateOffset(fetchPage, { offset: 10, limit: 2 });
 
-    expect(fetchPage).toHaveBeenCalledWith(10, 2);
+    expect(fetchPage).toHaveBeenCalledWith(10, 2, undefined);
     expect(items).toEqual([{ id: 3 }, { id: 4 }]);
   });
 
@@ -389,7 +389,7 @@ describe("paginateOffset", () => {
 
     await paginateOffset(fetchPage, { pageSize: 25 });
 
-    expect(fetchPage).toHaveBeenCalledWith(0, 25);
+    expect(fetchPage).toHaveBeenCalledWith(0, 25, undefined);
   });
 
   it("uses default page size when neither limit nor pageSize provided", async () => {
@@ -400,7 +400,7 @@ describe("paginateOffset", () => {
 
     await paginateOffset(fetchPage);
 
-    expect(fetchPage).toHaveBeenCalledWith(0, 50);
+    expect(fetchPage).toHaveBeenCalledWith(0, 50, undefined);
   });
 
   it("terminates when page items length is less than limit", async () => {
@@ -435,6 +435,58 @@ describe("paginateOffset", () => {
 
     expect(fetchPage).toHaveBeenCalledTimes(2);
     expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+  });
+
+  it("stops when signal is aborted before first fetch", async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    const fetchPage = vi.fn();
+
+    const items = await paginateOffset(fetchPage, {
+      signal: controller.signal,
+      limit: 2,
+    });
+
+    expect(items).toEqual([]);
+    expect(fetchPage).not.toHaveBeenCalled();
+  });
+
+  it("stops fetching after signal is aborted mid-pagination", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi
+      .fn()
+      .mockImplementationOnce(async () => {
+        controller.abort();
+        return { items: [{ id: 1 }, { id: 2 }], nextOffset: 2 };
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+        nextOffset: null,
+      });
+
+    const items = await paginateOffset(fetchPage, {
+      signal: controller.signal,
+      limit: 2,
+    });
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("forwards signal to fetchPage callback", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 1 }],
+      nextOffset: null,
+    });
+
+    await paginateOffset(fetchPage, {
+      signal: controller.signal,
+      limit: 2,
+    });
+
+    expect(fetchPage).toHaveBeenCalledWith(0, 2, controller.signal);
   });
 });
 

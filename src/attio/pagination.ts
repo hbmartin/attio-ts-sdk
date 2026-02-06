@@ -170,12 +170,28 @@ const resolveNextOffset = ({
   return currentOffset + limit;
 };
 
+interface OffsetPaginationState {
+  pages: number;
+  itemCount: number;
+  maxPages: number;
+  maxItems: number;
+  signal?: AbortSignal;
+}
+
+const shouldContinueOffsetPagination = (
+  state: OffsetPaginationState,
+): boolean =>
+  state.pages < state.maxPages &&
+  state.itemCount < state.maxItems &&
+  !isAborted(state.signal);
+
 const paginateOffset = async <T>(
   fetchPage: (
     offset: number,
     limit: number,
+    signal?: AbortSignal,
   ) => Promise<OffsetPageResult<T> | unknown>,
-  options: OffsetPaginationOptions<T> = {},
+  options: OffsetPaginationAsyncOptions<T> = {},
 ): Promise<T[]> => {
   const items: T[] = [];
   const maxPages = options.maxPages ?? Number.POSITIVE_INFINITY;
@@ -185,18 +201,25 @@ const paginateOffset = async <T>(
     options.limit ?? options.pageSize ?? DEFAULT_OFFSET_PAGE_SIZE,
   );
   let offset = Math.max(0, options.offset ?? 0);
-  let pages = 0;
+  const state: OffsetPaginationState = {
+    pages: 0,
+    itemCount: 0,
+    maxPages,
+    maxItems,
+    signal: options.signal,
+  };
 
-  while (pages < maxPages && items.length < maxItems) {
-    const page = await fetchPage(offset, limit);
+  while (shouldContinueOffsetPagination(state)) {
+    const page = await fetchPage(offset, limit, options.signal);
     const parsed = parseOffsetPageResult(page, options.itemSchema);
     const { items: pageItems, nextOffset } =
       parsed ?? toOffsetPageResult<T>(page);
 
     items.push(...pageItems);
-    pages += 1;
+    state.pages += 1;
+    state.itemCount = items.length;
 
-    if (items.length >= maxItems) {
+    if (!shouldContinueOffsetPagination(state)) {
       break;
     }
 

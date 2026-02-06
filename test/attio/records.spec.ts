@@ -427,6 +427,44 @@ describe("records", () => {
           }),
         );
       });
+
+      it("supports AbortSignal cancellation", async () => {
+        const controller = new AbortController();
+        queryRecordsRequest.mockImplementationOnce(async () => {
+          controller.abort();
+          return { data: { data: [{ id: "rec-1" }, { id: "rec-2" }] } };
+        });
+
+        const result = await queryRecords({
+          object: "companies",
+          paginate: true,
+          limit: 2,
+          signal: controller.signal,
+        });
+
+        expect(result).toEqual([{ id: "rec-1" }, { id: "rec-2" }]);
+        expect(queryRecordsRequest).toHaveBeenCalledTimes(1);
+      });
+
+      it("forwards signal to the request", async () => {
+        const controller = new AbortController();
+        queryRecordsRequest.mockResolvedValueOnce({
+          data: { data: [{ id: "rec-1" }] },
+        });
+
+        await queryRecords({
+          object: "companies",
+          paginate: true,
+          limit: 10,
+          signal: controller.signal,
+        });
+
+        expect(queryRecordsRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signal: controller.signal,
+          }),
+        );
+      });
     });
 
     describe("with paginate: 'stream'", () => {

@@ -45,12 +45,30 @@ interface ListQueryBaseInput extends AttioClientInput {
   >;
 }
 
+interface ListQuerySingleInput extends ListQueryBaseInput {
+  paginate?: false;
+}
+
+interface ListQueryCollectInput extends ListQueryBaseInput {
+  paginate: true;
+  maxPages?: number;
+  maxItems?: number;
+  signal?: AbortSignal;
+}
+
+interface ListQueryStreamInput extends ListQueryBaseInput {
+  paginate: "stream";
+  maxPages?: number;
+  maxItems?: number;
+  signal?: AbortSignal;
+}
+
 type ListQueryPaginationInput = SharedPaginationInput;
 
-type ListQueryInput = ListQueryBaseInput &
-  SharedPaginationInput & {
-    paginate?: boolean | "stream";
-  };
+type ListQueryInput =
+  | ListQuerySingleInput
+  | ListQueryCollectInput
+  | ListQueryStreamInput;
 
 interface GetListInput extends AttioClientInput {
   list: ListId;
@@ -104,10 +122,10 @@ export const getList = async (input: GetListInput) => {
 };
 
 export function queryListEntries<T extends AttioRecordLike>(
-  input: ListQueryInput & { paginate: "stream" },
+  input: ListQueryStreamInput,
 ): AsyncIterable<T>;
 export function queryListEntries<T extends AttioRecordLike>(
-  input: ListQueryInput & { paginate?: false | true },
+  input: ListQuerySingleInput | ListQueryCollectInput,
 ): Promise<T[]>;
 export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput,
@@ -155,12 +173,15 @@ export function queryListEntries<T extends AttioRecordLike>(
 
   if (input.paginate === true) {
     return paginateOffset<T>(
-      async (offset, limit) => ({ items: await fetchEntries(offset, limit) }),
+      async (offset, limit, signal) => ({
+        items: await fetchEntries(offset, limit, signal),
+      }),
       {
         offset: input.offset,
         limit: input.limit,
         maxPages: input.maxPages,
         maxItems: input.maxItems,
+        signal: input.signal,
       },
     );
   }
@@ -219,8 +240,11 @@ export type {
   ListId,
   ListEntryFilter,
   ListQueryBaseInput,
+  ListQueryCollectInput,
   ListQueryInput,
   ListQueryPaginationInput,
+  ListQuerySingleInput,
+  ListQueryStreamInput,
   ParentObjectId,
   ParentRecordId,
   RemoveListEntryInput,

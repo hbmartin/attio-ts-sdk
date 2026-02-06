@@ -86,12 +86,30 @@ interface RecordQueryBaseInput extends AttioClientInput {
   >;
 }
 
+interface RecordQuerySingleInput extends RecordQueryBaseInput {
+  paginate?: false;
+}
+
+interface RecordQueryCollectInput extends RecordQueryBaseInput {
+  paginate: true;
+  maxPages?: number;
+  maxItems?: number;
+  signal?: AbortSignal;
+}
+
+interface RecordQueryStreamInput extends RecordQueryBaseInput {
+  paginate: "stream";
+  maxPages?: number;
+  maxItems?: number;
+  signal?: AbortSignal;
+}
+
 type RecordQueryPaginationInput = SharedPaginationInput;
 
-type RecordQueryInput = RecordQueryBaseInput &
-  SharedPaginationInput & {
-    paginate?: boolean | "stream";
-  };
+type RecordQueryInput =
+  | RecordQuerySingleInput
+  | RecordQueryCollectInput
+  | RecordQueryStreamInput;
 
 const createRecord = async <T extends AttioRecordLike>(
   input: RecordCreateInput,
@@ -171,10 +189,10 @@ const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
 };
 
 function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryInput & { paginate: "stream" },
+  input: RecordQueryStreamInput,
 ): AsyncIterable<T>;
 function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryInput & { paginate?: false | true },
+  input: RecordQuerySingleInput | RecordQueryCollectInput,
 ): Promise<T[]>;
 function queryRecords<T extends AttioRecordLike>(
   input: RecordQueryInput,
@@ -222,12 +240,15 @@ function queryRecords<T extends AttioRecordLike>(
 
   if (input.paginate === true) {
     return paginateOffset<T>(
-      async (offset, limit) => ({ items: await fetchRecords(offset, limit) }),
+      async (offset, limit, signal) => ({
+        items: await fetchRecords(offset, limit, signal),
+      }),
       {
         offset: input.offset,
         limit: input.limit,
         maxPages: input.maxPages,
         maxItems: input.maxItems,
+        signal: input.signal,
       },
     );
   }
@@ -242,8 +263,11 @@ export type {
   RecordCreateInput,
   RecordObjectId,
   RecordQueryBaseInput,
+  RecordQueryCollectInput,
   RecordQueryInput,
   RecordQueryPaginationInput,
+  RecordQuerySingleInput,
+  RecordQueryStreamInput,
   RecordUpdateInput,
   RecordUpsertInput,
   RecordGetInput,
