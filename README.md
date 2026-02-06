@@ -448,6 +448,54 @@ const allEntries = await paginateOffset(async (offset, limit) => {
 });
 ```
 
+#### Type-safe response validation with itemSchema
+
+The convenience functions `queryListEntries` and `queryRecords` support an optional `itemSchema` parameter for type-safe validation of API responses. The schema validates raw items before normalization.
+
+```typescript
+import { z } from 'zod';
+import { queryListEntries, type ListId } from 'attio-ts-sdk';
+
+// Define a schema that matches your expected item structure
+const entrySchema = z.object({
+  id: z.object({ entry_id: z.string() }),
+  values: z.object({
+    stage: z.array(z.object({ status: z.string() })),
+    deal_value: z.array(z.object({ currency_value: z.number() })).optional(),
+  }),
+});
+
+type SalesEntry = z.infer<typeof entrySchema>;
+
+// TypeScript infers the return type from itemSchema
+const entries = await queryListEntries<SalesEntry>({
+  client,
+  list: 'sales-pipeline' as ListId,
+  itemSchema: entrySchema,
+  paginate: true,
+});
+
+// entries is SalesEntry[] with full type safety
+for (const entry of entries) {
+  console.log(entry.values.stage[0].status);
+}
+```
+
+When using streaming pagination, the same type safety applies:
+
+```typescript
+const stream = queryListEntries<SalesEntry>({
+  client,
+  list: 'sales-pipeline' as ListId,
+  itemSchema: entrySchema,
+  paginate: 'stream',
+});
+
+for await (const entry of stream) {
+  console.log(entry.values.stage[0].status);
+}
+```
+
 #### Paginating cursor-based endpoints
 
 ```typescript
