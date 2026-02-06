@@ -6,10 +6,10 @@ The Attio API uses pagination for endpoints that can return large result sets. T
 
 The Attio API implements two pagination strategies depending on the endpoint:
 
-| Strategy | When Used | SDK Helper |
-|----------|-----------|------------|
-| **Cursor-based** | Most `GET` list endpoints (meetings, notes, tasks, webhooks) | `paginate()` |
-| **Offset-based** | Record queries, list entry queries (`POST` query endpoints) | `paginateOffset()` |
+| Strategy | When Used | SDK Helper | Streaming Helper |
+|----------|-----------|------------|------------------|
+| **Cursor-based** | Most `GET` list endpoints (meetings, notes, tasks, webhooks) | `paginate()` | `paginateAsync()` |
+| **Offset-based** | Record queries, list entry queries (`POST` query endpoints) | `paginateOffset()` | `paginateOffsetAsync()` |
 
 ## Quick Start
 
@@ -18,6 +18,9 @@ import {
   createAttioClient,
   paginate,
   paginateOffset,
+  paginateAsync,
+  paginateOffsetAsync,
+  queryRecords,
   getV2Meetings,
   postV2ObjectsByObjectRecordsQuery,
 } from 'attio-ts-sdk';
@@ -37,6 +40,22 @@ const allCompanies = await paginateOffset(async (offset, limit) => {
     body: { offset, limit },
   });
 });
+
+// Convenience function with auto-pagination
+const allRecords = await queryRecords({
+  client,
+  object: 'companies',
+  paginate: true,  // Fetches all pages automatically
+});
+
+// Streaming with async generators (memory-efficient)
+for await (const record of queryRecords({
+  client,
+  object: 'companies',
+  paginate: 'stream',
+})) {
+  console.log(record.id);  // Process one record at a time
+}
 ```
 
 ---
@@ -307,6 +326,174 @@ const companiesAfter100 = await paginateOffset(
 
 ---
 
+## Streaming Pagination (Async Generators)
+
+For memory-efficient processing of large datasets, the SDK provides async generator variants that yield items one at a time instead of collecting all items in memory.
+
+### Benefits
+
+- **Memory efficient**: Only one page is held in memory at a time
+- **Streaming**: Process items as they arrive
+- **Backpressure**: Consumer controls iteration speed
+- **Early exit**: `break` from the loop stops fetching more pages
+- **Cancellable**: AbortSignal support for timeouts and user cancellation
+
+### `paginateAsync()` - Cursor-Based Streaming
+
+```typescript
+import { paginateAsync, getV2Meetings } from 'attio-ts-sdk';
+
+// Stream all meetings one at a time
+for await (const meeting of paginateAsync(async (cursor) => {
+  return getV2Meetings({ client, query: { cursor, limit: 50 } });
+})) {
+  console.log(meeting.id);
+
+  // Can break early - no more pages will be fetched
+  if (someCondition) break;
+}
+```
+
+### `paginateOffsetAsync()` - Offset-Based Streaming
+
+```typescript
+import { paginateOffsetAsync, postV2ObjectsByObjectRecordsQuery } from 'attio-ts-sdk';
+
+// Stream all company records one at a time
+for await (const company of paginateOffsetAsync(async (offset, limit) => {
+  return postV2ObjectsByObjectRecordsQuery({
+    client,
+    path: { object: 'companies' },
+    body: { offset, limit },
+  });
+})) {
+  await processCompany(company);
+}
+```
+
+### Async Options
+
+Both async generators extend their synchronous counterparts with AbortSignal support:
+
+```typescript
+interface PaginationAsyncOptions<T> extends PaginationOptions<T> {
+  signal?: AbortSignal;  // Cancel pagination when aborted
+}
+
+interface OffsetPaginationAsyncOptions<T> extends OffsetPaginationOptions<T> {
+  signal?: AbortSignal;  // Cancel pagination when aborted
+}
+```
+
+### Cancellation with AbortSignal
+
+```typescript
+const controller = new AbortController();
+
+// Set a timeout
+setTimeout(() => controller.abort(), 30000);
+
+try {
+  for await (const record of paginateOffsetAsync(fetchPage, {
+    signal: controller.signal,
+  })) {
+    await processRecord(record);
+  }
+} catch (error) {
+  if (controller.signal.aborted) {
+    console.log('Pagination cancelled');
+  }
+}
+```
+
+### Early Exit
+
+Breaking from the loop stops fetching additional pages:
+
+```typescript
+let count = 0;
+for await (const record of paginateOffsetAsync(fetchPage)) {
+  await processRecord(record);
+  count++;
+
+  if (count >= 100) {
+    break;  // Stops iteration, no more API calls
+  }
+}
+```
+
+---
+
+## Auto-Pagination on Convenience Functions
+
+The SDK's convenience functions (`queryRecords`, `queryListEntries`) support an optional `paginate` parameter for automatic pagination:
+
+### Single Page (Default)
+
+```typescript
+// Returns first page only (existing behavior)
+const firstPage = await queryRecords({
+  client,
+  object: 'companies',
+  limit: 50,
+});
+```
+
+### All Pages (`paginate: true`)
+
+```typescript
+// Returns all records as Promise<T[]>
+const allCompanies = await queryRecords({
+  client,
+  object: 'companies',
+  paginate: true,
+  maxItems: 10000,  // Optional: limit total items
+  maxPages: 100,    // Optional: limit total pages
+});
+```
+
+### Streaming (`paginate: 'stream'`)
+
+```typescript
+// Returns AsyncIterable<T> for memory-efficient streaming
+for await (const company of queryRecords({
+  client,
+  object: 'companies',
+  paginate: 'stream',
+  signal: controller.signal,  // Optional: cancellation support
+})) {
+  await processCompany(company);
+}
+```
+
+### Pagination Options for Convenience Functions
+
+When using `paginate: true` or `paginate: 'stream'`, these additional options are available:
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `maxPages` | `number` | Maximum pages to fetch |
+| `maxItems` | `number` | Maximum total items to return |
+| `signal` | `AbortSignal` | Cancel pagination (stream mode only) |
+
+### Example: Query List Entries with Streaming
+
+```typescript
+import { queryListEntries } from 'attio-ts-sdk';
+
+// Stream all entries from a list
+for await (const entry of queryListEntries({
+  client,
+  list: 'sales-pipeline',
+  filter: { status: { $eq: 'active' } },
+  paginate: 'stream',
+})) {
+  await processEntry(entry);
+}
+```
+
+---
+
 ## Automatic Response Parsing
 
 Both pagination helpers automatically extract items and pagination metadata from API responses. You don't need to manually navigate response structures.
@@ -337,26 +524,39 @@ This handles various Attio API response shapes:
 
 ---
 
-## Comparison: Single-Page vs. Full Pagination
+## Comparison: Pagination Approaches
 
-### Single-Page Queries (Convenience Layer)
+### Single-Page (Default)
 
-The SDK's convenience functions return only the first page:
+Returns only the first page of results:
 
 ```typescript
-import { queryRecords, queryListEntries } from 'attio-ts-sdk';
+import { queryRecords } from 'attio-ts-sdk';
 
 // Returns first page only (up to limit items)
-const firstPageCompanies = await queryRecords({
+const firstPage = await queryRecords({
   client,
   object: 'companies',
   limit: 50,
 });
 ```
 
-### Full Pagination (Helpers)
+### Full Pagination with Convenience Functions
 
-Use the pagination helpers with generated endpoints for complete result sets:
+Use `paginate: true` for automatic pagination:
+
+```typescript
+// Returns ALL matching records across all pages
+const allCompanies = await queryRecords({
+  client,
+  object: 'companies',
+  paginate: true,
+});
+```
+
+### Full Pagination with Helpers
+
+Use the low-level pagination helpers for more control:
 
 ```typescript
 // Returns ALL matching records across all pages
@@ -368,6 +568,46 @@ const allCompanies = await paginateOffset(async (offset, limit) => {
   });
 });
 ```
+
+### Streaming with Convenience Functions
+
+Use `paginate: 'stream'` for memory-efficient streaming:
+
+```typescript
+// Process records one at a time
+for await (const company of queryRecords({
+  client,
+  object: 'companies',
+  paginate: 'stream',
+})) {
+  await processCompany(company);
+}
+```
+
+### Streaming with Helpers
+
+Use async generator helpers for more control:
+
+```typescript
+for await (const company of paginateOffsetAsync(async (offset, limit) => {
+  return postV2ObjectsByObjectRecordsQuery({
+    client,
+    path: { object: 'companies' },
+    body: { offset, limit },
+  });
+})) {
+  await processCompany(company);
+}
+```
+
+### When to Use Each Approach
+
+| Approach | Use Case |
+|----------|----------|
+| Single page (default) | Quick queries, preview data, known small result sets |
+| `paginate: true` | Fetch all results into memory for further processing |
+| `paginate: 'stream'` | Large datasets, memory constraints, early exit scenarios |
+| Low-level helpers | Custom pagination logic, non-standard endpoints |
 
 ---
 
@@ -456,28 +696,55 @@ const companies = await paginateOffset(fetchPage, { maxItems: 10000 });
 
 ### 4. Handle large datasets
 
-For very large datasets, consider processing in batches:
+For very large datasets, use streaming pagination to avoid loading everything into memory:
 
 ```typescript
-let offset = 0;
-const limit = 100;
-let hasMore = true;
+// Recommended: Use streaming for large datasets
+for await (const company of queryRecords({
+  client,
+  object: 'companies',
+  paginate: 'stream',
+})) {
+  await processCompany(company);
+}
+```
 
-while (hasMore) {
-  const batch = await paginateOffset(
-    async (o, l) => postV2ObjectsByObjectRecordsQuery({
-      client,
-      path: { object: 'companies' },
-      body: { offset: o, limit: l },
-    }),
-    { offset, maxPages: 1, limit }
-  );
+Or with the low-level helper for more control:
 
-  // Process batch...
-  await processBatch(batch);
+```typescript
+for await (const company of paginateOffsetAsync(
+  async (offset, limit) => postV2ObjectsByObjectRecordsQuery({
+    client,
+    path: { object: 'companies' },
+    body: { offset, limit },
+  }),
+  { limit: 100 }
+)) {
+  await processCompany(company);
+}
+```
 
-  hasMore = batch.length === limit;
-  offset += limit;
+### 5. Use AbortSignal for cancellation
+
+For long-running pagination, implement cancellation:
+
+```typescript
+const controller = new AbortController();
+
+// Cancel after 60 seconds
+const timeout = setTimeout(() => controller.abort(), 60000);
+
+try {
+  for await (const record of queryRecords({
+    client,
+    object: 'companies',
+    paginate: 'stream',
+    signal: controller.signal,
+  })) {
+    await processRecord(record);
+  }
+} finally {
+  clearTimeout(timeout);
 }
 ```
 
@@ -503,6 +770,25 @@ Fetches all pages using cursor-based pagination.
 
 ---
 
+### `paginateAsync<T>(fetchPage, options?): AsyncIterable<T>`
+
+Streams items using cursor-based pagination via async generator.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `fetchPage` | `(cursor?: string \| null) => Promise<PageResult<T> \| unknown>` | Function that fetches a page given a cursor |
+| `options.cursor` | `string \| null` | Starting cursor (default: `null`) |
+| `options.maxPages` | `number` | Maximum pages to fetch |
+| `options.maxItems` | `number` | Maximum total items to yield |
+| `options.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
+| `options.signal` | `AbortSignal` | Cancel pagination when aborted |
+
+**Returns:** `AsyncIterable<T>` - Async iterable yielding items one at a time
+
+---
+
 ### `paginateOffset<T>(fetchPage, options?): Promise<T[]>`
 
 Fetches all pages using offset-based pagination.
@@ -520,6 +806,76 @@ Fetches all pages using offset-based pagination.
 | `options.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
 
 **Returns:** `Promise<T[]>` - All collected items as a flat array
+
+---
+
+### `paginateOffsetAsync<T>(fetchPage, options?): AsyncIterable<T>`
+
+Streams items using offset-based pagination via async generator.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `fetchPage` | `(offset: number, limit: number) => Promise<OffsetPageResult<T> \| unknown>` | Function that fetches a page given offset and limit |
+| `options.offset` | `number` | Starting offset (default: `0`) |
+| `options.limit` | `number` | Items per page (default: `50`) |
+| `options.pageSize` | `number` | Alias for `limit` |
+| `options.maxPages` | `number` | Maximum pages to fetch |
+| `options.maxItems` | `number` | Maximum total items to yield |
+| `options.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
+| `options.signal` | `AbortSignal` | Cancel pagination when aborted |
+
+**Returns:** `AsyncIterable<T>` - Async iterable yielding items one at a time
+
+---
+
+### `queryRecords<T>(input): Promise<T[]> | AsyncIterable<T>`
+
+Queries records with optional auto-pagination.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input.client` | `Client` | Attio client instance |
+| `input.object` | `string` | Object API slug (e.g., `'companies'`) |
+| `input.filter` | `RecordFilter` | Optional filter criteria |
+| `input.sorts` | `RecordSorts` | Optional sort criteria |
+| `input.limit` | `number` | Items per page |
+| `input.offset` | `number` | Starting offset |
+| `input.paginate` | `boolean \| 'stream'` | Pagination mode |
+| `input.maxPages` | `number` | Maximum pages (when paginating) |
+| `input.maxItems` | `number` | Maximum items (when paginating) |
+| `input.signal` | `AbortSignal` | Cancel signal (stream mode only) |
+
+**Returns:**
+- `Promise<T[]>` when `paginate` is `undefined`, `false`, or `true`
+- `AsyncIterable<T>` when `paginate` is `'stream'`
+
+---
+
+### `queryListEntries<T>(input): Promise<T[]> | AsyncIterable<T>`
+
+Queries list entries with optional auto-pagination.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input.client` | `Client` | Attio client instance |
+| `input.list` | `string` | List API slug or ID |
+| `input.filter` | `ListEntryFilter` | Optional filter criteria |
+| `input.limit` | `number` | Items per page |
+| `input.offset` | `number` | Starting offset |
+| `input.paginate` | `boolean \| 'stream'` | Pagination mode |
+| `input.maxPages` | `number` | Maximum pages (when paginating) |
+| `input.maxItems` | `number` | Maximum items (when paginating) |
+| `input.signal` | `AbortSignal` | Cancel signal (stream mode only) |
+
+**Returns:**
+- `Promise<T[]>` when `paginate` is `undefined`, `false`, or `true`
+- `AsyncIterable<T>` when `paginate` is `'stream'`
 
 ---
 

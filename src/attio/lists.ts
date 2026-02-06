@@ -1,3 +1,4 @@
+import type { ZodType } from "zod";
 import type {
   DeleteV2ListsByListEntriesByEntryIdData,
   GetV2ListsByListData,
@@ -15,8 +16,14 @@ import {
   postV2ListsByListEntriesQuery,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import { paginateOffset, paginateOffsetAsync } from "./pagination";
+import {
+  paginateOffset,
+  paginateOffsetAsync,
+  type SharedPaginationInput,
+} from "./pagination";
+import { type AttioRecordLike, normalizeRecords } from "./record-utils";
 import { unwrapData, unwrapItems } from "./response";
+import { rawRecordSchema } from "./schemas";
 
 type ListId = string & { readonly __brand: "ListId" };
 type EntryId = string & { readonly __brand: "EntryId" };
@@ -31,20 +38,17 @@ interface ListQueryBaseInput extends AttioClientInput {
   filter?: ListEntryFilter;
   limit?: number;
   offset?: number;
+  itemSchema?: ZodType<Record<string, unknown>>;
   options?: Omit<
     Options<PostV2ListsByListEntriesQueryData>,
     "client" | "path" | "body"
   >;
 }
 
-interface ListQueryPaginationInput {
-  maxPages?: number;
-  maxItems?: number;
-  signal?: AbortSignal;
-}
+type ListQueryPaginationInput = SharedPaginationInput;
 
 type ListQueryInput = ListQueryBaseInput &
-  ListQueryPaginationInput & {
+  SharedPaginationInput & {
     paginate?: boolean | "stream";
   };
 
@@ -99,71 +103,69 @@ export const getList = async (input: GetListInput) => {
   return unwrapData(result);
 };
 
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput & { paginate: "stream" },
 ): AsyncIterable<T>;
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput & { paginate?: false | true },
 ): Promise<T[]>;
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput,
 ): Promise<T[]> | AsyncIterable<T>;
-export function queryListEntries<T = unknown>(
+export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput,
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
+  const schema = input.itemSchema ?? rawRecordSchema;
 
-  if (input.paginate === "stream" || input.paginate === true) {
-    const fetchPage = async (offset: number, limit: number) => {
-      const result = await postV2ListsByListEntriesQuery({
-        client,
-        path: { list: input.list },
-        body: {
-          filter: input.filter,
-          limit,
-          offset,
-        },
-        ...input.options,
-      });
-
-      const items = unwrapItems(result) as T[];
-      return { items };
-    };
-
-    if (input.paginate === "stream") {
-      return paginateOffsetAsync<T>(fetchPage, {
-        offset: input.offset,
-        limit: input.limit,
-        maxPages: input.maxPages,
-        maxItems: input.maxItems,
-        signal: input.signal,
-      });
-    }
-
-    return paginateOffset<T>(fetchPage, {
-      offset: input.offset,
-      limit: input.limit,
-      maxPages: input.maxPages,
-      maxItems: input.maxItems,
-    });
-  }
-
-  const fetchSinglePage = async () => {
+  const fetchEntries = async (
+    offset?: number,
+    limit?: number,
+    signal?: AbortSignal,
+  ) => {
     const result = await postV2ListsByListEntriesQuery({
       client,
       path: { list: input.list },
       body: {
         filter: input.filter,
-        limit: input.limit,
-        offset: input.offset,
+        limit,
+        offset,
       },
       ...input.options,
+      signal,
     });
-
-    return unwrapItems(result) as T[];
+    const items = unwrapItems(result, { schema });
+    return normalizeRecords<T>(items);
   };
 
-  return fetchSinglePage();
+  if (input.paginate === "stream") {
+    return paginateOffsetAsync<T>(
+      async (offset, limit, signal) => ({
+        items: await fetchEntries(offset, limit, signal),
+      }),
+      {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+        signal: input.signal,
+      },
+    );
+  }
+
+  if (input.paginate === true) {
+    return paginateOffset<T>(
+      async (offset, limit) => ({ items: await fetchEntries(offset, limit) }),
+      {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+      },
+    );
+  }
+
+  return fetchEntries(input.offset, input.limit);
 }
 
 export const addListEntry = async (input: AddListEntryInput) => {

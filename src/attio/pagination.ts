@@ -42,6 +42,12 @@ interface OffsetPaginationAsyncOptions<T = unknown>
   signal?: AbortSignal;
 }
 
+interface SharedPaginationInput {
+  maxPages?: number;
+  maxItems?: number;
+  signal?: AbortSignal;
+}
+
 const createPageResultSchema = <T>(
   itemSchema: ZodType<T>,
 ): ZodType<PageResult<T>> =>
@@ -231,7 +237,10 @@ function* yieldItems<T>(
 }
 
 async function* paginateAsync<T>(
-  fetchPage: (cursor?: string | null) => Promise<PageResult<T> | unknown>,
+  fetchPage: (
+    cursor: string | null | undefined,
+    signal: AbortSignal | undefined,
+  ) => Promise<PageResult<T> | unknown>,
   options: PaginationAsyncOptions<T> = {},
 ): AsyncIterable<T> {
   let cursor = options.cursor ?? null;
@@ -245,7 +254,7 @@ async function* paginateAsync<T>(
     state.yielded < maxItems &&
     !isAborted(options.signal)
   ) {
-    const page = await fetchPage(cursor);
+    const page = await fetchPage(cursor, options.signal);
     const parsed = parsePageResult(page, options.itemSchema);
     const { items: pageItems, nextCursor } = parsed ?? toPageResult<T>(page);
 
@@ -271,6 +280,7 @@ async function* paginateOffsetAsync<T>(
   fetchPage: (
     offset: number,
     limit: number,
+    signal: AbortSignal | undefined,
   ) => Promise<OffsetPageResult<T> | unknown>,
   options: OffsetPaginationAsyncOptions<T> = {},
 ): AsyncIterable<T> {
@@ -289,7 +299,7 @@ async function* paginateOffsetAsync<T>(
     state.yielded < maxItems &&
     !isAborted(options.signal)
   ) {
-    const page = await fetchPage(offset, limit);
+    const page = await fetchPage(offset, limit, options.signal);
     const parsed = parseOffsetPageResult(page, options.itemSchema);
     const { items: pageItems, nextOffset } =
       parsed ?? toOffsetPageResult<T>(page);
@@ -326,6 +336,7 @@ export type {
   PageResult,
   PaginationAsyncOptions,
   PaginationOptions,
+  SharedPaginationInput,
 };
 export {
   createOffsetPageResultSchema,

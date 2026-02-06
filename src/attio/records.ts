@@ -15,7 +15,11 @@ import {
   putV2ObjectsByObjectRecords,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import { paginateOffset, paginateOffsetAsync } from "./pagination";
+import {
+  paginateOffset,
+  paginateOffsetAsync,
+  type SharedPaginationInput,
+} from "./pagination";
 import {
   type AttioRecordLike,
   normalizeRecord,
@@ -82,14 +86,10 @@ interface RecordQueryBaseInput extends AttioClientInput {
   >;
 }
 
-interface RecordQueryPaginationInput {
-  maxPages?: number;
-  maxItems?: number;
-  signal?: AbortSignal;
-}
+type RecordQueryPaginationInput = SharedPaginationInput;
 
 type RecordQueryInput = RecordQueryBaseInput &
-  RecordQueryPaginationInput & {
+  SharedPaginationInput & {
     paginate?: boolean | "stream";
   };
 
@@ -184,60 +184,55 @@ function queryRecords<T extends AttioRecordLike>(
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
 
-  if (input.paginate === "stream" || input.paginate === true) {
-    const fetchPage = async (offset: number, limit: number) => {
-      const result = await postV2ObjectsByObjectRecordsQuery({
-        client,
-        path: { object: input.object },
-        body: {
-          filter: input.filter,
-          sorts: input.sorts,
-          limit,
-          offset,
-        },
-        ...input.options,
-      });
-
-      const items = unwrapItems(result, { schema: rawRecordSchema });
-      return { items: normalizeRecords<T>(items) };
-    };
-
-    if (input.paginate === "stream") {
-      return paginateOffsetAsync<T>(fetchPage, {
-        offset: input.offset,
-        limit: input.limit,
-        maxPages: input.maxPages,
-        maxItems: input.maxItems,
-        signal: input.signal,
-      });
-    }
-
-    return paginateOffset<T>(fetchPage, {
-      offset: input.offset,
-      limit: input.limit,
-      maxPages: input.maxPages,
-      maxItems: input.maxItems,
-    });
-  }
-
-  const fetchSinglePage = async () => {
+  const fetchRecords = async (
+    offset?: number,
+    limit?: number,
+    signal?: AbortSignal,
+  ) => {
     const result = await postV2ObjectsByObjectRecordsQuery({
       client,
       path: { object: input.object },
       body: {
         filter: input.filter,
         sorts: input.sorts,
-        limit: input.limit,
-        offset: input.offset,
+        limit,
+        offset,
       },
       ...input.options,
+      signal,
     });
-
     const items = unwrapItems(result, { schema: rawRecordSchema });
     return normalizeRecords<T>(items);
   };
 
-  return fetchSinglePage();
+  if (input.paginate === "stream") {
+    return paginateOffsetAsync<T>(
+      async (offset, limit, signal) => ({
+        items: await fetchRecords(offset, limit, signal),
+      }),
+      {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+        signal: input.signal,
+      },
+    );
+  }
+
+  if (input.paginate === true) {
+    return paginateOffset<T>(
+      async (offset, limit) => ({ items: await fetchRecords(offset, limit) }),
+      {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+      },
+    );
+  }
+
+  return fetchRecords(input.offset, input.limit);
 }
 
 export type {

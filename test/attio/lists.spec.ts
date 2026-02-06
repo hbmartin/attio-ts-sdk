@@ -27,6 +27,10 @@ vi.mock("../../src/attio/client", () => ({
   resolveAttioClient,
 }));
 
+vi.mock("../../src/attio/record-utils", () => ({
+  normalizeRecords: vi.fn((records) => records),
+}));
+
 describe("lists", () => {
   let listLists: typeof import("../../src/attio/lists").listLists;
   let getList: typeof import("../../src/attio/lists").getList;
@@ -47,7 +51,7 @@ describe("lists", () => {
   });
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     resolveAttioClient.mockReturnValue({});
   });
 
@@ -145,6 +149,175 @@ describe("lists", () => {
           offset: undefined,
         },
         headers: { "X-Custom": "value" },
+      });
+    });
+
+    describe("with paginate: true", () => {
+      it("fetches all pages and returns combined results", async () => {
+        queryEntriesRequest
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "entry-1" }, { id: "entry-2" }] },
+          })
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "entry-3" }] },
+          });
+
+        const result = await queryListEntries({
+          list: "list-1",
+          paginate: true,
+          limit: 2,
+        });
+
+        expect(result).toEqual([
+          { id: "entry-1" },
+          { id: "entry-2" },
+          { id: "entry-3" },
+        ]);
+        expect(queryEntriesRequest).toHaveBeenCalledTimes(2);
+      });
+
+      it("respects maxItems option", async () => {
+        queryEntriesRequest.mockResolvedValue({
+          data: { data: [{ id: "entry-1" }, { id: "entry-2" }] },
+        });
+
+        const result = await queryListEntries({
+          list: "list-1",
+          paginate: true,
+          limit: 2,
+          maxItems: 1,
+        });
+
+        expect(result).toEqual([{ id: "entry-1" }]);
+      });
+
+      it("respects maxPages option", async () => {
+        queryEntriesRequest
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "entry-1" }, { id: "entry-2" }] },
+          })
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "entry-3" }, { id: "entry-4" }] },
+          });
+
+        const result = await queryListEntries({
+          list: "list-1",
+          paginate: true,
+          limit: 2,
+          maxPages: 1,
+        });
+
+        expect(result).toEqual([{ id: "entry-1" }, { id: "entry-2" }]);
+        expect(queryEntriesRequest).toHaveBeenCalledTimes(1);
+      });
+
+      it("passes filter to each page request", async () => {
+        queryEntriesRequest.mockResolvedValueOnce({
+          data: { data: [{ id: "entry-1" }] },
+        });
+
+        await queryListEntries({
+          list: "list-1",
+          paginate: true,
+          filter: { status: { $eq: "active" } },
+          limit: 10,
+        });
+
+        expect(queryEntriesRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            body: expect.objectContaining({
+              filter: { status: { $eq: "active" } },
+            }),
+          }),
+        );
+      });
+    });
+
+    describe("with paginate: 'stream'", () => {
+      it("returns an async iterable that yields entries", async () => {
+        queryEntriesRequest
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "entry-1" }, { id: "entry-2" }] },
+          })
+          .mockResolvedValueOnce({
+            data: { data: [{ id: "entry-3" }] },
+          });
+
+        const entries: { id: string }[] = [];
+        for await (const entry of queryListEntries({
+          list: "list-1",
+          paginate: "stream",
+          limit: 2,
+        })) {
+          entries.push(entry);
+        }
+
+        expect(entries).toEqual([
+          { id: "entry-1" },
+          { id: "entry-2" },
+          { id: "entry-3" },
+        ]);
+      });
+
+      it("allows early exit from iteration", async () => {
+        queryEntriesRequest.mockResolvedValueOnce({
+          data: {
+            data: [{ id: "entry-1" }, { id: "entry-2" }, { id: "entry-3" }],
+          },
+        });
+
+        const entries: { id: string }[] = [];
+        for await (const entry of queryListEntries({
+          list: "list-1",
+          paginate: "stream",
+          limit: 10,
+        })) {
+          entries.push(entry);
+          if (entries.length === 2) {
+            break;
+          }
+        }
+
+        expect(entries).toEqual([{ id: "entry-1" }, { id: "entry-2" }]);
+        expect(queryEntriesRequest).toHaveBeenCalledTimes(1);
+      });
+
+      it("respects maxItems option", async () => {
+        queryEntriesRequest.mockResolvedValue({
+          data: { data: [{ id: "entry-1" }, { id: "entry-2" }] },
+        });
+
+        const entries: { id: string }[] = [];
+        for await (const entry of queryListEntries({
+          list: "list-1",
+          paginate: "stream",
+          limit: 2,
+          maxItems: 1,
+        })) {
+          entries.push(entry);
+        }
+
+        expect(entries).toEqual([{ id: "entry-1" }]);
+      });
+
+      it("supports AbortSignal cancellation", async () => {
+        const controller = new AbortController();
+        queryEntriesRequest.mockResolvedValueOnce({
+          data: { data: [{ id: "entry-1" }, { id: "entry-2" }] },
+        });
+
+        const entries: { id: string }[] = [];
+        for await (const entry of queryListEntries({
+          list: "list-1",
+          paginate: "stream",
+          limit: 2,
+          signal: controller.signal,
+        })) {
+          entries.push(entry);
+          controller.abort();
+        }
+
+        expect(entries).toEqual([{ id: "entry-1" }]);
       });
     });
   });
