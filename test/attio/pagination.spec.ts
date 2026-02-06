@@ -5,7 +5,9 @@ import {
   createOffsetPageResultSchema,
   createPageResultSchema,
   paginate,
+  paginateAsync,
   paginateOffset,
+  paginateOffsetAsync,
   parseOffsetPageResult,
   parsePageResult,
   toOffsetPageResult,
@@ -433,5 +435,432 @@ describe("paginateOffset", () => {
 
     expect(fetchPage).toHaveBeenCalledTimes(2);
     expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+  });
+});
+
+describe("paginateAsync", () => {
+  it("yields items one at a time from multiple pages", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+        nextCursor: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage)) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+  });
+
+  it("stops early when consumer breaks", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 4 }],
+        nextCursor: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage)) {
+      items.push(item);
+      if (items.length === 2) {
+        break;
+      }
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("respects maxItems option", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 4 }],
+        nextCursor: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage, {
+      maxItems: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("respects maxPages option", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 2 }],
+        nextCursor: "cursor-2",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+        nextCursor: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage, {
+      maxPages: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+  });
+
+  it("stops when signal is aborted", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+        nextCursor: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage, {
+      signal: controller.signal,
+    })) {
+      items.push(item);
+      if (items.length === 2) {
+        controller.abort();
+      }
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("starts from provided cursor", async () => {
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 5 }],
+      nextCursor: null,
+    });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage, {
+      cursor: "start-cursor",
+    })) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledWith("start-cursor");
+    expect(items).toEqual([{ id: 5 }]);
+  });
+
+  it("handles raw API responses by converting them via toPageResult", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        data: { items: [{ id: 1 }] },
+        pagination: { next_cursor: "cursor-1" },
+      })
+      .mockResolvedValueOnce({
+        data: { items: [{ id: 2 }] },
+        pagination: { next_cursor: null },
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage)) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+  });
+
+  it("validates items with itemSchema when provided", async () => {
+    const itemSchema = z.object({ id: z.number() });
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 2 }],
+        nextCursor: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage, {
+      itemSchema,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+  });
+
+  it("stops when signal is aborted before any fetch", async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    const fetchPage = vi.fn();
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage, {
+      signal: controller.signal,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([]);
+    expect(fetchPage).not.toHaveBeenCalled();
+  });
+});
+
+describe("paginateOffsetAsync", () => {
+  it("yields items one at a time from multiple pages", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextOffset: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+        nextOffset: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(fetchPage).toHaveBeenNthCalledWith(1, 0, 2);
+    expect(fetchPage).toHaveBeenNthCalledWith(2, 2, 2);
+  });
+
+  it("stops early when consumer breaks", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        nextOffset: 3,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 4 }],
+        nextOffset: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      limit: 3,
+    })) {
+      items.push(item);
+      if (items.length === 2) {
+        break;
+      }
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("respects maxItems option", async () => {
+    const fetchPage = vi.fn().mockResolvedValue({
+      items: [{ id: 1 }, { id: 2 }],
+      nextOffset: 2,
+    });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      maxItems: 1,
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("respects maxPages option", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextOffset: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }, { id: 4 }],
+        nextOffset: 4,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 5 }],
+        nextOffset: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      maxPages: 2,
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+  });
+
+  it("stops when signal is aborted", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextOffset: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+        nextOffset: null,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      signal: controller.signal,
+      limit: 2,
+    })) {
+      items.push(item);
+      if (items.length === 2) {
+        controller.abort();
+      }
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("starts from non-zero offset", async () => {
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 3 }, { id: 4 }],
+      nextOffset: null,
+    });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      offset: 10,
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledWith(10, 2);
+    expect(items).toEqual([{ id: 3 }, { id: 4 }]);
+  });
+
+  it("uses default page size when neither limit nor pageSize provided", async () => {
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 1 }],
+      nextOffset: null,
+    });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage)) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledWith(0, 50);
+  });
+
+  it("terminates when page items length is less than limit", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }],
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+  });
+
+  it("terminates when nextOffset is non-advancing", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        items: [{ id: 1 }, { id: 2 }],
+        nextOffset: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 3 }, { id: 4 }],
+        nextOffset: 2,
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+  });
+
+  it("handles raw API responses by converting them via toOffsetPageResult", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        data: { items: [{ id: 1 }] },
+        pagination: { next_offset: 1 },
+      })
+      .mockResolvedValueOnce({
+        data: { items: [{ id: 2 }] },
+        pagination: { next_offset: null },
+      });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      limit: 1,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }]);
   });
 });

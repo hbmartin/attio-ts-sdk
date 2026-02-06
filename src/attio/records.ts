@@ -15,6 +15,7 @@ import {
   putV2ObjectsByObjectRecords,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
+import { paginateOffset, paginateOffsetAsync } from "./pagination";
 import {
   type AttioRecordLike,
   normalizeRecord,
@@ -69,7 +70,7 @@ interface RecordGetInput extends AttioClientInput {
   >;
 }
 
-interface RecordQueryInput extends AttioClientInput {
+interface RecordQueryBaseInput extends AttioClientInput {
   object: RecordObjectId;
   filter?: RecordFilter;
   sorts?: RecordSorts;
@@ -80,6 +81,17 @@ interface RecordQueryInput extends AttioClientInput {
     "client" | "path" | "body"
   >;
 }
+
+interface RecordQueryPaginationInput {
+  maxPages?: number;
+  maxItems?: number;
+  signal?: AbortSignal;
+}
+
+type RecordQueryInput = RecordQueryBaseInput &
+  RecordQueryPaginationInput & {
+    paginate?: boolean | "stream";
+  };
 
 const createRecord = async <T extends AttioRecordLike>(
   input: RecordCreateInput,
@@ -158,25 +170,75 @@ const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
   return true;
 };
 
-const queryRecords = async <T extends AttioRecordLike>(
+function queryRecords<T extends AttioRecordLike>(
+  input: RecordQueryInput & { paginate: "stream" },
+): AsyncIterable<T>;
+function queryRecords<T extends AttioRecordLike>(
+  input: RecordQueryInput & { paginate?: false | true },
+): Promise<T[]>;
+function queryRecords<T extends AttioRecordLike>(
   input: RecordQueryInput,
-): Promise<T[]> => {
+): Promise<T[]> | AsyncIterable<T>;
+function queryRecords<T extends AttioRecordLike>(
+  input: RecordQueryInput,
+): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
-  const result = await postV2ObjectsByObjectRecordsQuery({
-    client,
-    path: { object: input.object },
-    body: {
-      filter: input.filter,
-      sorts: input.sorts,
-      limit: input.limit,
-      offset: input.offset,
-    },
-    ...input.options,
-  });
 
-  const items = unwrapItems(result, { schema: rawRecordSchema });
-  return normalizeRecords<T>(items);
-};
+  if (input.paginate === "stream" || input.paginate === true) {
+    const fetchPage = async (offset: number, limit: number) => {
+      const result = await postV2ObjectsByObjectRecordsQuery({
+        client,
+        path: { object: input.object },
+        body: {
+          filter: input.filter,
+          sorts: input.sorts,
+          limit,
+          offset,
+        },
+        ...input.options,
+      });
+
+      const items = unwrapItems(result, { schema: rawRecordSchema });
+      return { items: normalizeRecords<T>(items) };
+    };
+
+    if (input.paginate === "stream") {
+      return paginateOffsetAsync<T>(fetchPage, {
+        offset: input.offset,
+        limit: input.limit,
+        maxPages: input.maxPages,
+        maxItems: input.maxItems,
+        signal: input.signal,
+      });
+    }
+
+    return paginateOffset<T>(fetchPage, {
+      offset: input.offset,
+      limit: input.limit,
+      maxPages: input.maxPages,
+      maxItems: input.maxItems,
+    });
+  }
+
+  const fetchSinglePage = async () => {
+    const result = await postV2ObjectsByObjectRecordsQuery({
+      client,
+      path: { object: input.object },
+      body: {
+        filter: input.filter,
+        sorts: input.sorts,
+        limit: input.limit,
+        offset: input.offset,
+      },
+      ...input.options,
+    });
+
+    const items = unwrapItems(result, { schema: rawRecordSchema });
+    return normalizeRecords<T>(items);
+  };
+
+  return fetchSinglePage();
+}
 
 export type {
   MatchingAttribute,
@@ -184,10 +246,12 @@ export type {
   RecordId,
   RecordCreateInput,
   RecordObjectId,
+  RecordQueryBaseInput,
+  RecordQueryInput,
+  RecordQueryPaginationInput,
   RecordUpdateInput,
   RecordUpsertInput,
   RecordGetInput,
-  RecordQueryInput,
   RecordSorts,
   RecordValues,
 };
