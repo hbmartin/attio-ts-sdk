@@ -785,13 +785,16 @@ Fetches all pages using cursor-based pagination.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `fetchPage` | `(cursor?: string \| null) => Promise<PageResult<T> \| unknown>` | Function that fetches a page given a cursor |
+| `fetchPage` | `(cursor: string \| null \| undefined, signal?: AbortSignal) => Promise<PageResult<T> \| unknown>` | Function that fetches a page given a cursor and optional signal |
 | `options.cursor` | `string \| null` | Starting cursor (default: `null`) |
 | `options.maxPages` | `number` | Maximum pages to fetch |
 | `options.maxItems` | `number` | Maximum total items to return |
 | `options.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
+| `options.signal` | `AbortSignal` | Cancel pagination when aborted (forwarded to fetchPage) |
 
 **Returns:** `Promise<T[]>` - All collected items as a flat array
+
+**Note:** The signal is forwarded to the `fetchPage` callback, enabling cancellation of in-flight HTTP requests.
 
 ---
 
@@ -824,15 +827,18 @@ Fetches all pages using offset-based pagination.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `fetchPage` | `(offset: number, limit: number) => Promise<OffsetPageResult<T> \| unknown>` | Function that fetches a page given offset and limit |
+| `fetchPage` | `(offset: number, limit: number, signal?: AbortSignal) => Promise<OffsetPageResult<T> \| unknown>` | Function that fetches a page given offset, limit, and optional signal |
 | `options.offset` | `number` | Starting offset (default: `0`) |
 | `options.limit` | `number` | Items per page (default: `50`) |
 | `options.pageSize` | `number` | Alias for `limit` |
 | `options.maxPages` | `number` | Maximum pages to fetch |
 | `options.maxItems` | `number` | Maximum total items to return |
 | `options.itemSchema` | `ZodType<T>` | Optional Zod schema for item validation |
+| `options.signal` | `AbortSignal` | Cancel pagination when aborted (forwarded to fetchPage) |
 
 **Returns:** `Promise<T[]>` - All collected items as a flat array
+
+**Note:** The signal is forwarded to the `fetchPage` callback, enabling cancellation of in-flight HTTP requests.
 
 ---
 
