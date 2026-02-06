@@ -33,30 +33,34 @@ type ParentRecordId = string & { readonly __brand: "ParentRecordId" };
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
 type ListEntryFilter = PostV2ListsByListEntriesQueryData["body"]["filter"];
 
-interface ListQueryBaseInput extends AttioClientInput {
+interface ListQueryBaseInput<T extends AttioRecordLike = AttioRecordLike>
+  extends AttioClientInput {
   list: ListId;
   filter?: ListEntryFilter;
   limit?: number;
   offset?: number;
   signal?: AbortSignal;
-  itemSchema?: ZodType<Record<string, unknown>>;
+  itemSchema?: ZodType<T>;
   options?: Omit<
     Options<PostV2ListsByListEntriesQueryData>,
     "client" | "path" | "body"
   >;
 }
 
-interface ListQuerySingleInput extends ListQueryBaseInput {
+interface ListQuerySingleInput<T extends AttioRecordLike = AttioRecordLike>
+  extends ListQueryBaseInput<T> {
   paginate?: false;
 }
 
-interface ListQueryCollectInput extends ListQueryBaseInput {
+interface ListQueryCollectInput<T extends AttioRecordLike = AttioRecordLike>
+  extends ListQueryBaseInput<T> {
   paginate: true;
   maxPages?: number;
   maxItems?: number;
 }
 
-interface ListQueryStreamInput extends ListQueryBaseInput {
+interface ListQueryStreamInput<T extends AttioRecordLike = AttioRecordLike>
+  extends ListQueryBaseInput<T> {
   paginate: "stream";
   maxPages?: number;
   maxItems?: number;
@@ -64,10 +68,10 @@ interface ListQueryStreamInput extends ListQueryBaseInput {
 
 type ListQueryPaginationInput = SharedPaginationInput;
 
-type ListQueryInput =
-  | ListQuerySingleInput
-  | ListQueryCollectInput
-  | ListQueryStreamInput;
+type ListQueryInput<T extends AttioRecordLike = AttioRecordLike> =
+  | ListQuerySingleInput<T>
+  | ListQueryCollectInput<T>
+  | ListQueryStreamInput<T>;
 
 interface GetListInput extends AttioClientInput {
   list: ListId;
@@ -121,16 +125,16 @@ export const getList = async (input: GetListInput) => {
 };
 
 export function queryListEntries<T extends AttioRecordLike>(
-  input: ListQueryStreamInput,
+  input: ListQueryStreamInput<T>,
 ): AsyncIterable<T>;
 export function queryListEntries<T extends AttioRecordLike>(
-  input: ListQuerySingleInput | ListQueryCollectInput,
+  input: ListQuerySingleInput<T> | ListQueryCollectInput<T>,
 ): Promise<T[]>;
 export function queryListEntries<T extends AttioRecordLike>(
-  input: ListQueryInput,
+  input: ListQueryInput<T>,
 ): Promise<T[]> | AsyncIterable<T>;
 export function queryListEntries<T extends AttioRecordLike>(
-  input: ListQueryInput,
+  input: ListQueryInput<T>,
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
