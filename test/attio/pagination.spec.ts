@@ -574,8 +574,26 @@ describe("paginateAsync", () => {
       items.push(item);
     }
 
-    expect(fetchPage).toHaveBeenCalledWith("start-cursor");
+    expect(fetchPage).toHaveBeenCalledWith("start-cursor", undefined);
     expect(items).toEqual([{ id: 5 }]);
+  });
+
+  it("forwards signal to fetchPage callback", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 1 }],
+      nextCursor: null,
+    });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateAsync<{ id: number }>(fetchPage, {
+      signal: controller.signal,
+    })) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledWith(null, controller.signal);
+    expect(items).toEqual([{ id: 1 }]);
   });
 
   it("handles raw API responses by converting them via toPageResult", async () => {
@@ -662,8 +680,8 @@ describe("paginateOffsetAsync", () => {
 
     expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
     expect(fetchPage).toHaveBeenCalledTimes(2);
-    expect(fetchPage).toHaveBeenNthCalledWith(1, 0, 2);
-    expect(fetchPage).toHaveBeenNthCalledWith(2, 2, 2);
+    expect(fetchPage).toHaveBeenNthCalledWith(1, 0, 2, undefined);
+    expect(fetchPage).toHaveBeenNthCalledWith(2, 2, 2, undefined);
   });
 
   it("stops early when consumer breaks", async () => {
@@ -780,7 +798,7 @@ describe("paginateOffsetAsync", () => {
       items.push(item);
     }
 
-    expect(fetchPage).toHaveBeenCalledWith(10, 2);
+    expect(fetchPage).toHaveBeenCalledWith(10, 2, undefined);
     expect(items).toEqual([{ id: 3 }, { id: 4 }]);
   });
 
@@ -795,7 +813,26 @@ describe("paginateOffsetAsync", () => {
       items.push(item);
     }
 
-    expect(fetchPage).toHaveBeenCalledWith(0, 50);
+    expect(fetchPage).toHaveBeenCalledWith(0, 50, undefined);
+  });
+
+  it("forwards signal to fetchPage callback", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 1 }],
+      nextOffset: null,
+    });
+
+    const items: { id: number }[] = [];
+    for await (const item of paginateOffsetAsync<{ id: number }>(fetchPage, {
+      signal: controller.signal,
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(fetchPage).toHaveBeenCalledWith(0, 2, controller.signal);
+    expect(items).toEqual([{ id: 1 }]);
   });
 
   it("terminates when page items length is less than limit", async () => {

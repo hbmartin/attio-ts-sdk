@@ -16,7 +16,11 @@ import {
   postV2ListsByListEntriesQuery,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import { paginateOffset, paginateOffsetAsync } from "./pagination";
+import {
+  paginateOffset,
+  paginateOffsetAsync,
+  type SharedPaginationInput,
+} from "./pagination";
 import { type AttioRecordLike, normalizeRecords } from "./record-utils";
 import { unwrapData, unwrapItems } from "./response";
 import { rawRecordSchema } from "./schemas";
@@ -41,14 +45,10 @@ interface ListQueryBaseInput extends AttioClientInput {
   >;
 }
 
-interface ListQueryPaginationInput {
-  maxPages?: number;
-  maxItems?: number;
-  signal?: AbortSignal;
-}
+type ListQueryPaginationInput = SharedPaginationInput;
 
 type ListQueryInput = ListQueryBaseInput &
-  ListQueryPaginationInput & {
+  SharedPaginationInput & {
     paginate?: boolean | "stream";
   };
 

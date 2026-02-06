@@ -15,7 +15,11 @@ import {
   putV2ObjectsByObjectRecords,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import { paginateOffset, paginateOffsetAsync } from "./pagination";
+import {
+  paginateOffset,
+  paginateOffsetAsync,
+  type SharedPaginationInput,
+} from "./pagination";
 import {
   type AttioRecordLike,
   normalizeRecord,
@@ -82,14 +86,10 @@ interface RecordQueryBaseInput extends AttioClientInput {
   >;
 }
 
-interface RecordQueryPaginationInput {
-  maxPages?: number;
-  maxItems?: number;
-  signal?: AbortSignal;
-}
+type RecordQueryPaginationInput = SharedPaginationInput;
 
 type RecordQueryInput = RecordQueryBaseInput &
-  RecordQueryPaginationInput & {
+  SharedPaginationInput & {
     paginate?: boolean | "stream";
   };
 
@@ -184,7 +184,11 @@ function queryRecords<T extends AttioRecordLike>(
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
 
-  const fetchRecords = async (offset?: number, limit?: number) => {
+  const fetchRecords = async (
+    offset?: number,
+    limit?: number,
+    signal?: AbortSignal,
+  ) => {
     const result = await postV2ObjectsByObjectRecordsQuery({
       client,
       path: { object: input.object },
@@ -195,6 +199,7 @@ function queryRecords<T extends AttioRecordLike>(
         offset,
       },
       ...input.options,
+      signal,
     });
     const items = unwrapItems(result, { schema: rawRecordSchema });
     return normalizeRecords<T>(items);
@@ -202,7 +207,9 @@ function queryRecords<T extends AttioRecordLike>(
 
   if (input.paginate === "stream") {
     return paginateOffsetAsync<T>(
-      async (offset, limit) => ({ items: await fetchRecords(offset, limit) }),
+      async (offset, limit, signal) => ({
+        items: await fetchRecords(offset, limit, signal),
+      }),
       {
         offset: input.offset,
         limit: input.limit,
