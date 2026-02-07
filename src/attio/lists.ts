@@ -36,8 +36,6 @@ type InferEntryType<TInput> = TInput extends {
   ? T
   : AttioRecordLike;
 
-import type { WithItemSchema, WithoutItemSchema } from "./records";
-
 type ListId = string & { readonly __brand: "ListId" };
 type EntryId = string & { readonly __brand: "EntryId" };
 type ParentObjectId = string & { readonly __brand: "ParentObjectId" };
@@ -53,30 +51,34 @@ const createListId = (id: string): ListId => {
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
 type ListEntryFilter = PostV2ListsByListEntriesQueryData["body"]["filter"];
 
-interface ListQueryBaseInput extends AttioClientInput {
+interface ListQueryBaseInput<T extends AttioRecordLike = AttioRecordLike>
+  extends AttioClientInput {
   list: ListId;
   filter?: ListEntryFilter;
   limit?: number;
   offset?: number;
   signal?: AbortSignal;
-  itemSchema?: ZodType<AttioRecordLike>;
+  itemSchema?: ZodType<T>;
   options?: Omit<
     Options<PostV2ListsByListEntriesQueryData>,
     "client" | "path" | "body"
   >;
 }
 
-interface ListQuerySingleInput extends ListQueryBaseInput {
+interface ListQuerySingleInput<T extends AttioRecordLike = AttioRecordLike>
+  extends ListQueryBaseInput<T> {
   paginate?: false;
 }
 
-interface ListQueryCollectInput extends ListQueryBaseInput {
+interface ListQueryCollectInput<T extends AttioRecordLike = AttioRecordLike>
+  extends ListQueryBaseInput<T> {
   paginate: true;
   maxPages?: number;
   maxItems?: number;
 }
 
-interface ListQueryStreamInput extends ListQueryBaseInput {
+interface ListQueryStreamInput<T extends AttioRecordLike = AttioRecordLike>
+  extends ListQueryBaseInput<T> {
   paginate: "stream";
   maxPages?: number;
   maxItems?: number;
@@ -84,10 +86,10 @@ interface ListQueryStreamInput extends ListQueryBaseInput {
 
 type ListQueryPaginationInput = SharedPaginationInput;
 
-type ListQueryInput =
-  | ListQuerySingleInput
-  | ListQueryCollectInput
-  | ListQueryStreamInput;
+type ListQueryInput<T extends AttioRecordLike = AttioRecordLike> =
+  | ListQuerySingleInput<T>
+  | ListQueryCollectInput<T>
+  | ListQueryStreamInput<T>;
 
 interface GetListInput extends AttioClientInput {
   list: ListId;
@@ -142,29 +144,30 @@ export const getList = async (input: GetListInput) => {
 
 // Overload: Stream mode with itemSchema - T is inferred from schema
 export function queryListEntries<T extends AttioRecordLike>(
-  input: WithItemSchema<ListQueryStreamInput, T>,
+  input: ListQueryStreamInput<T> & { itemSchema: ZodType<T> },
 ): AsyncIterable<T>;
 // Overload: Stream mode without itemSchema - returns AttioRecordLike
 export function queryListEntries(
-  input: WithoutItemSchema<ListQueryStreamInput>,
+  input: ListQueryStreamInput,
 ): AsyncIterable<AttioRecordLike>;
 // Overload: Single/Collect mode with itemSchema - T is inferred from schema
 export function queryListEntries<T extends AttioRecordLike>(
-  input: WithItemSchema<ListQuerySingleInput | ListQueryCollectInput, T>,
+  input: (ListQuerySingleInput<T> | ListQueryCollectInput<T>) & {
+    itemSchema: ZodType<T>;
+  },
 ): Promise<T[]>;
 // Overload: Single/Collect mode without itemSchema - returns AttioRecordLike
 export function queryListEntries(
-  input: WithoutItemSchema<ListQuerySingleInput | ListQueryCollectInput>,
+  input: ListQuerySingleInput | ListQueryCollectInput,
 ): Promise<AttioRecordLike[]>;
 // Overload: Base input type (for SDK compatibility)
 export function queryListEntries(
   input: ListQueryInput,
 ): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike>;
 // Implementation signature
-export function queryListEntries(
-  input: ListQueryInput,
-): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike> {
-  type T = AttioRecordLike;
+export function queryListEntries<T extends AttioRecordLike>(
+  input: ListQueryInput<T>,
+): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
 
@@ -186,7 +189,7 @@ export function queryListEntries(
     });
     const items = unwrapItems(result) as Record<string, unknown>[];
     const normalized = normalizeRecords(items);
-    return validateItemsArray(normalized, schema);
+    return validateItemsArray(normalized, schema) as T[];
   };
 
   if (input.paginate === "stream") {

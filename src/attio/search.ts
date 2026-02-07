@@ -17,19 +17,28 @@ type InferSearchResultType<TInput> = TInput extends {
   ? T
   : AttioRecordLike;
 
-export interface RecordSearchInput extends AttioClientInput {
+export interface RecordSearchInput<T extends AttioRecordLike = AttioRecordLike>
+  extends AttioClientInput {
   query: PostV2ObjectsRecordsSearchData["body"]["query"];
   objects: PostV2ObjectsRecordsSearchData["body"]["objects"];
   requestAs?: PostV2ObjectsRecordsSearchData["body"]["request_as"];
   limit?: PostV2ObjectsRecordsSearchData["body"]["limit"];
-  itemSchema?: ZodType<AttioRecordLike>;
+  itemSchema?: ZodType<T>;
   options?: Omit<Options<PostV2ObjectsRecordsSearchData>, "client" | "body">;
 }
 
-export const searchRecords = async <TInput extends RecordSearchInput>(
-  input: TInput,
-): Promise<InferSearchResultType<TInput>[]> => {
-  type T = InferSearchResultType<TInput>;
+// Overload: With itemSchema - T is inferred from schema
+export async function searchRecords<T extends AttioRecordLike>(
+  input: RecordSearchInput<T> & { itemSchema: ZodType<T> },
+): Promise<T[]>;
+// Overload: Without itemSchema - returns AttioRecordLike
+export async function searchRecords(
+  input: RecordSearchInput,
+): Promise<AttioRecordLike[]>;
+// Implementation
+export async function searchRecords<T extends AttioRecordLike>(
+  input: RecordSearchInput<T>,
+): Promise<T[]> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
   const result = await postV2ObjectsRecordsSearch({
@@ -46,6 +55,6 @@ export const searchRecords = async <TInput extends RecordSearchInput>(
   const items = unwrapItems(result) as Record<string, unknown>[];
   const normalized = normalizeRecords(items);
   return validateItemsArray(normalized, schema) as T[];
-};
+}
 
 export type { InferSearchResultType };
