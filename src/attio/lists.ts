@@ -22,7 +22,7 @@ import {
   type SharedPaginationInput,
 } from "./pagination";
 import { type AttioRecordLike, normalizeRecords } from "./record-utils";
-import { unwrapData, unwrapItems } from "./response";
+import { unwrapData, unwrapItems, validateItemsArray } from "./response";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -36,21 +36,7 @@ type InferEntryType<TInput> = TInput extends {
   ? T
   : AttioRecordLike;
 
-/**
- * Helper type to require itemSchema for typed overloads.
- * This ensures users must provide a schema to get custom type inference.
- */
-type WithItemSchema<TBase, T extends AttioRecordLike> = TBase & {
-  itemSchema: ZodType<T>;
-};
-
-/**
- * Helper type for inputs without itemSchema.
- * Explicitly marks itemSchema as undefined to help overload resolution.
- */
-type WithoutItemSchema<TBase> = Omit<TBase, "itemSchema"> & {
-  itemSchema?: undefined;
-};
+import type { WithItemSchema, WithoutItemSchema } from "./records";
 
 type ListId = string & { readonly __brand: "ListId" };
 type EntryId = string & { readonly __brand: "EntryId" };
@@ -170,6 +156,10 @@ export function queryListEntries<T extends AttioRecordLike>(
 export function queryListEntries(
   input: WithoutItemSchema<ListQuerySingleInput | ListQueryCollectInput>,
 ): Promise<AttioRecordLike[]>;
+// Overload: Base input type (for SDK compatibility)
+export function queryListEntries(
+  input: ListQueryInput,
+): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike>;
 // Implementation signature
 export function queryListEntries(
   input: ListQueryInput,
@@ -194,8 +184,9 @@ export function queryListEntries(
       ...input.options,
       signal,
     });
-    const items = unwrapItems(result, { schema });
-    return normalizeRecords(items) as T[];
+    const items = unwrapItems(result) as Record<string, unknown>[];
+    const normalized = normalizeRecords(items);
+    return validateItemsArray(normalized, schema);
   };
 
   if (input.paginate === "stream") {
@@ -294,6 +285,4 @@ export type {
   ParentRecordId,
   RemoveListEntryInput,
   UpdateListEntryInput,
-  WithItemSchema,
-  WithoutItemSchema,
 };

@@ -3,7 +3,7 @@ import type { Options, PostV2ObjectsRecordsSearchData } from "../generated";
 import { postV2ObjectsRecordsSearch } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type AttioRecordLike, normalizeRecords } from "./record-utils";
-import { unwrapItems } from "./response";
+import { unwrapItems, validateItemsArray } from "./response";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -43,8 +43,9 @@ export const searchRecords = async <TInput extends RecordSearchInput>(
     ...input.options,
   });
 
-  const items = unwrapItems(result, { schema });
-  return normalizeRecords(items) as T[];
+  const items = unwrapItems(result) as Record<string, unknown>[];
+  const normalized = normalizeRecords(items);
+  return validateItemsArray(normalized, schema) as T[];
 };
 
 export type { InferSearchResultType };

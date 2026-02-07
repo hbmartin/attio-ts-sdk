@@ -152,10 +152,8 @@ type RecordQueryInput =
 async function createRecord<T extends AttioRecordLike>(
   input: WithItemSchema<RecordCreateInput, T>,
 ): Promise<T>;
-// Overload: Without itemSchema - returns AttioRecordLike
-async function createRecord(
-  input: WithoutItemSchema<RecordCreateInput>,
-): Promise<AttioRecordLike>;
+// Overload: Without itemSchema or base input - returns AttioRecordLike
+async function createRecord(input: RecordCreateInput): Promise<AttioRecordLike>;
 // Implementation
 async function createRecord(
   input: RecordCreateInput,
@@ -172,7 +170,8 @@ async function createRecord(
     },
     ...input.options,
   });
-  const normalized = normalizeRecord(assertOk(result));
+  const data = assertOk(result) as Record<string, unknown>;
+  const normalized = normalizeRecord(data);
   return validateWithSchema(normalized, schema);
 }
 
@@ -180,10 +179,8 @@ async function createRecord(
 async function updateRecord<T extends AttioRecordLike>(
   input: WithItemSchema<RecordUpdateInput, T>,
 ): Promise<T>;
-// Overload: Without itemSchema - returns AttioRecordLike
-async function updateRecord(
-  input: WithoutItemSchema<RecordUpdateInput>,
-): Promise<AttioRecordLike>;
+// Overload: Without itemSchema or base input - returns AttioRecordLike
+async function updateRecord(input: RecordUpdateInput): Promise<AttioRecordLike>;
 // Implementation
 async function updateRecord(
   input: RecordUpdateInput,
@@ -200,7 +197,8 @@ async function updateRecord(
     },
     ...input.options,
   });
-  const normalized = normalizeRecord(assertOk(result));
+  const data = assertOk(result) as Record<string, unknown>;
+  const normalized = normalizeRecord(data);
   return validateWithSchema(normalized, schema);
 }
 
@@ -208,10 +206,8 @@ async function updateRecord(
 async function upsertRecord<T extends AttioRecordLike>(
   input: WithItemSchema<RecordUpsertInput, T>,
 ): Promise<T>;
-// Overload: Without itemSchema - returns AttioRecordLike
-async function upsertRecord(
-  input: WithoutItemSchema<RecordUpsertInput>,
-): Promise<AttioRecordLike>;
+// Overload: Without itemSchema or base input - returns AttioRecordLike
+async function upsertRecord(input: RecordUpsertInput): Promise<AttioRecordLike>;
 // Implementation
 async function upsertRecord(
   input: RecordUpsertInput,
@@ -231,17 +227,17 @@ async function upsertRecord(
     },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema }));
+  const data = assertOk(result) as Record<string, unknown>;
+  const normalized = normalizeRecord(data);
+  return validateWithSchema(normalized, schema);
 }
 
 // Overload: With itemSchema - T is inferred from schema
 async function getRecord<T extends AttioRecordLike>(
   input: WithItemSchema<RecordGetInput, T>,
 ): Promise<T>;
-// Overload: Without itemSchema - returns AttioRecordLike
-async function getRecord(
-  input: WithoutItemSchema<RecordGetInput>,
-): Promise<AttioRecordLike>;
+// Overload: Without itemSchema or base input - returns AttioRecordLike
+async function getRecord(input: RecordGetInput): Promise<AttioRecordLike>;
 // Implementation
 async function getRecord(input: RecordGetInput): Promise<AttioRecordLike> {
   const client = resolveAttioClient(input);
@@ -251,7 +247,9 @@ async function getRecord(input: RecordGetInput): Promise<AttioRecordLike> {
     path: { object: input.object, record_id: input.recordId },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema }));
+  const data = assertOk(result) as Record<string, unknown>;
+  const normalized = normalizeRecord(data);
+  return validateWithSchema(normalized, schema);
 }
 
 const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
@@ -281,6 +279,10 @@ function queryRecords<T extends AttioRecordLike>(
 function queryRecords(
   input: WithoutItemSchema<RecordQuerySingleInput | RecordQueryCollectInput>,
 ): Promise<AttioRecordLike[]>;
+// Overload: Base input type (for SDK compatibility)
+function queryRecords(
+  input: RecordQueryInput,
+): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike>;
 // Implementation signature
 function queryRecords(
   input: RecordQueryInput,
@@ -306,8 +308,9 @@ function queryRecords(
       ...input.options,
       signal,
     });
-    const items = unwrapItems(result, { schema });
-    return normalizeRecords(items) as T[];
+    const items = unwrapItems(result) as Record<string, unknown>[];
+    const normalized = normalizeRecords(items);
+    return validateItemsArray(normalized, schema);
   };
 
   if (input.paginate === "stream") {
