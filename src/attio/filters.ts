@@ -1,5 +1,8 @@
+// Values that can be ordered (for $lt, $lte, $gt, $gte)
+type ComparableValue = string | number;
+
 // Primitive values that can be used in filter comparisons
-type FilterValue = string | number | boolean | null;
+type FilterValue = ComparableValue | boolean | null;
 
 // Comparison operators
 type ComparisonOperator =
@@ -20,12 +23,12 @@ interface FieldCondition {
   $contains?: string;
   $starts_with?: string;
   $ends_with?: string;
-  $not_empty?: boolean;
+  $not_empty?: true;
   $in?: FilterValue[];
-  $lt?: FilterValue;
-  $lte?: FilterValue;
-  $gt?: FilterValue;
-  $gte?: FilterValue;
+  $lt?: ComparableValue;
+  $lte?: ComparableValue;
+  $gt?: ComparableValue;
+  $gte?: ComparableValue;
 }
 
 // Nested field access (e.g., name.first_name)
@@ -97,13 +100,13 @@ const filters = {
   notEmpty: (field: string): AttioFilter => operator(field, "$not_empty", true),
 
   // Numeric/date comparison operators
-  lt: (field: string, value: FilterValue): AttioFilter =>
+  lt: (field: string, value: ComparableValue): AttioFilter =>
     operator(field, "$lt", value),
-  lte: (field: string, value: FilterValue): AttioFilter =>
+  lte: (field: string, value: ComparableValue): AttioFilter =>
     operator(field, "$lte", value),
-  gt: (field: string, value: FilterValue): AttioFilter =>
+  gt: (field: string, value: ComparableValue): AttioFilter =>
     operator(field, "$gt", value),
-  gte: (field: string, value: FilterValue): AttioFilter =>
+  gte: (field: string, value: ComparableValue): AttioFilter =>
     operator(field, "$gte", value),
 
   // Set membership
@@ -113,8 +116,8 @@ const filters = {
   // Range helper: field >= min AND field < max
   between: (
     field: string,
-    min: FilterValue,
-    max: FilterValue,
+    min: ComparableValue,
+    max: ComparableValue,
   ): AttioFilter => ({
     [field]: { $gte: min, $lt: max },
   }),
@@ -142,11 +145,12 @@ const filters = {
 export type {
   AttioFilter,
   AttributeLevelFilter,
-  PathFilter,
-  PathSegment,
+  ComparableValue,
   ComparisonOperator,
   FieldCondition,
   FilterValue,
+  PathFilter,
+  PathSegment,
   ShorthandValue,
 };
 export { filters };

@@ -619,6 +619,40 @@ describe("records", () => {
 
         expect(collected).toEqual(records);
       });
+
+      it("throws error when items fail schema validation with paginate: true", async () => {
+        const invalidRecords = [{ invalid: "structure" }];
+        queryRecordsRequest.mockResolvedValue({
+          data: { data: invalidRecords },
+        });
+
+        await expect(
+          queryRecords({
+            object: "companies",
+            paginate: true,
+            itemSchema: customRecordSchema,
+          }),
+        ).rejects.toThrow("Invalid API response");
+      });
+
+      it("throws error when items fail schema validation with paginate: 'stream'", async () => {
+        const invalidRecords = [{ invalid: "structure" }];
+        queryRecordsRequest.mockResolvedValue({
+          data: { data: invalidRecords },
+        });
+
+        const consumeStream = async () => {
+          for await (const _record of queryRecords({
+            object: "companies",
+            paginate: "stream",
+            itemSchema: customRecordSchema,
+          })) {
+            // consume iterator
+          }
+        };
+
+        await expect(consumeStream()).rejects.toThrow("Invalid API response");
+      });
     });
   });
 });
