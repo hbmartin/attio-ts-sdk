@@ -28,10 +28,30 @@ vi.mock("../../src/attio/client", () => ({
   resolveAttioClient,
 }));
 
-vi.mock("../../src/attio/record-utils", () => ({
-  normalizeRecord: vi.fn((record) => record),
-  normalizeRecords: vi.fn((records) => records),
-}));
+const unwrapAndNormalizeRecords = vi.fn((result, schema) => {
+  const data = result?.data ?? result;
+  const items = data?.data ?? data ?? [];
+  if (schema) {
+    const arraySchema = z.array(schema);
+    const parsed = arraySchema.safeParse(items);
+    if (!parsed.success) {
+      throw new Error("Invalid API response: schema mismatch");
+    }
+    return parsed.data;
+  }
+  return items;
+});
+
+vi.mock("../../src/attio/record-utils", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../../src/attio/record-utils")>();
+  return {
+    ...actual,
+    normalizeRecord: vi.fn((record) => record),
+    normalizeRecords: vi.fn((records) => records),
+    unwrapAndNormalizeRecords,
+  };
+});
 
 describe("records", () => {
   let createRecord: typeof import("../../src/attio/records").createRecord;

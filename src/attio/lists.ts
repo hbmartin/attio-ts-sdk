@@ -17,12 +17,15 @@ import {
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import {
-  paginateOffset,
-  paginateOffsetAsync,
+  buildQueryConfig,
+  executePaginatedQuery,
   type SharedPaginationInput,
 } from "./pagination";
-import { type AttioRecordLike, normalizeRecords } from "./record-utils";
-import { unwrapData, unwrapItems, validateItemsArray } from "./response";
+import {
+  type AttioRecordLike,
+  unwrapAndNormalizeRecords,
+} from "./record-utils";
+import { unwrapData, unwrapItems } from "./response";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -171,58 +174,22 @@ export function queryListEntries<T extends AttioRecordLike>(
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
 
-  const fetchEntries = async (
-    offset?: number,
-    limit?: number,
-    signal?: AbortSignal,
-  ): Promise<T[]> => {
-    const result = await postV2ListsByListEntriesQuery({
-      client,
-      path: { list: input.list },
-      body: {
-        filter: input.filter,
-        limit,
-        offset,
-      },
-      ...input.options,
-      signal,
-    });
-    const items = unwrapItems(result) as Record<string, unknown>[];
-    const normalized = normalizeRecords(items);
-    return validateItemsArray(normalized, schema) as T[];
-  };
-
-  if (input.paginate === "stream") {
-    return paginateOffsetAsync<T>(
-      async (offset, limit, signal) => ({
-        items: await fetchEntries(offset, limit, signal),
-      }),
-      {
-        offset: input.offset,
-        limit: input.limit,
-        maxPages: input.maxPages,
-        maxItems: input.maxItems,
-        signal: input.signal,
-      },
-    );
-  }
-
-  if (input.paginate === true) {
-    return paginateOffset<T>(
-      async (offset, limit, signal) => ({
-        items: await fetchEntries(offset, limit, signal),
-      }),
-      {
-        offset: input.offset,
-        limit: input.limit,
-        maxPages: input.maxPages,
-        maxItems: input.maxItems,
-        signal: input.signal,
-      },
-    );
-  }
-
-  return fetchEntries(input.offset, input.limit, input.signal);
+  return executePaginatedQuery<T>(
+    buildQueryConfig<T>(
+      input as ListQueryCollectInput<T>,
+      async (offset, limit, signal) =>
+        unwrapAndNormalizeRecords<T>(
+          await postV2ListsByListEntriesQuery({
+            client,
+            path: { list: input.list },
+            body: { filter: input.filter, limit, offset },
+            ...input.options,
+            signal,
+          }),
+          schema as ZodType<T>,
+        ),
+    ),
+  );
 }
 
 export const addListEntry = async (input: AddListEntryInput) => {

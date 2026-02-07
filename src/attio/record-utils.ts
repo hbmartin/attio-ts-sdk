@@ -1,5 +1,7 @@
+import type { ZodType } from "zod";
 import { z } from "zod";
 import { AttioResponseError } from "./errors";
+import { unwrapItems, validateItemsArray } from "./response";
 
 const attioRecordIdSchema = z.string().brand<"AttioRecordId">();
 
@@ -281,5 +283,19 @@ function normalizeRecords(
   return normalized;
 }
 
+const unwrapAndNormalizeRecords = <T extends AttioRecordLike>(
+  result: unknown,
+  schema: ZodType<T>,
+): T[] => {
+  const items = unwrapItems(result) as Record<string, unknown>[];
+  const normalized = normalizeRecords(items);
+  return validateItemsArray(normalized, schema) as T[];
+};
+
 export type { AttioRecordId, AttioRecordLike };
-export { extractRecordId, normalizeRecord, normalizeRecords };
+export {
+  extractRecordId,
+  normalizeRecord,
+  normalizeRecords,
+  unwrapAndNormalizeRecords,
+};
