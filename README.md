@@ -29,6 +29,7 @@ You still have full access to the generated, spec‑accurate endpoints.
 
 ## Table of Contents
 
+- [Migrating to v2](#migrating-to-v2)
 - [Installing](#installing)
 - [Getting Your API Key](#getting-your-api-key)
 - [Usage](#usage)
@@ -51,6 +52,121 @@ You still have full access to the generated, spec‑accurate endpoints.
   - [Notes and Tasks](#notes-and-tasks)
   - [Webhooks](#webhooks)
 - [Development](#development)
+
+## Migrating to v2
+
+Version 2.0 brings enhanced type safety, auto-pagination, and new filtering capabilities. Most code will work without changes, but there are a few breaking changes to be aware of.
+
+### Breaking Changes
+
+#### ListId Validation
+
+`ListId` values can no longer be empty strings. Use the new `createListId()` factory function:
+
+```typescript
+// Before (v1)
+const listId = 'sales-pipeline' as ListId;
+
+// After (v2)
+import { createListId } from 'attio-ts-sdk';
+const listId = createListId('sales-pipeline');
+```
+
+The factory validates the input and throws if the string is empty.
+
+#### Strongly Typed Filters
+
+Filter types are now strongly typed instead of `Record<string, unknown>`. If you were passing arbitrary objects as filters, you may need to adjust your code to match the `AttioFilter` type.
+
+### New Features
+
+#### Auto-Pagination
+
+`queryRecords` and `queryListEntries` now support built-in pagination:
+
+```typescript
+// Collect all pages automatically
+const allRecords = await queryRecords({
+  client,
+  object: 'companies',
+  paginate: true,
+});
+
+// Stream records with async generators (memory-efficient)
+for await (const record of queryRecords({
+  client,
+  object: 'companies',
+  paginate: 'stream',
+})) {
+  console.log(record.id);
+}
+```
+
+#### Type-Safe Response Validation with itemSchema
+
+All record and list entry functions now support `itemSchema` for Zod validation with full type inference:
+
+```typescript
+import { z } from 'zod';
+
+const companySchema = z.object({
+  id: z.object({ record_id: z.string() }),
+  values: z.object({
+    name: z.array(z.object({ value: z.string() })),
+  }),
+});
+
+type Company = z.infer<typeof companySchema>;
+
+// TypeScript infers the return type from itemSchema
+const companies = await queryRecords<Company>({
+  client,
+  object: 'companies',
+  itemSchema: companySchema,
+  paginate: true,
+});
+// companies is Company[] with full type safety
+```
+
+#### New Filter Operators
+
+New comparison and path-based filter operators:
+
+```typescript
+import { filters } from 'attio-ts-sdk';
+
+// Comparison operators
+filters.lt('revenue', 100000)      // Less than
+filters.lte('revenue', 100000)     // Less than or equal
+filters.gt('revenue', 50000)       // Greater than
+filters.gte('revenue', 50000)      // Greater than or equal
+filters.in('status', ['active', 'pending'])  // Set membership
+filters.between('revenue', 50000, 100000)    // Range (inclusive start, exclusive end)
+
+// Path-based filters for record reference traversal
+filters.path(
+  [['companies', 'primary_contact']],
+  { email: { $contains: '@acme.com' } }
+)
+```
+
+#### AbortSignal Support
+
+Pagination and query functions now accept `signal` for request cancellation:
+
+```typescript
+const controller = new AbortController();
+
+const records = await queryRecords({
+  client,
+  object: 'companies',
+  paginate: true,
+  signal: controller.signal,
+});
+
+// Cancel in-flight requests
+controller.abort();
+```
 
 ## Installing
 
