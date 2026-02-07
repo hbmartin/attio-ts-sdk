@@ -29,6 +29,17 @@ import {
 import { assertOk, unwrapItems } from "./response";
 import { rawRecordSchema } from "./schemas";
 
+/**
+ * Infers the record type from an input object.
+ * If `itemSchema` is provided, the type is inferred from the schema.
+ * Otherwise, returns `AttioRecordLike`.
+ */
+type InferRecordType<TInput> = TInput extends {
+  itemSchema: ZodType<infer T>;
+}
+  ? T
+  : AttioRecordLike;
+
 type RecordObjectId = string & { readonly __brand: "RecordObjectId" };
 type RecordId = string & { readonly __brand: "RecordId" };
 type MatchingAttribute = string & { readonly __brand: "MatchingAttribute" };
@@ -75,35 +86,31 @@ interface RecordGetInput extends AttioClientInput {
   >;
 }
 
-interface RecordQueryBaseInput<T extends AttioRecordLike = AttioRecordLike>
-  extends AttioClientInput {
+interface RecordQueryBaseInput extends AttioClientInput {
   object: RecordObjectId;
   filter?: RecordFilter;
   sorts?: RecordSorts;
   limit?: number;
   offset?: number;
   signal?: AbortSignal;
-  itemSchema?: ZodType<T>;
+  itemSchema?: ZodType<AttioRecordLike>;
   options?: Omit<
     Options<PostV2ObjectsByObjectRecordsQueryData>,
     "client" | "path" | "body"
   >;
 }
 
-interface RecordQuerySingleInput<T extends AttioRecordLike = AttioRecordLike>
-  extends RecordQueryBaseInput<T> {
+interface RecordQuerySingleInput extends RecordQueryBaseInput {
   paginate?: false;
 }
 
-interface RecordQueryCollectInput<T extends AttioRecordLike = AttioRecordLike>
-  extends RecordQueryBaseInput<T> {
+interface RecordQueryCollectInput extends RecordQueryBaseInput {
   paginate: true;
   maxPages?: number;
   maxItems?: number;
 }
 
-interface RecordQueryStreamInput<T extends AttioRecordLike = AttioRecordLike>
-  extends RecordQueryBaseInput<T> {
+interface RecordQueryStreamInput extends RecordQueryBaseInput {
   paginate: "stream";
   maxPages?: number;
   maxItems?: number;
@@ -111,10 +118,10 @@ interface RecordQueryStreamInput<T extends AttioRecordLike = AttioRecordLike>
 
 type RecordQueryPaginationInput = SharedPaginationInput;
 
-type RecordQueryInput<T extends AttioRecordLike = AttioRecordLike> =
-  | RecordQuerySingleInput<T>
-  | RecordQueryCollectInput<T>
-  | RecordQueryStreamInput<T>;
+type RecordQueryInput =
+  | RecordQuerySingleInput
+  | RecordQueryCollectInput
+  | RecordQueryStreamInput;
 
 const createRecord = async <T extends AttioRecordLike>(
   input: RecordCreateInput,
@@ -130,7 +137,7 @@ const createRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
+  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
 };
 
 const updateRecord = async <T extends AttioRecordLike>(
@@ -147,7 +154,7 @@ const updateRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
+  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
 };
 
 const upsertRecord = async <T extends AttioRecordLike>(
@@ -167,7 +174,7 @@ const upsertRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
+  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
 };
 
 const getRecord = async <T extends AttioRecordLike>(
@@ -179,7 +186,7 @@ const getRecord = async <T extends AttioRecordLike>(
     path: { object: input.object, record_id: input.recordId },
     ...input.options,
   });
-  return normalizeRecord<T>(assertOk(result, { schema: rawRecordSchema }));
+  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
 };
 
 const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
@@ -193,18 +200,19 @@ const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
   return true;
 };
 
-function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryStreamInput<T>,
-): AsyncIterable<T>;
-function queryRecords<T extends AttioRecordLike>(
-  input: RecordQuerySingleInput<T> | RecordQueryCollectInput<T>,
-): Promise<T[]>;
-function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryInput<T>,
-): Promise<T[]> | AsyncIterable<T>;
-function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryInput<T>,
-): Promise<T[]> | AsyncIterable<T> {
+function queryRecords<TInput extends RecordQueryStreamInput>(
+  input: TInput,
+): AsyncIterable<InferRecordType<TInput>>;
+function queryRecords<
+  TInput extends RecordQuerySingleInput | RecordQueryCollectInput,
+>(input: TInput): Promise<InferRecordType<TInput>[]>;
+function queryRecords<TInput extends RecordQueryInput>(
+  input: TInput,
+): Promise<InferRecordType<TInput>[]> | AsyncIterable<InferRecordType<TInput>>;
+function queryRecords<TInput extends RecordQueryInput>(
+  input: TInput,
+): Promise<InferRecordType<TInput>[]> | AsyncIterable<InferRecordType<TInput>> {
+  type T = InferRecordType<TInput>;
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
 
@@ -212,7 +220,7 @@ function queryRecords<T extends AttioRecordLike>(
     offset?: number,
     limit?: number,
     signal?: AbortSignal,
-  ) => {
+  ): Promise<T[]> => {
     const result = await postV2ObjectsByObjectRecordsQuery({
       client,
       path: { object: input.object },
@@ -226,7 +234,7 @@ function queryRecords<T extends AttioRecordLike>(
       signal,
     });
     const items = unwrapItems(result, { schema });
-    return normalizeRecords<T>(items);
+    return normalizeRecords(items) as T[];
   };
 
   if (input.paginate === "stream") {
@@ -263,6 +271,7 @@ function queryRecords<T extends AttioRecordLike>(
 }
 
 export type {
+  InferRecordType,
   MatchingAttribute,
   RecordFilter,
   RecordId,

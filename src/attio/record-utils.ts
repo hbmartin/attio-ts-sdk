@@ -236,14 +236,6 @@ const parseRecordInput = (
   }
 };
 
-function normalizeRecord<T extends AttioRecordLike>(
-  raw: Record<string, unknown>,
-  options?: NormalizeRecordOptions,
-): T;
-function normalizeRecord(
-  raw: Record<string, unknown>,
-  options?: NormalizeRecordOptions,
-): AttioRecordLike;
 function normalizeRecord(
   raw: Record<string, unknown>,
   options: NormalizeRecordOptions = defaultNormalizeRecordOptions,
@@ -275,14 +267,6 @@ function normalizeRecord(
   return result;
 }
 
-function normalizeRecords<T extends AttioRecordLike>(
-  items: Record<string, unknown>[],
-  options?: NormalizeRecordOptions,
-): T[];
-function normalizeRecords(
-  items: Record<string, unknown>[],
-  options?: NormalizeRecordOptions,
-): AttioRecordLike[];
 function normalizeRecords(
   items: Record<string, unknown>[],
   options: NormalizeRecordOptions = defaultNormalizeRecordOptions,
