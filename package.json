@@ -54,7 +54,8 @@
     "test": "vitest run --coverage",
     "dupes": "jscpd",
     "prepare": "husky",
-    "openapi-ts": "openapi-ts"
+    "openapi-ts": "openapi-ts",
+    "biome:up": "npx tsx scripts/enable-new-biome-rules.ts"
   },
   "author": "Harold Martin <harold.martin@gmail.com>",
   "repository": {
