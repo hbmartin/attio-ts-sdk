@@ -41,22 +41,6 @@ type InferRecordType<TInput> = TInput extends {
   ? T
   : AttioRecordLike;
 
-/**
- * Helper type to require itemSchema for typed overloads.
- * This ensures users must provide a schema to get custom type inference.
- */
-type WithItemSchema<TBase, T extends AttioRecordLike> = TBase & {
-  itemSchema: ZodType<T>;
-};
-
-/**
- * Helper type for inputs without itemSchema.
- * Explicitly marks itemSchema as undefined to help overload resolution.
- */
-type WithoutItemSchema<TBase> = Omit<TBase, "itemSchema"> & {
-  itemSchema?: undefined;
-};
-
 type RecordObjectId = string & { readonly __brand: "RecordObjectId" };
 type RecordId = string & { readonly __brand: "RecordId" };
 type MatchingAttribute = string & { readonly __brand: "MatchingAttribute" };
@@ -334,8 +318,6 @@ export type {
   RecordGetInput,
   RecordSorts,
   RecordValues,
-  WithItemSchema,
-  WithoutItemSchema,
 };
 export {
   createRecord,
