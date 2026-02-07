@@ -1,6 +1,6 @@
 {
   "name": "attio-ts-sdk",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "Type-safe TypeScript SDK for the Attio CRM API with Zod v4 runtime validation",
   "keywords": [
     "attio",
