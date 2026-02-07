@@ -40,7 +40,8 @@
       "Bash(curl:*)",
       "Bash(python3:*)",
       "Bash(xargs cat:*)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(pnpm dupes:*)"
     ]
   }
 }
