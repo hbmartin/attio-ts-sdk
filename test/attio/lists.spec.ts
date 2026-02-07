@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 
 const getListsRequest = vi.fn();
 const getListByIdRequest = vi.fn();
@@ -39,6 +40,7 @@ describe("lists", () => {
   let addListEntry: typeof import("../../src/attio/lists").addListEntry;
   let updateListEntry: typeof import("../../src/attio/lists").updateListEntry;
   let removeListEntry: typeof import("../../src/attio/lists").removeListEntry;
+  let createListId: typeof import("../../src/attio/lists").createListId;
 
   beforeAll(async () => {
     ({
@@ -48,6 +50,7 @@ describe("lists", () => {
       addListEntry,
       updateListEntry,
       removeListEntry,
+      createListId,
     } = await import("../../src/attio/lists"));
   });
 
@@ -55,6 +58,17 @@ describe("lists", () => {
     vi.resetAllMocks();
     resolveAttioClient.mockReturnValue({});
     normalizeRecords.mockImplementation((records) => records);
+  });
+
+  describe("createListId", () => {
+    it("creates a branded ListId from a valid string", () => {
+      const id = createListId("list-123");
+      expect(id).toBe("list-123");
+    });
+
+    it("throws error when id is empty string", () => {
+      expect(() => createListId("")).toThrow("ListId cannot be empty");
+    });
   });
 
   describe("listLists", () => {
@@ -88,6 +102,21 @@ describe("lists", () => {
       expect(getListByIdRequest).toHaveBeenCalledWith({
         client: {},
         path: { list: "list-1" },
+      });
+    });
+
+    it("passes additional options", async () => {
+      getListByIdRequest.mockResolvedValue({ data: {} });
+
+      await getList({
+        list: "list-1",
+        options: { headers: { "X-Custom": "value" } },
+      });
+
+      expect(getListByIdRequest).toHaveBeenCalledWith({
+        client: {},
+        path: { list: "list-1" },
+        headers: { "X-Custom": "value" },
       });
     });
   });
@@ -360,15 +389,123 @@ describe("lists", () => {
         expect(entries).toEqual([{ id: "entry-1" }]);
       });
     });
+
+    describe("with itemSchema", () => {
+      const customEntrySchema = z.object({
+        id: z.object({
+          entry_id: z.string(),
+        }),
+        values: z.object({
+          stage: z.string(),
+        }),
+      });
+
+      it("validates entries against custom schema", async () => {
+        const entries = [
+          { id: { entry_id: "entry-1" }, values: { stage: "qualified" } },
+          { id: { entry_id: "entry-2" }, values: { stage: "won" } },
+        ];
+        queryEntriesRequest.mockResolvedValue({ data: { data: entries } });
+
+        const result = await queryListEntries({
+          list: "list-1",
+          itemSchema: customEntrySchema,
+        });
+
+        expect(result).toEqual(entries);
+      });
+
+      it("throws error when entries fail schema validation", async () => {
+        const invalidEntries = [{ invalid: "structure" }];
+        queryEntriesRequest.mockResolvedValue({
+          data: { data: invalidEntries },
+        });
+
+        await expect(
+          queryListEntries({
+            list: "list-1",
+            itemSchema: customEntrySchema,
+          }),
+        ).rejects.toThrow("Invalid API response");
+      });
+
+      it("uses custom schema with paginate: true", async () => {
+        const entries = [
+          { id: { entry_id: "entry-1" }, values: { stage: "qualified" } },
+        ];
+        queryEntriesRequest.mockResolvedValueOnce({ data: { data: entries } });
+
+        const result = await queryListEntries({
+          list: "list-1",
+          paginate: true,
+          itemSchema: customEntrySchema,
+        });
+
+        expect(result).toEqual(entries);
+      });
+
+      it("uses custom schema with paginate: 'stream'", async () => {
+        const entries = [
+          { id: { entry_id: "entry-1" }, values: { stage: "qualified" } },
+        ];
+        queryEntriesRequest.mockResolvedValueOnce({ data: { data: entries } });
+
+        const collected: z.infer<typeof customEntrySchema>[] = [];
+        for await (const entry of queryListEntries({
+          list: "list-1",
+          paginate: "stream",
+          itemSchema: customEntrySchema,
+        })) {
+          collected.push(entry);
+        }
+
+        expect(collected).toEqual(entries);
+      });
+
+      it("throws error when entries fail schema validation with paginate: true", async () => {
+        const invalidEntries = [{ invalid: "structure" }];
+        queryEntriesRequest.mockResolvedValue({
+          data: { data: invalidEntries },
+        });
+
+        await expect(
+          queryListEntries({
+            list: "list-1",
+            paginate: true,
+            itemSchema: customEntrySchema,
+          }),
+        ).rejects.toThrow("Invalid API response");
+      });
+
+      it("throws error when entries fail schema validation with paginate: 'stream'", async () => {
+        const invalidEntries = [{ invalid: "structure" }];
+        queryEntriesRequest.mockResolvedValue({
+          data: { data: invalidEntries },
+        });
+
+        const consumeStream = async () => {
+          for await (const _entry of queryListEntries({
+            list: "list-1",
+            paginate: "stream",
+            itemSchema: customEntrySchema,
+          })) {
+            // consume iterator
+          }
+        };
+
+        await expect(consumeStream()).rejects.toThrow("Invalid API response");
+      });
+    });
   });
 
   describe("addListEntry", () => {
-    it("adds entry with parent record", async () => {
+    it("adds entry with parent object and record", async () => {
       const newEntry = { id: "entry-new" };
       addEntryRequest.mockResolvedValue({ data: newEntry });
 
       const result = await addListEntry({
         list: "list-1",
+        parentObject: "companies",
         parentRecordId: "rec-123",
       });
 
@@ -378,6 +515,7 @@ describe("lists", () => {
         path: { list: "list-1" },
         body: {
           data: {
+            parent_object: "companies",
             parent_record_id: "rec-123",
             entry_values: {},
           },
@@ -390,6 +528,7 @@ describe("lists", () => {
 
       await addListEntry({
         list: "list-1",
+        parentObject: "people",
         parentRecordId: "rec-123",
         entryValues: { stage: "qualified" },
       });
@@ -399,6 +538,7 @@ describe("lists", () => {
         path: { list: "list-1" },
         body: {
           data: {
+            parent_object: "people",
             parent_record_id: "rec-123",
             entry_values: { stage: "qualified" },
           },
@@ -411,6 +551,7 @@ describe("lists", () => {
 
       await addListEntry({
         list: "list-1",
+        parentObject: "companies",
         parentRecordId: "rec-123",
         options: { headers: { "X-Custom": "value" } },
       });
@@ -420,6 +561,7 @@ describe("lists", () => {
         path: { list: "list-1" },
         body: {
           data: {
+            parent_object: "companies",
             parent_record_id: "rec-123",
             entry_values: {},
           },

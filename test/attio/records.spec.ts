@@ -99,6 +99,42 @@ describe("records", () => {
         headers: { "X-Custom": "value" },
       });
     });
+
+    it("validates response against custom schema", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({ name: z.array(z.object({ value: z.string() })) }),
+      });
+      const record = {
+        id: { record_id: "rec-1" },
+        values: { name: [{ value: "Acme" }] },
+      };
+      createRecordRequest.mockResolvedValue({ data: record });
+
+      const result = await createRecord({
+        object: "companies",
+        values: { name: "Acme" },
+        itemSchema: customSchema,
+      });
+
+      expect(result).toEqual(record);
+    });
+
+    it("throws error when response fails schema validation", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({ name: z.string() }),
+      });
+      createRecordRequest.mockResolvedValue({ data: { invalid: "structure" } });
+
+      await expect(
+        createRecord({
+          object: "companies",
+          values: { name: "Acme" },
+          itemSchema: customSchema,
+        }),
+      ).rejects.toThrow();
+    });
   });
 
   describe("updateRecord", () => {
@@ -144,6 +180,44 @@ describe("records", () => {
         },
         headers: { "X-Custom": "value" },
       });
+    });
+
+    it("validates response against custom schema", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({ name: z.array(z.object({ value: z.string() })) }),
+      });
+      const record = {
+        id: { record_id: "rec-1" },
+        values: { name: [{ value: "Updated" }] },
+      };
+      updateRecordRequest.mockResolvedValue({ data: record });
+
+      const result = await updateRecord({
+        object: "companies",
+        recordId: "rec-1",
+        values: { name: "Updated" },
+        itemSchema: customSchema,
+      });
+
+      expect(result).toEqual(record);
+    });
+
+    it("throws error when response fails schema validation", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({ name: z.string() }),
+      });
+      updateRecordRequest.mockResolvedValue({ data: { invalid: "structure" } });
+
+      await expect(
+        updateRecord({
+          object: "companies",
+          recordId: "rec-1",
+          values: { name: "Updated" },
+          itemSchema: customSchema,
+        }),
+      ).rejects.toThrow();
     });
   });
 
@@ -197,6 +271,46 @@ describe("records", () => {
         headers: { "X-Custom": "value" },
       });
     });
+
+    it("validates response against custom schema", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({
+          email: z.array(z.object({ email_address: z.string() })),
+        }),
+      });
+      const record = {
+        id: { record_id: "rec-1" },
+        values: { email: [{ email_address: "test@example.com" }] },
+      };
+      upsertRecordRequest.mockResolvedValue({ data: record });
+
+      const result = await upsertRecord({
+        object: "people",
+        matchingAttribute: "email",
+        values: { email: "test@example.com" },
+        itemSchema: customSchema,
+      });
+
+      expect(result).toEqual(record);
+    });
+
+    it("throws error when response fails schema validation", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({ email: z.string() }),
+      });
+      upsertRecordRequest.mockResolvedValue({ data: { invalid: "structure" } });
+
+      await expect(
+        upsertRecord({
+          object: "people",
+          matchingAttribute: "email",
+          values: { email: "test@example.com" },
+          itemSchema: customSchema,
+        }),
+      ).rejects.toThrow();
+    });
   });
 
   describe("getRecord", () => {
@@ -230,6 +344,42 @@ describe("records", () => {
         path: { object: "companies", record_id: "rec-1" },
         headers: { "X-Custom": "value" },
       });
+    });
+
+    it("validates response against custom schema", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({ name: z.array(z.object({ value: z.string() })) }),
+      });
+      const record = {
+        id: { record_id: "rec-1" },
+        values: { name: [{ value: "Acme" }] },
+      };
+      getRecordRequest.mockResolvedValue({ data: record });
+
+      const result = await getRecord({
+        object: "companies",
+        recordId: "rec-1",
+        itemSchema: customSchema,
+      });
+
+      expect(result).toEqual(record);
+    });
+
+    it("throws error when response fails schema validation", async () => {
+      const customSchema = z.object({
+        id: z.object({ record_id: z.string() }),
+        values: z.object({ name: z.string() }),
+      });
+      getRecordRequest.mockResolvedValue({ data: { invalid: "structure" } });
+
+      await expect(
+        getRecord({
+          object: "companies",
+          recordId: "rec-1",
+          itemSchema: customSchema,
+        }),
+      ).rejects.toThrow();
     });
   });
 

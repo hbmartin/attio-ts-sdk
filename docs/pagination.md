@@ -680,7 +680,7 @@ const tasks = await paginate(
 // `tasks` is now typed as Array<z.infer<typeof TaskSchema>>
 ```
 
-If schema validation fails, the helper falls back to raw response parsing without throwing, ensuring graceful degradation.
+If schema validation fails, the helper throws an "Invalid API response" error, ensuring data integrity by failing fast on unexpected response shapes.
 
 ---
 
