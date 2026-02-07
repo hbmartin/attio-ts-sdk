@@ -1,3 +1,4 @@
+import type { ZodType } from "zod";
 import type {
   GetV2ObjectsByObjectRecordsByRecordIdData,
   Options,
@@ -74,30 +75,35 @@ interface RecordGetInput extends AttioClientInput {
   >;
 }
 
-interface RecordQueryBaseInput extends AttioClientInput {
+interface RecordQueryBaseInput<T extends AttioRecordLike = AttioRecordLike>
+  extends AttioClientInput {
   object: RecordObjectId;
   filter?: RecordFilter;
   sorts?: RecordSorts;
   limit?: number;
   offset?: number;
   signal?: AbortSignal;
+  itemSchema?: ZodType<T>;
   options?: Omit<
     Options<PostV2ObjectsByObjectRecordsQueryData>,
     "client" | "path" | "body"
   >;
 }
 
-interface RecordQuerySingleInput extends RecordQueryBaseInput {
+interface RecordQuerySingleInput<T extends AttioRecordLike = AttioRecordLike>
+  extends RecordQueryBaseInput<T> {
   paginate?: false;
 }
 
-interface RecordQueryCollectInput extends RecordQueryBaseInput {
+interface RecordQueryCollectInput<T extends AttioRecordLike = AttioRecordLike>
+  extends RecordQueryBaseInput<T> {
   paginate: true;
   maxPages?: number;
   maxItems?: number;
 }
 
-interface RecordQueryStreamInput extends RecordQueryBaseInput {
+interface RecordQueryStreamInput<T extends AttioRecordLike = AttioRecordLike>
+  extends RecordQueryBaseInput<T> {
   paginate: "stream";
   maxPages?: number;
   maxItems?: number;
@@ -105,10 +111,10 @@ interface RecordQueryStreamInput extends RecordQueryBaseInput {
 
 type RecordQueryPaginationInput = SharedPaginationInput;
 
-type RecordQueryInput =
-  | RecordQuerySingleInput
-  | RecordQueryCollectInput
-  | RecordQueryStreamInput;
+type RecordQueryInput<T extends AttioRecordLike = AttioRecordLike> =
+  | RecordQuerySingleInput<T>
+  | RecordQueryCollectInput<T>
+  | RecordQueryStreamInput<T>;
 
 const createRecord = async <T extends AttioRecordLike>(
   input: RecordCreateInput,
@@ -188,18 +194,19 @@ const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
 };
 
 function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryStreamInput,
+  input: RecordQueryStreamInput<T>,
 ): AsyncIterable<T>;
 function queryRecords<T extends AttioRecordLike>(
-  input: RecordQuerySingleInput | RecordQueryCollectInput,
+  input: RecordQuerySingleInput<T> | RecordQueryCollectInput<T>,
 ): Promise<T[]>;
 function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryInput,
+  input: RecordQueryInput<T>,
 ): Promise<T[]> | AsyncIterable<T>;
 function queryRecords<T extends AttioRecordLike>(
-  input: RecordQueryInput,
+  input: RecordQueryInput<T>,
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
+  const schema = input.itemSchema ?? rawRecordSchema;
 
   const fetchRecords = async (
     offset?: number,
@@ -218,7 +225,7 @@ function queryRecords<T extends AttioRecordLike>(
       ...input.options,
       signal,
     });
-    const items = unwrapItems(result, { schema: rawRecordSchema });
+    const items = unwrapItems(result, { schema });
     return normalizeRecords<T>(items);
   };
 

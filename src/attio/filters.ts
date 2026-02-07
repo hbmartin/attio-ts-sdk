@@ -1,3 +1,6 @@
+// Primitive values that can be used in filter comparisons
+type FilterValue = string | number | boolean | null;
+
 // Comparison operators
 type ComparisonOperator =
   | "$eq"
@@ -12,25 +15,46 @@ type ComparisonOperator =
   | "$gte";
 
 // A comparison condition on a single field
-type FieldCondition = {
-  [op in ComparisonOperator]?: unknown;
-};
+interface FieldCondition {
+  $eq?: FilterValue;
+  $contains?: string;
+  $starts_with?: string;
+  $ends_with?: string;
+  $not_empty?: boolean;
+  $in?: FilterValue[];
+  $lt?: FilterValue;
+  $lte?: FilterValue;
+  $gt?: FilterValue;
+  $gte?: FilterValue;
+}
 
 // Nested field access (e.g., name.first_name)
 interface NestedFieldCondition {
   [nestedField: string]: FieldCondition;
 }
 
+// Shorthand value for simple equality filters
+type ShorthandValue = FilterValue | FilterValue[];
+
 // A filter on an attribute (can be shorthand value, condition, or nested)
-type AttributeFilter = unknown | FieldCondition | NestedFieldCondition;
+type AttributeFilter = ShorthandValue | FieldCondition | NestedFieldCondition;
 
 // Path segment: [objectSlug, attributeSlug]
 type PathSegment = [objectSlug: string, attributeSlug: string];
 
+// Attribute-level filters (no path traversal)
+// Used for constraints in PathFilter - supports attribute conditions and logical operators
+// but not nested path filters
+type AttributeLevelFilter =
+  | { $and: AttributeLevelFilter[] }
+  | { $or: AttributeLevelFilter[] }
+  | { $not: AttributeLevelFilter }
+  | { [attribute: string]: AttributeFilter };
+
 // Path-based filter
 interface PathFilter {
   path: PathSegment[];
-  constraints: Record<string, unknown>;
+  constraints: AttributeLevelFilter;
 }
 
 // Logical filter combinations
@@ -52,38 +76,46 @@ type AttioFilter =
   | NotFilter
   | { [attribute: string]: AttributeFilter };
 
-const operator = (field: string, op: string, value: unknown): AttioFilter => ({
+const operator = (
+  field: string,
+  op: ComparisonOperator,
+  value: FilterValue | FilterValue[],
+): AttioFilter => ({
   [field]: { [op]: value },
 });
 
 const filters = {
   // String/equality operators
-  eq: (field: string, value: unknown): AttioFilter =>
+  eq: (field: string, value: FilterValue): AttioFilter =>
     operator(field, "$eq", value),
-  contains: (field: string, value: unknown): AttioFilter =>
+  contains: (field: string, value: string): AttioFilter =>
     operator(field, "$contains", value),
-  startsWith: (field: string, value: unknown): AttioFilter =>
+  startsWith: (field: string, value: string): AttioFilter =>
     operator(field, "$starts_with", value),
-  endsWith: (field: string, value: unknown): AttioFilter =>
+  endsWith: (field: string, value: string): AttioFilter =>
     operator(field, "$ends_with", value),
   notEmpty: (field: string): AttioFilter => operator(field, "$not_empty", true),
 
   // Numeric/date comparison operators
-  lt: (field: string, value: unknown): AttioFilter =>
+  lt: (field: string, value: FilterValue): AttioFilter =>
     operator(field, "$lt", value),
-  lte: (field: string, value: unknown): AttioFilter =>
+  lte: (field: string, value: FilterValue): AttioFilter =>
     operator(field, "$lte", value),
-  gt: (field: string, value: unknown): AttioFilter =>
+  gt: (field: string, value: FilterValue): AttioFilter =>
     operator(field, "$gt", value),
-  gte: (field: string, value: unknown): AttioFilter =>
+  gte: (field: string, value: FilterValue): AttioFilter =>
     operator(field, "$gte", value),
 
   // Set membership
-  in: (field: string, values: unknown[]): AttioFilter =>
+  in: (field: string, values: FilterValue[]): AttioFilter =>
     operator(field, "$in", values),
 
   // Range helper: field >= min AND field < max
-  between: (field: string, min: unknown, max: unknown): AttioFilter => ({
+  between: (
+    field: string,
+    min: FilterValue,
+    max: FilterValue,
+  ): AttioFilter => ({
     [field]: { $gte: min, $lt: max },
   }),
 
@@ -95,18 +127,26 @@ const filters = {
   // Path-based filter for record reference traversal
   path: (
     segments: PathSegment[],
-    constraints: Record<string, unknown>,
-  ): PathFilter => ({
-    path: segments,
-    constraints,
-  }),
+    constraints: AttributeLevelFilter,
+  ): PathFilter => {
+    if (segments.length === 0) {
+      throw new Error("path segments must be non-empty");
+    }
+    return {
+      path: segments,
+      constraints,
+    };
+  },
 };
 
 export type {
   AttioFilter,
+  AttributeLevelFilter,
   PathFilter,
   PathSegment,
   ComparisonOperator,
   FieldCondition,
+  FilterValue,
+  ShorthandValue,
 };
 export { filters };

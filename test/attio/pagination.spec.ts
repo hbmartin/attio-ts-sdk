@@ -192,9 +192,9 @@ describe("paginate", () => {
 
     expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
     expect(fetchPage).toHaveBeenCalledTimes(3);
-    expect(fetchPage).toHaveBeenNthCalledWith(1, null);
-    expect(fetchPage).toHaveBeenNthCalledWith(2, "cursor-1");
-    expect(fetchPage).toHaveBeenNthCalledWith(3, "cursor-2");
+    expect(fetchPage).toHaveBeenNthCalledWith(1, null, undefined);
+    expect(fetchPage).toHaveBeenNthCalledWith(2, "cursor-1", undefined);
+    expect(fetchPage).toHaveBeenNthCalledWith(3, "cursor-2", undefined);
   });
 
   it("respects maxPages option", async () => {
@@ -240,7 +240,7 @@ describe("paginate", () => {
 
     await paginate(fetchPage, { cursor: "start-cursor" });
 
-    expect(fetchPage).toHaveBeenCalledWith("start-cursor");
+    expect(fetchPage).toHaveBeenCalledWith("start-cursor", undefined);
   });
 
   it("handles raw API responses by converting them via toPageResult", async () => {
@@ -313,6 +313,53 @@ describe("paginate", () => {
     const items = await paginate(fetchPage, { itemSchema });
 
     expect(items).toEqual([{ id: 1 }]);
+  });
+
+  it("stops when signal is aborted before first fetch", async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    const fetchPage = vi.fn();
+
+    const items = await paginate(fetchPage, {
+      signal: controller.signal,
+    });
+
+    expect(items).toEqual([]);
+    expect(fetchPage).not.toHaveBeenCalled();
+  });
+
+  it("stops fetching after signal is aborted mid-pagination", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi
+      .fn()
+      .mockImplementationOnce(async () => {
+        controller.abort();
+        return { items: [{ id: 1 }], nextCursor: "cursor-1" };
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 2 }],
+        nextCursor: null,
+      });
+
+    const items = await paginate(fetchPage, {
+      signal: controller.signal,
+    });
+
+    expect(items).toEqual([{ id: 1 }]);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("forwards signal to fetchPage callback", async () => {
+    const controller = new AbortController();
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      items: [{ id: 1 }],
+      nextCursor: null,
+    });
+
+    await paginate(fetchPage, { signal: controller.signal });
+
+    expect(fetchPage).toHaveBeenCalledWith(null, controller.signal);
   });
 });
 

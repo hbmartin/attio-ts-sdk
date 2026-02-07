@@ -30,6 +30,8 @@ type EntryId = string & { readonly __brand: "EntryId" };
 type ParentObjectId = string & { readonly __brand: "ParentObjectId" };
 type ParentRecordId = string & { readonly __brand: "ParentRecordId" };
 
+const createListId = (id: string): ListId => id as ListId;
+
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
 type ListEntryFilter = PostV2ListsByListEntriesQueryData["body"]["filter"];
 
@@ -234,6 +236,8 @@ export const removeListEntry = async (input: RemoveListEntryInput) => {
   });
   return true;
 };
+
+export { createListId };
 
 export type {
   AddListEntryInput,

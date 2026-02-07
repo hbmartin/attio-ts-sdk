@@ -454,7 +454,7 @@ The convenience functions `queryListEntries` and `queryRecords` support an optio
 
 ```typescript
 import { z } from 'zod';
-import { queryListEntries, type ListId } from 'attio-ts-sdk';
+import { queryListEntries, createListId } from 'attio-ts-sdk';
 
 // Define a schema that matches your expected item structure
 const entrySchema = z.object({
@@ -467,10 +467,13 @@ const entrySchema = z.object({
 
 type SalesEntry = z.infer<typeof entrySchema>;
 
+// Create a typed ListId using the factory function
+const salesListId = createListId('sales-pipeline');
+
 // TypeScript infers the return type from itemSchema
 const entries = await queryListEntries<SalesEntry>({
   client,
-  list: 'sales-pipeline' as ListId,
+  list: salesListId,
   itemSchema: entrySchema,
   paginate: true,
 });
@@ -486,7 +489,7 @@ When using streaming pagination, the same type safety applies:
 ```typescript
 const stream = queryListEntries<SalesEntry>({
   client,
-  list: 'sales-pipeline' as ListId,
+  list: salesListId,
   itemSchema: entrySchema,
   paginate: 'stream',
 });

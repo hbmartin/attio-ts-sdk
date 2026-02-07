@@ -119,8 +119,11 @@ const parseOffsetPageResult = <T>(
 };
 
 const paginate = async <T>(
-  fetchPage: (cursor?: string | null) => Promise<PageResult<T> | unknown>,
-  options: PaginationOptions<T> = {},
+  fetchPage: (
+    cursor: string | null | undefined,
+    signal?: AbortSignal,
+  ) => Promise<PageResult<T> | unknown>,
+  options: PaginationAsyncOptions<T> = {},
 ): Promise<T[]> => {
   const items: T[] = [];
   let cursor = options.cursor ?? null;
@@ -128,8 +131,12 @@ const paginate = async <T>(
   const maxPages = options.maxPages ?? Number.POSITIVE_INFINITY;
   const maxItems = options.maxItems ?? Number.POSITIVE_INFINITY;
 
-  while (pages < maxPages && items.length < maxItems) {
-    const page = await fetchPage(cursor);
+  while (
+    pages < maxPages &&
+    items.length < maxItems &&
+    !isAborted(options.signal)
+  ) {
+    const page = await fetchPage(cursor, options.signal);
     const parsed = parsePageResult(page, options.itemSchema);
     const { items: pageItems, nextCursor } = parsed ?? toPageResult<T>(page);
 
