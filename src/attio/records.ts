@@ -51,6 +51,7 @@ type RecordSorts = PostV2ObjectsByObjectRecordsQueryData["body"]["sorts"];
 interface RecordCreateInput extends AttioClientInput {
   object: RecordObjectId;
   values: RecordValues;
+  itemSchema?: ZodType<AttioRecordLike>;
   options?: Omit<
     Options<PostV2ObjectsByObjectRecordsData>,
     "client" | "path" | "body"
@@ -61,6 +62,7 @@ interface RecordUpdateInput extends AttioClientInput {
   object: RecordObjectId;
   recordId: RecordId;
   values: RecordValues;
+  itemSchema?: ZodType<AttioRecordLike>;
   options?: Omit<
     Options<PatchV2ObjectsByObjectRecordsByRecordIdData>,
     "client" | "path" | "body"
@@ -71,6 +73,7 @@ interface RecordUpsertInput extends AttioClientInput {
   object: RecordObjectId;
   matchingAttribute: MatchingAttribute;
   values: RecordValues;
+  itemSchema?: ZodType<AttioRecordLike>;
   options?: Omit<
     Options<PutV2ObjectsByObjectRecordsData>,
     "client" | "path" | "body"
@@ -80,6 +83,7 @@ interface RecordUpsertInput extends AttioClientInput {
 interface RecordGetInput extends AttioClientInput {
   object: RecordObjectId;
   recordId: RecordId;
+  itemSchema?: ZodType<AttioRecordLike>;
   options?: Omit<
     Options<GetV2ObjectsByObjectRecordsByRecordIdData>,
     "client" | "path"
@@ -123,10 +127,12 @@ type RecordQueryInput =
   | RecordQueryCollectInput
   | RecordQueryStreamInput;
 
-const createRecord = async <T extends AttioRecordLike>(
-  input: RecordCreateInput,
-): Promise<T> => {
+const createRecord = async <TInput extends RecordCreateInput>(
+  input: TInput,
+): Promise<InferRecordType<TInput>> => {
+  type T = InferRecordType<TInput>;
   const client = resolveAttioClient(input);
+  const schema = input.itemSchema ?? rawRecordSchema;
   const result = await postV2ObjectsByObjectRecords({
     client,
     path: { object: input.object },
@@ -137,13 +143,15 @@ const createRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
+  return normalizeRecord(assertOk(result, { schema })) as T;
 };
 
-const updateRecord = async <T extends AttioRecordLike>(
-  input: RecordUpdateInput,
-): Promise<T> => {
+const updateRecord = async <TInput extends RecordUpdateInput>(
+  input: TInput,
+): Promise<InferRecordType<TInput>> => {
+  type T = InferRecordType<TInput>;
   const client = resolveAttioClient(input);
+  const schema = input.itemSchema ?? rawRecordSchema;
   const result = await patchV2ObjectsByObjectRecordsByRecordId({
     client,
     path: { object: input.object, record_id: input.recordId },
@@ -154,13 +162,15 @@ const updateRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
+  return normalizeRecord(assertOk(result, { schema })) as T;
 };
 
-const upsertRecord = async <T extends AttioRecordLike>(
-  input: RecordUpsertInput,
-): Promise<T> => {
+const upsertRecord = async <TInput extends RecordUpsertInput>(
+  input: TInput,
+): Promise<InferRecordType<TInput>> => {
+  type T = InferRecordType<TInput>;
   const client = resolveAttioClient(input);
+  const schema = input.itemSchema ?? rawRecordSchema;
   const result = await putV2ObjectsByObjectRecords({
     client,
     path: { object: input.object },
@@ -174,19 +184,21 @@ const upsertRecord = async <T extends AttioRecordLike>(
     },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
+  return normalizeRecord(assertOk(result, { schema })) as T;
 };
 
-const getRecord = async <T extends AttioRecordLike>(
-  input: RecordGetInput,
-): Promise<T> => {
+const getRecord = async <TInput extends RecordGetInput>(
+  input: TInput,
+): Promise<InferRecordType<TInput>> => {
+  type T = InferRecordType<TInput>;
   const client = resolveAttioClient(input);
+  const schema = input.itemSchema ?? rawRecordSchema;
   const result = await getV2ObjectsByObjectRecordsByRecordId({
     client,
     path: { object: input.object, record_id: input.recordId },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema: rawRecordSchema })) as T;
+  return normalizeRecord(assertOk(result, { schema })) as T;
 };
 
 const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
