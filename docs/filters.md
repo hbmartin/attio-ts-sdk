@@ -699,6 +699,44 @@ filters.path(
 );
 ```
 
+### Type-Safe Query Results
+
+Query results are typed based on whether you provide an `itemSchema`. Without a schema, results are `AttioRecordLike[]`. With a schema, results are validated at runtime and the type is inferred from the schema:
+
+```typescript
+import { z } from 'zod';
+import { createAttioSdk, filters } from 'attio-ts-sdk';
+
+const sdk = createAttioSdk({ apiKey: 'your-api-key' });
+const filter = filters.eq('status', 'active');
+
+// Without schema - returns AttioRecordLike[]
+const people = await sdk.records.query({
+  object: 'people',
+  filter,
+});
+// people: AttioRecordLike[]
+
+// With schema - returns typed array with runtime validation
+const personSchema = z.object({
+  id: z.object({ record_id: z.string() }),
+  values: z.object({
+    name: z.array(z.object({ full_name: z.string() })),
+    email_addresses: z.array(z.object({ email_address: z.string() })),
+  }),
+});
+
+const typedPeople = await sdk.records.query({
+  object: 'people',
+  filter,
+  itemSchema: personSchema,
+});
+// typedPeople: z.infer<typeof personSchema>[]
+// Runtime validation ensures data matches the schema
+```
+
+This approach enforces "Make Illegal States Unrepresentable" - you can only get custom types by providing a schema that validates the data at runtime.
+
 ---
 
 ## Related Resources
