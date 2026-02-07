@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noExcessiveLinesPerFile: <explanation> */
 import type { ZodType } from "zod";
 import { z } from "zod";
 import {

@@ -76,7 +76,8 @@
         "useSimplifiedLogicExpression": "error",
         "useWhile": "error",
         "noExcessiveLinesPerFunction": "error",
-        "noImplicitCoercions": "error"
+        "noImplicitCoercions": "error",
+        "noImportantStyles": "error"
       },
       "correctness": {
         "noConstantCondition": "error",
@@ -123,20 +124,33 @@
         "useValidForDirection": "error",
         "useValidTypeof": "error",
         "useYield": "error",
-
         "noNodejsModules": "error",
         "noProcessGlobal": "error",
         "useUniqueElementIds": "error",
-
-        /** ------ Project rules use Scanner and are too slow (https://biomejs.dev/linter/domains/#project-rules) ------ **/
         "noPrivateImports": "error",
         "noUndeclaredDependencies": "error",
         "useImportExtensions": "off",
-        "useJsonImportAttributes": "error"
+        "useJsonImportAttributes": "error",
+        "noChildrenProp": "error",
+        "noInvalidDirectionInLinearGradient": "error",
+        "noInvalidGridAreas": "error",
+        "noRenderReturnValue": "error",
+        "noUnknownMediaFeatureName": "error",
+        "noUnknownProperty": "error",
+        "noUnknownPseudoClass": "error",
+        "noUnknownPseudoElement": "error",
+        "noUnknownTypeSelector": "error",
+        "noUnknownUnit": "error",
+        "noUnmatchableAnbSelector": "error",
+        "noVoidElementsWithChildren": "error",
+        "useExhaustiveDependencies": "error",
+        "useHookAtTopLevel": "error",
+        "useImageSize": "error",
+        "useJsxKeyInIterable": "error"
       },
       "nursery": {
         "noContinue": "error",
-        "noTernary": "off", // ternaries are readable for simple conditionals
+        "noTernary": "off",
         "noDeprecatedImports": "error",
         "noDuplicateDependencies": "error",
         "noDuplicatedSpreadProps": "error",
@@ -172,7 +186,44 @@
         "useSpread": "error",
         "noDuplicateArgumentNames": "error",
         "noDuplicateFieldDefinitionNames": "error",
-        "noDuplicateVariableNames": "error"
+        "noDuplicateVariableNames": "error",
+        "noAmbiguousAnchorText": "error",
+        "noBeforeInteractiveScriptOutsideDocument": "error",
+        "noDeprecatedMediaType": "error",
+        "noDivRegex": "error",
+        "noDuplicateAttributes": "error",
+        "noDuplicateEnumValueNames": "error",
+        "noDuplicateEnumValues": "error",
+        "noDuplicateGraphqlOperationName": "error",
+        "noDuplicateInputFieldNames": "error",
+        "noExcessiveClassesPerFile": "off",
+        "noExcessiveLinesPerFile": {
+          "level": "error",
+          "options": {
+            "maxLines": 350
+          }
+        },
+        "noFloatingClasses": "error",
+        "noHexColors": "error",
+        "noJsxLiterals": "error",
+        "noJsxPropsBind": "error",
+        "noLeakedRender": "error",
+        "noRedundantDefaultExport": "error",
+        "noRootType": "error",
+        "noScriptUrl": "error",
+        "noUnknownAttribute": "error",
+        "noUnresolvedImports": "error",
+        "useAwaitThenable": "off",
+        "useConsistentEnumValueType": "error",
+        "useConsistentGraphqlDescriptions": "error",
+        "useConsistentMethodSignatures": "off",
+        "useErrorCause": "off",
+        "useExplicitType": "off",
+        "useGlobalThis": "error",
+        "useInlineScriptId": "error",
+        "useInputName": "error",
+        "useLoneAnonymousOperation": "error",
+        "useLoneExecutableDefinition": "error"
       },
       "performance": {
         "noAccumulatingSpread": "error",
@@ -184,7 +235,8 @@
         "useGoogleFontPreconnect": "error",
         "useTopLevelRegex": "error",
         "noAwaitInLoops": "off",
-        "noReExportAll": "off"
+        "noReExportAll": "off",
+        "noImgElement": "error"
       },
       "security": {
         "noBlankTarget": "error",
@@ -270,7 +322,8 @@
         "useExplicitLengthCheck": "error",
         "useExportsLast": "error",
         "useNamingConvention": "off",
-        "useSingleVarDeclarator": "error"
+        "useSingleVarDeclarator": "error",
+        "noHeadElement": "error"
       },
       "suspicious": {
         "noAlert": "error",
@@ -357,7 +410,16 @@
         "useNumberToFixedDigitsArgument": "error",
         "useStaticResponseMethods": "error",
         "useStrictMode": "error",
-        "noConsole": "error"
+        "noConsole": "error",
+        "noDocumentImportInPage": "error",
+        "noDuplicateCustomProperties": "error",
+        "noDuplicateFontNames": "error",
+        "noDuplicateJsxProps": "error",
+        "noDuplicateProperties": "error",
+        "noDuplicateSelectorsKeyframeBlock": "error",
+        "noHeadImportInDocument": "error",
+        "noImportantInKeyframe": "error",
+        "noSuspiciousSemicolonInJsx": "error"
       }
     }
   },
@@ -403,7 +465,9 @@
             "noSecrets": "off"
           },
           "nursery": {
-            "noIncrementDecrement": "off"
+            "noIncrementDecrement": "off",
+            "noUnresolvedImports": "off",
+            "noExcessiveLinesPerFile": "off"
           }
         }
       }
