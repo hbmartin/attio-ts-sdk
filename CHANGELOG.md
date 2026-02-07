@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.0.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.2.1...attio-ts-sdk-v2.0.0) (2026-02-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* The fetchPage callback signature for async pagination functions has changed to receive the AbortSignal:
+
+### Features
+
+* add async generator pagination and auto-pagination for queries ([01fd423](https://github.com/hbmartin/attio-ts-sdk/commit/01fd423f49c235c2577622d7d02ae961f11c655b))
+* add async generator pagination and auto-pagination for queries ([8820089](https://github.com/hbmartin/attio-ts-sdk/commit/8820089bf808106df82e77c058ab7c04e6966cc3))
+* add itemSchema support to create/update/upsert/getRecord ([2837710](https://github.com/hbmartin/attio-ts-sdk/commit/2837710e9714d390c9c06e1eb052713d578d6e88))
+* add itemSchema support to queryRecords for type-safe validation ([a54e114](https://github.com/hbmartin/attio-ts-sdk/commit/a54e1142c49dd4261000c230887aacf17c3396d2))
+* add itemSchema support to queryRecords for type-safe validation ([b1a4a98](https://github.com/hbmartin/attio-ts-sdk/commit/b1a4a983e5b51ec67584e33f299efd96b34dd52f))
+* add missing filter operators and path-based filtering ([cae90c3](https://github.com/hbmartin/attio-ts-sdk/commit/cae90c343bc99219bca2e3953680fd5a0f57bc07))
+* add missing filter operators and path-based filtering ([f77b6bd](https://github.com/hbmartin/attio-ts-sdk/commit/f77b6bd538a339e355f0a611fa4db6ef2dd43f24))
+* forward AbortSignal to fetchPage callbacks for in-flight cancellation ([b99c13a](https://github.com/hbmartin/attio-ts-sdk/commit/b99c13a3c55a969b5b7c9a70a4f63640c6160486))
+* make input types generic to enable proper type inference ([802b0d2](https://github.com/hbmartin/attio-ts-sdk/commit/802b0d2d02c390d86045f2189ede3d51065100fd))
+* make input types generic to enable proper type inference ([2ee0a8c](https://github.com/hbmartin/attio-ts-sdk/commit/2ee0a8c7c7aa08a680563bcb8c86d3503bbfa59e))
+
+
+### Bug Fixes
+
+* forward AbortSignal to single-page queries for request cancellation ([087c19b](https://github.com/hbmartin/attio-ts-sdk/commit/087c19b61fd3de24727473e905592cc9d2d12533))
+* forward AbortSignal to single-page queries for request cancellation ([04c06ee](https://github.com/hbmartin/attio-ts-sdk/commit/04c06ee8ac689004756547b1eb0aca39073fa387))
+* re-establish normalizeRecords mock after resetAllMocks in tests ([9d8220e](https://github.com/hbmartin/attio-ts-sdk/commit/9d8220ec8643de432652783c75f1a58eba85e8c9))
+* replace unsafe type assertion with Zod validation in queryListEntries ([a834377](https://github.com/hbmartin/attio-ts-sdk/commit/a834377d6da1d9481b312a369f69f95b7126c736))
+* replace unsafe type assertion with Zod validation in queryListEntries ([175078a](https://github.com/hbmartin/attio-ts-sdk/commit/175078adbe3799a23234479d4179721f8591e570))
+* validate records after normalization to ensure type safety ([098a488](https://github.com/hbmartin/attio-ts-sdk/commit/098a488f564d4211a32dadd047da0758076d079b))
+
 ## [1.2.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.2.0...attio-ts-sdk-v1.2.1) (2026-02-03)
 
 
