@@ -26,7 +26,12 @@ import {
   normalizeRecord,
   normalizeRecords,
 } from "./record-utils";
-import { assertOk, unwrapItems } from "./response";
+import {
+  assertOk,
+  unwrapItems,
+  validateItemsArray,
+  validateWithSchema,
+} from "./response";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -39,6 +44,22 @@ type InferRecordType<TInput> = TInput extends {
 }
   ? T
   : AttioRecordLike;
+
+/**
+ * Helper type to require itemSchema for typed overloads.
+ * This ensures users must provide a schema to get custom type inference.
+ */
+type WithItemSchema<TBase, T extends AttioRecordLike> = TBase & {
+  itemSchema: ZodType<T>;
+};
+
+/**
+ * Helper type for inputs without itemSchema.
+ * Explicitly marks itemSchema as undefined to help overload resolution.
+ */
+type WithoutItemSchema<TBase> = Omit<TBase, "itemSchema"> & {
+  itemSchema?: undefined;
+};
 
 type RecordObjectId = string & { readonly __brand: "RecordObjectId" };
 type RecordId = string & { readonly __brand: "RecordId" };
@@ -127,10 +148,18 @@ type RecordQueryInput =
   | RecordQueryCollectInput
   | RecordQueryStreamInput;
 
-const createRecord = async <TInput extends RecordCreateInput>(
-  input: TInput,
-): Promise<InferRecordType<TInput>> => {
-  type T = InferRecordType<TInput>;
+// Overload: With itemSchema - T is inferred from schema
+async function createRecord<T extends AttioRecordLike>(
+  input: WithItemSchema<RecordCreateInput, T>,
+): Promise<T>;
+// Overload: Without itemSchema - returns AttioRecordLike
+async function createRecord(
+  input: WithoutItemSchema<RecordCreateInput>,
+): Promise<AttioRecordLike>;
+// Implementation
+async function createRecord(
+  input: RecordCreateInput,
+): Promise<AttioRecordLike> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
   const result = await postV2ObjectsByObjectRecords({
@@ -143,13 +172,22 @@ const createRecord = async <TInput extends RecordCreateInput>(
     },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema })) as T;
-};
+  const normalized = normalizeRecord(assertOk(result));
+  return validateWithSchema(normalized, schema);
+}
 
-const updateRecord = async <TInput extends RecordUpdateInput>(
-  input: TInput,
-): Promise<InferRecordType<TInput>> => {
-  type T = InferRecordType<TInput>;
+// Overload: With itemSchema - T is inferred from schema
+async function updateRecord<T extends AttioRecordLike>(
+  input: WithItemSchema<RecordUpdateInput, T>,
+): Promise<T>;
+// Overload: Without itemSchema - returns AttioRecordLike
+async function updateRecord(
+  input: WithoutItemSchema<RecordUpdateInput>,
+): Promise<AttioRecordLike>;
+// Implementation
+async function updateRecord(
+  input: RecordUpdateInput,
+): Promise<AttioRecordLike> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
   const result = await patchV2ObjectsByObjectRecordsByRecordId({
@@ -162,13 +200,22 @@ const updateRecord = async <TInput extends RecordUpdateInput>(
     },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema })) as T;
-};
+  const normalized = normalizeRecord(assertOk(result));
+  return validateWithSchema(normalized, schema);
+}
 
-const upsertRecord = async <TInput extends RecordUpsertInput>(
-  input: TInput,
-): Promise<InferRecordType<TInput>> => {
-  type T = InferRecordType<TInput>;
+// Overload: With itemSchema - T is inferred from schema
+async function upsertRecord<T extends AttioRecordLike>(
+  input: WithItemSchema<RecordUpsertInput, T>,
+): Promise<T>;
+// Overload: Without itemSchema - returns AttioRecordLike
+async function upsertRecord(
+  input: WithoutItemSchema<RecordUpsertInput>,
+): Promise<AttioRecordLike>;
+// Implementation
+async function upsertRecord(
+  input: RecordUpsertInput,
+): Promise<AttioRecordLike> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
   const result = await putV2ObjectsByObjectRecords({
@@ -184,13 +231,19 @@ const upsertRecord = async <TInput extends RecordUpsertInput>(
     },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema })) as T;
-};
+  return normalizeRecord(assertOk(result, { schema }));
+}
 
-const getRecord = async <TInput extends RecordGetInput>(
-  input: TInput,
-): Promise<InferRecordType<TInput>> => {
-  type T = InferRecordType<TInput>;
+// Overload: With itemSchema - T is inferred from schema
+async function getRecord<T extends AttioRecordLike>(
+  input: WithItemSchema<RecordGetInput, T>,
+): Promise<T>;
+// Overload: Without itemSchema - returns AttioRecordLike
+async function getRecord(
+  input: WithoutItemSchema<RecordGetInput>,
+): Promise<AttioRecordLike>;
+// Implementation
+async function getRecord(input: RecordGetInput): Promise<AttioRecordLike> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
   const result = await getV2ObjectsByObjectRecordsByRecordId({
@@ -198,8 +251,8 @@ const getRecord = async <TInput extends RecordGetInput>(
     path: { object: input.object, record_id: input.recordId },
     ...input.options,
   });
-  return normalizeRecord(assertOk(result, { schema })) as T;
-};
+  return normalizeRecord(assertOk(result, { schema }));
+}
 
 const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
   const client = resolveAttioClient(input);
@@ -212,19 +265,27 @@ const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
   return true;
 };
 
-function queryRecords<TInput extends RecordQueryStreamInput>(
-  input: TInput,
-): AsyncIterable<InferRecordType<TInput>>;
-function queryRecords<
-  TInput extends RecordQuerySingleInput | RecordQueryCollectInput,
->(input: TInput): Promise<InferRecordType<TInput>[]>;
-function queryRecords<TInput extends RecordQueryInput>(
-  input: TInput,
-): Promise<InferRecordType<TInput>[]> | AsyncIterable<InferRecordType<TInput>>;
-function queryRecords<TInput extends RecordQueryInput>(
-  input: TInput,
-): Promise<InferRecordType<TInput>[]> | AsyncIterable<InferRecordType<TInput>> {
-  type T = InferRecordType<TInput>;
+// Overload: Stream mode with itemSchema - T is inferred from schema
+function queryRecords<T extends AttioRecordLike>(
+  input: WithItemSchema<RecordQueryStreamInput, T>,
+): AsyncIterable<T>;
+// Overload: Stream mode without itemSchema - returns AttioRecordLike
+function queryRecords(
+  input: WithoutItemSchema<RecordQueryStreamInput>,
+): AsyncIterable<AttioRecordLike>;
+// Overload: Single/Collect mode with itemSchema - T is inferred from schema
+function queryRecords<T extends AttioRecordLike>(
+  input: WithItemSchema<RecordQuerySingleInput | RecordQueryCollectInput, T>,
+): Promise<T[]>;
+// Overload: Single/Collect mode without itemSchema - returns AttioRecordLike
+function queryRecords(
+  input: WithoutItemSchema<RecordQuerySingleInput | RecordQueryCollectInput>,
+): Promise<AttioRecordLike[]>;
+// Implementation signature
+function queryRecords(
+  input: RecordQueryInput,
+): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike> {
+  type T = AttioRecordLike;
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
 
@@ -300,6 +361,8 @@ export type {
   RecordGetInput,
   RecordSorts,
   RecordValues,
+  WithItemSchema,
+  WithoutItemSchema,
 };
 export {
   createRecord,

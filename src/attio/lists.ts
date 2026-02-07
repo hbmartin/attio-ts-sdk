@@ -36,6 +36,22 @@ type InferEntryType<TInput> = TInput extends {
   ? T
   : AttioRecordLike;
 
+/**
+ * Helper type to require itemSchema for typed overloads.
+ * This ensures users must provide a schema to get custom type inference.
+ */
+type WithItemSchema<TBase, T extends AttioRecordLike> = TBase & {
+  itemSchema: ZodType<T>;
+};
+
+/**
+ * Helper type for inputs without itemSchema.
+ * Explicitly marks itemSchema as undefined to help overload resolution.
+ */
+type WithoutItemSchema<TBase> = Omit<TBase, "itemSchema"> & {
+  itemSchema?: undefined;
+};
+
 type ListId = string & { readonly __brand: "ListId" };
 type EntryId = string & { readonly __brand: "EntryId" };
 type ParentObjectId = string & { readonly __brand: "ParentObjectId" };
@@ -138,19 +154,27 @@ export const getList = async (input: GetListInput) => {
   return unwrapData(result);
 };
 
-export function queryListEntries<TInput extends ListQueryStreamInput>(
-  input: TInput,
-): AsyncIterable<InferEntryType<TInput>>;
-export function queryListEntries<
-  TInput extends ListQuerySingleInput | ListQueryCollectInput,
->(input: TInput): Promise<InferEntryType<TInput>[]>;
-export function queryListEntries<TInput extends ListQueryInput>(
-  input: TInput,
-): Promise<InferEntryType<TInput>[]> | AsyncIterable<InferEntryType<TInput>>;
-export function queryListEntries<TInput extends ListQueryInput>(
-  input: TInput,
-): Promise<InferEntryType<TInput>[]> | AsyncIterable<InferEntryType<TInput>> {
-  type T = InferEntryType<TInput>;
+// Overload: Stream mode with itemSchema - T is inferred from schema
+export function queryListEntries<T extends AttioRecordLike>(
+  input: WithItemSchema<ListQueryStreamInput, T>,
+): AsyncIterable<T>;
+// Overload: Stream mode without itemSchema - returns AttioRecordLike
+export function queryListEntries(
+  input: WithoutItemSchema<ListQueryStreamInput>,
+): AsyncIterable<AttioRecordLike>;
+// Overload: Single/Collect mode with itemSchema - T is inferred from schema
+export function queryListEntries<T extends AttioRecordLike>(
+  input: WithItemSchema<ListQuerySingleInput | ListQueryCollectInput, T>,
+): Promise<T[]>;
+// Overload: Single/Collect mode without itemSchema - returns AttioRecordLike
+export function queryListEntries(
+  input: WithoutItemSchema<ListQuerySingleInput | ListQueryCollectInput>,
+): Promise<AttioRecordLike[]>;
+// Implementation signature
+export function queryListEntries(
+  input: ListQueryInput,
+): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike> {
+  type T = AttioRecordLike;
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
 
@@ -270,4 +294,6 @@ export type {
   ParentRecordId,
   RemoveListEntryInput,
   UpdateListEntryInput,
+  WithItemSchema,
+  WithoutItemSchema,
 };

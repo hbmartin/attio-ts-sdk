@@ -105,6 +105,14 @@ const validateItemsArray = <T>(items: unknown[], schema: ZodType<T>): T[] => {
   return parsed.data;
 };
 
+const validateWithSchema = <T>(data: unknown, schema: ZodType<T>): T => {
+  const parsed = schema.safeParse(data);
+  if (!parsed.success) {
+    throw createSchemaError(parsed.error);
+  }
+  return parsed.data;
+};
+
 function unwrapItems<T>(
   result: unknown,
   options: UnwrapItemsOptions<T> & { schema: ZodType<T> },
@@ -287,5 +295,7 @@ export {
   unwrapItems,
   unwrapPaginationCursor,
   unwrapPaginationOffset,
+  validateItemsArray,
+  validateWithSchema,
 };
 export type { AttioResult, ResultOptions, UnwrapItemsOptions, UnwrapOptions };
