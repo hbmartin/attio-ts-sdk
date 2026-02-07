@@ -55,7 +55,7 @@
     "dupes": "jscpd",
     "prepare": "husky",
     "openapi-ts": "openapi-ts",
-    "biome:up": "npx tsx scripts/enable-new-biome-rules.ts"
+    "biome:up": "npx tsx scripts/enable-new-biome-rules.ts --ignore-groups a11y --ignore-rules next --ignore-rules qwik --ignore-rules vue --ignore-rules react --ignore-rules solid --ignore-rules turborepo"
   },
   "author": "Harold Martin <harold.martin@gmail.com>",
   "repository": {
