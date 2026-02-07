@@ -94,7 +94,7 @@
   "jscpd": {
     "threshold": 0,
     "reporters": [
-      "markdown",
+      "json",
       "console"
     ],
     "ignore": [
@@ -104,7 +104,9 @@
       "**/test/**",
       "**/src/generated/**",
       "**/*.json",
-      "**/*.test.ts"
+      "**/*.test.ts",
+      "**/*.md",
+      "**/*.yml"
     ],
     "absolute": false
   }
