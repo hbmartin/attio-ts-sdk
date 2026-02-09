@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { filters } from "../../src/attio/filters";
+import { attioFilterSchema, filters } from "../../src/attio/filters";
 
 describe("filters", () => {
   describe("eq", () => {
@@ -287,6 +287,30 @@ describe("filters", () => {
           { email: { $not_empty: true } },
         ],
       });
+    });
+  });
+
+  describe("attioFilterSchema", () => {
+    it("parses valid filters", () => {
+      const filter = {
+        $and: [
+          { status: { $eq: "active" } },
+          {
+            path: [["companies", "owner"]],
+            constraints: { email: { $contains: "@example.com" } },
+          },
+        ],
+      };
+
+      expect(attioFilterSchema.parse(filter)).toEqual(filter);
+    });
+
+    it("rejects invalid filter shapes", () => {
+      expect(() =>
+        attioFilterSchema.parse({
+          status: { $not_empty: false },
+        }),
+      ).toThrow();
     });
   });
 });

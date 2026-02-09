@@ -16,7 +16,7 @@ import {
   postV2ListsByListEntriesQuery,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import type { AttioFilter } from "./filters";
+import { type AttioFilter, attioFilterSchema } from "./filters";
 import {
   paginateOffset,
   paginateOffsetAsync,
@@ -171,6 +171,10 @@ export function queryListEntries<T extends AttioRecordLike>(
 ): Promise<T[]> | AsyncIterable<T> {
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
+  const filter =
+    input.filter === undefined
+      ? undefined
+      : attioFilterSchema.parse(input.filter);
 
   const fetchEntries = async (
     offset?: number,
@@ -181,8 +185,7 @@ export function queryListEntries<T extends AttioRecordLike>(
       client,
       path: { list: input.list },
       body: {
-        filter:
-          input.filter as PostV2ListsByListEntriesQueryData["body"]["filter"],
+        filter,
         limit,
         offset,
       },

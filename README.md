@@ -509,18 +509,51 @@ const { data } = await postV2ObjectsByObjectRecords({
 
 ### Pagination Helpers
 
-The SDK provides two pagination strategies. Use the one that matches the endpoint:
+The SDK provides multiple approaches to pagination, from simple convenience options to low-level helpers for full control.
+
+#### Using `queryRecords` with auto-pagination (recommended)
+
+The simplest way to paginate record queries is using the `paginate` option on `queryRecords`:
+
+```typescript
+import { createAttioClient, queryRecords } from 'attio-ts-sdk';
+
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
+
+// Collect all pages automatically into an array
+const allCompanies = await queryRecords({
+  client,
+  object: 'companies',
+  filter: { attribute: 'name', value: 'Acme' },
+  sorts: [{ attribute: 'created_at', direction: 'desc' }],
+  paginate: true,
+  maxItems: 10000,  // Optional: limit total items
+});
+
+// Stream records one at a time (memory-efficient for large datasets)
+for await (const company of queryRecords({
+  client,
+  object: 'companies',
+  paginate: 'stream',
+})) {
+  console.log(company.id);
+}
+```
+
+The same pattern works with `queryListEntries` / `sdk.lists.queryEntries`.
+
+#### Using low-level pagination helpers
+
+For more control or when working directly with generated endpoints, use `paginateOffset` (offset-based) or `paginate` (cursor-based):
 
 | Strategy | Helper | Endpoints |
 | --- | --- | --- |
 | **Offset-based** | `paginateOffset` | Record queries (`postV2ObjectsByObjectRecordsQuery`), list entry queries (`postV2ListsByListEntriesQuery`) |
 | **Cursor-based** | `paginate` | Meetings (`getV2Meetings`), notes (`getV2Notes`), tasks (`getV2Tasks`), webhooks, and most `GET` list endpoints |
 
-Both helpers automatically extract items and pagination metadata from raw API responses — pass the generated endpoint call directly and the helper does the rest.
+Both helpers automatically extract items and pagination metadata from raw API responses.
 
-> **Note:** The convenience functions `queryRecords` / `sdk.records.query` and `queryListEntries` / `sdk.lists.queryEntries` return a single page of unwrapped results. To collect **all** pages, use the pagination helpers with the generated endpoints as shown below.
-
-#### Paginating record queries (offset-based)
+#### Paginating record queries with `paginateOffset`
 
 ```typescript
 import {
@@ -546,7 +579,7 @@ const allCompanies = await paginateOffset(async (offset, limit) => {
 });
 ```
 
-#### Paginating list entry queries (offset-based)
+#### Paginating list entry queries with `paginateOffset`
 
 ```typescript
 import { paginateOffset, postV2ListsByListEntriesQuery } from 'attio-ts-sdk';
