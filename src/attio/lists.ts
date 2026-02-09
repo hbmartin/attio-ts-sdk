@@ -16,6 +16,7 @@ import {
   postV2ListsByListEntriesQuery,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
+import type { AttioFilter } from "./filters";
 import {
   paginateOffset,
   paginateOffsetAsync,
@@ -49,7 +50,7 @@ const createListId = (id: string): ListId => {
 };
 
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
-type ListEntryFilter = PostV2ListsByListEntriesQueryData["body"]["filter"];
+type ListEntryFilter = AttioFilter;
 
 interface ListQueryBaseInput<T extends AttioRecordLike = AttioRecordLike>
   extends AttioClientInput {
@@ -180,7 +181,8 @@ export function queryListEntries<T extends AttioRecordLike>(
       client,
       path: { list: input.list },
       body: {
-        filter: input.filter,
+        filter:
+          input.filter as PostV2ListsByListEntriesQueryData["body"]["filter"],
         limit,
         offset,
       },
