@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 // Values that can be ordered (for $lt, $lte, $gt, $gte)
 type ComparableValue = string | number;
 
@@ -56,18 +58,22 @@ type AttributeLevelFilter =
 
 // Path-based filter
 interface PathFilter {
+  [key: string]: unknown;
   path: PathSegment[];
   constraints: AttributeLevelFilter;
 }
 
 // Logical filter combinations
 interface AndFilter {
+  [key: string]: unknown;
   $and: AttioFilter[];
 }
 interface OrFilter {
+  [key: string]: unknown;
   $or: AttioFilter[];
 }
 interface NotFilter {
+  [key: string]: unknown;
   $not: AttioFilter;
 }
 
@@ -78,6 +84,107 @@ type AttioFilter =
   | OrFilter
   | NotFilter
   | { [attribute: string]: AttributeFilter };
+
+const comparableValueSchema: z.ZodType<ComparableValue> = z.union([
+  z.string(),
+  z.number(),
+]);
+
+const filterValueSchema: z.ZodType<FilterValue> = z.union([
+  comparableValueSchema,
+  z.boolean(),
+  z.null(),
+]);
+
+const fieldConditionSchema: z.ZodType<FieldCondition> = z
+  .object({
+    $eq: filterValueSchema.optional(),
+    $contains: z.string().optional(),
+    $starts_with: z.string().optional(),
+    $ends_with: z.string().optional(),
+    $not_empty: z.literal(true).optional(),
+    $in: z.array(filterValueSchema).optional(),
+    $lt: comparableValueSchema.optional(),
+    $lte: comparableValueSchema.optional(),
+    $gt: comparableValueSchema.optional(),
+    $gte: comparableValueSchema.optional(),
+  })
+  .strict();
+
+const nestedFieldConditionSchema: z.ZodType<NestedFieldCondition> = z.record(
+  z.string(),
+  fieldConditionSchema,
+);
+
+const shorthandValueSchema: z.ZodType<ShorthandValue> = z.union([
+  filterValueSchema,
+  z.array(filterValueSchema),
+]);
+
+const attributeFilterSchema: z.ZodType<AttributeFilter> = z.union([
+  shorthandValueSchema,
+  fieldConditionSchema,
+  nestedFieldConditionSchema,
+]);
+
+const attributeFilterRecordSchema: z.ZodType<{
+  [attribute: string]: AttributeFilter;
+}> = z.record(z.string(), attributeFilterSchema);
+
+const attributeLevelFilterSchema: z.ZodType<AttributeLevelFilter> = z.lazy(() =>
+  z.union([
+    z
+      .object({
+        $and: z.array(attributeLevelFilterSchema),
+      })
+      .strict(),
+    z
+      .object({
+        $or: z.array(attributeLevelFilterSchema),
+      })
+      .strict(),
+    z
+      .object({
+        $not: attributeLevelFilterSchema,
+      })
+      .strict(),
+    attributeFilterRecordSchema,
+  ]),
+);
+
+const pathSegmentSchema: z.ZodType<PathSegment> = z.tuple([
+  z.string(),
+  z.string(),
+]);
+
+const pathFilterSchema: z.ZodType<PathFilter> = z
+  .object({
+    path: z.array(pathSegmentSchema).min(1),
+    constraints: attributeLevelFilterSchema,
+  })
+  .strict();
+
+const attioFilterSchema: z.ZodType<AttioFilter> = z.lazy(() =>
+  z.union([
+    pathFilterSchema,
+    z
+      .object({
+        $and: z.array(attioFilterSchema),
+      })
+      .strict(),
+    z
+      .object({
+        $or: z.array(attioFilterSchema),
+      })
+      .strict(),
+    z
+      .object({
+        $not: attioFilterSchema,
+      })
+      .strict(),
+    attributeFilterRecordSchema,
+  ]),
+);
 
 const operator = (
   field: string,
@@ -153,4 +260,4 @@ export type {
   PathSegment,
   ShorthandValue,
 };
-export { filters };
+export { attioFilterSchema, filters };

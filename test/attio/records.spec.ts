@@ -435,6 +435,18 @@ describe("records", () => {
       });
     });
 
+    it("throws when filter shape is invalid", () => {
+      const invalidFilter = JSON.parse('{"status":{"$not_empty":false}}');
+
+      expect(() =>
+        queryRecords({
+          object: "companies",
+          filter: invalidFilter,
+        }),
+      ).toThrow();
+      expect(queryRecordsRequest).not.toHaveBeenCalled();
+    });
+
     it("queries records with sorts", async () => {
       queryRecordsRequest.mockResolvedValue({ data: { data: [] } });
 

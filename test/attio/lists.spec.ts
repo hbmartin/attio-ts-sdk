@@ -143,6 +143,18 @@ describe("lists", () => {
       });
     });
 
+    it("throws when filter shape is invalid", () => {
+      const invalidFilter = JSON.parse('{"status":{"$not_empty":false}}');
+
+      expect(() =>
+        queryListEntries({
+          list: "list-1",
+          filter: invalidFilter,
+        }),
+      ).toThrow();
+      expect(queryEntriesRequest).not.toHaveBeenCalled();
+    });
+
     it("queries entries with pagination", async () => {
       queryEntriesRequest.mockResolvedValue({ data: { data: [] } });
 
