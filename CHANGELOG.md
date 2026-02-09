@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.0.0...attio-ts-sdk-v2.0.1) (2026-02-09)
+
+
+### Bug Fixes
+
+* **attio:** keep filter types strict with parser bridge ([6631c1d](https://github.com/hbmartin/attio-ts-sdk/commit/6631c1d361ca6692bbca248f335add05af6e7e5c))
+* **attio:** keep filter types strict with parser bridge ([ca67bcc](https://github.com/hbmartin/attio-ts-sdk/commit/ca67bcc22423e6cb6886f92d51eb577b386f00e5))
+* **attio:** validate list and record filters with zod ([a9f7b26](https://github.com/hbmartin/attio-ts-sdk/commit/a9f7b26030a7e34ec00708dc5297e3a9de061cf8))
+* **attio:** validate list and record filters with zod ([4734411](https://github.com/hbmartin/attio-ts-sdk/commit/473441120099223ed3ade5652ddede901f00003b))
+* use AttioFilter type for ListEntryFilter and RecordFilter ([c988437](https://github.com/hbmartin/attio-ts-sdk/commit/c988437cf345e879e5425b9a8ae046730a3823c0))
+* use AttioFilter type for ListEntryFilter and RecordFilter ([8e7e00e](https://github.com/hbmartin/attio-ts-sdk/commit/8e7e00e7fbe6de760067f825f31acbb0b4384a83))
+
 ## [2.0.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v1.2.1...attio-ts-sdk-v2.0.0) (2026-02-07)
 
 
