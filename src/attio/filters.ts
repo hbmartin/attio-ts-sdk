@@ -21,7 +21,10 @@ const fieldConditionSchema = z
     $gt: comparableValueSchema.optional(),
     $gte: comparableValueSchema.optional(),
   })
-  .strict();
+  .strict()
+  .refine((value) => Object.keys(value).length > 0, {
+    message: "Field condition must include at least one operator",
+  });
 
 const nestedFieldConditionSchema = z.record(z.string(), fieldConditionSchema);
 
@@ -36,7 +39,12 @@ const attributeFilterSchema = z.union([
   nestedFieldConditionSchema,
 ]);
 
-const attributeFilterRecordSchema = z.record(z.string(), attributeFilterSchema);
+const attributeFilterRecordSchema = z.record(
+  z.string().refine((key) => !key.startsWith("$"), {
+    message: "Attribute keys cannot start with '$'",
+  }),
+  attributeFilterSchema,
+);
 
 type AttributeLevelFilterShape =
   | { $and: AttributeLevelFilterShape[] }
@@ -115,10 +123,8 @@ type PathSegment = z.output<typeof pathSegmentSchema>;
 type PathFilter = z.output<typeof pathFilterSchema>;
 type AttioFilter = z.output<typeof attioFilterSchema>;
 
-const attioApiFilterSchema = z.record(z.string(), z.unknown());
-
 const parseAttioFilter = (filter: AttioFilter): Record<string, unknown> =>
-  attioApiFilterSchema.parse(attioFilterSchema.parse(filter));
+  attioFilterSchema.parse(filter);
 
 const operator = (
   field: string,
