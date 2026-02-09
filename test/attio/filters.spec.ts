@@ -317,6 +317,23 @@ describe("filters", () => {
       ).toThrow();
     });
 
+    it("rejects empty field condition in nested attribute", () => {
+      expect(() =>
+        attioFilterSchema.parse({ status: { sub_field: {} } }),
+      ).toThrow("Field condition must include at least one operator");
+    });
+
+    it("rejects attribute keys starting with $", () => {
+      expect(() =>
+        attioFilterSchema.parse({ $custom: { $eq: "value" } }),
+      ).toThrow();
+    });
+
+    it("allows non-$ attribute keys", () => {
+      const filter = { status: { $eq: "active" } };
+      expect(attioFilterSchema.parse(filter)).toEqual(filter);
+    });
+
     it("converts parsed filters to API-compatible record shape", () => {
       const filter = {
         status: { $eq: "active" },
