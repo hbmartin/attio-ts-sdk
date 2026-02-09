@@ -16,7 +16,7 @@ import {
   putV2ObjectsByObjectRecords,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import { type AttioFilter, attioFilterSchema } from "./filters";
+import { type AttioFilter, parseAttioFilter } from "./filters";
 import {
   paginateOffset,
   paginateOffsetAsync,
@@ -303,9 +303,7 @@ function queryRecords<T extends AttioRecordLike>(
   const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
   const filter =
-    input.filter === undefined
-      ? undefined
-      : attioFilterSchema.parse(input.filter);
+    input.filter === undefined ? undefined : parseAttioFilter(input.filter);
 
   const fetchRecords = async (
     offset?: number,
