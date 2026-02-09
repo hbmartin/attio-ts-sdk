@@ -16,6 +16,7 @@ import {
   putV2ObjectsByObjectRecords,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
+import type { AttioFilter } from "./filters";
 import {
   paginateOffset,
   paginateOffsetAsync,
@@ -66,7 +67,7 @@ type RecordId = string & { readonly __brand: "RecordId" };
 type MatchingAttribute = string & { readonly __brand: "MatchingAttribute" };
 
 type RecordValues = PostV2ObjectsByObjectRecordsData["body"]["data"]["values"];
-type RecordFilter = PostV2ObjectsByObjectRecordsQueryData["body"]["filter"];
+type RecordFilter = AttioFilter;
 type RecordSorts = PostV2ObjectsByObjectRecordsQueryData["body"]["sorts"];
 
 interface RecordCreateInput<T extends AttioRecordLike = AttioRecordLike>
@@ -311,7 +312,8 @@ function queryRecords<T extends AttioRecordLike>(
       client,
       path: { object: input.object },
       body: {
-        filter: input.filter,
+        filter:
+          input.filter as PostV2ObjectsByObjectRecordsQueryData["body"]["filter"],
         sorts: input.sorts,
         limit,
         offset,
