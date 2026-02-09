@@ -81,6 +81,13 @@ type AttioFilter =
   | NotFilter
   | { [attribute: string]: AttributeFilter };
 
+type AssertTrue<T extends true> = T;
+type IsTypeEquivalent<TExpected, TActual> = [TExpected] extends [TActual]
+  ? [TActual] extends [TExpected]
+    ? true
+    : false
+  : false;
+
 const comparableValueSchema: z.ZodType<ComparableValue> = z.union([
   z.string(),
   z.number(),
@@ -186,6 +193,57 @@ const attioApiFilterSchema = z.record(z.string(), z.unknown());
 
 const parseAttioFilter = (filter: AttioFilter): Record<string, unknown> =>
   attioApiFilterSchema.parse(attioFilterSchema.parse(filter));
+
+const assertSchemaTypeSync = <_T extends true>(value: _T): _T => value;
+
+assertSchemaTypeSync<
+  AssertTrue<
+    IsTypeEquivalent<ComparableValue, z.output<typeof comparableValueSchema>>
+  >
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<IsTypeEquivalent<FilterValue, z.output<typeof filterValueSchema>>>
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<
+    IsTypeEquivalent<FieldCondition, z.output<typeof fieldConditionSchema>>
+  >
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<
+    IsTypeEquivalent<
+      NestedFieldCondition,
+      z.output<typeof nestedFieldConditionSchema>
+    >
+  >
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<
+    IsTypeEquivalent<ShorthandValue, z.output<typeof shorthandValueSchema>>
+  >
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<
+    IsTypeEquivalent<AttributeFilter, z.output<typeof attributeFilterSchema>>
+  >
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<
+    IsTypeEquivalent<
+      AttributeLevelFilter,
+      z.output<typeof attributeLevelFilterSchema>
+    >
+  >
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<IsTypeEquivalent<PathSegment, z.output<typeof pathSegmentSchema>>>
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<IsTypeEquivalent<PathFilter, z.output<typeof pathFilterSchema>>>
+>(true);
+assertSchemaTypeSync<
+  AssertTrue<IsTypeEquivalent<AttioFilter, z.output<typeof attioFilterSchema>>>
+>(true);
 
 const operator = (
   field: string,
