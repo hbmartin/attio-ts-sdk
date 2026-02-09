@@ -58,22 +58,18 @@ type AttributeLevelFilter =
 
 // Path-based filter
 interface PathFilter {
-  [key: string]: unknown;
   path: PathSegment[];
   constraints: AttributeLevelFilter;
 }
 
 // Logical filter combinations
 interface AndFilter {
-  [key: string]: unknown;
   $and: AttioFilter[];
 }
 interface OrFilter {
-  [key: string]: unknown;
   $or: AttioFilter[];
 }
 interface NotFilter {
-  [key: string]: unknown;
   $not: AttioFilter;
 }
 
@@ -186,6 +182,11 @@ const attioFilterSchema: z.ZodType<AttioFilter> = z.lazy(() =>
   ]),
 );
 
+const attioApiFilterSchema = z.record(z.string(), z.unknown());
+
+const parseAttioFilter = (filter: AttioFilter): Record<string, unknown> =>
+  attioApiFilterSchema.parse(attioFilterSchema.parse(filter));
+
 const operator = (
   field: string,
   op: ComparisonOperator,
@@ -260,4 +261,4 @@ export type {
   PathSegment,
   ShorthandValue,
 };
-export { attioFilterSchema, filters };
+export { attioFilterSchema, filters, parseAttioFilter };

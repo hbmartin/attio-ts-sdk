@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { attioFilterSchema, filters } from "../../src/attio/filters";
+import {
+  attioFilterSchema,
+  filters,
+  parseAttioFilter,
+} from "../../src/attio/filters";
 
 describe("filters", () => {
   describe("eq", () => {
@@ -311,6 +315,14 @@ describe("filters", () => {
           status: { $not_empty: false },
         }),
       ).toThrow();
+    });
+
+    it("converts parsed filters to API-compatible record shape", () => {
+      const filter = {
+        status: { $eq: "active" },
+      };
+
+      expect(parseAttioFilter(filter)).toEqual(filter);
     });
   });
 });
