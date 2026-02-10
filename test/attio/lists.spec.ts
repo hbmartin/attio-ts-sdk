@@ -41,6 +41,7 @@ describe("lists", () => {
   let updateListEntry: typeof import("../../src/attio/lists").updateListEntry;
   let removeListEntry: typeof import("../../src/attio/lists").removeListEntry;
   let createListId: typeof import("../../src/attio/lists").createListId;
+  let filters: typeof import("../../src/attio/filters").filters;
 
   beforeAll(async () => {
     ({
@@ -52,6 +53,7 @@ describe("lists", () => {
       removeListEntry,
       createListId,
     } = await import("../../src/attio/lists"));
+    ({ filters } = await import("../../src/attio/filters"));
   });
 
   beforeEach(() => {
@@ -137,6 +139,29 @@ describe("lists", () => {
         path: { list: "list-1" },
         body: {
           filter: { status: { $eq: "active" } },
+          limit: undefined,
+          offset: undefined,
+        },
+      });
+    });
+
+    it("accepts filters helper output", async () => {
+      queryEntriesRequest.mockResolvedValue({ data: { data: [] } });
+      const filter = filters.or(
+        filters.eq("status", "active"),
+        filters.eq("status", "pending"),
+      );
+
+      await queryListEntries({
+        list: "list-1",
+        filter,
+      });
+
+      expect(queryEntriesRequest).toHaveBeenCalledWith({
+        client: {},
+        path: { list: "list-1" },
+        body: {
+          filter,
           limit: undefined,
           offset: undefined,
         },

@@ -40,6 +40,7 @@ describe("records", () => {
   let getRecord: typeof import("../../src/attio/records").getRecord;
   let deleteRecord: typeof import("../../src/attio/records").deleteRecord;
   let queryRecords: typeof import("../../src/attio/records").queryRecords;
+  let filters: typeof import("../../src/attio/filters").filters;
 
   beforeAll(async () => {
     ({
@@ -50,6 +51,7 @@ describe("records", () => {
       deleteRecord,
       queryRecords,
     } = await import("../../src/attio/records"));
+    ({ filters } = await import("../../src/attio/filters"));
   });
 
   beforeEach(() => {
@@ -428,6 +430,30 @@ describe("records", () => {
         path: { object: "companies" },
         body: {
           filter: { status: { $eq: "active" } },
+          sorts: undefined,
+          limit: undefined,
+          offset: undefined,
+        },
+      });
+    });
+
+    it("accepts filters helper output", async () => {
+      queryRecordsRequest.mockResolvedValue({ data: { data: [] } });
+      const filter = filters.and(
+        filters.eq("status", "active"),
+        filters.not(filters.eq("stage", "archived")),
+      );
+
+      await queryRecords({
+        object: "companies",
+        filter,
+      });
+
+      expect(queryRecordsRequest).toHaveBeenCalledWith({
+        client: {},
+        path: { object: "companies" },
+        body: {
+          filter,
           sorts: undefined,
           limit: undefined,
           offset: undefined,

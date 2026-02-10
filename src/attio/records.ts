@@ -67,7 +67,6 @@ type RecordId = string & { readonly __brand: "RecordId" };
 type MatchingAttribute = string & { readonly __brand: "MatchingAttribute" };
 
 type RecordValues = PostV2ObjectsByObjectRecordsData["body"]["data"]["values"];
-type RecordFilter = AttioFilter;
 type RecordSorts = PostV2ObjectsByObjectRecordsQueryData["body"]["sorts"];
 
 interface RecordCreateInput<T extends AttioRecordLike = AttioRecordLike>
@@ -119,7 +118,7 @@ interface RecordGetInput<T extends AttioRecordLike = AttioRecordLike>
 interface RecordQueryBaseInput<T extends AttioRecordLike = AttioRecordLike>
   extends AttioClientInput {
   object: RecordObjectId;
-  filter?: RecordFilter;
+  filter?: AttioFilter;
   sorts?: RecordSorts;
   limit?: number;
   offset?: number;
@@ -363,7 +362,6 @@ function queryRecords<T extends AttioRecordLike>(
 export type {
   InferRecordType,
   MatchingAttribute,
-  RecordFilter,
   RecordId,
   RecordCreateInput,
   RecordObjectId,
