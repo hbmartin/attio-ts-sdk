@@ -4,12 +4,14 @@ import type { AttioError } from "./errors";
 interface AttioRequestHookPayload {
   request: Request;
   options: ResolvedRequestOptions;
+  correlationId?: string;
 }
 
 interface AttioResponseHookPayload {
   response: Response;
   request: Request;
   options: ResolvedRequestOptions;
+  correlationId?: string;
 }
 
 interface AttioErrorHookPayload {
@@ -17,6 +19,7 @@ interface AttioErrorHookPayload {
   request?: Request;
   response?: Response;
   options?: ResolvedRequestOptions;
+  correlationId?: string;
 }
 
 interface AttioClientHooks {

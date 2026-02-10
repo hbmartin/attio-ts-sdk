@@ -7,6 +7,7 @@ export * from "./errors";
 export * from "./filters";
 export * from "./hooks";
 export * from "./lists";
+export * from "./logging";
 export * from "./metadata";
 export * from "./notes";
 export * from "./objects";

@@ -21,7 +21,12 @@ import {
   resolveThrowOnError,
 } from "./config";
 import { AttioEnvironmentError, normalizeAttioError } from "./errors";
-import type { AttioClientHooks, AttioLogger } from "./hooks";
+import type { AttioClientHooks } from "./hooks";
+import {
+  type CorrelationIdManager,
+  createCorrelationIdManager,
+  createStructuredLoggerHooks,
+} from "./logging";
 import { callWithRetry, type RetryConfig } from "./retry";
 
 interface AttioClient extends Client {
@@ -201,45 +206,15 @@ const composeHook = <T>(
   };
 };
 
-const createLoggerHooks = (logger?: AttioLogger): AttioClientHooks => {
-  if (!logger) {
-    return {};
-  }
-
-  const { debug, error: logError } = logger;
-
-  return {
-    onRequest: debug
-      ? ({ request }) =>
-          debug("attio.request", {
-            method: request.method,
-            url: request.url,
-          })
-      : undefined,
-    onResponse: debug
-      ? ({ response, request }) =>
-          debug("attio.response", {
-            method: request.method,
-            url: request.url,
-            status: response.status,
-          })
-      : undefined,
-    onError: logError
-      ? ({ error, request, response }) =>
-          logError("attio.error", {
-            message: error.message,
-            code: error.code,
-            status: error.status,
-            requestId: error.requestId,
-            url: request?.url,
-            responseStatus: response?.status,
-          })
-      : undefined,
-  };
-};
-
-const resolveClientHooks = (config?: AttioClientConfig): AttioClientHooks => {
-  const loggerHooks = createLoggerHooks(config?.logger);
+const resolveClientHooks = (
+  config: AttioClientConfig | undefined,
+  correlationIds: CorrelationIdManager,
+): AttioClientHooks => {
+  const loggerHooks = createStructuredLoggerHooks({
+    logger: config?.logger,
+    correlationIds,
+    config: config?.logging,
+  });
   const customHooks = config?.hooks ?? {};
 
   return {
@@ -249,17 +224,22 @@ const resolveClientHooks = (config?: AttioClientConfig): AttioClientHooks => {
   };
 };
 
-const applyInterceptors = (client: Client, hooks: AttioClientHooks): void => {
-  if (hooks.onRequest) {
-    client.interceptors.request.use((request, options) => {
-      hooks.onRequest?.({ request, options });
-      return request;
-    });
-  }
+const applyInterceptors = (
+  client: Client,
+  hooks: AttioClientHooks,
+  correlationIds: CorrelationIdManager,
+): void => {
+  client.interceptors.request.use((request, options) => {
+    const enrichedRequest = correlationIds.enrichRequest(request);
+    const correlationId = correlationIds.readFromRequest(enrichedRequest);
+    hooks.onRequest?.({ request: enrichedRequest, options, correlationId });
+    return enrichedRequest;
+  });
 
   if (hooks.onResponse) {
     client.interceptors.response.use((response, request, options) => {
-      hooks.onResponse?.({ response, request, options });
+      const correlationId = correlationIds.readFromRequest(request);
+      hooks.onResponse?.({ response, request, options, correlationId });
       return response;
     });
   }
@@ -270,7 +250,14 @@ const applyInterceptors = (client: Client, hooks: AttioClientHooks): void => {
       request,
       options,
     });
-    hooks.onError?.({ error: normalized, response, request, options });
+    const correlationId = correlationIds.readFromRequest(request);
+    hooks.onError?.({
+      error: normalized,
+      response,
+      request,
+      options,
+      correlationId,
+    });
     return normalized;
   });
 };
@@ -336,6 +323,7 @@ type CleanClientConfig = Omit<
   | "retry"
   | "timeoutMs"
   | "headers"
+  | "logging"
 >;
 
 interface CleanedConfigResult {
@@ -356,6 +344,7 @@ const extractAndCleanConfig = (
     retry,
     timeoutMs,
     headers,
+    logging: _logging,
     ...cleanConfig
   } = config;
   return { cleanConfig, headers, retry, timeoutMs };
@@ -368,7 +357,8 @@ const createAttioClientWithAuthToken = ({
   const baseUrl = resolveBaseUrl(config);
   const responseStyle = resolveResponseStyle(config);
   const throwOnError = resolveThrowOnError(config);
-  const hooks = resolveClientHooks(config);
+  const correlationIds = createCorrelationIdManager(config.logging);
+  const hooks = resolveClientHooks(config, correlationIds);
 
   const { cleanConfig, headers, retry, timeoutMs } =
     extractAndCleanConfig(config);
@@ -384,7 +374,7 @@ const createAttioClientWithAuthToken = ({
     throwOnError,
   });
 
-  applyInterceptors(base, hooks);
+  applyInterceptors(base, hooks, correlationIds);
 
   const wrapped = wrapClient(base, retry);
   const metadataCacheKey = buildMetadataCacheKey({

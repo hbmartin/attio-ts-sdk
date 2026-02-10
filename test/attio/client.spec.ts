@@ -174,6 +174,10 @@ describe("applyInterceptors", () => {
     expect(requestPayload).toHaveProperty("options");
     expect(requestPayload.request).toBeInstanceOf(Request);
     expect(requestPayload.request.url).toContain("/test");
+    expect(requestPayload).toHaveProperty("correlationId");
+    expect(requestPayload.request.headers.get("x-attio-correlation-id")).toBe(
+      requestPayload.correlationId,
+    );
 
     expect(onResponse).toHaveBeenCalledTimes(1);
     const [[responsePayload]] = onResponse.mock.calls;
@@ -181,6 +185,7 @@ describe("applyInterceptors", () => {
     expect(responsePayload).toHaveProperty("request");
     expect(responsePayload.response).toBeInstanceOf(Response);
     expect(responsePayload.response.status).toBe(200);
+    expect(responsePayload.correlationId).toBe(requestPayload.correlationId);
   });
 
   it("invokes error hooks with error payload", async () => {
@@ -402,9 +407,12 @@ describe("logger hooks", () => {
       authToken: TEST_TOKEN,
       fetch: mockFetch,
       logger,
+      headers: {
+        Authorization: "Bearer secret-value",
+      },
     });
 
-    await client.get({ url: "/test" });
+    await client.get({ url: "/test?token=secret-token" });
 
     const requestCalls = debugFn.mock.calls.filter(
       ([msg]: [string]) => msg === "attio.request",
@@ -416,9 +424,17 @@ describe("logger hooks", () => {
     expect(requestCalls).toHaveLength(1);
     expect(requestCalls[0][1]).toHaveProperty("method");
     expect(requestCalls[0][1]).toHaveProperty("url");
+    expect(requestCalls[0][1]).toHaveProperty("correlationId");
+    expect(requestCalls[0][1]).toMatchObject({
+      headers: {
+        authorization: "[REDACTED]",
+      },
+    });
+    expect(requestCalls[0][1].url).toContain("token=%5BREDACTED%5D");
 
     expect(responseCalls).toHaveLength(1);
     expect(responseCalls[0][1]).toHaveProperty("status", 200);
+    expect(responseCalls[0][1]).toHaveProperty("correlationId");
   });
 
   it("invokes error logger on error", async () => {
@@ -485,5 +501,34 @@ describe("logger hooks", () => {
     });
 
     await expect(client.get({ url: "/test" })).resolves.toBeDefined();
+  });
+
+  it("supports custom correlation header and generator", async () => {
+    const onRequest = vi.fn();
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: "ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      hooks: { onRequest },
+      logging: {
+        correlationId: {
+          headerName: "x-correlation-id",
+          create: () => "corr-fixed",
+        },
+      },
+    });
+
+    await client.get({ url: "/test" });
+
+    expect(onRequest).toHaveBeenCalledTimes(1);
+    const [[payload]] = onRequest.mock.calls;
+    expect(payload.correlationId).toBe("corr-fixed");
+    expect(payload.request.headers.get("x-correlation-id")).toBe("corr-fixed");
   });
 });
