@@ -15,9 +15,14 @@ import {
   postV2ObjectsByObjectRecordsQuery,
   putV2ObjectsByObjectRecords,
 } from "../generated";
-import { type AttioClientInput, resolveAttioClient } from "./client";
+import type { AttioClientInput } from "./client";
 import { type AttioFilter, parseAttioFilter } from "./filters";
 import { type BrandedId, createBrandedId } from "./ids";
+import {
+  executeRawOperation,
+  executeValidatedDataOperation,
+  executeValidatedItemsOperation,
+} from "./operations";
 import {
   paginateOffset,
   paginateOffsetAsync,
@@ -28,12 +33,6 @@ import {
   normalizeRecord,
   normalizeRecords,
 } from "./record-utils";
-import {
-  assertOk,
-  unwrapItems,
-  validateItemsArray,
-  validateWithSchema,
-} from "./response";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -165,118 +164,129 @@ type RecordQueryInput<T extends AttioRecordLike = AttioRecordLike> =
   | RecordQueryStreamInput<T>;
 
 // Overload: With itemSchema - T is inferred from schema
-async function createRecord<T extends AttioRecordLike>(
+function createRecord<T extends AttioRecordLike>(
   input: RecordCreateInput<T> & { itemSchema: ZodType<T> },
 ): Promise<T>;
 // Overload: Without itemSchema - returns AttioRecordLike
-async function createRecord(input: RecordCreateInput): Promise<AttioRecordLike>;
+function createRecord(input: RecordCreateInput): Promise<AttioRecordLike>;
 // Implementation
-async function createRecord<T extends AttioRecordLike>(
+function createRecord<T extends AttioRecordLike>(
   input: RecordCreateInput<T>,
 ): Promise<T | AttioRecordLike> {
-  const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
-  const result = await postV2ObjectsByObjectRecords({
-    client,
-    path: { object: input.object },
-    body: {
-      data: {
-        values: input.values,
-      },
-    },
-    ...input.options,
+  return executeValidatedDataOperation({
+    input,
+    schema,
+    normalize: normalizeRecord,
+    request: async (client) =>
+      postV2ObjectsByObjectRecords({
+        client,
+        path: { object: input.object },
+        body: {
+          data: {
+            values: input.values,
+          },
+        },
+        ...input.options,
+      }),
   });
-  const data = assertOk(result) as Record<string, unknown>;
-  const normalized = normalizeRecord(data);
-  return validateWithSchema(normalized, schema);
 }
 
 // Overload: With itemSchema - T is inferred from schema
-async function updateRecord<T extends AttioRecordLike>(
+function updateRecord<T extends AttioRecordLike>(
   input: RecordUpdateInput<T> & { itemSchema: ZodType<T> },
 ): Promise<T>;
 // Overload: Without itemSchema - returns AttioRecordLike
-async function updateRecord(input: RecordUpdateInput): Promise<AttioRecordLike>;
+function updateRecord(input: RecordUpdateInput): Promise<AttioRecordLike>;
 // Implementation
-async function updateRecord<T extends AttioRecordLike>(
+function updateRecord<T extends AttioRecordLike>(
   input: RecordUpdateInput<T>,
 ): Promise<T | AttioRecordLike> {
-  const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
-  const result = await patchV2ObjectsByObjectRecordsByRecordId({
-    client,
-    path: { object: input.object, record_id: input.recordId },
-    body: {
-      data: {
-        values: input.values,
-      },
-    },
-    ...input.options,
+  return executeValidatedDataOperation({
+    input,
+    schema,
+    normalize: normalizeRecord,
+    request: async (client) =>
+      patchV2ObjectsByObjectRecordsByRecordId({
+        client,
+        path: { object: input.object, record_id: input.recordId },
+        body: {
+          data: {
+            values: input.values,
+          },
+        },
+        ...input.options,
+      }),
   });
-  const data = assertOk(result) as Record<string, unknown>;
-  const normalized = normalizeRecord(data);
-  return validateWithSchema(normalized, schema);
 }
 
 // Overload: With itemSchema - T is inferred from schema
-async function upsertRecord<T extends AttioRecordLike>(
+function upsertRecord<T extends AttioRecordLike>(
   input: RecordUpsertInput<T> & { itemSchema: ZodType<T> },
 ): Promise<T>;
 // Overload: Without itemSchema - returns AttioRecordLike
-async function upsertRecord(input: RecordUpsertInput): Promise<AttioRecordLike>;
+function upsertRecord(input: RecordUpsertInput): Promise<AttioRecordLike>;
 // Implementation
-async function upsertRecord<T extends AttioRecordLike>(
+function upsertRecord<T extends AttioRecordLike>(
   input: RecordUpsertInput<T>,
 ): Promise<T | AttioRecordLike> {
-  const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
-  const result = await putV2ObjectsByObjectRecords({
-    client,
-    path: { object: input.object },
-    body: {
-      data: {
-        values: input.values,
-      },
-    },
-    query: {
-      matching_attribute: input.matchingAttribute,
-    },
-    ...input.options,
+  return executeValidatedDataOperation({
+    input,
+    schema,
+    normalize: normalizeRecord,
+    request: async (client) =>
+      putV2ObjectsByObjectRecords({
+        client,
+        path: { object: input.object },
+        body: {
+          data: {
+            values: input.values,
+          },
+        },
+        query: {
+          matching_attribute: input.matchingAttribute,
+        },
+        ...input.options,
+      }),
   });
-  const data = assertOk(result) as Record<string, unknown>;
-  const normalized = normalizeRecord(data);
-  return validateWithSchema(normalized, schema);
 }
 
 // Overload: With itemSchema - T is inferred from schema
-async function getRecord<T extends AttioRecordLike>(
+function getRecord<T extends AttioRecordLike>(
   input: RecordGetInput<T> & { itemSchema: ZodType<T> },
 ): Promise<T>;
 // Overload: Without itemSchema - returns AttioRecordLike
-async function getRecord(input: RecordGetInput): Promise<AttioRecordLike>;
+function getRecord(input: RecordGetInput): Promise<AttioRecordLike>;
 // Implementation
-async function getRecord<T extends AttioRecordLike>(
+function getRecord<T extends AttioRecordLike>(
   input: RecordGetInput<T>,
 ): Promise<T | AttioRecordLike> {
-  const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
-  const result = await getV2ObjectsByObjectRecordsByRecordId({
-    client,
-    path: { object: input.object, record_id: input.recordId },
-    ...input.options,
+  return executeValidatedDataOperation({
+    input,
+    schema,
+    normalize: normalizeRecord,
+    request: async (client) =>
+      getV2ObjectsByObjectRecordsByRecordId({
+        client,
+        path: { object: input.object, record_id: input.recordId },
+        ...input.options,
+      }),
   });
-  const data = assertOk(result) as Record<string, unknown>;
-  const normalized = normalizeRecord(data);
-  return validateWithSchema(normalized, schema);
 }
 
 const deleteRecord = async (input: RecordGetInput): Promise<boolean> => {
-  const client = resolveAttioClient(input);
-  await deleteV2ObjectsByObjectRecordsByRecordId({
-    client,
-    path: { object: input.object, record_id: input.recordId },
-    ...input.options,
-    throwOnError: true,
+  await executeRawOperation({
+    input,
+    request: async (client) =>
+      deleteV2ObjectsByObjectRecordsByRecordId({
+        client,
+        path: { object: input.object, record_id: input.recordId },
+        ...input.options,
+        throwOnError: true,
+      }),
   });
   return true;
 };
@@ -307,7 +317,6 @@ function queryRecords(
 function queryRecords<T extends AttioRecordLike>(
   input: RecordQueryInput<T>,
 ): Promise<T[]> | AsyncIterable<T> {
-  const client = resolveAttioClient(input);
   const schema = input.itemSchema ?? rawRecordSchema;
   const filter =
     input.filter === undefined ? undefined : parseAttioFilter(input.filter);
@@ -316,23 +325,25 @@ function queryRecords<T extends AttioRecordLike>(
     offset?: number,
     limit?: number,
     signal?: AbortSignal,
-  ): Promise<T[]> => {
-    const result = await postV2ObjectsByObjectRecordsQuery({
-      client,
-      path: { object: input.object },
-      body: {
-        filter,
-        sorts: input.sorts,
-        limit,
-        offset,
-      },
-      ...input.options,
-      signal,
-    });
-    const items = unwrapItems(result) as Record<string, unknown>[];
-    const normalized = normalizeRecords(items);
-    return validateItemsArray(normalized, schema) as T[];
-  };
+  ): Promise<T[]> =>
+    executeValidatedItemsOperation({
+      input,
+      schema,
+      normalize: normalizeRecords,
+      request: async (client) =>
+        postV2ObjectsByObjectRecordsQuery({
+          client,
+          path: { object: input.object },
+          body: {
+            filter,
+            sorts: input.sorts,
+            limit,
+            offset,
+          },
+          ...input.options,
+          signal,
+        }),
+    }) as Promise<T[]>;
 
   if (input.paginate === "stream") {
     return paginateOffsetAsync<T>(

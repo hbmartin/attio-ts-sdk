@@ -10,9 +10,13 @@ import {
   getV2NotesByNoteId,
   postV2Notes,
 } from "../generated";
-import { type AttioClientInput, resolveAttioClient } from "./client";
+import type { AttioClientInput } from "./client";
 import { type BrandedId, createBrandedId } from "./ids";
-import { unwrapData, unwrapItems } from "./response";
+import {
+  executeDataOperation,
+  executeItemsOperation,
+  executeRawOperation,
+} from "./operations";
 
 type NoteId = BrandedId<"NoteId">;
 type NoteParentObjectId = BrandedId<"NoteParentObjectId">;
@@ -47,48 +51,53 @@ export interface NoteDeleteInput extends AttioClientInput {
   options?: Omit<Options<DeleteV2NotesByNoteIdData>, "client" | "path">;
 }
 
-export const listNotes = async (input: AttioClientInput = {}) => {
-  const client = resolveAttioClient(input);
-  const result = await getV2Notes({ client });
-  return unwrapItems(result);
-};
-
-export const getNote = async (input: NoteGetInput) => {
-  const client = resolveAttioClient(input);
-  const result = await getV2NotesByNoteId({
-    client,
-    path: { note_id: input.noteId },
-    ...input.options,
+export const listNotes = async (input: AttioClientInput = {}) =>
+  executeItemsOperation({
+    input,
+    request: async (client) => getV2Notes({ client }),
   });
-  return unwrapData(result);
-};
 
-export const createNote = async (input: NoteCreateInput) => {
-  const client = resolveAttioClient(input);
-  const result = await postV2Notes({
-    client,
-    body: {
-      data: {
-        parent_object: input.parentObject,
-        parent_record_id: input.parentRecordId,
-        title: input.title,
-        format: input.format,
-        content: input.content,
-        created_at: input.createdAt,
-        meeting_id: input.meetingId,
-      },
-    },
-    ...input.options,
+export const getNote = async (input: NoteGetInput) =>
+  executeDataOperation({
+    input,
+    request: async (client) =>
+      getV2NotesByNoteId({
+        client,
+        path: { note_id: input.noteId },
+        ...input.options,
+      }),
   });
-  return unwrapData(result);
-};
+
+export const createNote = async (input: NoteCreateInput) =>
+  executeDataOperation({
+    input,
+    request: async (client) =>
+      postV2Notes({
+        client,
+        body: {
+          data: {
+            parent_object: input.parentObject,
+            parent_record_id: input.parentRecordId,
+            title: input.title,
+            format: input.format,
+            content: input.content,
+            created_at: input.createdAt,
+            meeting_id: input.meetingId,
+          },
+        },
+        ...input.options,
+      }),
+  });
 
 export const deleteNote = async (input: NoteDeleteInput) => {
-  const client = resolveAttioClient(input);
-  await deleteV2NotesByNoteId({
-    client,
-    path: { note_id: input.noteId },
-    ...input.options,
+  await executeRawOperation({
+    input,
+    request: async (client) =>
+      deleteV2NotesByNoteId({
+        client,
+        path: { note_id: input.noteId },
+        ...input.options,
+      }),
   });
   return true;
 };

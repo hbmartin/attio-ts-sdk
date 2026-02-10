@@ -15,9 +15,13 @@ import {
   postV2Tasks,
 } from "../generated";
 import { zTask } from "../generated/zod.gen";
-import { type AttioClientInput, resolveAttioClient } from "./client";
+import type { AttioClientInput } from "./client";
 import { type BrandedId, createBrandedId } from "./ids";
-import { unwrapData, unwrapItems } from "./response";
+import {
+  executeDataOperation,
+  executeItemsOperation,
+  executeRawOperation,
+} from "./operations";
 
 type Task = z.infer<typeof zTask>;
 
@@ -51,55 +55,65 @@ export interface TaskGetInput extends AttioClientInput {
 
 export const listTasks = async (
   input: AttioClientInput = {},
-): Promise<Task[]> => {
-  const client = resolveAttioClient(input);
-  const result = await getV2Tasks({ client });
-  return unwrapItems(result, { schema: zTask });
-};
-
-export const getTask = async (input: TaskGetInput): Promise<Task> => {
-  const client = resolveAttioClient(input);
-  const result = await getV2TasksByTaskId({
-    client,
-    path: { task_id: input.taskId },
-    ...input.options,
+): Promise<Task[]> =>
+  executeItemsOperation({
+    input,
+    schema: zTask,
+    request: async (client) => getV2Tasks({ client }),
   });
-  return unwrapData(result, { schema: zTask });
-};
 
-export const createTask = async (input: TaskCreateInput): Promise<Task> => {
-  const client = resolveAttioClient(input);
-  const result = await postV2Tasks({
-    client,
-    body: {
-      data: input.data,
-    },
-    ...input.options,
+export const getTask = async (input: TaskGetInput): Promise<Task> =>
+  executeDataOperation({
+    input,
+    schema: zTask,
+    request: async (client) =>
+      getV2TasksByTaskId({
+        client,
+        path: { task_id: input.taskId },
+        ...input.options,
+      }),
   });
-  return unwrapData(result, { schema: zTask });
-};
 
-export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
-  const client = resolveAttioClient(input);
-  const result = await patchV2TasksByTaskId({
-    client,
-    path: { task_id: input.taskId },
-    body: {
-      data: input.data,
-    },
-    ...input.options,
+export const createTask = async (input: TaskCreateInput): Promise<Task> =>
+  executeDataOperation({
+    input,
+    schema: zTask,
+    request: async (client) =>
+      postV2Tasks({
+        client,
+        body: {
+          data: input.data,
+        },
+        ...input.options,
+      }),
   });
-  return unwrapData(result, { schema: zTask });
-};
+
+export const updateTask = async (input: TaskUpdateInput): Promise<Task> =>
+  executeDataOperation({
+    input,
+    schema: zTask,
+    request: async (client) =>
+      patchV2TasksByTaskId({
+        client,
+        path: { task_id: input.taskId },
+        body: {
+          data: input.data,
+        },
+        ...input.options,
+      }),
+  });
 
 export const deleteTask = async (
   input: TaskDeleteInput,
 ): Promise<DeleteV2TasksByTaskIdResponse> => {
-  const client = resolveAttioClient(input);
-  const result = await deleteV2TasksByTaskId({
-    client,
-    path: { task_id: input.taskId },
-    ...input.options,
+  const result = await executeRawOperation({
+    input,
+    request: async (client) =>
+      deleteV2TasksByTaskId({
+        client,
+        path: { task_id: input.taskId },
+        ...input.options,
+      }),
   });
   return result.data ?? {};
 };
