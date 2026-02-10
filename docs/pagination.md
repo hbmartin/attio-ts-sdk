@@ -875,7 +875,7 @@ Queries records with optional auto-pagination.
 |-----------|------|-------------|
 | `input.client` | `Client` | Attio client instance |
 | `input.object` | `string` | Object API slug (e.g., `'companies'`) |
-| `input.filter` | `RecordFilter` | Optional filter criteria |
+| `input.filter` | `AttioFilter` | Optional filter criteria |
 | `input.sorts` | `RecordSorts` | Optional sort criteria |
 | `input.limit` | `number` | Items per page |
 | `input.offset` | `number` | Starting offset |
@@ -901,7 +901,7 @@ Queries list entries with optional auto-pagination.
 |-----------|------|-------------|
 | `input.client` | `Client` | Attio client instance |
 | `input.list` | `string` | List API slug or ID |
-| `input.filter` | `ListEntryFilter` | Optional filter criteria |
+| `input.filter` | `AttioFilter` | Optional filter criteria |
 | `input.limit` | `number` | Items per page |
 | `input.offset` | `number` | Starting offset |
 | `input.paginate` | `boolean \| 'stream'` | Pagination mode |

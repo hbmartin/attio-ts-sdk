@@ -36,6 +36,21 @@ const complexFilter = filters.and(
 );
 ```
 
+`queryRecords()` and `queryListEntries()` both accept `AttioFilter` directly on their `input.filter` field.
+The output of every `filters.*` helper is assignable to `AttioFilter`.
+
+```typescript
+import { filters, queryListEntries, queryRecords, type AttioFilter } from 'attio-ts-sdk';
+
+const filter: AttioFilter = filters.and(
+  filters.eq('status', 'active'),
+  filters.notEmpty('email_addresses')
+);
+
+await queryRecords({ object: 'people', filter });
+await queryListEntries({ list: 'pipeline', filter });
+```
+
 ### Available Helper Functions
 
 | Helper | Signature | Output | API Operator |
