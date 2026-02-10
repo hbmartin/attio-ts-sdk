@@ -40,6 +40,9 @@ describe("records", () => {
   let getRecord: typeof import("../../src/attio/records").getRecord;
   let deleteRecord: typeof import("../../src/attio/records").deleteRecord;
   let queryRecords: typeof import("../../src/attio/records").queryRecords;
+  let createRecordObjectId: typeof import("../../src/attio/records").createRecordObjectId;
+  let createRecordId: typeof import("../../src/attio/records").createRecordId;
+  let createMatchingAttribute: typeof import("../../src/attio/records").createMatchingAttribute;
   let filters: typeof import("../../src/attio/filters").filters;
 
   beforeAll(async () => {
@@ -50,6 +53,9 @@ describe("records", () => {
       getRecord,
       deleteRecord,
       queryRecords,
+      createRecordObjectId,
+      createRecordId,
+      createMatchingAttribute,
     } = await import("../../src/attio/records"));
     ({ filters } = await import("../../src/attio/filters"));
   });
@@ -57,6 +63,24 @@ describe("records", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     resolveAttioClient.mockReturnValue({});
+  });
+
+  describe("ID factories", () => {
+    it("creates branded record IDs", () => {
+      expect(createRecordObjectId("people")).toBe("people");
+      expect(createRecordId("rec-123")).toBe("rec-123");
+      expect(createMatchingAttribute("email")).toBe("email");
+    });
+
+    it("throws for empty IDs", () => {
+      expect(() => createRecordObjectId("")).toThrow(
+        "RecordObjectId cannot be empty",
+      );
+      expect(() => createRecordId("")).toThrow("RecordId cannot be empty");
+      expect(() => createMatchingAttribute("")).toThrow(
+        "MatchingAttribute cannot be empty",
+      );
+    });
   });
 
   describe("createRecord", () => {

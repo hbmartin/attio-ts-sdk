@@ -17,6 +17,7 @@ import {
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type AttioFilter, parseAttioFilter } from "./filters";
+import { type BrandedId, createBrandedId } from "./ids";
 import {
   paginateOffset,
   paginateOffsetAsync,
@@ -37,17 +38,19 @@ type InferEntryType<TInput> = TInput extends {
   ? T
   : AttioRecordLike;
 
-type ListId = string & { readonly __brand: "ListId" };
-type EntryId = string & { readonly __brand: "EntryId" };
-type ParentObjectId = string & { readonly __brand: "ParentObjectId" };
-type ParentRecordId = string & { readonly __brand: "ParentRecordId" };
+type ListId = BrandedId<"ListId">;
+type EntryId = BrandedId<"EntryId">;
+type ParentObjectId = BrandedId<"ParentObjectId">;
+type ParentRecordId = BrandedId<"ParentRecordId">;
 
-const createListId = (id: string): ListId => {
-  if (!id) {
-    throw new Error("ListId cannot be empty");
-  }
-  return id as ListId;
-};
+const createListId = (id: string): ListId =>
+  createBrandedId<"ListId">(id, "ListId");
+const createEntryId = (id: string): EntryId =>
+  createBrandedId<"EntryId">(id, "EntryId");
+const createParentObjectId = (id: string): ParentObjectId =>
+  createBrandedId<"ParentObjectId">(id, "ParentObjectId");
+const createParentRecordId = (id: string): ParentRecordId =>
+  createBrandedId<"ParentRecordId">(id, "ParentRecordId");
 
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
 
@@ -270,7 +273,12 @@ export const removeListEntry = async (input: RemoveListEntryInput) => {
   return true;
 };
 
-export { createListId };
+export {
+  createEntryId,
+  createListId,
+  createParentObjectId,
+  createParentRecordId,
+};
 
 export type {
   AddListEntryInput,

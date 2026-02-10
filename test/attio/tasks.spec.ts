@@ -50,16 +50,26 @@ describe("tasks", () => {
   let createTask: typeof import("../../src/attio/tasks").createTask;
   let updateTask: typeof import("../../src/attio/tasks").updateTask;
   let deleteTask: typeof import("../../src/attio/tasks").deleteTask;
+  let createTaskId: typeof import("../../src/attio/tasks").createTaskId;
 
   beforeAll(async () => {
-    ({ listTasks, getTask, createTask, updateTask, deleteTask } = await import(
-      "../../src/attio/tasks"
-    ));
+    ({ listTasks, getTask, createTask, updateTask, deleteTask, createTaskId } =
+      await import("../../src/attio/tasks"));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
     resolveAttioClient.mockReturnValue({});
+  });
+
+  describe("createTaskId", () => {
+    it("creates a branded TaskId", () => {
+      expect(createTaskId("task-1")).toBe("task-1");
+    });
+
+    it("throws when TaskId is empty", () => {
+      expect(() => createTaskId("")).toThrow("TaskId cannot be empty");
+    });
   });
 
   describe("listTasks", () => {
