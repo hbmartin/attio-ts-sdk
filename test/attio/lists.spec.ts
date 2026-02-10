@@ -41,6 +41,9 @@ describe("lists", () => {
   let updateListEntry: typeof import("../../src/attio/lists").updateListEntry;
   let removeListEntry: typeof import("../../src/attio/lists").removeListEntry;
   let createListId: typeof import("../../src/attio/lists").createListId;
+  let createEntryId: typeof import("../../src/attio/lists").createEntryId;
+  let createParentObjectId: typeof import("../../src/attio/lists").createParentObjectId;
+  let createParentRecordId: typeof import("../../src/attio/lists").createParentRecordId;
   let filters: typeof import("../../src/attio/filters").filters;
 
   beforeAll(async () => {
@@ -52,6 +55,9 @@ describe("lists", () => {
       updateListEntry,
       removeListEntry,
       createListId,
+      createEntryId,
+      createParentObjectId,
+      createParentRecordId,
     } = await import("../../src/attio/lists"));
     ({ filters } = await import("../../src/attio/filters"));
   });
@@ -70,6 +76,24 @@ describe("lists", () => {
 
     it("throws error when id is empty string", () => {
       expect(() => createListId("")).toThrow("ListId cannot be empty");
+    });
+  });
+
+  describe("other ID factories", () => {
+    it("creates branded IDs for list entries and parents", () => {
+      expect(createEntryId("entry-123")).toBe("entry-123");
+      expect(createParentObjectId("companies")).toBe("companies");
+      expect(createParentRecordId("rec-123")).toBe("rec-123");
+    });
+
+    it("throws for empty IDs", () => {
+      expect(() => createEntryId("")).toThrow("EntryId cannot be empty");
+      expect(() => createParentObjectId("")).toThrow(
+        "ParentObjectId cannot be empty",
+      );
+      expect(() => createParentRecordId("")).toThrow(
+        "ParentRecordId cannot be empty",
+      );
     });
   });
 
