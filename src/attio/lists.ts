@@ -50,12 +50,11 @@ const createListId = (id: string): ListId => {
 };
 
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
-type ListEntryFilter = AttioFilter;
 
 interface ListQueryBaseInput<T extends AttioRecordLike = AttioRecordLike>
   extends AttioClientInput {
   list: ListId;
-  filter?: ListEntryFilter;
+  filter?: AttioFilter;
   limit?: number;
   offset?: number;
   signal?: AbortSignal;
@@ -280,7 +279,6 @@ export type {
   GetListInput,
   InferEntryType,
   ListId,
-  ListEntryFilter,
   ListQueryBaseInput,
   ListQueryCollectInput,
   ListQueryInput,
