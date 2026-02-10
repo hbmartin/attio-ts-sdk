@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.0.1...attio-ts-sdk-v2.0.2) (2026-02-10)
+
+
+### Bug Fixes
+
+* **release:** trigger release please ([8d9262d](https://github.com/hbmartin/attio-ts-sdk/commit/8d9262d6c3dc050d80badd163134d91e721910b3))
+
 ## [2.0.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.0.0...attio-ts-sdk-v2.0.1) (2026-02-09)
 
 
