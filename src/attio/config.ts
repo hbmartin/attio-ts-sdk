@@ -1,6 +1,7 @@
 import type { Config, ResponseStyle } from "../generated/client";
 import type { AttioCacheConfig } from "./cache";
 import type { AttioClientHooks, AttioLogger } from "./hooks";
+import type { AttioLoggingConfig } from "./logging";
 import type { RetryConfig } from "./retry";
 
 declare const Deno:
@@ -23,6 +24,7 @@ interface AttioClientConfig
   cache?: AttioCacheConfig;
   hooks?: AttioClientHooks;
   logger?: AttioLogger;
+  logging?: AttioLoggingConfig;
   responseStyle?: ResponseStyle;
   throwOnError?: boolean;
 }
