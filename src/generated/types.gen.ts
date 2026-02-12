@@ -13463,6 +13463,28 @@ export type GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptRes
 
 export type GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponse = GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponses[keyof GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponses];
 
+export type GetScimV2SchemasData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/scim/v2/Schemas';
+};
+
+export type GetScimV2SchemasResponses = {
+    /**
+     * Success
+     */
+    200: {
+        schemas: Array<string>;
+        totalResults: number;
+        startIndex: number;
+        itemsPerPage: number;
+        Resources: Array<unknown>;
+    };
+};
+
+export type GetScimV2SchemasResponse = GetScimV2SchemasResponses[keyof GetScimV2SchemasResponses];
+
 export type GetV2WebhooksData = {
     body?: never;
     path?: never;

@@ -17255,6 +17255,23 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptR
     })
 });
 
+export const zGetScimV2SchemasData = z.object({
+    body: z.nullish(z.never()),
+    path: z.nullish(z.never()),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zGetScimV2SchemasResponse = z.object({
+    schemas: z.array(z.string()),
+    totalResults: z.number(),
+    startIndex: z.number(),
+    itemsPerPage: z.number(),
+    Resources: z.array(z.unknown())
+});
+
 export const zGetV2WebhooksData = z.object({
     body: z.nullish(z.never()),
     path: z.nullish(z.never()),
