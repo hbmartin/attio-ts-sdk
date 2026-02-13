@@ -28,16 +28,43 @@ describe("notes", () => {
   let getNote: typeof import("../../src/attio/notes").getNote;
   let createNote: typeof import("../../src/attio/notes").createNote;
   let deleteNote: typeof import("../../src/attio/notes").deleteNote;
+  let createNoteId: typeof import("../../src/attio/notes").createNoteId;
+  let createNoteParentObjectId: typeof import("../../src/attio/notes").createNoteParentObjectId;
+  let createNoteParentRecordId: typeof import("../../src/attio/notes").createNoteParentRecordId;
 
   beforeAll(async () => {
-    ({ listNotes, getNote, createNote, deleteNote } = await import(
-      "../../src/attio/notes"
-    ));
+    ({
+      listNotes,
+      getNote,
+      createNote,
+      deleteNote,
+      createNoteId,
+      createNoteParentObjectId,
+      createNoteParentRecordId,
+    } = await import("../../src/attio/notes"));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
     resolveAttioClient.mockReturnValue({});
+  });
+
+  describe("ID factories", () => {
+    it("creates branded note IDs", () => {
+      expect(createNoteId("note-1")).toBe("note-1");
+      expect(createNoteParentObjectId("companies")).toBe("companies");
+      expect(createNoteParentRecordId("rec-1")).toBe("rec-1");
+    });
+
+    it("throws for empty IDs", () => {
+      expect(() => createNoteId("")).toThrow("NoteId cannot be empty");
+      expect(() => createNoteParentObjectId("")).toThrow(
+        "Note parent object id cannot be empty",
+      );
+      expect(() => createNoteParentRecordId("")).toThrow(
+        "Note parent record id cannot be empty",
+      );
+    });
   });
 
   describe("listNotes", () => {

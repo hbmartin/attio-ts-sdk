@@ -22,16 +22,28 @@ vi.mock("../../src/attio/client", () => ({
 describe("workspace-members", () => {
   let listWorkspaceMembers: typeof import("../../src/attio/workspace-members").listWorkspaceMembers;
   let getWorkspaceMember: typeof import("../../src/attio/workspace-members").getWorkspaceMember;
+  let createWorkspaceMemberId: typeof import("../../src/attio/workspace-members").createWorkspaceMemberId;
 
   beforeAll(async () => {
-    ({ listWorkspaceMembers, getWorkspaceMember } = await import(
-      "../../src/attio/workspace-members"
-    ));
+    ({ listWorkspaceMembers, getWorkspaceMember, createWorkspaceMemberId } =
+      await import("../../src/attio/workspace-members"));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
     resolveAttioClient.mockReturnValue({});
+  });
+
+  describe("createWorkspaceMemberId", () => {
+    it("creates a branded WorkspaceMemberId", () => {
+      expect(createWorkspaceMemberId("member-1")).toBe("member-1");
+    });
+
+    it("throws when WorkspaceMemberId is empty", () => {
+      expect(() => createWorkspaceMemberId("")).toThrow(
+        "WorkspaceMemberId cannot be empty",
+      );
+    });
   });
 
   describe("listWorkspaceMembers", () => {
@@ -63,7 +75,7 @@ describe("workspace-members", () => {
       getMemberByIdRequest.mockResolvedValue({ data: member });
 
       const result = await getWorkspaceMember({
-        workspaceMemberId: "member-1",
+        workspaceMemberId: createWorkspaceMemberId("member-1"),
       });
 
       expect(result).toEqual(member);
@@ -77,7 +89,7 @@ describe("workspace-members", () => {
       getMemberByIdRequest.mockResolvedValue({ data: {} });
 
       await getWorkspaceMember({
-        workspaceMemberId: "member-1",
+        workspaceMemberId: createWorkspaceMemberId("member-1"),
         apiKey: "test-key",
       });
 

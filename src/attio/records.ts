@@ -17,6 +17,7 @@ import {
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type AttioFilter, parseAttioFilter } from "./filters";
+import { type BrandedId, createBrandedId } from "./ids";
 import {
   paginateOffset,
   paginateOffsetAsync,
@@ -46,9 +47,16 @@ type InferRecordType<TInput> = TInput extends {
   ? T
   : AttioRecordLike;
 
-type RecordObjectId = string & { readonly __brand: "RecordObjectId" };
-type RecordId = string & { readonly __brand: "RecordId" };
-type MatchingAttribute = string & { readonly __brand: "MatchingAttribute" };
+type RecordObjectId = BrandedId<"RecordObjectId">;
+type RecordId = BrandedId<"RecordId">;
+type MatchingAttribute = BrandedId<"MatchingAttribute">;
+
+const createRecordObjectId = (id: string): RecordObjectId =>
+  createBrandedId<"RecordObjectId">(id, "RecordObjectId");
+const createRecordId = (id: string): RecordId =>
+  createBrandedId<"RecordId">(id, "RecordId");
+const createMatchingAttribute = (id: string): MatchingAttribute =>
+  createBrandedId<"MatchingAttribute">(id, "MatchingAttribute");
 
 type RecordValues = PostV2ObjectsByObjectRecordsData["body"]["data"]["values"];
 type RecordSorts = PostV2ObjectsByObjectRecordsQueryData["body"]["sorts"];
@@ -362,7 +370,10 @@ export type {
   RecordValues,
 };
 export {
+  createMatchingAttribute,
   createRecord,
+  createRecordId,
+  createRecordObjectId,
   updateRecord,
   upsertRecord,
   getRecord,

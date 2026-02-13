@@ -11,12 +11,20 @@ import {
   postV2Notes,
 } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
+import { type BrandedId, createBrandedId } from "./ids";
 import { unwrapData, unwrapItems } from "./response";
 
-type NoteId = string & { readonly __brand: "NoteId" };
-type NoteParentObjectId = string & { readonly __brand: "NoteParentObjectId" };
-type NoteParentRecordId = string & { readonly __brand: "NoteParentRecordId" };
+type NoteId = BrandedId<"NoteId">;
+type NoteParentObjectId = BrandedId<"NoteParentObjectId">;
+type NoteParentRecordId = BrandedId<"NoteParentRecordId">;
 type NoteFormat = PostV2NotesData["body"]["data"]["format"];
+
+const createNoteId = (id: string): NoteId =>
+  createBrandedId<"NoteId">(id, "NoteId");
+const createNoteParentObjectId = (id: string): NoteParentObjectId =>
+  createBrandedId<"NoteParentObjectId">(id, "Note parent object id");
+const createNoteParentRecordId = (id: string): NoteParentRecordId =>
+  createBrandedId<"NoteParentRecordId">(id, "Note parent record id");
 
 export interface NoteCreateInput extends AttioClientInput {
   parentObject: NoteParentObjectId;
@@ -85,4 +93,5 @@ export const deleteNote = async (input: NoteDeleteInput) => {
   return true;
 };
 
+export { createNoteId, createNoteParentObjectId, createNoteParentRecordId };
 export type { NoteFormat, NoteId, NoteParentObjectId, NoteParentRecordId };

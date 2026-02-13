@@ -16,13 +16,17 @@ import {
 } from "../generated";
 import { zTask } from "../generated/zod.gen";
 import { type AttioClientInput, resolveAttioClient } from "./client";
+import { type BrandedId, createBrandedId } from "./ids";
 import { unwrapData, unwrapItems } from "./response";
 
 type Task = z.infer<typeof zTask>;
 
-type TaskId = string & { readonly __brand: "TaskId" };
+type TaskId = BrandedId<"TaskId">;
 type TaskCreateData = PostV2TasksData["body"]["data"];
 type TaskUpdateData = PatchV2TasksByTaskIdData["body"]["data"];
+
+const createTaskId = (id: string): TaskId =>
+  createBrandedId<"TaskId">(id, "TaskId");
 
 export interface TaskCreateInput extends AttioClientInput {
   data: TaskCreateData;
@@ -100,4 +104,5 @@ export const deleteTask = async (
   return result.data ?? {};
 };
 
+export { createTaskId };
 export type { TaskCreateData, TaskId, TaskUpdateData };
