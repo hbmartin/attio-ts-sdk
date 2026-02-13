@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.1.0...attio-ts-sdk-v2.2.0) (2026-02-13)
+
+
+### Features
+
+* add explicit return types to listLists, getList, addListEntry ([fcb1e4e](https://github.com/hbmartin/attio-ts-sdk/commit/fcb1e4e805539958b8c433e501a556c513dc4f5f))
+* add explicit return types to listLists, getList, addListEntry, updateListEntry ([b766d26](https://github.com/hbmartin/attio-ts-sdk/commit/b766d267893a55b29960a7f3c5935c2f3ef66d1f))
+* **types:** add branded id factories for records tasks notes and members ([fdbdace](https://github.com/hbmartin/attio-ts-sdk/commit/fdbdacedd9f4c7829f46e87746a8ee60921d2890))
+
 ## [2.1.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.0.2...attio-ts-sdk-v2.1.0) (2026-02-12)
 
 
