@@ -33,6 +33,36 @@ vi.mock("../../src/attio/record-utils", () => ({
   normalizeRecords,
 }));
 
+const WS_ID = "a1b2c3d4-e5f6-4a7b-8c9d-e0f1a2b3c4d5";
+const LIST_ID_1 = "11111111-2222-4333-a444-555555555555";
+const LIST_ID_2 = "22222222-3333-4444-a555-666666666666";
+const ENTRY_ID_1 = "33333333-4444-4555-a666-777777777777";
+const RECORD_ID = "44444444-5555-4666-a777-888888888888";
+const MEMBER_ID = "55555555-6666-4777-a888-999999999999";
+
+const makeList = (overrides: Record<string, unknown> = {}) => ({
+  id: { workspace_id: WS_ID, list_id: LIST_ID_1 },
+  api_slug: "sales-pipeline",
+  name: "Sales Pipeline",
+  parent_object: ["companies"],
+  workspace_access: "full-access",
+  workspace_member_access: [
+    { workspace_member_id: MEMBER_ID, level: "full-access" },
+  ],
+  created_by_actor: { id: MEMBER_ID, type: "workspace-member" },
+  created_at: "2024-01-01T00:00:00Z",
+  ...overrides,
+});
+
+const makeEntry = (overrides: Record<string, unknown> = {}) => ({
+  id: { workspace_id: WS_ID, list_id: LIST_ID_1, entry_id: ENTRY_ID_1 },
+  parent_record_id: RECORD_ID,
+  parent_object: "companies",
+  created_at: "2024-01-01T00:00:00Z",
+  entry_values: {},
+  ...overrides,
+});
+
 describe("lists", () => {
   let listLists: typeof import("../../src/attio/lists").listLists;
   let getList: typeof import("../../src/attio/lists").getList;
@@ -99,12 +129,17 @@ describe("lists", () => {
 
   describe("listLists", () => {
     it("returns unwrapped items from response", async () => {
-      const lists = [{ id: "list-1" }, { id: "list-2" }];
-      getListsRequest.mockResolvedValue({ data: { data: lists } });
+      const list1 = makeList();
+      const list2 = makeList({
+        id: { workspace_id: WS_ID, list_id: LIST_ID_2 },
+        api_slug: "onboarding",
+        name: "Onboarding",
+      });
+      getListsRequest.mockResolvedValue({ data: { data: [list1, list2] } });
 
       const result = await listLists();
 
-      expect(result).toEqual(lists);
+      expect(result).toEqual([list1, list2]);
       expect(getListsRequest).toHaveBeenCalledWith({ client: {} });
     });
 
@@ -119,7 +154,7 @@ describe("lists", () => {
 
   describe("getList", () => {
     it("returns unwrapped list data", async () => {
-      const list = { id: "list-1", name: "Sales Pipeline" };
+      const list = makeList();
       getListByIdRequest.mockResolvedValue({ data: list });
 
       const result = await getList({ list: "list-1" });
@@ -132,7 +167,7 @@ describe("lists", () => {
     });
 
     it("passes additional options", async () => {
-      getListByIdRequest.mockResolvedValue({ data: {} });
+      getListByIdRequest.mockResolvedValue({ data: makeList() });
 
       await getList({
         list: "list-1",
@@ -561,7 +596,7 @@ describe("lists", () => {
 
   describe("addListEntry", () => {
     it("adds entry with parent object and record", async () => {
-      const newEntry = { id: "entry-new" };
+      const newEntry = makeEntry();
       addEntryRequest.mockResolvedValue({ data: newEntry });
 
       const result = await addListEntry({
@@ -585,7 +620,7 @@ describe("lists", () => {
     });
 
     it("adds entry with entry values", async () => {
-      addEntryRequest.mockResolvedValue({ data: {} });
+      addEntryRequest.mockResolvedValue({ data: makeEntry() });
 
       await addListEntry({
         list: "list-1",
@@ -608,7 +643,7 @@ describe("lists", () => {
     });
 
     it("passes additional options", async () => {
-      addEntryRequest.mockResolvedValue({ data: {} });
+      addEntryRequest.mockResolvedValue({ data: makeEntry() });
 
       await addListEntry({
         list: "list-1",
@@ -634,7 +669,7 @@ describe("lists", () => {
 
   describe("updateListEntry", () => {
     it("updates entry values", async () => {
-      const updatedEntry = { id: "entry-1", stage: "won" };
+      const updatedEntry = makeEntry();
       updateEntryRequest.mockResolvedValue({ data: updatedEntry });
 
       const result = await updateListEntry({
@@ -656,7 +691,7 @@ describe("lists", () => {
     });
 
     it("passes additional options", async () => {
-      updateEntryRequest.mockResolvedValue({ data: {} });
+      updateEntryRequest.mockResolvedValue({ data: makeEntry() });
 
       await updateListEntry({
         list: "list-1",

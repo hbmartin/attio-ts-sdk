@@ -1,7 +1,9 @@
 import type { ZodType } from "zod";
+import { z } from "zod";
 import type {
   DeleteV2ListsByListEntriesByEntryIdData,
   GetV2ListsByListData,
+  List,
   Options,
   PatchV2ListsByListEntriesByEntryIdData,
   PostV2ListsByListEntriesData,
@@ -15,6 +17,7 @@ import {
   postV2ListsByListEntries,
   postV2ListsByListEntriesQuery,
 } from "../generated";
+import { zPostV2ListsByListEntriesResponse } from "../generated/zod.gen";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type AttioFilter, parseAttioFilter } from "./filters";
 import { type BrandedId, createBrandedId } from "./ids";
@@ -31,6 +34,36 @@ import {
 } from "./pagination";
 import type { AttioRecordLike } from "./record-utils";
 import { rawRecordSchema } from "./schemas";
+
+const listSchema: z.ZodType<List> = z
+  .object({
+    id: z.object({ workspace_id: z.string(), list_id: z.string() }),
+    api_slug: z.string(),
+    name: z.string(),
+    parent_object: z.array(z.string()),
+    workspace_access: z.enum(["full-access", "read-and-write", "read-only"]),
+    workspace_member_access: z.array(
+      z
+        .object({
+          workspace_member_id: z.string(),
+          level: z.enum(["full-access", "read-and-write", "read-only"]),
+        })
+        .passthrough(),
+    ),
+    created_by_actor: z
+      .object({
+        id: z.string().optional(),
+        type: z
+          .enum(["api-token", "workspace-member", "system", "app"])
+          .optional(),
+      })
+      .passthrough(),
+    created_at: z.string(),
+  })
+  .passthrough();
+
+const zListEntryData = zPostV2ListsByListEntriesResponse.shape.data;
+type ListEntryData = z.infer<typeof zListEntryData>;
 
 /**
  * Infers the entry type from an input object.
@@ -134,16 +167,23 @@ interface RemoveListEntryInput extends AttioClientInput {
   >;
 }
 
-export const listLists = async (input: AttioClientInput = {}) =>
-  callAndUnwrapItems(input, (client) => getV2Lists({ client }));
+export const listLists = async (
+  input: AttioClientInput = {},
+): Promise<List[]> =>
+  callAndUnwrapItems(input, (client) => getV2Lists({ client }), {
+    schema: listSchema,
+  });
 
-export const getList = async (input: GetListInput) =>
-  callAndUnwrapData(input, (client) =>
-    getV2ListsByList({
-      client,
-      path: { list: input.list },
-      ...input.options,
-    }),
+export const getList = async (input: GetListInput): Promise<List> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      getV2ListsByList({
+        client,
+        path: { list: input.list },
+        ...input.options,
+      }),
+    { schema: listSchema },
   );
 
 // Overload: Stream mode with itemSchema - T is inferred from schema
@@ -225,30 +265,40 @@ export function queryListEntries<T extends AttioRecordLike>(
   return fetchEntries(input.offset, input.limit, input.signal);
 }
 
-export const addListEntry = async (input: AddListEntryInput) =>
-  callAndUnwrapData(input, (client) =>
-    postV2ListsByListEntries({
-      client,
-      path: { list: input.list },
-      body: {
-        data: {
-          parent_object: input.parentObject,
-          parent_record_id: input.parentRecordId,
-          entry_values: input.entryValues ?? {},
+export const addListEntry = async (
+  input: AddListEntryInput,
+): Promise<ListEntryData> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      postV2ListsByListEntries({
+        client,
+        path: { list: input.list },
+        body: {
+          data: {
+            parent_object: input.parentObject,
+            parent_record_id: input.parentRecordId,
+            entry_values: input.entryValues ?? {},
+          },
         },
-      },
-      ...input.options,
-    }),
+        ...input.options,
+      }),
+    { schema: zListEntryData },
   );
 
-export const updateListEntry = async (input: UpdateListEntryInput) =>
-  callAndUnwrapData(input, (client) =>
-    patchV2ListsByListEntriesByEntryId({
-      client,
-      path: { list: input.list, entry_id: input.entryId },
-      body: { data: { entry_values: input.entryValues } },
-      ...input.options,
-    }),
+export const updateListEntry = async (
+  input: UpdateListEntryInput,
+): Promise<ListEntryData> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      patchV2ListsByListEntriesByEntryId({
+        client,
+        path: { list: input.list, entry_id: input.entryId },
+        body: { data: { entry_values: input.entryValues } },
+        ...input.options,
+      }),
+    { schema: zListEntryData },
   );
 
 export const removeListEntry = async (input: RemoveListEntryInput) =>
@@ -274,6 +324,7 @@ export type {
   EntryValues,
   GetListInput,
   InferEntryType,
+  ListEntryData,
   ListId,
   ListQueryBaseInput,
   ListQueryCollectInput,
