@@ -12,6 +12,7 @@ export * from "./logging";
 export * from "./metadata";
 export * from "./notes";
 export * from "./objects";
+export * from "./operations";
 export * from "./pagination";
 export * from "./record-utils";
 export * from "./records";

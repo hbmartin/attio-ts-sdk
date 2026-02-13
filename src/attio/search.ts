@@ -2,8 +2,8 @@ import type { ZodType } from "zod";
 import type { Options, PostV2ObjectsRecordsSearchData } from "../generated";
 import { postV2ObjectsRecordsSearch } from "../generated";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import { type AttioRecordLike, normalizeRecords } from "./record-utils";
-import { unwrapItems, validateItemsArray } from "./response";
+import { unwrapAndNormalizeRecords } from "./operations";
+import type { AttioRecordLike } from "./record-utils";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -52,9 +52,7 @@ export async function searchRecords<T extends AttioRecordLike>(
     ...input.options,
   });
 
-  const items = unwrapItems(result) as Record<string, unknown>[];
-  const normalized = normalizeRecords(items);
-  return validateItemsArray(normalized, schema) as T[];
+  return unwrapAndNormalizeRecords(result, schema) as T[];
 }
 
 export type { InferSearchResultType };

@@ -19,12 +19,17 @@ import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type AttioFilter, parseAttioFilter } from "./filters";
 import { type BrandedId, createBrandedId } from "./ids";
 import {
+  callAndDelete,
+  callAndUnwrapData,
+  callAndUnwrapItems,
+  unwrapAndNormalizeRecords,
+} from "./operations";
+import {
   paginateOffset,
   paginateOffsetAsync,
   type SharedPaginationInput,
 } from "./pagination";
-import { type AttioRecordLike, normalizeRecords } from "./record-utils";
-import { unwrapData, unwrapItems, validateItemsArray } from "./response";
+import type { AttioRecordLike } from "./record-utils";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -129,21 +134,17 @@ interface RemoveListEntryInput extends AttioClientInput {
   >;
 }
 
-export const listLists = async (input: AttioClientInput = {}) => {
-  const client = resolveAttioClient(input);
-  const result = await getV2Lists({ client });
-  return unwrapItems(result);
-};
+export const listLists = async (input: AttioClientInput = {}) =>
+  callAndUnwrapItems(input, (client) => getV2Lists({ client }));
 
-export const getList = async (input: GetListInput) => {
-  const client = resolveAttioClient(input);
-  const result = await getV2ListsByList({
-    client,
-    path: { list: input.list },
-    ...input.options,
-  });
-  return unwrapData(result);
-};
+export const getList = async (input: GetListInput) =>
+  callAndUnwrapData(input, (client) =>
+    getV2ListsByList({
+      client,
+      path: { list: input.list },
+      ...input.options,
+    }),
+  );
 
 // Overload: Stream mode with itemSchema - T is inferred from schema
 export function queryListEntries<T extends AttioRecordLike>(
@@ -184,17 +185,11 @@ export function queryListEntries<T extends AttioRecordLike>(
     const result = await postV2ListsByListEntriesQuery({
       client,
       path: { list: input.list },
-      body: {
-        filter,
-        limit,
-        offset,
-      },
+      body: { filter, limit, offset },
       ...input.options,
       signal,
     });
-    const items = unwrapItems(result) as Record<string, unknown>[];
-    const normalized = normalizeRecords(items);
-    return validateItemsArray(normalized, schema) as T[];
+    return unwrapAndNormalizeRecords(result, schema) as T[];
   };
 
   if (input.paginate === "stream") {
@@ -230,48 +225,41 @@ export function queryListEntries<T extends AttioRecordLike>(
   return fetchEntries(input.offset, input.limit, input.signal);
 }
 
-export const addListEntry = async (input: AddListEntryInput) => {
-  const client = resolveAttioClient(input);
-  const result = await postV2ListsByListEntries({
-    client,
-    path: { list: input.list },
-    body: {
-      data: {
-        parent_object: input.parentObject,
-        parent_record_id: input.parentRecordId,
-        entry_values: input.entryValues ?? {},
+export const addListEntry = async (input: AddListEntryInput) =>
+  callAndUnwrapData(input, (client) =>
+    postV2ListsByListEntries({
+      client,
+      path: { list: input.list },
+      body: {
+        data: {
+          parent_object: input.parentObject,
+          parent_record_id: input.parentRecordId,
+          entry_values: input.entryValues ?? {},
+        },
       },
-    },
-    ...input.options,
-  });
-  return unwrapData(result);
-};
+      ...input.options,
+    }),
+  );
 
-export const updateListEntry = async (input: UpdateListEntryInput) => {
-  const client = resolveAttioClient(input);
-  const result = await patchV2ListsByListEntriesByEntryId({
-    client,
-    path: { list: input.list, entry_id: input.entryId },
-    body: {
-      data: {
-        entry_values: input.entryValues,
-      },
-    },
-    ...input.options,
-  });
-  return unwrapData(result);
-};
+export const updateListEntry = async (input: UpdateListEntryInput) =>
+  callAndUnwrapData(input, (client) =>
+    patchV2ListsByListEntriesByEntryId({
+      client,
+      path: { list: input.list, entry_id: input.entryId },
+      body: { data: { entry_values: input.entryValues } },
+      ...input.options,
+    }),
+  );
 
-export const removeListEntry = async (input: RemoveListEntryInput) => {
-  const client = resolveAttioClient(input);
-  await deleteV2ListsByListEntriesByEntryId({
-    client,
-    path: { list: input.list, entry_id: input.entryId },
-    ...input.options,
-    throwOnError: true,
-  });
-  return true;
-};
+export const removeListEntry = async (input: RemoveListEntryInput) =>
+  callAndDelete(input, (client) =>
+    deleteV2ListsByListEntriesByEntryId({
+      client,
+      path: { list: input.list, entry_id: input.entryId },
+      ...input.options,
+      throwOnError: true,
+    }),
+  );
 
 export {
   createEntryId,
