@@ -1,10 +1,31 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import type { Note } from "../../src/generated";
 
 const getNotesRequest = vi.fn();
 const getNoteByIdRequest = vi.fn();
 const postNotesRequest = vi.fn();
 const deleteNoteRequest = vi.fn();
 const resolveAttioClient = vi.fn();
+
+const createMockNote = (overrides: Partial<Note> = {}): Note => ({
+  id: {
+    workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+    note_id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+  },
+  parent_object: "companies",
+  parent_record_id: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+  title: "Test note",
+  meeting_id: null,
+  content_plaintext: "Test note content",
+  content_markdown: "Test note content",
+  tags: [],
+  created_by_actor: {
+    type: "workspace-member",
+    id: "d4e5f6a7-b8c9-4d0e-af1a-2b3c4d5e6f7a",
+  },
+  created_at: "2024-01-01T00:00:00.000Z",
+  ...overrides,
+});
 
 vi.mock("../../src/generated", async () => {
   const actual = await vi.importActual<typeof import("../../src/generated")>(
@@ -69,7 +90,19 @@ describe("notes", () => {
 
   describe("listNotes", () => {
     it("returns unwrapped items from response", async () => {
-      const notes = [{ id: "note-1" }, { id: "note-2" }];
+      const note1 = createMockNote({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          note_id: "11111111-1111-4111-8111-111111111111",
+        },
+      });
+      const note2 = createMockNote({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          note_id: "22222222-2222-4222-8222-222222222222",
+        },
+      });
+      const notes = [note1, note2];
       getNotesRequest.mockResolvedValue({ data: { data: notes } });
 
       const result = await listNotes();
@@ -89,7 +122,7 @@ describe("notes", () => {
 
   describe("getNote", () => {
     it("returns unwrapped note data", async () => {
-      const note = { id: "note-1", title: "Test note" };
+      const note = createMockNote({ title: "Test note" });
       getNoteByIdRequest.mockResolvedValue({ data: note });
 
       const result = await getNote({ noteId: "note-1" });
@@ -104,7 +137,7 @@ describe("notes", () => {
 
   describe("createNote", () => {
     it("creates note with all parameters", async () => {
-      const newNote = { id: "note-new", title: "New note" };
+      const newNote = createMockNote({ title: "New note" });
       postNotesRequest.mockResolvedValue({ data: newNote });
 
       const result = await createNote({
@@ -129,7 +162,8 @@ describe("notes", () => {
     });
 
     it("creates note with minimal parameters", async () => {
-      postNotesRequest.mockResolvedValue({ data: {} });
+      const note = createMockNote();
+      postNotesRequest.mockResolvedValue({ data: note });
 
       await createNote({
         parentObject: "people",
@@ -150,7 +184,8 @@ describe("notes", () => {
     });
 
     it("passes additional options", async () => {
-      postNotesRequest.mockResolvedValue({ data: {} });
+      const note = createMockNote();
+      postNotesRequest.mockResolvedValue({ data: note });
 
       await createNote({
         parentObject: "companies",
