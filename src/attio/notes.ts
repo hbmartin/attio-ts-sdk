@@ -1,3 +1,4 @@
+import type { z } from "zod";
 import type {
   DeleteV2NotesByNoteIdData,
   GetV2NotesByNoteIdData,
@@ -10,6 +11,7 @@ import {
   getV2NotesByNoteId,
   postV2Notes,
 } from "../generated";
+import { zNote } from "../generated/zod.gen";
 import type { AttioClientInput } from "./client";
 import { type BrandedId, createBrandedId } from "./ids";
 import {
@@ -17,6 +19,8 @@ import {
   callAndUnwrapData,
   callAndUnwrapItems,
 } from "./operations";
+
+type Note = z.infer<typeof zNote>;
 
 type NoteId = BrandedId<"NoteId">;
 type NoteParentObjectId = BrandedId<"NoteParentObjectId">;
@@ -51,38 +55,48 @@ export interface NoteDeleteInput extends AttioClientInput {
   options?: Omit<Options<DeleteV2NotesByNoteIdData>, "client" | "path">;
 }
 
-export const listNotes = async (input: AttioClientInput = {}) =>
-  callAndUnwrapItems(input, (client) => getV2Notes({ client }));
+export const listNotes = async (
+  input: AttioClientInput = {},
+): Promise<Note[]> =>
+  callAndUnwrapItems(input, (client) => getV2Notes({ client }), {
+    schema: zNote,
+  });
 
-export const getNote = async (input: NoteGetInput) =>
-  callAndUnwrapData(input, (client) =>
-    getV2NotesByNoteId({
-      client,
-      path: { note_id: input.noteId },
-      ...input.options,
-    }),
+export const getNote = async (input: NoteGetInput): Promise<Note> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      getV2NotesByNoteId({
+        client,
+        path: { note_id: input.noteId },
+        ...input.options,
+      }),
+    { schema: zNote },
   );
 
-export const createNote = async (input: NoteCreateInput) =>
-  callAndUnwrapData(input, (client) =>
-    postV2Notes({
-      client,
-      body: {
-        data: {
-          parent_object: input.parentObject,
-          parent_record_id: input.parentRecordId,
-          title: input.title,
-          format: input.format,
-          content: input.content,
-          created_at: input.createdAt,
-          meeting_id: input.meetingId,
+export const createNote = async (input: NoteCreateInput): Promise<Note> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      postV2Notes({
+        client,
+        body: {
+          data: {
+            parent_object: input.parentObject,
+            parent_record_id: input.parentRecordId,
+            title: input.title,
+            format: input.format,
+            content: input.content,
+            created_at: input.createdAt,
+            meeting_id: input.meetingId,
+          },
         },
-      },
-      ...input.options,
-    }),
+        ...input.options,
+      }),
+    { schema: zNote },
   );
 
-export const deleteNote = async (input: NoteDeleteInput) =>
+export const deleteNote = async (input: NoteDeleteInput): Promise<true> =>
   callAndDelete(input, (client) =>
     deleteV2NotesByNoteId({
       client,
