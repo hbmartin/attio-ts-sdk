@@ -151,6 +151,9 @@ const redactUrl = (
 const headersToObject = (headers: Headers): Record<string, string> =>
   Object.fromEntries(headers.entries());
 
+const isRecord = (v: unknown): v is Record<string, LogValue> =>
+  v !== null && typeof v === "object" && !Array.isArray(v);
+
 const redactValue = (
   value: LogValue,
   config: RedactionRuntimeConfig,
@@ -172,10 +175,9 @@ const redactValue = (
     return value.map((entry) => redactValue(entry, config));
   }
 
-  if (value && typeof value === "object") {
-    const record = value as Record<string, LogValue>;
+  if (isRecord(value)) {
     const redacted: Record<string, LogValue> = {};
-    for (const [entryKey, entryValue] of Object.entries(record)) {
+    for (const [entryKey, entryValue] of Object.entries(value)) {
       redacted[entryKey] = redactValue(entryValue, config, entryKey);
     }
     return redacted;

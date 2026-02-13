@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.0.2...attio-ts-sdk-v2.1.0) (2026-02-12)
+
+
+### Features
+
+* **logging:** add structured hooks logging with redaction and correlation ids ([0869943](https://github.com/hbmartin/attio-ts-sdk/commit/08699433c18254c53880799639cc481cd57637ef))
+* **logging:** add structured hooks logging with redaction and correlation ids ([0869943](https://github.com/hbmartin/attio-ts-sdk/commit/08699433c18254c53880799639cc481cd57637ef))
+* **logging:** add structured hooks logging with redaction and correlation ids ([fd9e632](https://github.com/hbmartin/attio-ts-sdk/commit/fd9e632988e72e72b8a69e54257755da5ff290b5))
+
 ## [2.0.2](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.0.1...attio-ts-sdk-v2.0.2) (2026-02-10)
 
 
