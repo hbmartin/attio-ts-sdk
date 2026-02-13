@@ -13,8 +13,8 @@ import {
   patchV2ObjectsByObject,
   postV2Objects,
 } from "../generated";
-import { type AttioClientInput, resolveAttioClient } from "./client";
-import { unwrapData, unwrapItems } from "./response";
+import type { AttioClientInput } from "./client";
+import { callAndUnwrapData, callAndUnwrapItems } from "./operations";
 
 type ObjectSlug = string & { readonly __brand: "ObjectSlug" };
 type ObjectApiSlug = string & { readonly __brand: "ObjectApiSlug" };
@@ -60,37 +60,42 @@ interface UpdateObjectInput extends AttioClientInput {
 
 const listObjects = async (
   input: ListObjectsInput = {},
-): Promise<AttioObject[]> => {
-  const client = resolveAttioClient(input);
-  const result = await getV2Objects({ client, ...input.options });
-  return unwrapItems(result, { schema: AttioObjectSchema });
-};
+): Promise<AttioObject[]> =>
+  callAndUnwrapItems(
+    input,
+    (client) => getV2Objects({ client, ...input.options }),
+    { schema: AttioObjectSchema },
+  );
 
-const getObject = async (input: GetObjectInput): Promise<AttioObject> => {
-  const client = resolveAttioClient(input);
-  const result = await getV2ObjectsByObject({
-    client,
-    path: { object: input.object },
-    ...input.options,
-  });
-  return unwrapData(result, { schema: AttioObjectSchema });
-};
+const getObject = async (input: GetObjectInput): Promise<AttioObject> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      getV2ObjectsByObject({
+        client,
+        path: { object: input.object },
+        ...input.options,
+      }),
+    { schema: AttioObjectSchema },
+  );
 
-const createObject = async (input: CreateObjectInput): Promise<AttioObject> => {
-  const client = resolveAttioClient(input);
-  const result = await postV2Objects({
-    client,
-    body: {
-      data: {
-        api_slug: input.apiSlug,
-        singular_noun: input.singularNoun,
-        plural_noun: input.pluralNoun,
-      },
-    },
-    ...input.options,
-  });
-  return unwrapData(result, { schema: AttioObjectSchema });
-};
+const createObject = async (input: CreateObjectInput): Promise<AttioObject> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      postV2Objects({
+        client,
+        body: {
+          data: {
+            api_slug: input.apiSlug,
+            singular_noun: input.singularNoun,
+            plural_noun: input.pluralNoun,
+          },
+        },
+        ...input.options,
+      }),
+    { schema: AttioObjectSchema },
+  );
 
 const buildUpdateObjectData = (input: UpdateObjectInput): ObjectUpdateData => ({
   ...(input.apiSlug !== undefined && { api_slug: input.apiSlug }),
@@ -100,18 +105,18 @@ const buildUpdateObjectData = (input: UpdateObjectInput): ObjectUpdateData => ({
   ...(input.pluralNoun !== undefined && { plural_noun: input.pluralNoun }),
 });
 
-const updateObject = async (input: UpdateObjectInput): Promise<AttioObject> => {
-  const client = resolveAttioClient(input);
-  const result = await patchV2ObjectsByObject({
-    client,
-    path: { object: input.object },
-    body: {
-      data: buildUpdateObjectData(input),
-    },
-    ...input.options,
-  });
-  return unwrapData(result, { schema: AttioObjectSchema });
-};
+const updateObject = async (input: UpdateObjectInput): Promise<AttioObject> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      patchV2ObjectsByObject({
+        client,
+        path: { object: input.object },
+        body: { data: buildUpdateObjectData(input) },
+        ...input.options,
+      }),
+    { schema: AttioObjectSchema },
+  );
 
 export type {
   CreateObjectInput,

@@ -17,7 +17,7 @@ import {
 import { zTask } from "../generated/zod.gen";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type BrandedId, createBrandedId } from "./ids";
-import { unwrapData, unwrapItems } from "./response";
+import { callAndUnwrapData, callAndUnwrapItems } from "./operations";
 
 type Task = z.infer<typeof zTask>;
 
@@ -51,46 +51,47 @@ export interface TaskGetInput extends AttioClientInput {
 
 export const listTasks = async (
   input: AttioClientInput = {},
-): Promise<Task[]> => {
-  const client = resolveAttioClient(input);
-  const result = await getV2Tasks({ client });
-  return unwrapItems(result, { schema: zTask });
-};
-
-export const getTask = async (input: TaskGetInput): Promise<Task> => {
-  const client = resolveAttioClient(input);
-  const result = await getV2TasksByTaskId({
-    client,
-    path: { task_id: input.taskId },
-    ...input.options,
+): Promise<Task[]> =>
+  callAndUnwrapItems(input, (client) => getV2Tasks({ client }), {
+    schema: zTask,
   });
-  return unwrapData(result, { schema: zTask });
-};
 
-export const createTask = async (input: TaskCreateInput): Promise<Task> => {
-  const client = resolveAttioClient(input);
-  const result = await postV2Tasks({
-    client,
-    body: {
-      data: input.data,
-    },
-    ...input.options,
-  });
-  return unwrapData(result, { schema: zTask });
-};
+export const getTask = async (input: TaskGetInput): Promise<Task> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      getV2TasksByTaskId({
+        client,
+        path: { task_id: input.taskId },
+        ...input.options,
+      }),
+    { schema: zTask },
+  );
 
-export const updateTask = async (input: TaskUpdateInput): Promise<Task> => {
-  const client = resolveAttioClient(input);
-  const result = await patchV2TasksByTaskId({
-    client,
-    path: { task_id: input.taskId },
-    body: {
-      data: input.data,
-    },
-    ...input.options,
-  });
-  return unwrapData(result, { schema: zTask });
-};
+export const createTask = async (input: TaskCreateInput): Promise<Task> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      postV2Tasks({
+        client,
+        body: { data: input.data },
+        ...input.options,
+      }),
+    { schema: zTask },
+  );
+
+export const updateTask = async (input: TaskUpdateInput): Promise<Task> =>
+  callAndUnwrapData(
+    input,
+    (client) =>
+      patchV2TasksByTaskId({
+        client,
+        path: { task_id: input.taskId },
+        body: { data: input.data },
+        ...input.options,
+      }),
+    { schema: zTask },
+  );
 
 export const deleteTask = async (
   input: TaskDeleteInput,
