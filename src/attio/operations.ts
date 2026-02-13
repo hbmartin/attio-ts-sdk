@@ -78,7 +78,7 @@ function unwrapAndNormalizeRecords<T>(
 ): T[] {
   const items = unwrapItems(result) as Record<string, unknown>[];
   const normalized = normalizeRecords(items);
-  return validateItemsArray(normalized, schema) as T[];
+  return validateItemsArray(normalized, schema);
 }
 
 /**
