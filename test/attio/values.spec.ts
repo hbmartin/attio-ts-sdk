@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { AttioResponseError } from "../../src/attio/errors";
-import { getFirstValue, getValue, value } from "../../src/attio/values";
+import {
+  getFirstValue,
+  getFirstValueSafe,
+  getValue,
+  getValueSafe,
+  value,
+} from "../../src/attio/values";
 
 describe("value helpers", () => {
   it("builds string values", () => {
@@ -62,5 +68,66 @@ describe("getValue helpers", () => {
   it("returns undefined when attribute is missing", () => {
     expect(getValue(record, "missing")).toBeUndefined();
     expect(getFirstValue(record, "missing")).toBeUndefined();
+  });
+});
+
+describe("getValueSafe", () => {
+  const textSchema = z.object({ value: z.string() });
+  const record = {
+    values: {
+      name: [{ value: "Acme" }, { value: "Corp" }],
+      revenue: [{ currency_value: 50_000, currency_code: "USD" }],
+    },
+  };
+
+  it("returns ok with parsed values on success", () => {
+    const result = getValueSafe(record, "name", textSchema);
+    expect(result).toEqual({
+      ok: true,
+      value: [{ value: "Acme" }, { value: "Corp" }],
+    });
+  });
+
+  it("returns ok with undefined when attribute is missing", () => {
+    const result = getValueSafe(record, "missing", textSchema);
+    expect(result).toEqual({ ok: true, value: undefined });
+  });
+
+  it("returns error when schema does not match", () => {
+    const result = getValueSafe(record, "revenue", textSchema);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.code).toBe("INVALID_VALUE");
+      expect(result.message).toContain("revenue");
+    }
+  });
+});
+
+describe("getFirstValueSafe", () => {
+  const textSchema = z.object({ value: z.string() });
+  const record = {
+    values: {
+      name: [{ value: "Acme" }],
+      revenue: [{ currency_value: 50_000 }],
+    },
+  };
+
+  it("returns ok with the first parsed value", () => {
+    const result = getFirstValueSafe(record, "name", textSchema);
+    expect(result).toEqual({ ok: true, value: { value: "Acme" } });
+  });
+
+  it("returns ok with undefined when attribute is missing", () => {
+    const result = getFirstValueSafe(record, "missing", textSchema);
+    expect(result).toEqual({ ok: true, value: undefined });
+  });
+
+  it("returns error when schema does not match", () => {
+    const result = getFirstValueSafe(record, "revenue", textSchema);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.code).toBe("INVALID_VALUE");
+      expect(result.message).toContain("revenue");
+    }
   });
 });

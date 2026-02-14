@@ -133,10 +133,60 @@ function getFirstValue<T>(
   return values ? values[0] : undefined;
 }
 
-export { getFirstValue, getValue, value };
+type ValueResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; code: string; message: string };
+
+const safeParseValues = <T>(
+  raw: unknown[],
+  schema: z.ZodType<T>,
+  attribute: string,
+): ValueResult<T[]> => {
+  const parsed: T[] = [];
+  for (const entry of raw) {
+    const result = schema.safeParse(entry);
+    if (!result.success) {
+      return {
+        ok: false,
+        code: "INVALID_VALUE",
+        message: `Invalid API response: attribute "${attribute}" value mismatch`,
+      };
+    }
+    parsed.push(result.data);
+  }
+  return { ok: true, value: parsed };
+};
+
+const getValueSafe = <T>(
+  record: AttioRecordLike,
+  attribute: string,
+  schema: z.ZodType<T>,
+): ValueResult<T[] | undefined> => {
+  const values = extractValues(record);
+  const raw = values?.[attribute];
+  if (!raw) {
+    return { ok: true, value: undefined };
+  }
+  return safeParseValues(raw, schema, attribute);
+};
+
+const getFirstValueSafe = <T>(
+  record: AttioRecordLike,
+  attribute: string,
+  schema: z.ZodType<T>,
+): ValueResult<T | undefined> => {
+  const result = getValueSafe(record, attribute, schema);
+  if (!result.ok) {
+    return result;
+  }
+  return { ok: true, value: result.value?.[0] };
+};
+
+export { getFirstValue, getFirstValueSafe, getValue, getValueSafe, value };
 export type {
   ValueCurrencyInput,
   ValueFactory,
   ValueInput,
   ValueLookupOptions,
+  ValueResult,
 };
