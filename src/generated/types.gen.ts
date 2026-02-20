@@ -866,6 +866,240 @@ export type Comment = {
     };
 };
 
+export type File = {
+    id: {
+        /**
+         * The ID of the workspace the file belongs to.
+         */
+        workspace_id: string;
+        /**
+         * The ID of the file entry.
+         */
+        file_id: string;
+    };
+    /**
+     * The ID of the object the record belongs to.
+     */
+    object_id: string;
+    /**
+     * The slug of the object the record belongs to.
+     */
+    object_slug: string;
+    /**
+     * The ID of the record the file is linked to.
+     */
+    record_id: string;
+    /**
+     * The storage provider for this file entry.
+     */
+    storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+    /**
+     * The actor that created this file entry.
+     */
+    created_by_actor: {
+        /**
+         * An ID to identify the actor.
+         */
+        id?: string;
+        /**
+         * The type of actor. [Read more information on actor types here](/docs/actors).
+         */
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+    };
+    /**
+     * Timestamp representing when the file entry was created.
+     */
+    created_at: string;
+    /**
+     * The type of file entry.
+     */
+    file_type: 'file';
+    /**
+     * The name of the file.
+     */
+    name: string;
+    /**
+     * The content type of the file.
+     */
+    content_type: string | null;
+    /**
+     * The size of the file in bytes.
+     */
+    content_size: number | null;
+    /**
+     * The ID of the parent folder, or null if this is a top-level file.
+     */
+    parent_folder_id: string | null;
+} | {
+    id: {
+        /**
+         * The ID of the workspace the file belongs to.
+         */
+        workspace_id: string;
+        /**
+         * The ID of the file entry.
+         */
+        file_id: string;
+    };
+    /**
+     * The ID of the object the record belongs to.
+     */
+    object_id: string;
+    /**
+     * The slug of the object the record belongs to.
+     */
+    object_slug: string;
+    /**
+     * The ID of the record the file is linked to.
+     */
+    record_id: string;
+    /**
+     * The storage provider for this file entry.
+     */
+    storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+    /**
+     * The actor that created this file entry.
+     */
+    created_by_actor: {
+        /**
+         * An ID to identify the actor.
+         */
+        id?: string;
+        /**
+         * The type of actor. [Read more information on actor types here](/docs/actors).
+         */
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+    };
+    /**
+     * Timestamp representing when the file entry was created.
+     */
+    created_at: string;
+    /**
+     * The type of file entry.
+     */
+    file_type: 'folder';
+    /**
+     * The name of the folder.
+     */
+    name: string;
+    /**
+     * The ID of the parent folder, or null if this is a top-level folder.
+     */
+    parent_folder_id: string | null;
+} | {
+    id: {
+        /**
+         * The ID of the workspace the file belongs to.
+         */
+        workspace_id: string;
+        /**
+         * The ID of the file entry.
+         */
+        file_id: string;
+    };
+    /**
+     * The ID of the object the record belongs to.
+     */
+    object_id: string;
+    /**
+     * The slug of the object the record belongs to.
+     */
+    object_slug: string;
+    /**
+     * The ID of the record the file is linked to.
+     */
+    record_id: string;
+    /**
+     * The storage provider for this file entry.
+     */
+    storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+    /**
+     * The actor that created this file entry.
+     */
+    created_by_actor: {
+        /**
+         * An ID to identify the actor.
+         */
+        id?: string;
+        /**
+         * The type of actor. [Read more information on actor types here](/docs/actors).
+         */
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+    };
+    /**
+     * Timestamp representing when the file entry was created.
+     */
+    created_at: string;
+    /**
+     * The type of file entry.
+     */
+    file_type: 'connected-file';
+    /**
+     * The file ID in the external storage provider.
+     */
+    external_provider_file_id: string;
+    /**
+     * Additional context required by the external storage provider. Required for Microsoft OneDrive to specify the drive ID
+     */
+    external_provider_context: string | null;
+} | {
+    id: {
+        /**
+         * The ID of the workspace the file belongs to.
+         */
+        workspace_id: string;
+        /**
+         * The ID of the file entry.
+         */
+        file_id: string;
+    };
+    /**
+     * The ID of the object the record belongs to.
+     */
+    object_id: string;
+    /**
+     * The slug of the object the record belongs to.
+     */
+    object_slug: string;
+    /**
+     * The ID of the record the file is linked to.
+     */
+    record_id: string;
+    /**
+     * The storage provider for this file entry.
+     */
+    storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+    /**
+     * The actor that created this file entry.
+     */
+    created_by_actor: {
+        /**
+         * An ID to identify the actor.
+         */
+        id?: string;
+        /**
+         * The type of actor. [Read more information on actor types here](/docs/actors).
+         */
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+    };
+    /**
+     * Timestamp representing when the file entry was created.
+     */
+    created_at: string;
+    /**
+     * The type of file entry.
+     */
+    file_type: 'connected-folder';
+    /**
+     * The file ID in the external storage provider.
+     */
+    external_provider_file_id: string;
+    /**
+     * Additional context required by the external storage provider. Required for Microsoft OneDrive to specify the drive ID
+     */
+    external_provider_context: string | null;
+};
+
 export type Meeting = {
     id: {
         /**
