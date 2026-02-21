@@ -1872,6 +1872,145 @@ export const zComment = z.object({
     })
 });
 
+export const zFile = z.union([
+    z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            file_id: z.uuid()
+        }),
+        object_id: z.uuid(),
+        object_slug: z.string(),
+        record_id: z.uuid(),
+        storage_provider: z.nullable(z.enum([
+            'attio',
+            'dropbox',
+            'box',
+            'google-drive',
+            'microsoft-onedrive'
+        ])),
+        created_by_actor: z.object({
+            id: z.nullish(z.string()),
+            type: z.nullish(z.nullable(z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ])))
+        }),
+        created_at: z.string(),
+        file_type: z.nullable(z.enum(['file'])),
+        name: z.string(),
+        content_type: z.union([
+            z.string(),
+            z.null()
+        ]),
+        content_size: z.union([
+            z.number(),
+            z.null()
+        ]),
+        parent_folder_id: z.union([
+            z.uuid(),
+            z.null()
+        ])
+    }),
+    z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            file_id: z.uuid()
+        }),
+        object_id: z.uuid(),
+        object_slug: z.string(),
+        record_id: z.uuid(),
+        storage_provider: z.nullable(z.enum([
+            'attio',
+            'dropbox',
+            'box',
+            'google-drive',
+            'microsoft-onedrive'
+        ])),
+        created_by_actor: z.object({
+            id: z.nullish(z.string()),
+            type: z.nullish(z.nullable(z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ])))
+        }),
+        created_at: z.string(),
+        file_type: z.nullable(z.enum(['folder'])),
+        name: z.string(),
+        parent_folder_id: z.union([
+            z.uuid(),
+            z.null()
+        ])
+    }),
+    z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            file_id: z.uuid()
+        }),
+        object_id: z.uuid(),
+        object_slug: z.string(),
+        record_id: z.uuid(),
+        storage_provider: z.nullable(z.enum([
+            'attio',
+            'dropbox',
+            'box',
+            'google-drive',
+            'microsoft-onedrive'
+        ])),
+        created_by_actor: z.object({
+            id: z.nullish(z.string()),
+            type: z.nullish(z.nullable(z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ])))
+        }),
+        created_at: z.string(),
+        file_type: z.nullable(z.enum(['connected-file'])),
+        external_provider_file_id: z.string(),
+        external_provider_context: z.union([
+            z.string(),
+            z.null()
+        ])
+    }),
+    z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            file_id: z.uuid()
+        }),
+        object_id: z.uuid(),
+        object_slug: z.string(),
+        record_id: z.uuid(),
+        storage_provider: z.nullable(z.enum([
+            'attio',
+            'dropbox',
+            'box',
+            'google-drive',
+            'microsoft-onedrive'
+        ])),
+        created_by_actor: z.object({
+            id: z.nullish(z.string()),
+            type: z.nullish(z.nullable(z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ])))
+        }),
+        created_at: z.string(),
+        file_type: z.nullable(z.enum(['connected-folder'])),
+        external_provider_file_id: z.string(),
+        external_provider_context: z.union([
+            z.string(),
+            z.null()
+        ])
+    })
+]);
+
 export const zMeeting = z.object({
     id: z.object({
         workspace_id: z.uuid(),
