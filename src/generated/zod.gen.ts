@@ -1972,7 +1972,7 @@ export const zFile = z.union([
         created_at: z.string(),
         file_type: z.nullable(z.enum(['connected-file'])),
         external_provider_file_id: z.string(),
-        external_provider_context: z.union([
+        microsoft_drive_id: z.union([
             z.string(),
             z.null()
         ])
@@ -2004,7 +2004,7 @@ export const zFile = z.union([
         created_at: z.string(),
         file_type: z.nullable(z.enum(['connected-folder'])),
         external_provider_file_id: z.string(),
-        external_provider_context: z.union([
+        microsoft_drive_id: z.union([
             z.string(),
             z.null()
         ])
