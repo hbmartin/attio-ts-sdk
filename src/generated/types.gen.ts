@@ -1039,9 +1039,9 @@ export type File = {
      */
     external_provider_file_id: string;
     /**
-     * Additional context required by the external storage provider. Required for Microsoft OneDrive to specify the drive ID
+     * Microsoft drive ID. This field is only populated for `microsoft-onedrive` entries.
      */
-    external_provider_context: string | null;
+    microsoft_drive_id: string | null;
 } | {
     id: {
         /**
@@ -1095,9 +1095,9 @@ export type File = {
      */
     external_provider_file_id: string;
     /**
-     * Additional context required by the external storage provider. Required for Microsoft OneDrive to specify the drive ID
+     * Microsoft drive ID. This field is only populated for `microsoft-onedrive` entries.
      */
-    external_provider_context: string | null;
+    microsoft_drive_id: string | null;
 };
 
 export type Meeting = {
