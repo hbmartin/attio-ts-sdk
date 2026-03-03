@@ -1039,9 +1039,9 @@ export type File = {
      */
     external_provider_file_id: string;
     /**
-     * Additional context required by the external storage provider. Required for Microsoft OneDrive to specify the drive ID
+     * Microsoft drive ID. This field is only populated for `microsoft-onedrive` entries.
      */
-    external_provider_context: string | null;
+    microsoft_drive_id: string | null;
 } | {
     id: {
         /**
@@ -1095,9 +1095,9 @@ export type File = {
      */
     external_provider_file_id: string;
     /**
-     * Additional context required by the external storage provider. Required for Microsoft OneDrive to specify the drive ID
+     * Microsoft drive ID. This field is only populated for `microsoft-onedrive` entries.
      */
-    external_provider_context: string | null;
+    microsoft_drive_id: string | null;
 };
 
 export type Meeting = {
@@ -13697,6 +13697,460 @@ export type GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptRes
 
 export type GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponse = GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponses[keyof GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponses];
 
+export type GetV2FilesData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * The object slug or ID.
+         */
+        object: string;
+        /**
+         * Used to filter files to only those on a specific record.
+         */
+        record_id: string;
+        /**
+         * Filter results by storage provider.
+         */
+        storage_provider?: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+        /**
+         * Filter by parent folder ID. Each file entry has provided optioanl parent_folder_id that can be used to filter results by folder. When omitted, entries at all nesting levels are returned.
+         */
+        parent_folder_id?: string;
+        /**
+         * The maximum number of files to return. Must be between 1 and 200. Defaults to 50.
+         */
+        limit?: number;
+        /**
+         * A pagination cursor used to fetch the next page of files. Responses with more files will include a cursor for you to use here. If not provided, the first page will be returned.
+         */
+        cursor?: string;
+    };
+    url: '/v2/files';
+};
+
+export type GetV2FilesResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Array<File>;
+        pagination: {
+            next_cursor: string | null;
+        };
+    };
+};
+
+export type GetV2FilesResponse = GetV2FilesResponses[keyof GetV2FilesResponses];
+
+export type PostV2FilesData = {
+    body: {
+        /**
+         * The object slug or ID.
+         */
+        object: string;
+        /**
+         * The ID of the record to create the file entry on.
+         */
+        record_id: string;
+        /**
+         * Creates a native Attio folder entry.
+         */
+        file_type: 'folder';
+        /**
+         * The folder name.
+         */
+        name: string;
+        /**
+         * Optional parent folder ID. Omit to create a top-level folder.
+         */
+        parent_folder_id?: string;
+    } | {
+        /**
+         * The object slug or ID.
+         */
+        object: string;
+        /**
+         * The ID of the record to create the file entry on.
+         */
+        record_id: string;
+        /**
+         * The external storage provider.
+         */
+        storage_provider: 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+        /**
+         * The ID of the file or folder in the external storage provider.
+         */
+        external_provider_file_id: string;
+        /**
+         * Microsoft drive ID. Only used when `storage_provider` is `microsoft-onedrive`.
+         */
+        microsoft_drive_id?: string | null;
+        /**
+         * Creates a connected folder entry.
+         */
+        file_type: 'connected-folder';
+    } | {
+        /**
+         * The object slug or ID.
+         */
+        object: string;
+        /**
+         * The ID of the record to create the file entry on.
+         */
+        record_id: string;
+        /**
+         * The external storage provider.
+         */
+        storage_provider: 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+        /**
+         * The ID of the file or folder in the external storage provider.
+         */
+        external_provider_file_id: string;
+        /**
+         * Microsoft drive ID. Only used when `storage_provider` is `microsoft-onedrive`.
+         */
+        microsoft_drive_id?: string | null;
+        /**
+         * Creates a connected file entry.
+         */
+        file_type: 'connected-file';
+    };
+    path?: never;
+    query?: never;
+    url: '/v2/files';
+};
+
+export type PostV2FilesResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: File;
+    };
+};
+
+export type PostV2FilesResponse = PostV2FilesResponses[keyof PostV2FilesResponses];
+
+export type DeleteV2FilesByFileIdData = {
+    body?: never;
+    path: {
+        /**
+         * A UUID which identifies the file to delete.
+         */
+        file_id: string;
+    };
+    query?: never;
+    url: '/v2/files/{file_id}';
+};
+
+export type DeleteV2FilesByFileIdErrors = {
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type DeleteV2FilesByFileIdError = DeleteV2FilesByFileIdErrors[keyof DeleteV2FilesByFileIdErrors];
+
+export type DeleteV2FilesByFileIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type DeleteV2FilesByFileIdResponse = DeleteV2FilesByFileIdResponses[keyof DeleteV2FilesByFileIdResponses];
+
+export type GetV2FilesByFileIdData = {
+    body?: never;
+    path: {
+        /**
+         * A UUID which identifies the file entry.
+         */
+        file_id: string;
+    };
+    query?: never;
+    url: '/v2/files/{file_id}';
+};
+
+export type GetV2FilesByFileIdErrors = {
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type GetV2FilesByFileIdError = GetV2FilesByFileIdErrors[keyof GetV2FilesByFileIdErrors];
+
+export type GetV2FilesByFileIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: {
+            id: {
+                /**
+                 * The ID of the workspace the file belongs to.
+                 */
+                workspace_id: string;
+                /**
+                 * The ID of the file entry.
+                 */
+                file_id: string;
+            };
+            /**
+             * The ID of the object the record belongs to.
+             */
+            object_id: string;
+            /**
+             * The slug of the object the record belongs to.
+             */
+            object_slug: string;
+            /**
+             * The ID of the record the file is linked to.
+             */
+            record_id: string;
+            /**
+             * The storage provider for this file entry.
+             */
+            storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+            /**
+             * The actor that created this file entry.
+             */
+            created_by_actor: {
+                /**
+                 * An ID to identify the actor.
+                 */
+                id?: string;
+                /**
+                 * The type of actor. [Read more information on actor types here](/docs/actors).
+                 */
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+            };
+            /**
+             * Timestamp representing when the file entry was created.
+             */
+            created_at: string;
+            /**
+             * The type of file entry.
+             */
+            file_type: 'file';
+            /**
+             * The name of the file.
+             */
+            name: string;
+            /**
+             * The content type of the file.
+             */
+            content_type: string | null;
+            /**
+             * The size of the file in bytes.
+             */
+            content_size: number | null;
+            /**
+             * The ID of the parent folder, or null if this is a top-level file.
+             */
+            parent_folder_id: string | null;
+        } | {
+            id: {
+                /**
+                 * The ID of the workspace the file belongs to.
+                 */
+                workspace_id: string;
+                /**
+                 * The ID of the file entry.
+                 */
+                file_id: string;
+            };
+            /**
+             * The ID of the object the record belongs to.
+             */
+            object_id: string;
+            /**
+             * The slug of the object the record belongs to.
+             */
+            object_slug: string;
+            /**
+             * The ID of the record the file is linked to.
+             */
+            record_id: string;
+            /**
+             * The storage provider for this file entry.
+             */
+            storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+            /**
+             * The actor that created this file entry.
+             */
+            created_by_actor: {
+                /**
+                 * An ID to identify the actor.
+                 */
+                id?: string;
+                /**
+                 * The type of actor. [Read more information on actor types here](/docs/actors).
+                 */
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+            };
+            /**
+             * Timestamp representing when the file entry was created.
+             */
+            created_at: string;
+            /**
+             * The type of file entry.
+             */
+            file_type: 'folder';
+            /**
+             * The name of the folder.
+             */
+            name: string;
+            /**
+             * The ID of the parent folder, or null if this is a top-level folder.
+             */
+            parent_folder_id: string | null;
+            /**
+             * Whether the folder contains any child entries.
+             */
+            has_children: boolean;
+        } | {
+            id: {
+                /**
+                 * The ID of the workspace the file belongs to.
+                 */
+                workspace_id: string;
+                /**
+                 * The ID of the file entry.
+                 */
+                file_id: string;
+            };
+            /**
+             * The ID of the object the record belongs to.
+             */
+            object_id: string;
+            /**
+             * The slug of the object the record belongs to.
+             */
+            object_slug: string;
+            /**
+             * The ID of the record the file is linked to.
+             */
+            record_id: string;
+            /**
+             * The storage provider for this file entry.
+             */
+            storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+            /**
+             * The actor that created this file entry.
+             */
+            created_by_actor: {
+                /**
+                 * An ID to identify the actor.
+                 */
+                id?: string;
+                /**
+                 * The type of actor. [Read more information on actor types here](/docs/actors).
+                 */
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+            };
+            /**
+             * Timestamp representing when the file entry was created.
+             */
+            created_at: string;
+            /**
+             * The type of file entry.
+             */
+            file_type: 'connected-file';
+            /**
+             * The file ID in the external storage provider.
+             */
+            external_provider_file_id: string;
+            /**
+             * Microsoft drive ID. This field is only populated for `microsoft-onedrive` entries.
+             */
+            microsoft_drive_id: string | null;
+        } | {
+            id: {
+                /**
+                 * The ID of the workspace the file belongs to.
+                 */
+                workspace_id: string;
+                /**
+                 * The ID of the file entry.
+                 */
+                file_id: string;
+            };
+            /**
+             * The ID of the object the record belongs to.
+             */
+            object_id: string;
+            /**
+             * The slug of the object the record belongs to.
+             */
+            object_slug: string;
+            /**
+             * The ID of the record the file is linked to.
+             */
+            record_id: string;
+            /**
+             * The storage provider for this file entry.
+             */
+            storage_provider: 'attio' | 'dropbox' | 'box' | 'google-drive' | 'microsoft-onedrive';
+            /**
+             * The actor that created this file entry.
+             */
+            created_by_actor: {
+                /**
+                 * An ID to identify the actor.
+                 */
+                id?: string;
+                /**
+                 * The type of actor. [Read more information on actor types here](/docs/actors).
+                 */
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+            };
+            /**
+             * Timestamp representing when the file entry was created.
+             */
+            created_at: string;
+            /**
+             * The type of file entry.
+             */
+            file_type: 'connected-folder';
+            /**
+             * The file ID in the external storage provider.
+             */
+            external_provider_file_id: string;
+            /**
+             * Microsoft drive ID. This field is only populated for `microsoft-onedrive` entries.
+             */
+            microsoft_drive_id: string | null;
+        };
+    };
+};
+
+export type GetV2FilesByFileIdResponse = GetV2FilesByFileIdResponses[keyof GetV2FilesByFileIdResponses];
+
+export type GetV2FilesByFileIdDownloadData = {
+    body?: never;
+    path: {
+        file_id: string;
+    };
+    query?: never;
+    url: '/v2/files/{file_id}/download';
+};
+
 export type GetScimV2SchemasData = {
     body?: never;
     path?: never;
@@ -13718,6 +14172,50 @@ export type GetScimV2SchemasResponses = {
 };
 
 export type GetScimV2SchemasResponse = GetScimV2SchemasResponses[keyof GetScimV2SchemasResponses];
+
+export type GetScimV2UsersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/scim/v2/Users';
+};
+
+export type GetScimV2UsersResponses = {
+    /**
+     * Success
+     */
+    200: {
+        schemas: Array<string>;
+        totalResults: number;
+        startIndex: number;
+        itemsPerPage: number;
+        Resources: Array<unknown>;
+    };
+};
+
+export type GetScimV2UsersResponse = GetScimV2UsersResponses[keyof GetScimV2UsersResponses];
+
+export type GetScimV2GroupsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/scim/v2/Groups';
+};
+
+export type GetScimV2GroupsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        schemas: Array<string>;
+        totalResults: number;
+        startIndex: number;
+        itemsPerPage: number;
+        Resources: Array<unknown>;
+    };
+};
+
+export type GetScimV2GroupsResponse = GetScimV2GroupsResponses[keyof GetScimV2GroupsResponses];
 
 export type GetV2WebhooksData = {
     body?: never;
