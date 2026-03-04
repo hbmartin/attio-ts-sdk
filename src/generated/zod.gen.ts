@@ -1972,7 +1972,7 @@ export const zFile = z.union([
         created_at: z.string(),
         file_type: z.nullable(z.enum(['connected-file'])),
         external_provider_file_id: z.string(),
-        external_provider_context: z.union([
+        microsoft_drive_id: z.union([
             z.string(),
             z.null()
         ])
@@ -2004,7 +2004,7 @@ export const zFile = z.union([
         created_at: z.string(),
         file_type: z.nullable(z.enum(['connected-folder'])),
         external_provider_file_id: z.string(),
-        external_provider_context: z.union([
+        microsoft_drive_id: z.union([
             z.string(),
             z.null()
         ])
@@ -17394,6 +17394,265 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptR
     })
 });
 
+export const zGetV2FilesData = z.object({
+    body: z.nullish(z.never()),
+    path: z.nullish(z.never()),
+    query: z.object({
+        object: z.string().min(1),
+        record_id: z.uuid(),
+        storage_provider: z.nullish(z.nullable(z.enum([
+            'attio',
+            'dropbox',
+            'box',
+            'google-drive',
+            'microsoft-onedrive'
+        ]))),
+        parent_folder_id: z.nullish(z.uuid()),
+        limit: z.nullish(z.int().gte(1).lte(200)).default(50),
+        cursor: z.nullish(z.string())
+    })
+});
+
+/**
+ * Success
+ */
+export const zGetV2FilesResponse = z.object({
+    data: z.array(zFile),
+    pagination: z.object({
+        next_cursor: z.union([
+            z.string(),
+            z.null()
+        ])
+    })
+});
+
+export const zPostV2FilesData = z.object({
+    body: z.union([
+        z.object({
+            object: z.string().min(1),
+            record_id: z.uuid(),
+            file_type: z.nullable(z.enum(['folder'])),
+            name: z.string().min(1),
+            parent_folder_id: z.nullish(z.uuid())
+        }),
+        z.object({
+            object: z.string().min(1),
+            record_id: z.uuid(),
+            storage_provider: z.nullable(z.enum([
+                'dropbox',
+                'box',
+                'google-drive',
+                'microsoft-onedrive'
+            ])),
+            external_provider_file_id: z.string(),
+            microsoft_drive_id: z.nullish(z.union([
+                z.string(),
+                z.null()
+            ])),
+            file_type: z.nullable(z.enum(['connected-folder']))
+        }),
+        z.object({
+            object: z.string().min(1),
+            record_id: z.uuid(),
+            storage_provider: z.nullable(z.enum([
+                'dropbox',
+                'box',
+                'google-drive',
+                'microsoft-onedrive'
+            ])),
+            external_provider_file_id: z.string(),
+            microsoft_drive_id: z.nullish(z.union([
+                z.string(),
+                z.null()
+            ])),
+            file_type: z.nullable(z.enum(['connected-file']))
+        })
+    ]),
+    path: z.nullish(z.never()),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zPostV2FilesResponse = z.object({
+    data: zFile
+});
+
+export const zDeleteV2FilesByFileIdData = z.object({
+    body: z.nullish(z.never()),
+    path: z.object({
+        file_id: z.uuid()
+    }),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2FilesByFileIdResponse = z.record(z.string(), z.unknown());
+
+export const zGetV2FilesByFileIdData = z.object({
+    body: z.nullish(z.never()),
+    path: z.object({
+        file_id: z.uuid()
+    }),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zGetV2FilesByFileIdResponse = z.object({
+    data: z.union([
+        z.object({
+            id: z.object({
+                workspace_id: z.uuid(),
+                file_id: z.uuid()
+            }),
+            object_id: z.uuid(),
+            object_slug: z.string(),
+            record_id: z.uuid(),
+            storage_provider: z.nullable(z.enum([
+                'attio',
+                'dropbox',
+                'box',
+                'google-drive',
+                'microsoft-onedrive'
+            ])),
+            created_by_actor: z.object({
+                id: z.nullish(z.string()),
+                type: z.nullish(z.nullable(z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ])))
+            }),
+            created_at: z.string(),
+            file_type: z.nullable(z.enum(['file'])),
+            name: z.string(),
+            content_type: z.union([
+                z.string(),
+                z.null()
+            ]),
+            content_size: z.union([
+                z.number(),
+                z.null()
+            ]),
+            parent_folder_id: z.union([
+                z.uuid(),
+                z.null()
+            ])
+        }),
+        z.object({
+            id: z.object({
+                workspace_id: z.uuid(),
+                file_id: z.uuid()
+            }),
+            object_id: z.uuid(),
+            object_slug: z.string(),
+            record_id: z.uuid(),
+            storage_provider: z.nullable(z.enum([
+                'attio',
+                'dropbox',
+                'box',
+                'google-drive',
+                'microsoft-onedrive'
+            ])),
+            created_by_actor: z.object({
+                id: z.nullish(z.string()),
+                type: z.nullish(z.nullable(z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ])))
+            }),
+            created_at: z.string(),
+            file_type: z.nullable(z.enum(['folder'])),
+            name: z.string(),
+            parent_folder_id: z.union([
+                z.uuid(),
+                z.null()
+            ]),
+            has_children: z.boolean()
+        }),
+        z.object({
+            id: z.object({
+                workspace_id: z.uuid(),
+                file_id: z.uuid()
+            }),
+            object_id: z.uuid(),
+            object_slug: z.string(),
+            record_id: z.uuid(),
+            storage_provider: z.nullable(z.enum([
+                'attio',
+                'dropbox',
+                'box',
+                'google-drive',
+                'microsoft-onedrive'
+            ])),
+            created_by_actor: z.object({
+                id: z.nullish(z.string()),
+                type: z.nullish(z.nullable(z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ])))
+            }),
+            created_at: z.string(),
+            file_type: z.nullable(z.enum(['connected-file'])),
+            external_provider_file_id: z.string(),
+            microsoft_drive_id: z.union([
+                z.string(),
+                z.null()
+            ])
+        }),
+        z.object({
+            id: z.object({
+                workspace_id: z.uuid(),
+                file_id: z.uuid()
+            }),
+            object_id: z.uuid(),
+            object_slug: z.string(),
+            record_id: z.uuid(),
+            storage_provider: z.nullable(z.enum([
+                'attio',
+                'dropbox',
+                'box',
+                'google-drive',
+                'microsoft-onedrive'
+            ])),
+            created_by_actor: z.object({
+                id: z.nullish(z.string()),
+                type: z.nullish(z.nullable(z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ])))
+            }),
+            created_at: z.string(),
+            file_type: z.nullable(z.enum(['connected-folder'])),
+            external_provider_file_id: z.string(),
+            microsoft_drive_id: z.union([
+                z.string(),
+                z.null()
+            ])
+        })
+    ])
+});
+
+export const zGetV2FilesByFileIdDownloadData = z.object({
+    body: z.nullish(z.never()),
+    path: z.object({
+        file_id: z.uuid()
+    }),
+    query: z.nullish(z.never())
+});
+
 export const zGetScimV2SchemasData = z.object({
     body: z.nullish(z.never()),
     path: z.nullish(z.never()),
@@ -17404,6 +17663,40 @@ export const zGetScimV2SchemasData = z.object({
  * Success
  */
 export const zGetScimV2SchemasResponse = z.object({
+    schemas: z.array(z.string()),
+    totalResults: z.number(),
+    startIndex: z.number(),
+    itemsPerPage: z.number(),
+    Resources: z.array(z.unknown())
+});
+
+export const zGetScimV2UsersData = z.object({
+    body: z.nullish(z.never()),
+    path: z.nullish(z.never()),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zGetScimV2UsersResponse = z.object({
+    schemas: z.array(z.string()),
+    totalResults: z.number(),
+    startIndex: z.number(),
+    itemsPerPage: z.number(),
+    Resources: z.array(z.unknown())
+});
+
+export const zGetScimV2GroupsData = z.object({
+    body: z.nullish(z.never()),
+    path: z.nullish(z.never()),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zGetScimV2GroupsResponse = z.object({
     schemas: z.array(z.string()),
     totalResults: z.number(),
     startIndex: z.number(),
