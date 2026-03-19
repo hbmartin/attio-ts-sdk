@@ -17687,6 +17687,44 @@ export const zPostScimV2GroupsResponse = z.object({
     })
 });
 
+export const zPatchScimV2UsersByUserIdData = z.object({
+    body: z.nullish(z.never()),
+    path: z.nullish(z.never()),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zPatchScimV2UsersByUserIdResponse = z.object({
+    schemas: z.array(z.string()),
+    id: z.string(),
+    userName: z.string(),
+    name: z.object({
+        givenName: z.string(),
+        familyName: z.string()
+    }),
+    emails: z.array(z.object({
+        value: z.string(),
+        primary: z.boolean(),
+        type: z.nullish(z.string())
+    })),
+    roles: z.array(z.object({
+        value: z.string(),
+        primary: z.boolean()
+    })),
+    profileUrl: z.union([
+        z.string(),
+        z.null()
+    ]),
+    active: z.boolean(),
+    meta: z.object({
+        resourceType: z.string(),
+        created: z.string(),
+        lastModified: z.string()
+    })
+});
+
 export const zGetV2WebhooksData = z.object({
     body: z.nullish(z.never()),
     path: z.nullish(z.never()),
