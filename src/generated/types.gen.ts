@@ -14132,6 +14132,46 @@ export type PostScimV2GroupsResponses = {
 
 export type PostScimV2GroupsResponse = PostScimV2GroupsResponses[keyof PostScimV2GroupsResponses];
 
+export type PatchScimV2UsersByUserIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/scim/v2/Users/{user_id}';
+};
+
+export type PatchScimV2UsersByUserIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        schemas: Array<string>;
+        id: string;
+        userName: string;
+        name: {
+            givenName: string;
+            familyName: string;
+        };
+        emails: Array<{
+            value: string;
+            primary: boolean;
+            type?: string;
+        }>;
+        roles: Array<{
+            value: string;
+            primary: boolean;
+        }>;
+        profileUrl: string | null;
+        active: boolean;
+        meta: {
+            resourceType: string;
+            created: string;
+            lastModified: string;
+        };
+    };
+};
+
+export type PatchScimV2UsersByUserIdResponse = PatchScimV2UsersByUserIdResponses[keyof PatchScimV2UsersByUserIdResponses];
+
 export type GetV2WebhooksData = {
     body?: never;
     path?: never;
