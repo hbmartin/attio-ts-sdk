@@ -309,7 +309,7 @@ export type OutputValue = {
     /**
      * The ISO4217 currency code representing the currency that the value is stored in.
      */
-    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
     /**
      * The attribute type of the value.
      */
@@ -642,7 +642,7 @@ export type Attribute = {
             /**
              * The ISO4217 code representing the currency that values for this attribute should be stored in.
              */
-            default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+            default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
             /**
              * How the currency should be displayed across the app. "code" will display the ISO currency code e.g. "USD", "name" will display the localized currency name e.g. "British pound", "narrowSymbol" will display "$1" instead of "US$1" and "symbol" will display a localized currency symbol such as "$".
              */
@@ -1679,7 +1679,7 @@ export type PostV2ByTargetByIdentifierAttributesData = {
                     /**
                      * The ISO4217 code representing the currency that values for this attribute should be stored in.
                      */
-                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * How the currency should be displayed across the app. "code" will display the ISO currency code e.g. "USD", "name" will display the localized currency name e.g. "British pound", "narrowSymbol" will display "$1" instead of "US$1" and "symbol" will display a localized currency symbol such as "$".
                      */
@@ -1843,7 +1843,7 @@ export type PatchV2ByTargetByIdentifierAttributesByAttributeData = {
                     /**
                      * The ISO4217 code representing the currency that values for this attribute should be stored in.
                      */
-                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * How the currency should be displayed across the app. "code" will display the ISO currency code e.g. "USD", "name" will display the localized currency name e.g. "British pound", "narrowSymbol" will display "$1" instead of "US$1" and "symbol" will display a localized currency symbol such as "$".
                      */
@@ -2332,11 +2332,15 @@ export type PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResp
 export type PostV2ObjectsByObjectRecordsQueryData = {
     body: {
         /**
-         * An object used to filter results to a subset of results. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).
+         * An object used to filter results to a subset of results. Cannot be used together with `filter_view_id`. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).
          */
         filter?: {
             [key: string]: unknown;
         };
+        /**
+         * UUID of a saved view on this object or list. When set, results are filtered using that view's filter configuration. Cannot be used together with `filter`. Note: sorts, limits, and offsets are applied independently and are not taken from the view. All attributes are returned regardless of which attributes are visible in the view.
+         */
+        filter_view_id?: string;
         /**
          * An object used to sort results. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).
          */
@@ -2537,7 +2541,7 @@ export type PostV2ObjectsByObjectRecordsQueryResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -3202,7 +3206,7 @@ export type PostV2ObjectsByObjectRecordsResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -3872,7 +3876,7 @@ export type PutV2ObjectsByObjectRecordsResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -4564,7 +4568,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -5233,7 +5237,7 @@ export type PatchV2ObjectsByObjectRecordsByRecordIdResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -5902,7 +5906,7 @@ export type PutV2ObjectsByObjectRecordsByRecordIdResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -6552,7 +6556,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The ISO4217 currency code representing the currency that the value is stored in.
              */
-            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
             /**
              * The attribute type of the value.
              */
@@ -7472,11 +7476,15 @@ export type PatchV2ListsByListResponse = PatchV2ListsByListResponses[keyof Patch
 export type PostV2ListsByListEntriesQueryData = {
     body: {
         /**
-         * An object used to filter results to a subset of results. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).
+         * An object used to filter results to a subset of results. Cannot be used together with `filter_view_id`. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).
          */
         filter?: {
             [key: string]: unknown;
         };
+        /**
+         * UUID of a saved view on this object or list. When set, results are filtered using that view's filter configuration. Cannot be used together with `filter`. Note: sorts, limits, and offsets are applied independently and are not taken from the view. All attributes are returned regardless of which attributes are visible in the view.
+         */
+        filter_view_id?: string;
         /**
          * An object used to sort results. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).
          */
@@ -7672,7 +7680,7 @@ export type PostV2ListsByListEntriesQueryResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -8349,7 +8357,7 @@ export type PostV2ListsByListEntriesResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -9026,7 +9034,7 @@ export type PutV2ListsByListEntriesResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -9722,7 +9730,7 @@ export type GetV2ListsByListEntriesByEntryIdResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -10395,7 +10403,7 @@ export type PatchV2ListsByListEntriesByEntryIdResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -11068,7 +11076,7 @@ export type PutV2ListsByListEntriesByEntryIdResponses = {
                     /**
                      * The ISO4217 currency code representing the currency that the value is stored in.
                      */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
                     /**
                      * The attribute type of the value.
                      */
@@ -11709,7 +11717,7 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The ISO4217 currency code representing the currency that the value is stored in.
              */
-            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
             /**
              * The attribute type of the value.
              */
@@ -14131,6 +14139,76 @@ export type PostScimV2GroupsResponses = {
 };
 
 export type PostScimV2GroupsResponse = PostScimV2GroupsResponses[keyof PostScimV2GroupsResponses];
+
+export type PatchScimV2UsersByUserIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/scim/v2/Users/{user_id}';
+};
+
+export type PatchScimV2UsersByUserIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        schemas: Array<string>;
+        id: string;
+        userName: string;
+        name: {
+            givenName: string;
+            familyName: string;
+        };
+        emails: Array<{
+            value: string;
+            primary: boolean;
+            type?: string;
+        }>;
+        roles: Array<{
+            value: string;
+            primary: boolean;
+        }>;
+        profileUrl: string | null;
+        active: boolean;
+        meta: {
+            resourceType: string;
+            created: string;
+            lastModified: string;
+        };
+    };
+};
+
+export type PatchScimV2UsersByUserIdResponse = PatchScimV2UsersByUserIdResponses[keyof PatchScimV2UsersByUserIdResponses];
+
+export type PatchScimV2GroupsByWorkspaceTeamIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/scim/v2/Groups/{workspace_team_id}';
+};
+
+export type PatchScimV2GroupsByWorkspaceTeamIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        schemas: Array<string>;
+        id: string;
+        displayName: string;
+        members: Array<{
+            value: string;
+            $ref: string;
+            display?: string;
+        }>;
+        meta: {
+            resourceType: string;
+            created: string;
+            lastModified: string;
+        };
+    };
+};
+
+export type PatchScimV2GroupsByWorkspaceTeamIdResponse = PatchScimV2GroupsByWorkspaceTeamIdResponses[keyof PatchScimV2GroupsByWorkspaceTeamIdResponses];
 
 export type GetV2WebhooksData = {
     body?: never;

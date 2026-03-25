@@ -962,6 +962,7 @@ export const zOutputValue = z.union([
             'CZK',
             'DKK',
             'EUR',
+            'FJD',
             'HKD',
             'HUF',
             'ISK',
@@ -1710,6 +1711,7 @@ export const zAttribute = z.object({
                 'CZK',
                 'DKK',
                 'EUR',
+                'FJD',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -2319,6 +2321,7 @@ export const zPostV2ByTargetByIdentifierAttributesData = z.object({
                         'CZK',
                         'DKK',
                         'EUR',
+                        'FJD',
                         'HKD',
                         'HUF',
                         'ISK',
@@ -2432,6 +2435,7 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeData = z.object({
                         'CZK',
                         'DKK',
                         'EUR',
+                        'FJD',
                         'HKD',
                         'HUF',
                         'ISK',
@@ -2630,6 +2634,7 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusRe
 export const zPostV2ObjectsByObjectRecordsQueryData = z.object({
     body: z.object({
         filter: z.nullish(z.record(z.string(), z.unknown())),
+        filter_view_id: z.nullish(z.uuid()),
         sorts: z.nullish(z.array(z.union([z.object({
                 direction: z.nullable(z.enum(['asc', 'desc'])),
                 attribute: z.string(),
@@ -2734,6 +2739,7 @@ export const zPostV2ObjectsByObjectRecordsQueryResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -3689,6 +3695,7 @@ export const zPostV2ObjectsByObjectRecordsResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -4646,6 +4653,7 @@ export const zPutV2ObjectsByObjectRecordsResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -5612,6 +5620,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -6568,6 +6577,7 @@ export const zPatchV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -7524,6 +7534,7 @@ export const zPutV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -8473,6 +8484,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'CZK',
                 'DKK',
                 'EUR',
+                'FJD',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -9522,6 +9534,7 @@ export const zPatchV2ListsByListResponse = z.object({
 export const zPostV2ListsByListEntriesQueryData = z.object({
     body: z.object({
         filter: z.nullish(z.record(z.string(), z.unknown())),
+        filter_view_id: z.nullish(z.uuid()),
         sorts: z.nullish(z.array(z.union([z.object({
                 direction: z.nullable(z.enum(['asc', 'desc'])),
                 attribute: z.string(),
@@ -9627,6 +9640,7 @@ export const zPostV2ListsByListEntriesQueryResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -10585,6 +10599,7 @@ export const zPostV2ListsByListEntriesResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -11543,6 +11558,7 @@ export const zPutV2ListsByListEntriesResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -12510,6 +12526,7 @@ export const zGetV2ListsByListEntriesByEntryIdResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -13467,6 +13484,7 @@ export const zPatchV2ListsByListEntriesByEntryIdResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -14424,6 +14442,7 @@ export const zPutV2ListsByListEntriesByEntryIdResponse = z.object({
                     'CZK',
                     'DKK',
                     'EUR',
+                    'FJD',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -15373,6 +15392,7 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'CZK',
                 'DKK',
                 'EUR',
+                'FJD',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -17672,6 +17692,69 @@ export const zPostScimV2GroupsData = z.object({
  * Created
  */
 export const zPostScimV2GroupsResponse = z.object({
+    schemas: z.array(z.string()),
+    id: z.string(),
+    displayName: z.string(),
+    members: z.array(z.object({
+        value: z.string(),
+        $ref: z.string(),
+        display: z.nullish(z.string())
+    })),
+    meta: z.object({
+        resourceType: z.string(),
+        created: z.string(),
+        lastModified: z.string()
+    })
+});
+
+export const zPatchScimV2UsersByUserIdData = z.object({
+    body: z.nullish(z.never()),
+    path: z.nullish(z.never()),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zPatchScimV2UsersByUserIdResponse = z.object({
+    schemas: z.array(z.string()),
+    id: z.string(),
+    userName: z.string(),
+    name: z.object({
+        givenName: z.string(),
+        familyName: z.string()
+    }),
+    emails: z.array(z.object({
+        value: z.string(),
+        primary: z.boolean(),
+        type: z.nullish(z.string())
+    })),
+    roles: z.array(z.object({
+        value: z.string(),
+        primary: z.boolean()
+    })),
+    profileUrl: z.union([
+        z.string(),
+        z.null()
+    ]),
+    active: z.boolean(),
+    meta: z.object({
+        resourceType: z.string(),
+        created: z.string(),
+        lastModified: z.string()
+    })
+});
+
+export const zPatchScimV2GroupsByWorkspaceTeamIdData = z.object({
+    body: z.nullish(z.never()),
+    path: z.nullish(z.never()),
+    query: z.nullish(z.never())
+});
+
+/**
+ * Success
+ */
+export const zPatchScimV2GroupsByWorkspaceTeamIdResponse = z.object({
     schemas: z.array(z.string()),
     id: z.string(),
     displayName: z.string(),
