@@ -2,8 +2,8 @@
 
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteV2CommentsByCommentIdData, DeleteV2CommentsByCommentIdErrors, DeleteV2CommentsByCommentIdResponses, DeleteV2FilesByFileIdData, DeleteV2FilesByFileIdErrors, DeleteV2FilesByFileIdResponses, DeleteV2ListsByListEntriesByEntryIdData, DeleteV2ListsByListEntriesByEntryIdErrors, DeleteV2ListsByListEntriesByEntryIdResponses, DeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, DeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdErrors, DeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponses, DeleteV2NotesByNoteIdData, DeleteV2NotesByNoteIdErrors, DeleteV2NotesByNoteIdResponses, DeleteV2ObjectsByObjectRecordsByRecordIdData, DeleteV2ObjectsByObjectRecordsByRecordIdErrors, DeleteV2ObjectsByObjectRecordsByRecordIdResponses, DeleteV2TasksByTaskIdData, DeleteV2TasksByTaskIdErrors, DeleteV2TasksByTaskIdResponses, DeleteV2WebhooksByWebhookIdData, DeleteV2WebhooksByWebhookIdErrors, DeleteV2WebhooksByWebhookIdResponses, GetScimV2GroupsData, GetScimV2GroupsResponses, GetScimV2SchemasData, GetScimV2SchemasResponses, GetScimV2UsersData, GetScimV2UsersResponses, GetV2ByTargetByIdentifierAttributesByAttributeData, GetV2ByTargetByIdentifierAttributesByAttributeErrors, GetV2ByTargetByIdentifierAttributesByAttributeOptionsData, GetV2ByTargetByIdentifierAttributesByAttributeOptionsErrors, GetV2ByTargetByIdentifierAttributesByAttributeOptionsResponses, GetV2ByTargetByIdentifierAttributesByAttributeResponses, GetV2ByTargetByIdentifierAttributesByAttributeStatusesData, GetV2ByTargetByIdentifierAttributesByAttributeStatusesErrors, GetV2ByTargetByIdentifierAttributesByAttributeStatusesResponses, GetV2ByTargetByIdentifierAttributesData, GetV2ByTargetByIdentifierAttributesResponses, GetV2CommentsByCommentIdData, GetV2CommentsByCommentIdErrors, GetV2CommentsByCommentIdResponses, GetV2FilesByFileIdData, GetV2FilesByFileIdDownloadData, GetV2FilesByFileIdErrors, GetV2FilesByFileIdResponses, GetV2FilesData, GetV2FilesResponses, GetV2ListsByListData, GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesData, GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesErrors, GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses, GetV2ListsByListEntriesByEntryIdData, GetV2ListsByListEntriesByEntryIdErrors, GetV2ListsByListEntriesByEntryIdResponses, GetV2ListsByListErrors, GetV2ListsByListResponses, GetV2ListsData, GetV2ListsResponses, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdErrors, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponses, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptData, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponses, GetV2MeetingsByMeetingIdCallRecordingsData, GetV2MeetingsByMeetingIdCallRecordingsResponses, GetV2MeetingsByMeetingIdData, GetV2MeetingsByMeetingIdErrors, GetV2MeetingsByMeetingIdResponses, GetV2MeetingsData, GetV2MeetingsResponses, GetV2NotesByNoteIdData, GetV2NotesByNoteIdErrors, GetV2NotesByNoteIdResponses, GetV2NotesData, GetV2NotesErrors, GetV2NotesResponses, GetV2ObjectsByObjectData, GetV2ObjectsByObjectErrors, GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesData, GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesErrors, GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponses, GetV2ObjectsByObjectRecordsByRecordIdData, GetV2ObjectsByObjectRecordsByRecordIdEntriesData, GetV2ObjectsByObjectRecordsByRecordIdEntriesResponses, GetV2ObjectsByObjectRecordsByRecordIdErrors, GetV2ObjectsByObjectRecordsByRecordIdResponses, GetV2ObjectsByObjectResponses, GetV2ObjectsData, GetV2ObjectsResponses, GetV2SelfData, GetV2SelfResponses, GetV2TasksByTaskIdData, GetV2TasksByTaskIdErrors, GetV2TasksByTaskIdResponses, GetV2TasksData, GetV2TasksResponses, GetV2ThreadsByThreadIdData, GetV2ThreadsByThreadIdErrors, GetV2ThreadsByThreadIdResponses, GetV2ThreadsData, GetV2ThreadsResponses, GetV2WebhooksByWebhookIdData, GetV2WebhooksByWebhookIdErrors, GetV2WebhooksByWebhookIdResponses, GetV2WebhooksData, GetV2WebhooksResponses, GetV2WorkspaceMembersByWorkspaceMemberIdData, GetV2WorkspaceMembersByWorkspaceMemberIdErrors, GetV2WorkspaceMembersByWorkspaceMemberIdResponses, GetV2WorkspaceMembersData, GetV2WorkspaceMembersResponses, PatchV2ByTargetByIdentifierAttributesByAttributeData, PatchV2ByTargetByIdentifierAttributesByAttributeErrors, PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionData, PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionErrors, PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionResponses, PatchV2ByTargetByIdentifierAttributesByAttributeResponses, PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusData, PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusErrors, PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResponses, PatchV2ListsByListData, PatchV2ListsByListEntriesByEntryIdData, PatchV2ListsByListEntriesByEntryIdErrors, PatchV2ListsByListEntriesByEntryIdResponses, PatchV2ListsByListErrors, PatchV2ListsByListResponses, PatchV2ObjectsByObjectData, PatchV2ObjectsByObjectErrors, PatchV2ObjectsByObjectRecordsByRecordIdData, PatchV2ObjectsByObjectRecordsByRecordIdErrors, PatchV2ObjectsByObjectRecordsByRecordIdResponses, PatchV2ObjectsByObjectResponses, PatchV2TasksByTaskIdData, PatchV2TasksByTaskIdErrors, PatchV2TasksByTaskIdResponses, PatchV2WebhooksByWebhookIdData, PatchV2WebhooksByWebhookIdErrors, PatchV2WebhooksByWebhookIdResponses, PostScimV2GroupsData, PostScimV2GroupsResponses, PostScimV2UsersData, PostScimV2UsersResponses, PostV2ByTargetByIdentifierAttributesByAttributeOptionsData, PostV2ByTargetByIdentifierAttributesByAttributeOptionsErrors, PostV2ByTargetByIdentifierAttributesByAttributeOptionsResponses, PostV2ByTargetByIdentifierAttributesByAttributeStatusesData, PostV2ByTargetByIdentifierAttributesByAttributeStatusesErrors, PostV2ByTargetByIdentifierAttributesByAttributeStatusesResponses, PostV2ByTargetByIdentifierAttributesData, PostV2ByTargetByIdentifierAttributesErrors, PostV2ByTargetByIdentifierAttributesResponses, PostV2CommentsData, PostV2CommentsErrors, PostV2CommentsResponses, PostV2FilesData, PostV2FilesResponses, PostV2FilesUploadData, PostV2FilesUploadResponses, PostV2ListsByListEntriesData, PostV2ListsByListEntriesErrors, PostV2ListsByListEntriesQueryData, PostV2ListsByListEntriesQueryErrors, PostV2ListsByListEntriesQueryResponses, PostV2ListsByListEntriesResponses, PostV2ListsData, PostV2ListsErrors, PostV2ListsResponses, PostV2MeetingsByMeetingIdCallRecordingsData, PostV2MeetingsByMeetingIdCallRecordingsErrors, PostV2MeetingsByMeetingIdCallRecordingsResponses, PostV2MeetingsData, PostV2MeetingsErrors, PostV2MeetingsResponses, PostV2NotesData, PostV2NotesErrors, PostV2NotesResponses, PostV2ObjectsByObjectRecordsData, PostV2ObjectsByObjectRecordsErrors, PostV2ObjectsByObjectRecordsQueryData, PostV2ObjectsByObjectRecordsQueryErrors, PostV2ObjectsByObjectRecordsQueryResponses, PostV2ObjectsByObjectRecordsResponses, PostV2ObjectsData, PostV2ObjectsErrors, PostV2ObjectsRecordsSearchData, PostV2ObjectsRecordsSearchErrors, PostV2ObjectsRecordsSearchResponses, PostV2ObjectsResponses, PostV2TasksData, PostV2TasksErrors, PostV2TasksResponses, PostV2WebhooksData, PostV2WebhooksErrors, PostV2WebhooksResponses, PutV2ListsByListEntriesByEntryIdData, PutV2ListsByListEntriesByEntryIdErrors, PutV2ListsByListEntriesByEntryIdResponses, PutV2ListsByListEntriesData, PutV2ListsByListEntriesErrors, PutV2ListsByListEntriesResponses, PutV2ObjectsByObjectRecordsByRecordIdData, PutV2ObjectsByObjectRecordsByRecordIdErrors, PutV2ObjectsByObjectRecordsByRecordIdResponses, PutV2ObjectsByObjectRecordsData, PutV2ObjectsByObjectRecordsErrors, PutV2ObjectsByObjectRecordsResponses } from './types.gen';
-import { zDeleteV2CommentsByCommentIdData, zDeleteV2CommentsByCommentIdResponse, zDeleteV2FilesByFileIdData, zDeleteV2FilesByFileIdResponse, zDeleteV2ListsByListEntriesByEntryIdData, zDeleteV2ListsByListEntriesByEntryIdResponse, zDeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, zDeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse, zDeleteV2NotesByNoteIdData, zDeleteV2NotesByNoteIdResponse, zDeleteV2ObjectsByObjectRecordsByRecordIdData, zDeleteV2ObjectsByObjectRecordsByRecordIdResponse, zDeleteV2TasksByTaskIdData, zDeleteV2TasksByTaskIdResponse, zDeleteV2WebhooksByWebhookIdData, zDeleteV2WebhooksByWebhookIdResponse, zGetScimV2GroupsData, zGetScimV2GroupsResponse, zGetScimV2SchemasData, zGetScimV2SchemasResponse, zGetScimV2UsersData, zGetScimV2UsersResponse, zGetV2ByTargetByIdentifierAttributesByAttributeData, zGetV2ByTargetByIdentifierAttributesByAttributeOptionsData, zGetV2ByTargetByIdentifierAttributesByAttributeOptionsResponse, zGetV2ByTargetByIdentifierAttributesByAttributeResponse, zGetV2ByTargetByIdentifierAttributesByAttributeStatusesData, zGetV2ByTargetByIdentifierAttributesByAttributeStatusesResponse, zGetV2ByTargetByIdentifierAttributesData, zGetV2ByTargetByIdentifierAttributesResponse, zGetV2CommentsByCommentIdData, zGetV2CommentsByCommentIdResponse, zGetV2FilesByFileIdData, zGetV2FilesByFileIdDownloadData, zGetV2FilesByFileIdResponse, zGetV2FilesData, zGetV2FilesResponse, zGetV2ListsByListData, zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesData, zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponse, zGetV2ListsByListEntriesByEntryIdData, zGetV2ListsByListEntriesByEntryIdResponse, zGetV2ListsByListResponse, zGetV2ListsData, zGetV2ListsResponse, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptData, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponse, zGetV2MeetingsByMeetingIdCallRecordingsData, zGetV2MeetingsByMeetingIdCallRecordingsResponse, zGetV2MeetingsByMeetingIdData, zGetV2MeetingsByMeetingIdResponse, zGetV2MeetingsData, zGetV2MeetingsResponse, zGetV2NotesByNoteIdData, zGetV2NotesByNoteIdResponse, zGetV2NotesData, zGetV2NotesResponse, zGetV2ObjectsByObjectData, zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesData, zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponse, zGetV2ObjectsByObjectRecordsByRecordIdData, zGetV2ObjectsByObjectRecordsByRecordIdEntriesData, zGetV2ObjectsByObjectRecordsByRecordIdEntriesResponse, zGetV2ObjectsByObjectRecordsByRecordIdResponse, zGetV2ObjectsByObjectResponse, zGetV2ObjectsData, zGetV2ObjectsResponse, zGetV2SelfData, zGetV2SelfResponse, zGetV2TasksByTaskIdData, zGetV2TasksByTaskIdResponse, zGetV2TasksData, zGetV2TasksResponse, zGetV2ThreadsByThreadIdData, zGetV2ThreadsByThreadIdResponse, zGetV2ThreadsData, zGetV2ThreadsResponse, zGetV2WebhooksByWebhookIdData, zGetV2WebhooksByWebhookIdResponse, zGetV2WebhooksData, zGetV2WebhooksResponse, zGetV2WorkspaceMembersByWorkspaceMemberIdData, zGetV2WorkspaceMembersByWorkspaceMemberIdResponse, zGetV2WorkspaceMembersData, zGetV2WorkspaceMembersResponse, zPatchV2ByTargetByIdentifierAttributesByAttributeData, zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionData, zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionResponse, zPatchV2ByTargetByIdentifierAttributesByAttributeResponse, zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusData, zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResponse, zPatchV2ListsByListData, zPatchV2ListsByListEntriesByEntryIdData, zPatchV2ListsByListEntriesByEntryIdResponse, zPatchV2ListsByListResponse, zPatchV2ObjectsByObjectData, zPatchV2ObjectsByObjectRecordsByRecordIdData, zPatchV2ObjectsByObjectRecordsByRecordIdResponse, zPatchV2ObjectsByObjectResponse, zPatchV2TasksByTaskIdData, zPatchV2TasksByTaskIdResponse, zPatchV2WebhooksByWebhookIdData, zPatchV2WebhooksByWebhookIdResponse, zPostScimV2GroupsData, zPostScimV2GroupsResponse, zPostScimV2UsersData, zPostScimV2UsersResponse, zPostV2ByTargetByIdentifierAttributesByAttributeOptionsData, zPostV2ByTargetByIdentifierAttributesByAttributeOptionsResponse, zPostV2ByTargetByIdentifierAttributesByAttributeStatusesData, zPostV2ByTargetByIdentifierAttributesByAttributeStatusesResponse, zPostV2ByTargetByIdentifierAttributesData, zPostV2ByTargetByIdentifierAttributesResponse, zPostV2CommentsData, zPostV2CommentsResponse, zPostV2FilesData, zPostV2FilesResponse, zPostV2FilesUploadData, zPostV2FilesUploadResponse, zPostV2ListsByListEntriesData, zPostV2ListsByListEntriesQueryData, zPostV2ListsByListEntriesQueryResponse, zPostV2ListsByListEntriesResponse, zPostV2ListsData, zPostV2ListsResponse, zPostV2MeetingsByMeetingIdCallRecordingsData, zPostV2MeetingsByMeetingIdCallRecordingsResponse, zPostV2MeetingsData, zPostV2MeetingsResponse, zPostV2NotesData, zPostV2NotesResponse, zPostV2ObjectsByObjectRecordsData, zPostV2ObjectsByObjectRecordsQueryData, zPostV2ObjectsByObjectRecordsQueryResponse, zPostV2ObjectsByObjectRecordsResponse, zPostV2ObjectsData, zPostV2ObjectsRecordsSearchData, zPostV2ObjectsRecordsSearchResponse, zPostV2ObjectsResponse, zPostV2TasksData, zPostV2TasksResponse, zPostV2WebhooksData, zPostV2WebhooksResponse, zPutV2ListsByListEntriesByEntryIdData, zPutV2ListsByListEntriesByEntryIdResponse, zPutV2ListsByListEntriesData, zPutV2ListsByListEntriesResponse, zPutV2ObjectsByObjectRecordsByRecordIdData, zPutV2ObjectsByObjectRecordsByRecordIdResponse, zPutV2ObjectsByObjectRecordsData, zPutV2ObjectsByObjectRecordsResponse } from './zod.gen';
+import type { DeleteScimV2GroupsByWorkspaceTeamIdData, DeleteScimV2GroupsByWorkspaceTeamIdResponses, DeleteScimV2UsersByUserIdData, DeleteScimV2UsersByUserIdResponses, DeleteV2CommentsByCommentIdData, DeleteV2CommentsByCommentIdErrors, DeleteV2CommentsByCommentIdResponses, DeleteV2FilesByFileIdData, DeleteV2FilesByFileIdErrors, DeleteV2FilesByFileIdResponses, DeleteV2ListsByListEntriesByEntryIdData, DeleteV2ListsByListEntriesByEntryIdErrors, DeleteV2ListsByListEntriesByEntryIdResponses, DeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, DeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdErrors, DeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponses, DeleteV2NotesByNoteIdData, DeleteV2NotesByNoteIdErrors, DeleteV2NotesByNoteIdResponses, DeleteV2ObjectsByObjectRecordsByRecordIdData, DeleteV2ObjectsByObjectRecordsByRecordIdErrors, DeleteV2ObjectsByObjectRecordsByRecordIdResponses, DeleteV2TasksByTaskIdData, DeleteV2TasksByTaskIdErrors, DeleteV2TasksByTaskIdResponses, DeleteV2WebhooksByWebhookIdData, DeleteV2WebhooksByWebhookIdErrors, DeleteV2WebhooksByWebhookIdResponses, GetScimV2GroupsByWorkspaceTeamIdData, GetScimV2GroupsByWorkspaceTeamIdResponses, GetScimV2GroupsData, GetScimV2GroupsResponses, GetScimV2SchemasData, GetScimV2SchemasResponses, GetScimV2UsersByUserIdData, GetScimV2UsersByUserIdResponses, GetScimV2UsersData, GetScimV2UsersResponses, GetV2ByTargetByIdentifierAttributesByAttributeData, GetV2ByTargetByIdentifierAttributesByAttributeErrors, GetV2ByTargetByIdentifierAttributesByAttributeOptionsData, GetV2ByTargetByIdentifierAttributesByAttributeOptionsErrors, GetV2ByTargetByIdentifierAttributesByAttributeOptionsResponses, GetV2ByTargetByIdentifierAttributesByAttributeResponses, GetV2ByTargetByIdentifierAttributesByAttributeStatusesData, GetV2ByTargetByIdentifierAttributesByAttributeStatusesErrors, GetV2ByTargetByIdentifierAttributesByAttributeStatusesResponses, GetV2ByTargetByIdentifierAttributesData, GetV2ByTargetByIdentifierAttributesResponses, GetV2CommentsByCommentIdData, GetV2CommentsByCommentIdErrors, GetV2CommentsByCommentIdResponses, GetV2FilesByFileIdData, GetV2FilesByFileIdDownloadData, GetV2FilesByFileIdErrors, GetV2FilesByFileIdResponses, GetV2FilesData, GetV2FilesResponses, GetV2ListsByListData, GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesData, GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesErrors, GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses, GetV2ListsByListEntriesByEntryIdData, GetV2ListsByListEntriesByEntryIdErrors, GetV2ListsByListEntriesByEntryIdResponses, GetV2ListsByListErrors, GetV2ListsByListResponses, GetV2ListsByListViewsData, GetV2ListsByListViewsErrors, GetV2ListsByListViewsResponses, GetV2ListsData, GetV2ListsResponses, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdErrors, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponses, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptData, GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponses, GetV2MeetingsByMeetingIdCallRecordingsData, GetV2MeetingsByMeetingIdCallRecordingsResponses, GetV2MeetingsByMeetingIdData, GetV2MeetingsByMeetingIdErrors, GetV2MeetingsByMeetingIdResponses, GetV2MeetingsData, GetV2MeetingsResponses, GetV2NotesByNoteIdData, GetV2NotesByNoteIdErrors, GetV2NotesByNoteIdResponses, GetV2NotesData, GetV2NotesErrors, GetV2NotesResponses, GetV2ObjectsByObjectData, GetV2ObjectsByObjectErrors, GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesData, GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesErrors, GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponses, GetV2ObjectsByObjectRecordsByRecordIdData, GetV2ObjectsByObjectRecordsByRecordIdEntriesData, GetV2ObjectsByObjectRecordsByRecordIdEntriesResponses, GetV2ObjectsByObjectRecordsByRecordIdErrors, GetV2ObjectsByObjectRecordsByRecordIdResponses, GetV2ObjectsByObjectResponses, GetV2ObjectsByObjectViewsData, GetV2ObjectsByObjectViewsErrors, GetV2ObjectsByObjectViewsResponses, GetV2ObjectsData, GetV2ObjectsResponses, GetV2SelfData, GetV2SelfResponses, GetV2TasksByTaskIdData, GetV2TasksByTaskIdErrors, GetV2TasksByTaskIdResponses, GetV2TasksData, GetV2TasksResponses, GetV2ThreadsByThreadIdData, GetV2ThreadsByThreadIdErrors, GetV2ThreadsByThreadIdResponses, GetV2ThreadsData, GetV2ThreadsResponses, GetV2WebhooksByWebhookIdData, GetV2WebhooksByWebhookIdErrors, GetV2WebhooksByWebhookIdResponses, GetV2WebhooksData, GetV2WebhooksResponses, GetV2WorkspaceMembersByWorkspaceMemberIdData, GetV2WorkspaceMembersByWorkspaceMemberIdErrors, GetV2WorkspaceMembersByWorkspaceMemberIdResponses, GetV2WorkspaceMembersData, GetV2WorkspaceMembersResponses, PatchScimV2GroupsByWorkspaceTeamIdData, PatchScimV2GroupsByWorkspaceTeamIdResponses, PatchScimV2UsersByUserIdData, PatchScimV2UsersByUserIdResponses, PatchV2ByTargetByIdentifierAttributesByAttributeData, PatchV2ByTargetByIdentifierAttributesByAttributeErrors, PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionData, PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionErrors, PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionResponses, PatchV2ByTargetByIdentifierAttributesByAttributeResponses, PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusData, PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusErrors, PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResponses, PatchV2ListsByListData, PatchV2ListsByListEntriesByEntryIdData, PatchV2ListsByListEntriesByEntryIdErrors, PatchV2ListsByListEntriesByEntryIdResponses, PatchV2ListsByListErrors, PatchV2ListsByListResponses, PatchV2ObjectsByObjectData, PatchV2ObjectsByObjectErrors, PatchV2ObjectsByObjectRecordsByRecordIdData, PatchV2ObjectsByObjectRecordsByRecordIdErrors, PatchV2ObjectsByObjectRecordsByRecordIdResponses, PatchV2ObjectsByObjectResponses, PatchV2TasksByTaskIdData, PatchV2TasksByTaskIdErrors, PatchV2TasksByTaskIdResponses, PatchV2WebhooksByWebhookIdData, PatchV2WebhooksByWebhookIdErrors, PatchV2WebhooksByWebhookIdResponses, PostScimV2GroupsData, PostScimV2GroupsResponses, PostScimV2UsersData, PostScimV2UsersResponses, PostV2ByTargetByIdentifierAttributesByAttributeOptionsData, PostV2ByTargetByIdentifierAttributesByAttributeOptionsErrors, PostV2ByTargetByIdentifierAttributesByAttributeOptionsResponses, PostV2ByTargetByIdentifierAttributesByAttributeStatusesData, PostV2ByTargetByIdentifierAttributesByAttributeStatusesErrors, PostV2ByTargetByIdentifierAttributesByAttributeStatusesResponses, PostV2ByTargetByIdentifierAttributesData, PostV2ByTargetByIdentifierAttributesErrors, PostV2ByTargetByIdentifierAttributesResponses, PostV2CommentsData, PostV2CommentsErrors, PostV2CommentsResponses, PostV2FilesData, PostV2FilesResponses, PostV2FilesUploadData, PostV2FilesUploadResponses, PostV2ListsByListEntriesData, PostV2ListsByListEntriesErrors, PostV2ListsByListEntriesQueryData, PostV2ListsByListEntriesQueryErrors, PostV2ListsByListEntriesQueryResponses, PostV2ListsByListEntriesResponses, PostV2ListsData, PostV2ListsErrors, PostV2ListsResponses, PostV2MeetingsByMeetingIdCallRecordingsData, PostV2MeetingsByMeetingIdCallRecordingsErrors, PostV2MeetingsByMeetingIdCallRecordingsResponses, PostV2MeetingsData, PostV2MeetingsErrors, PostV2MeetingsResponses, PostV2NotesData, PostV2NotesErrors, PostV2NotesResponses, PostV2ObjectsByObjectRecordsData, PostV2ObjectsByObjectRecordsErrors, PostV2ObjectsByObjectRecordsQueryData, PostV2ObjectsByObjectRecordsQueryErrors, PostV2ObjectsByObjectRecordsQueryResponses, PostV2ObjectsByObjectRecordsResponses, PostV2ObjectsData, PostV2ObjectsErrors, PostV2ObjectsRecordsSearchData, PostV2ObjectsRecordsSearchErrors, PostV2ObjectsRecordsSearchResponses, PostV2ObjectsResponses, PostV2TasksData, PostV2TasksErrors, PostV2TasksResponses, PostV2WebhooksData, PostV2WebhooksErrors, PostV2WebhooksResponses, PutScimV2GroupsByWorkspaceTeamIdData, PutScimV2GroupsByWorkspaceTeamIdResponses, PutScimV2UsersByUserIdData, PutScimV2UsersByUserIdResponses, PutV2ListsByListEntriesByEntryIdData, PutV2ListsByListEntriesByEntryIdErrors, PutV2ListsByListEntriesByEntryIdResponses, PutV2ListsByListEntriesData, PutV2ListsByListEntriesErrors, PutV2ListsByListEntriesResponses, PutV2ObjectsByObjectRecordsByRecordIdData, PutV2ObjectsByObjectRecordsByRecordIdErrors, PutV2ObjectsByObjectRecordsByRecordIdResponses, PutV2ObjectsByObjectRecordsData, PutV2ObjectsByObjectRecordsErrors, PutV2ObjectsByObjectRecordsResponses } from './types.gen';
+import { zDeleteScimV2GroupsByWorkspaceTeamIdData, zDeleteScimV2GroupsByWorkspaceTeamIdResponse, zDeleteScimV2UsersByUserIdData, zDeleteScimV2UsersByUserIdResponse, zDeleteV2CommentsByCommentIdData, zDeleteV2CommentsByCommentIdResponse, zDeleteV2FilesByFileIdData, zDeleteV2FilesByFileIdResponse, zDeleteV2ListsByListEntriesByEntryIdData, zDeleteV2ListsByListEntriesByEntryIdResponse, zDeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, zDeleteV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse, zDeleteV2NotesByNoteIdData, zDeleteV2NotesByNoteIdResponse, zDeleteV2ObjectsByObjectRecordsByRecordIdData, zDeleteV2ObjectsByObjectRecordsByRecordIdResponse, zDeleteV2TasksByTaskIdData, zDeleteV2TasksByTaskIdResponse, zDeleteV2WebhooksByWebhookIdData, zDeleteV2WebhooksByWebhookIdResponse, zGetScimV2GroupsByWorkspaceTeamIdData, zGetScimV2GroupsByWorkspaceTeamIdResponse, zGetScimV2GroupsData, zGetScimV2GroupsResponse, zGetScimV2SchemasData, zGetScimV2SchemasResponse, zGetScimV2UsersByUserIdData, zGetScimV2UsersByUserIdResponse, zGetScimV2UsersData, zGetScimV2UsersResponse, zGetV2ByTargetByIdentifierAttributesByAttributeData, zGetV2ByTargetByIdentifierAttributesByAttributeOptionsData, zGetV2ByTargetByIdentifierAttributesByAttributeOptionsResponse, zGetV2ByTargetByIdentifierAttributesByAttributeResponse, zGetV2ByTargetByIdentifierAttributesByAttributeStatusesData, zGetV2ByTargetByIdentifierAttributesByAttributeStatusesResponse, zGetV2ByTargetByIdentifierAttributesData, zGetV2ByTargetByIdentifierAttributesResponse, zGetV2CommentsByCommentIdData, zGetV2CommentsByCommentIdResponse, zGetV2FilesByFileIdData, zGetV2FilesByFileIdDownloadData, zGetV2FilesByFileIdResponse, zGetV2FilesData, zGetV2FilesResponse, zGetV2ListsByListData, zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesData, zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponse, zGetV2ListsByListEntriesByEntryIdData, zGetV2ListsByListEntriesByEntryIdResponse, zGetV2ListsByListResponse, zGetV2ListsByListViewsData, zGetV2ListsByListViewsResponse, zGetV2ListsData, zGetV2ListsResponse, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdData, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptData, zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscriptResponse, zGetV2MeetingsByMeetingIdCallRecordingsData, zGetV2MeetingsByMeetingIdCallRecordingsResponse, zGetV2MeetingsByMeetingIdData, zGetV2MeetingsByMeetingIdResponse, zGetV2MeetingsData, zGetV2MeetingsResponse, zGetV2NotesByNoteIdData, zGetV2NotesByNoteIdResponse, zGetV2NotesData, zGetV2NotesResponse, zGetV2ObjectsByObjectData, zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesData, zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponse, zGetV2ObjectsByObjectRecordsByRecordIdData, zGetV2ObjectsByObjectRecordsByRecordIdEntriesData, zGetV2ObjectsByObjectRecordsByRecordIdEntriesResponse, zGetV2ObjectsByObjectRecordsByRecordIdResponse, zGetV2ObjectsByObjectResponse, zGetV2ObjectsByObjectViewsData, zGetV2ObjectsByObjectViewsResponse, zGetV2ObjectsData, zGetV2ObjectsResponse, zGetV2SelfData, zGetV2SelfResponse, zGetV2TasksByTaskIdData, zGetV2TasksByTaskIdResponse, zGetV2TasksData, zGetV2TasksResponse, zGetV2ThreadsByThreadIdData, zGetV2ThreadsByThreadIdResponse, zGetV2ThreadsData, zGetV2ThreadsResponse, zGetV2WebhooksByWebhookIdData, zGetV2WebhooksByWebhookIdResponse, zGetV2WebhooksData, zGetV2WebhooksResponse, zGetV2WorkspaceMembersByWorkspaceMemberIdData, zGetV2WorkspaceMembersByWorkspaceMemberIdResponse, zGetV2WorkspaceMembersData, zGetV2WorkspaceMembersResponse, zPatchScimV2GroupsByWorkspaceTeamIdData, zPatchScimV2GroupsByWorkspaceTeamIdResponse, zPatchScimV2UsersByUserIdData, zPatchScimV2UsersByUserIdResponse, zPatchV2ByTargetByIdentifierAttributesByAttributeData, zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionData, zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionResponse, zPatchV2ByTargetByIdentifierAttributesByAttributeResponse, zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusData, zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResponse, zPatchV2ListsByListData, zPatchV2ListsByListEntriesByEntryIdData, zPatchV2ListsByListEntriesByEntryIdResponse, zPatchV2ListsByListResponse, zPatchV2ObjectsByObjectData, zPatchV2ObjectsByObjectRecordsByRecordIdData, zPatchV2ObjectsByObjectRecordsByRecordIdResponse, zPatchV2ObjectsByObjectResponse, zPatchV2TasksByTaskIdData, zPatchV2TasksByTaskIdResponse, zPatchV2WebhooksByWebhookIdData, zPatchV2WebhooksByWebhookIdResponse, zPostScimV2GroupsData, zPostScimV2GroupsResponse, zPostScimV2UsersData, zPostScimV2UsersResponse, zPostV2ByTargetByIdentifierAttributesByAttributeOptionsData, zPostV2ByTargetByIdentifierAttributesByAttributeOptionsResponse, zPostV2ByTargetByIdentifierAttributesByAttributeStatusesData, zPostV2ByTargetByIdentifierAttributesByAttributeStatusesResponse, zPostV2ByTargetByIdentifierAttributesData, zPostV2ByTargetByIdentifierAttributesResponse, zPostV2CommentsData, zPostV2CommentsResponse, zPostV2FilesData, zPostV2FilesResponse, zPostV2FilesUploadData, zPostV2FilesUploadResponse, zPostV2ListsByListEntriesData, zPostV2ListsByListEntriesQueryData, zPostV2ListsByListEntriesQueryResponse, zPostV2ListsByListEntriesResponse, zPostV2ListsData, zPostV2ListsResponse, zPostV2MeetingsByMeetingIdCallRecordingsData, zPostV2MeetingsByMeetingIdCallRecordingsResponse, zPostV2MeetingsData, zPostV2MeetingsResponse, zPostV2NotesData, zPostV2NotesResponse, zPostV2ObjectsByObjectRecordsData, zPostV2ObjectsByObjectRecordsQueryData, zPostV2ObjectsByObjectRecordsQueryResponse, zPostV2ObjectsByObjectRecordsResponse, zPostV2ObjectsData, zPostV2ObjectsRecordsSearchData, zPostV2ObjectsRecordsSearchResponse, zPostV2ObjectsResponse, zPostV2TasksData, zPostV2TasksResponse, zPostV2WebhooksData, zPostV2WebhooksResponse, zPutScimV2GroupsByWorkspaceTeamIdData, zPutScimV2GroupsByWorkspaceTeamIdResponse, zPutScimV2UsersByUserIdData, zPutScimV2UsersByUserIdResponse, zPutV2ListsByListEntriesByEntryIdData, zPutV2ListsByListEntriesByEntryIdResponse, zPutV2ListsByListEntriesData, zPutV2ListsByListEntriesResponse, zPutV2ObjectsByObjectRecordsByRecordIdData, zPutV2ObjectsByObjectRecordsByRecordIdResponse, zPutV2ObjectsByObjectRecordsData, zPutV2ObjectsByObjectRecordsResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -88,11 +88,26 @@ export const patchV2ObjectsByObject = <ThrowOnError extends boolean = false>(opt
 });
 
 /**
+ * List views for object
+ *
+ * Lists saved views for an object. Results are ordered by view ID (`id.view_id` ascending).
+ *
+ * Required scopes: `object_configuration:read`.
+ */
+export const getV2ObjectsByObjectViews = <ThrowOnError extends boolean = false>(options: Options<GetV2ObjectsByObjectViewsData, ThrowOnError>) => (options.client ?? client).get<GetV2ObjectsByObjectViewsResponses, GetV2ObjectsByObjectViewsErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetV2ObjectsByObjectViewsData.parseAsync(data),
+    responseValidator: async (data) => await zGetV2ObjectsByObjectViewsResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/v2/objects/{object}/views',
+    ...options
+});
+
+/**
  * List attributes
  *
  * Lists all attributes defined on a specific object or list. Attributes are returned in the order that they are sorted by in the UI.
  *
- * Required scopes: `object_configuration:read`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read`. When `target` is `lists`, the required scopes are `list_configuration:read`.
  */
 export const getV2ByTargetByIdentifierAttributes = <ThrowOnError extends boolean = false>(options: Options<GetV2ByTargetByIdentifierAttributesData, ThrowOnError>) => (options.client ?? client).get<GetV2ByTargetByIdentifierAttributesResponses, unknown, ThrowOnError>({
     requestValidator: async (data) => await zGetV2ByTargetByIdentifierAttributesData.parseAsync(data),
@@ -130,7 +145,7 @@ export const postV2ByTargetByIdentifierAttributes = <ThrowOnError extends boolea
  *
  * Gets information about a single attribute on either an object or a list.
  *
- * Required scopes: `object_configuration:read`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read`. When `target` is `lists`, the required scopes are `list_configuration:read`.
  */
 export const getV2ByTargetByIdentifierAttributesByAttribute = <ThrowOnError extends boolean = false>(options: Options<GetV2ByTargetByIdentifierAttributesByAttributeData, ThrowOnError>) => (options.client ?? client).get<GetV2ByTargetByIdentifierAttributesByAttributeResponses, GetV2ByTargetByIdentifierAttributesByAttributeErrors, ThrowOnError>({
     requestValidator: async (data) => await zGetV2ByTargetByIdentifierAttributesByAttributeData.parseAsync(data),
@@ -145,7 +160,7 @@ export const getV2ByTargetByIdentifierAttributesByAttribute = <ThrowOnError exte
  *
  * Updates a single attribute on a given object or list.
  *
- * Required scopes: `object_configuration:read-write`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read-write`. When `target` is `lists`, the required scopes are `list_configuration:read-write`.
  */
 export const patchV2ByTargetByIdentifierAttributesByAttribute = <ThrowOnError extends boolean = false>(options: Options<PatchV2ByTargetByIdentifierAttributesByAttributeData, ThrowOnError>) => (options.client ?? client).patch<PatchV2ByTargetByIdentifierAttributesByAttributeResponses, PatchV2ByTargetByIdentifierAttributesByAttributeErrors, ThrowOnError>({
     requestValidator: async (data) => await zPatchV2ByTargetByIdentifierAttributesByAttributeData.parseAsync(data),
@@ -164,7 +179,7 @@ export const patchV2ByTargetByIdentifierAttributesByAttribute = <ThrowOnError ex
  *
  * Lists all select options for a particular attribute on either an object or a list.
  *
- * Required scopes: `object_configuration:read`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read`. When `target` is `lists`, the required scopes are `list_configuration:read`.
  */
 export const getV2ByTargetByIdentifierAttributesByAttributeOptions = <ThrowOnError extends boolean = false>(options: Options<GetV2ByTargetByIdentifierAttributesByAttributeOptionsData, ThrowOnError>) => (options.client ?? client).get<GetV2ByTargetByIdentifierAttributesByAttributeOptionsResponses, GetV2ByTargetByIdentifierAttributesByAttributeOptionsErrors, ThrowOnError>({
     requestValidator: async (data) => await zGetV2ByTargetByIdentifierAttributesByAttributeOptionsData.parseAsync(data),
@@ -179,7 +194,7 @@ export const getV2ByTargetByIdentifierAttributesByAttributeOptions = <ThrowOnErr
  *
  * Adds a select option to a select attribute on an object or a list.
  *
- * Required scopes: `object_configuration:read-write`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read-write`. When `target` is `lists`, the required scopes are `list_configuration:read-write`.
  */
 export const postV2ByTargetByIdentifierAttributesByAttributeOptions = <ThrowOnError extends boolean = false>(options: Options<PostV2ByTargetByIdentifierAttributesByAttributeOptionsData, ThrowOnError>) => (options.client ?? client).post<PostV2ByTargetByIdentifierAttributesByAttributeOptionsResponses, PostV2ByTargetByIdentifierAttributesByAttributeOptionsErrors, ThrowOnError>({
     requestValidator: async (data) => await zPostV2ByTargetByIdentifierAttributesByAttributeOptionsData.parseAsync(data),
@@ -198,7 +213,7 @@ export const postV2ByTargetByIdentifierAttributesByAttributeOptions = <ThrowOnEr
  *
  * Updates a select option on an attribute on either an object or a list.
  *
- * Required scopes: `object_configuration:read-write`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read-write`. When `target` is `lists`, the required scopes are `list_configuration:read-write`.
  */
 export const patchV2ByTargetByIdentifierAttributesByAttributeOptionsByOption = <ThrowOnError extends boolean = false>(options: Options<PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionData, ThrowOnError>) => (options.client ?? client).patch<PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionResponses, PatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionErrors, ThrowOnError>({
     requestValidator: async (data) => await zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionData.parseAsync(data),
@@ -217,7 +232,7 @@ export const patchV2ByTargetByIdentifierAttributesByAttributeOptionsByOption = <
  *
  * Lists all statuses for a particular status attribute on either an object or a list.
  *
- * Required scopes: `object_configuration:read`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read`. When `target` is `lists`, the required scopes are `list_configuration:read`.
  */
 export const getV2ByTargetByIdentifierAttributesByAttributeStatuses = <ThrowOnError extends boolean = false>(options: Options<GetV2ByTargetByIdentifierAttributesByAttributeStatusesData, ThrowOnError>) => (options.client ?? client).get<GetV2ByTargetByIdentifierAttributesByAttributeStatusesResponses, GetV2ByTargetByIdentifierAttributesByAttributeStatusesErrors, ThrowOnError>({
     requestValidator: async (data) => await zGetV2ByTargetByIdentifierAttributesByAttributeStatusesData.parseAsync(data),
@@ -232,7 +247,7 @@ export const getV2ByTargetByIdentifierAttributesByAttributeStatuses = <ThrowOnEr
  *
  * Add a new status to a status attribute on either an object or a list.
  *
- * Required scopes: `object_configuration:read-write`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read-write`. When `target` is `lists`, the required scopes are `list_configuration:read-write`.
  */
 export const postV2ByTargetByIdentifierAttributesByAttributeStatuses = <ThrowOnError extends boolean = false>(options: Options<PostV2ByTargetByIdentifierAttributesByAttributeStatusesData, ThrowOnError>) => (options.client ?? client).post<PostV2ByTargetByIdentifierAttributesByAttributeStatusesResponses, PostV2ByTargetByIdentifierAttributesByAttributeStatusesErrors, ThrowOnError>({
     requestValidator: async (data) => await zPostV2ByTargetByIdentifierAttributesByAttributeStatusesData.parseAsync(data),
@@ -251,7 +266,7 @@ export const postV2ByTargetByIdentifierAttributesByAttributeStatuses = <ThrowOnE
  *
  * Update a status on an status attribute on either an object or a list.
  *
- * Required scopes: `object_configuration:read-write`.
+ * When `target` is `objects`, the required scopes are `object_configuration:read-write`. When `target` is `lists`, the required scopes are `list_configuration:read-write`.
  */
 export const patchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatus = <ThrowOnError extends boolean = false>(options: Options<PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusData, ThrowOnError>) => (options.client ?? client).patch<PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResponses, PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusErrors, ThrowOnError>({
     requestValidator: async (data) => await zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusData.parseAsync(data),
@@ -517,6 +532,21 @@ export const patchV2ListsByList = <ThrowOnError extends boolean = false>(options
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * List views for list
+ *
+ * Lists saved views for a list. Results are ordered by view ID (`id.view_id` ascending).
+ *
+ * Required scopes: `list_configuration:read`.
+ */
+export const getV2ListsByListViews = <ThrowOnError extends boolean = false>(options: Options<GetV2ListsByListViewsData, ThrowOnError>) => (options.client ?? client).get<GetV2ListsByListViewsResponses, GetV2ListsByListViewsErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetV2ListsByListViewsData.parseAsync(data),
+    responseValidator: async (data) => await zGetV2ListsByListViewsResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/v2/lists/{list}/views',
+    ...options
 });
 
 /**
@@ -1259,6 +1289,126 @@ export const postScimV2Groups = <ThrowOnError extends boolean = false>(options?:
     responseValidator: async (data) => await zPostScimV2GroupsResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/scim/v2/Groups',
+    ...options
+});
+
+/**
+ * Delete SCIM user
+ *
+ * Deletes a SCIM user from the workspace.
+ *
+ * Required scopes: `scim_management:read-write`.
+ */
+export const deleteScimV2UsersByUserId = <ThrowOnError extends boolean = false>(options?: Options<DeleteScimV2UsersByUserIdData, ThrowOnError>) => (options?.client ?? client).delete<DeleteScimV2UsersByUserIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zDeleteScimV2UsersByUserIdData.parseAsync(data),
+    responseValidator: async (data) => await zDeleteScimV2UsersByUserIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Users/{user_id}',
+    ...options
+});
+
+/**
+ * Get SCIM user
+ *
+ * Gets a SCIM user by ID.
+ *
+ * Required scopes: `scim_management:read`.
+ */
+export const getScimV2UsersByUserId = <ThrowOnError extends boolean = false>(options?: Options<GetScimV2UsersByUserIdData, ThrowOnError>) => (options?.client ?? client).get<GetScimV2UsersByUserIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zGetScimV2UsersByUserIdData.parseAsync(data),
+    responseValidator: async (data) => await zGetScimV2UsersByUserIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Users/{user_id}',
+    ...options
+});
+
+/**
+ * Patch SCIM user
+ *
+ * Patches a SCIM user in the workspace.
+ *
+ * Required scopes: `scim_management:read-write`.
+ */
+export const patchScimV2UsersByUserId = <ThrowOnError extends boolean = false>(options?: Options<PatchScimV2UsersByUserIdData, ThrowOnError>) => (options?.client ?? client).patch<PatchScimV2UsersByUserIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPatchScimV2UsersByUserIdData.parseAsync(data),
+    responseValidator: async (data) => await zPatchScimV2UsersByUserIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Users/{user_id}',
+    ...options
+});
+
+/**
+ * Update SCIM user
+ *
+ * Updates a SCIM user in the workspace.
+ *
+ * Required scopes: `scim_management:read-write`.
+ */
+export const putScimV2UsersByUserId = <ThrowOnError extends boolean = false>(options?: Options<PutScimV2UsersByUserIdData, ThrowOnError>) => (options?.client ?? client).put<PutScimV2UsersByUserIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPutScimV2UsersByUserIdData.parseAsync(data),
+    responseValidator: async (data) => await zPutScimV2UsersByUserIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Users/{user_id}',
+    ...options
+});
+
+/**
+ * Delete SCIM group
+ *
+ * Deletes a SCIM group from the workspace.
+ *
+ * Required scopes: `scim_management:read-write`.
+ */
+export const deleteScimV2GroupsByWorkspaceTeamId = <ThrowOnError extends boolean = false>(options?: Options<DeleteScimV2GroupsByWorkspaceTeamIdData, ThrowOnError>) => (options?.client ?? client).delete<DeleteScimV2GroupsByWorkspaceTeamIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zDeleteScimV2GroupsByWorkspaceTeamIdData.parseAsync(data),
+    responseValidator: async (data) => await zDeleteScimV2GroupsByWorkspaceTeamIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Groups/{workspace_team_id}',
+    ...options
+});
+
+/**
+ * Get SCIM group
+ *
+ * Gets a SCIM group by ID.
+ *
+ * Required scopes: `scim_management:read`.
+ */
+export const getScimV2GroupsByWorkspaceTeamId = <ThrowOnError extends boolean = false>(options?: Options<GetScimV2GroupsByWorkspaceTeamIdData, ThrowOnError>) => (options?.client ?? client).get<GetScimV2GroupsByWorkspaceTeamIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zGetScimV2GroupsByWorkspaceTeamIdData.parseAsync(data),
+    responseValidator: async (data) => await zGetScimV2GroupsByWorkspaceTeamIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Groups/{workspace_team_id}',
+    ...options
+});
+
+/**
+ * Patch SCIM group
+ *
+ * Patches a SCIM group in the workspace.
+ *
+ * Required scopes: `scim_management:read-write`.
+ */
+export const patchScimV2GroupsByWorkspaceTeamId = <ThrowOnError extends boolean = false>(options?: Options<PatchScimV2GroupsByWorkspaceTeamIdData, ThrowOnError>) => (options?.client ?? client).patch<PatchScimV2GroupsByWorkspaceTeamIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPatchScimV2GroupsByWorkspaceTeamIdData.parseAsync(data),
+    responseValidator: async (data) => await zPatchScimV2GroupsByWorkspaceTeamIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Groups/{workspace_team_id}',
+    ...options
+});
+
+/**
+ * Update SCIM group
+ *
+ * Updates a SCIM group in the workspace.
+ *
+ * Required scopes: `scim_management:read-write`.
+ */
+export const putScimV2GroupsByWorkspaceTeamId = <ThrowOnError extends boolean = false>(options?: Options<PutScimV2GroupsByWorkspaceTeamIdData, ThrowOnError>) => (options?.client ?? client).put<PutScimV2GroupsByWorkspaceTeamIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await zPutScimV2GroupsByWorkspaceTeamIdData.parseAsync(data),
+    responseValidator: async (data) => await zPutScimV2GroupsByWorkspaceTeamIdResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/scim/v2/Groups/{workspace_team_id}',
     ...options
 });
 
