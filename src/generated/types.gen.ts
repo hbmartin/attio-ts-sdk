@@ -14394,6 +14394,12 @@ export type PatchScimV2UsersByUserIdResponses = {
             lastModified: string;
         };
     };
+    /**
+     * No Content
+     */
+    204: {
+        [key: string]: unknown;
+    };
 };
 
 export type PatchScimV2UsersByUserIdResponse = PatchScimV2UsersByUserIdResponses[keyof PatchScimV2UsersByUserIdResponses];
@@ -14433,6 +14439,12 @@ export type PutScimV2UsersByUserIdResponses = {
             created: string;
             lastModified: string;
         };
+    };
+    /**
+     * No Content
+     */
+    204: {
+        [key: string]: unknown;
     };
 };
 
