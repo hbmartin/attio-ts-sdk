@@ -14288,7 +14288,6 @@ export type PostScimV2GroupsResponses = {
         members: Array<{
             value: string;
             $ref: string;
-            display?: string;
         }>;
         meta: {
             resourceType: string;
@@ -14333,9 +14332,7 @@ export type GetScimV2UsersByUserIdResponses = {
         schemas: Array<string>;
         id: string;
         userName: string;
-        displayName: string;
         name: {
-            formatted: string;
             familyName: string;
             givenName: string;
         };
@@ -14394,6 +14391,12 @@ export type PatchScimV2UsersByUserIdResponses = {
             lastModified: string;
         };
     };
+    /**
+     * No Content
+     */
+    204: {
+        [key: string]: unknown;
+    };
 };
 
 export type PatchScimV2UsersByUserIdResponse = PatchScimV2UsersByUserIdResponses[keyof PatchScimV2UsersByUserIdResponses];
@@ -14433,6 +14436,12 @@ export type PutScimV2UsersByUserIdResponses = {
             created: string;
             lastModified: string;
         };
+    };
+    /**
+     * No Content
+     */
+    204: {
+        [key: string]: unknown;
     };
 };
 
@@ -14503,7 +14512,6 @@ export type PatchScimV2GroupsByWorkspaceTeamIdResponses = {
         members: Array<{
             value: string;
             $ref: string;
-            display?: string;
         }>;
         meta: {
             resourceType: string;
@@ -14533,7 +14541,6 @@ export type PutScimV2GroupsByWorkspaceTeamIdResponses = {
         members: Array<{
             value: string;
             $ref: string;
-            display?: string;
         }>;
         meta: {
             resourceType: string;
