@@ -1732,7 +1732,7 @@ export type PostV2ByTargetByIdentifierAttributesData = {
              */
             api_slug: string;
             /**
-             * The type of the attribute. This value affects the possible `config` values. Attributes of type "status" are not supported on objects.
+             * The type of the attribute. This value affects the possible `config` values.
              */
             type: 'text' | 'number' | 'checkbox' | 'currency' | 'date' | 'timestamp' | 'rating' | 'status' | 'select' | 'record-reference' | 'actor-reference' | 'location' | 'domain' | 'email-address' | 'phone-number';
             /**
@@ -2226,7 +2226,7 @@ export type GetV2ByTargetByIdentifierAttributesByAttributeStatusesData = {
     body?: never;
     path: {
         /**
-         * Whether the attribute is on an object or a list. Please note that the company and people objects do not support status attributes at this time.
+         * Whether the attribute is on an object or a list.
          */
         target: 'lists' | 'objects';
         /**
@@ -2291,7 +2291,7 @@ export type PostV2ByTargetByIdentifierAttributesByAttributeStatusesData = {
     };
     path: {
         /**
-         * Whether the attribute is on an object or a list. Please note that company and person objects do not support status attributes at this time.
+         * Whether the attribute is on an object or a list.
          */
         target: 'lists' | 'objects';
         /**
@@ -2373,7 +2373,7 @@ export type PatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusData
     };
     path: {
         /**
-         * Whether the attribute is on an object or a list. Please note that company and person objects do not support status attributes at this time.
+         * Whether the attribute is on an object or a list.
          */
         target: 'lists' | 'objects';
         /**
@@ -14288,7 +14288,6 @@ export type PostScimV2GroupsResponses = {
         members: Array<{
             value: string;
             $ref: string;
-            display?: string;
         }>;
         meta: {
             resourceType: string;
@@ -14333,9 +14332,7 @@ export type GetScimV2UsersByUserIdResponses = {
         schemas: Array<string>;
         id: string;
         userName: string;
-        displayName: string;
         name: {
-            formatted: string;
             familyName: string;
             givenName: string;
         };
@@ -14394,6 +14391,12 @@ export type PatchScimV2UsersByUserIdResponses = {
             lastModified: string;
         };
     };
+    /**
+     * No Content
+     */
+    204: {
+        [key: string]: unknown;
+    };
 };
 
 export type PatchScimV2UsersByUserIdResponse = PatchScimV2UsersByUserIdResponses[keyof PatchScimV2UsersByUserIdResponses];
@@ -14433,6 +14436,12 @@ export type PutScimV2UsersByUserIdResponses = {
             created: string;
             lastModified: string;
         };
+    };
+    /**
+     * No Content
+     */
+    204: {
+        [key: string]: unknown;
     };
 };
 
@@ -14503,7 +14512,6 @@ export type PatchScimV2GroupsByWorkspaceTeamIdResponses = {
         members: Array<{
             value: string;
             $ref: string;
-            display?: string;
         }>;
         meta: {
             resourceType: string;
@@ -14533,7 +14541,6 @@ export type PutScimV2GroupsByWorkspaceTeamIdResponses = {
         members: Array<{
             value: string;
             $ref: string;
-            display?: string;
         }>;
         meta: {
             resourceType: string;
