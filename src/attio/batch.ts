@@ -281,8 +281,7 @@ const registerBatchAbortListener = <T>(
   return cleanup;
 };
 
-interface CreateBatchLauncherParams<T>
-  extends Omit<LaunchNextItemParams<T>, "launchNext"> {}
+type CreateBatchLauncherParams<T> = Omit<LaunchNextItemParams<T>, "launchNext">;
 
 const createBatchLauncher = <T>(
   params: CreateBatchLauncherParams<T>,

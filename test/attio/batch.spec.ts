@@ -210,6 +210,27 @@ describe("runBatch", () => {
     expect(run).not.toHaveBeenCalled();
   });
 
+  it("uses a fallback AbortError when an aborted signal has no reason", async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const reasonSpy = vi.spyOn(controller.signal, "reason", "get");
+    const run = vi.fn(async () => "never");
+
+    reasonSpy.mockReturnValue(undefined);
+
+    try {
+      await expect(
+        runBatch([{ run }], { signal: controller.signal }),
+      ).rejects.toMatchObject({
+        message: "Batch operation was aborted.",
+        name: "AbortError",
+      });
+      expect(run).not.toHaveBeenCalled();
+    } finally {
+      reasonSpy.mockRestore();
+    }
+  });
+
   it("rejects when the external signal becomes aborted while registering the abort listener", async () => {
     const controller = new AbortController();
     const reason = new Error("cancelled during listener registration");
@@ -235,6 +256,37 @@ describe("runBatch", () => {
 
     expect(run).not.toHaveBeenCalled();
     expect(removeSpy).toHaveBeenCalledWith("abort", abortListener);
+  });
+
+  it("rejects once when an abort listener is invoked after cancellation", async () => {
+    const controller = new AbortController();
+    const addSpy = vi.spyOn(controller.signal, "addEventListener");
+    const removeSpy = vi.spyOn(controller.signal, "removeEventListener");
+    const reason = new Error("cancelled once");
+
+    const batch = runBatch(
+      [
+        {
+          run: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 10));
+            return "ignored";
+          },
+        },
+      ],
+      { signal: controller.signal },
+    );
+    const abortListener = addSpy.mock.calls.find(
+      ([event]) => event === "abort",
+    )?.[1];
+    if (typeof abortListener !== "function") {
+      throw new Error("Expected runBatch to register an abort listener.");
+    }
+
+    controller.abort(reason);
+    abortListener(new Event("abort"));
+
+    await expect(batch).rejects.toBe(reason);
+    expect(removeSpy).toHaveBeenCalledTimes(1);
   });
 
   it("stops launching queued items after the external signal aborts", async () => {

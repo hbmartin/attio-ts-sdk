@@ -6,43 +6,7 @@ import {
   createStructuredLoggerHooks,
   redactLogContext,
 } from "../../src/attio/logging";
-
-const restoreGlobalProperty = (
-  key: string,
-  descriptor: PropertyDescriptor | undefined,
-): void => {
-  if (descriptor) {
-    Object.defineProperty(globalThis, key, descriptor);
-    return;
-  }
-
-  Reflect.deleteProperty(globalThis, key);
-};
-
-const withGlobalProperties = <T>(
-  properties: Record<string, unknown>,
-  action: () => T,
-): T => {
-  const descriptors = Object.keys(properties).map((key) => ({
-    descriptor: Object.getOwnPropertyDescriptor(globalThis, key),
-    key,
-  }));
-
-  try {
-    for (const [key, value] of Object.entries(properties)) {
-      Object.defineProperty(globalThis, key, {
-        configurable: true,
-        value,
-        writable: true,
-      });
-    }
-    return action();
-  } finally {
-    for (const { key, descriptor } of descriptors) {
-      restoreGlobalProperty(key, descriptor);
-    }
-  }
-};
+import { withGlobalProperties } from "../test-utils";
 
 describe("logging", () => {
   describe("redactLogContext", () => {
