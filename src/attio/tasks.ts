@@ -3,6 +3,7 @@ import type {
   DeleteV2TasksByTaskIdData,
   DeleteV2TasksByTaskIdResponse,
   GetV2TasksByTaskIdData,
+  GetV2TasksData,
   Options,
   PatchV2TasksByTaskIdData,
   PostV2TasksData,
@@ -17,45 +18,130 @@ import {
 import { zTask } from "../generated/zod.gen";
 import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type BrandedId, createBrandedIdSchema } from "./ids";
-import { callAndUnwrapData, callAndUnwrapItems } from "./operations";
+import { callAndUnwrapData } from "./operations";
+import { resolveOffsetItems } from "./pagination";
+import { unwrapItems } from "./response";
 
 type Task = z.infer<typeof zTask>;
 
 type TaskId = BrandedId<"TaskId">;
 type TaskCreateData = PostV2TasksData["body"]["data"];
 type TaskUpdateData = PatchV2TasksByTaskIdData["body"]["data"];
+type TaskListQuery = NonNullable<GetV2TasksData["query"]>;
+type TaskListSort = TaskListQuery["sort"];
+
+interface TaskLinkedRecordInput {
+  object: NonNullable<TaskListQuery["linked_object"]>;
+  recordId: NonNullable<TaskListQuery["linked_record_id"]>;
+}
 
 const taskIdSchema = createBrandedIdSchema<"TaskId">("TaskId");
 
 const createTaskId = (id: string): TaskId => taskIdSchema.parse(id);
 
-export interface TaskCreateInput extends AttioClientInput {
+interface TaskCreateInput extends AttioClientInput {
   data: TaskCreateData;
   options?: Omit<Options<PostV2TasksData>, "client" | "body">;
 }
 
-export interface TaskUpdateInput extends AttioClientInput {
+interface TaskUpdateInput extends AttioClientInput {
   taskId: TaskId;
   data: TaskUpdateData;
   options?: Omit<Options<PatchV2TasksByTaskIdData>, "client" | "path" | "body">;
 }
 
-export interface TaskDeleteInput extends AttioClientInput {
+interface TaskDeleteInput extends AttioClientInput {
   taskId: TaskId;
   options?: Omit<Options<DeleteV2TasksByTaskIdData>, "client" | "path">;
 }
 
-export interface TaskGetInput extends AttioClientInput {
+interface TaskGetInput extends AttioClientInput {
   taskId: TaskId;
   options?: Omit<Options<GetV2TasksByTaskIdData>, "client" | "path">;
 }
 
-export const listTasks = async (
-  input: AttioClientInput = {},
-): Promise<Task[]> =>
-  callAndUnwrapItems(input, (client) => getV2Tasks({ client }), {
-    schema: zTask,
-  });
+interface TaskListBaseInput extends AttioClientInput {
+  limit?: TaskListQuery["limit"];
+  offset?: TaskListQuery["offset"];
+  sort?: TaskListSort;
+  assignee?: TaskListQuery["assignee"];
+  isCompleted?: TaskListQuery["is_completed"];
+  linkedRecord?: TaskLinkedRecordInput;
+  signal?: AbortSignal;
+  options?: Omit<Options<GetV2TasksData>, "client" | "query">;
+}
+
+interface TaskListSingleInput extends TaskListBaseInput {
+  paginate?: false;
+}
+
+interface TaskListCollectInput extends TaskListBaseInput {
+  paginate: true;
+  maxPages?: number;
+  maxItems?: number;
+}
+
+interface TaskListStreamInput extends TaskListBaseInput {
+  paginate: "stream";
+  maxPages?: number;
+  maxItems?: number;
+}
+
+type TaskListInput =
+  | TaskListSingleInput
+  | TaskListCollectInput
+  | TaskListStreamInput;
+
+const hasDefinedQueryValue = (query: TaskListQuery): boolean =>
+  Object.values(query).some((value) => value !== undefined);
+
+const buildTaskListQuery = (
+  input: TaskListBaseInput,
+  offset?: number,
+  limit?: number,
+): TaskListQuery | undefined => {
+  const query: TaskListQuery = {
+    limit,
+    offset,
+    sort: input.sort,
+    linked_object: input.linkedRecord?.object,
+    linked_record_id: input.linkedRecord?.recordId,
+    assignee: input.assignee,
+    is_completed: input.isCompleted,
+  };
+
+  return hasDefinedQueryValue(query) ? query : undefined;
+};
+
+export function listTasks(input: TaskListStreamInput): AsyncIterable<Task>;
+export function listTasks(
+  input?: TaskListSingleInput | TaskListCollectInput,
+): Promise<Task[]>;
+export function listTasks(
+  input: TaskListInput,
+): Promise<Task[]> | AsyncIterable<Task>;
+export function listTasks(
+  input: TaskListInput = {},
+): Promise<Task[]> | AsyncIterable<Task> {
+  const client = resolveAttioClient(input);
+
+  const fetchTasks = async (
+    offset?: number,
+    limit?: number,
+    signal?: AbortSignal,
+  ): Promise<Task[]> => {
+    const result = await getV2Tasks({
+      client,
+      query: buildTaskListQuery(input, offset, limit),
+      ...input.options,
+      signal,
+    });
+
+    return unwrapItems<Task>(result, { schema: zTask });
+  };
+
+  return resolveOffsetItems(fetchTasks, input);
+}
 
 export const getTask = async (input: TaskGetInput): Promise<Task> =>
   callAndUnwrapData(
@@ -106,5 +192,20 @@ export const deleteTask = async (
   return result.data ?? {};
 };
 
-export type { TaskCreateData, TaskId, TaskUpdateData };
+export type {
+  TaskCreateData,
+  TaskCreateInput,
+  TaskDeleteInput,
+  TaskGetInput,
+  TaskId,
+  TaskLinkedRecordInput,
+  TaskListBaseInput,
+  TaskListCollectInput,
+  TaskListInput,
+  TaskListSingleInput,
+  TaskListSort,
+  TaskListStreamInput,
+  TaskUpdateData,
+  TaskUpdateInput,
+};
 export { createTaskId, taskIdSchema };

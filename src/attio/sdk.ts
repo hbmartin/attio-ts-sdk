@@ -31,6 +31,19 @@ import {
   listAttributes,
 } from "./metadata";
 import {
+  createNote,
+  deleteNote,
+  getNote,
+  listNotes,
+  type NoteCreateInput,
+  type NoteDeleteInput,
+  type NoteGetInput,
+  type NoteListCollectInput,
+  type NoteListInput,
+  type NoteListSingleInput,
+  type NoteListStreamInput,
+} from "./notes";
+import {
   type CreateObjectInput,
   createObject,
   type GetObjectInput,
@@ -60,6 +73,27 @@ import {
   upsertRecord,
 } from "./records";
 import { createSchema, type SchemaInput } from "./schema";
+import { type RecordSearchInput, searchRecords } from "./search";
+import {
+  createTask,
+  deleteTask,
+  getTask,
+  listTasks,
+  type TaskCreateInput,
+  type TaskDeleteInput,
+  type TaskGetInput,
+  type TaskListCollectInput,
+  type TaskListInput,
+  type TaskListSingleInput,
+  type TaskListStreamInput,
+  type TaskUpdateInput,
+  updateTask,
+} from "./tasks";
+import {
+  getWorkspaceMember,
+  listWorkspaceMembers,
+  type WorkspaceMemberInput,
+} from "./workspace-members";
 
 /** Helper type to omit client and config from input types for SDK methods */
 type SdkInput<T> = T extends unknown ? Omit<T, "client" | "config"> : never;
@@ -68,6 +102,8 @@ type SdkInput<T> = T extends unknown ? Omit<T, "client" | "config"> : never;
 type RecordDeleteInput = RecordGetInput;
 
 type AttioSdkInput = AttioClientInput | AttioClientConfig;
+type SdkNote = Awaited<ReturnType<typeof getNote>>;
+type SdkTask = Awaited<ReturnType<typeof getTask>>;
 
 interface SdkRecordQuery {
   <T extends AttioRecordLike>(
@@ -104,6 +140,27 @@ interface SdkGetManyRecords {
     input: SdkInput<RecordGetManyInput<T>> & { itemSchema: ZodType<T> },
   ): Promise<T[]>;
   (input: SdkInput<RecordGetManyInput>): Promise<AttioRecordLike[]>;
+}
+
+interface SdkListNotes {
+  (input: SdkInput<NoteListStreamInput>): AsyncIterable<SdkNote>;
+  (
+    input?: SdkInput<NoteListSingleInput | NoteListCollectInput>,
+  ): Promise<SdkNote[]>;
+}
+
+interface SdkListTasks {
+  (input: SdkInput<TaskListStreamInput>): AsyncIterable<SdkTask>;
+  (
+    input?: SdkInput<TaskListSingleInput | TaskListCollectInput>,
+  ): Promise<SdkTask[]>;
+}
+
+interface SdkSearchRecords {
+  <T extends AttioRecordLike>(
+    input: SdkInput<RecordSearchInput<T>> & { itemSchema: ZodType<T> },
+  ): Promise<T[]>;
+  (input: SdkInput<RecordSearchInput>): Promise<AttioRecordLike[]>;
 }
 
 interface AttioSdk {
@@ -150,6 +207,30 @@ interface AttioSdk {
     removeEntry: (
       input: SdkInput<RemoveListEntryInput>,
     ) => ReturnType<typeof removeListEntry>;
+  };
+  notes: {
+    list: SdkListNotes;
+    get: (input: SdkInput<NoteGetInput>) => ReturnType<typeof getNote>;
+    create: (input: SdkInput<NoteCreateInput>) => ReturnType<typeof createNote>;
+    delete: (input: SdkInput<NoteDeleteInput>) => ReturnType<typeof deleteNote>;
+  };
+  tasks: {
+    list: SdkListTasks;
+    get: (input: SdkInput<TaskGetInput>) => ReturnType<typeof getTask>;
+    create: (input: SdkInput<TaskCreateInput>) => ReturnType<typeof createTask>;
+    update: (input: SdkInput<TaskUpdateInput>) => ReturnType<typeof updateTask>;
+    delete: (input: SdkInput<TaskDeleteInput>) => ReturnType<typeof deleteTask>;
+  };
+  search: {
+    records: SdkSearchRecords;
+  };
+  workspaceMembers: {
+    list: (
+      input?: SdkInput<AttioClientInput>,
+    ) => ReturnType<typeof listWorkspaceMembers>;
+    get: (
+      input: SdkInput<WorkspaceMemberInput>,
+    ) => ReturnType<typeof getWorkspaceMember>;
   };
   metadata: {
     listAttributes: (
@@ -245,6 +326,47 @@ function bindGetManyRecords(client: AttioClient): SdkGetManyRecords {
   return getMany;
 }
 
+function bindListNotes(client: AttioClient): SdkListNotes {
+  function list(input: SdkInput<NoteListStreamInput>): AsyncIterable<SdkNote>;
+  function list(
+    input?: SdkInput<NoteListSingleInput | NoteListCollectInput>,
+  ): Promise<SdkNote[]>;
+  function list(
+    input: SdkInput<NoteListInput> = {},
+  ): Promise<SdkNote[]> | AsyncIterable<SdkNote> {
+    return listNotes({ ...input, client });
+  }
+  return list;
+}
+
+function bindListTasks(client: AttioClient): SdkListTasks {
+  function list(input: SdkInput<TaskListStreamInput>): AsyncIterable<SdkTask>;
+  function list(
+    input?: SdkInput<TaskListSingleInput | TaskListCollectInput>,
+  ): Promise<SdkTask[]>;
+  function list(
+    input: SdkInput<TaskListInput> = {},
+  ): Promise<SdkTask[]> | AsyncIterable<SdkTask> {
+    return listTasks({ ...input, client });
+  }
+  return list;
+}
+
+function bindSearchRecords(client: AttioClient): SdkSearchRecords {
+  function records<T extends AttioRecordLike>(
+    input: SdkInput<RecordSearchInput<T>> & { itemSchema: ZodType<T> },
+  ): Promise<T[]>;
+  function records(
+    input: SdkInput<RecordSearchInput>,
+  ): Promise<AttioRecordLike[]>;
+  function records(
+    input: SdkInput<RecordSearchInput>,
+  ): Promise<AttioRecordLike[]> {
+    return searchRecords({ ...input, client });
+  }
+  return records;
+}
+
 const createAttioSdk = (input: AttioSdkInput = {}): AttioSdk => {
   const client = resolveAttioClient(normalizeSdkInput(input));
 
@@ -273,6 +395,26 @@ const createAttioSdk = (input: AttioSdkInput = {}): AttioSdk => {
       updateEntry: (params) => updateListEntry({ ...params, client }),
       removeEntry: (params) => removeListEntry({ ...params, client }),
     },
+    notes: {
+      list: bindListNotes(client),
+      get: (params) => getNote({ ...params, client }),
+      create: (params) => createNote({ ...params, client }),
+      delete: (params) => deleteNote({ ...params, client }),
+    },
+    tasks: {
+      list: bindListTasks(client),
+      get: (params) => getTask({ ...params, client }),
+      create: (params) => createTask({ ...params, client }),
+      update: (params) => updateTask({ ...params, client }),
+      delete: (params) => deleteTask({ ...params, client }),
+    },
+    search: {
+      records: bindSearchRecords(client),
+    },
+    workspaceMembers: {
+      list: (params = {}) => listWorkspaceMembers({ ...params, client }),
+      get: (params) => getWorkspaceMember({ ...params, client }),
+    },
     metadata: {
       listAttributes: (params) => listAttributes({ ...params, client }),
       findAttribute: (params) => findAttribute({ ...params, client }),
@@ -293,7 +435,10 @@ export type {
   RecordDeleteInput,
   SdkGetManyRecords,
   SdkInput,
+  SdkListNotes,
   SdkListQueryEntries,
+  SdkListTasks,
   SdkRecordQuery,
+  SdkSearchRecords,
 };
 export { createAttioSdk };

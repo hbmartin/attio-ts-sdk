@@ -18,7 +18,7 @@ interface WorkspaceMemberInput extends AttioClientInput {
   workspaceMemberId: WorkspaceMemberId;
 }
 
-export type { WorkspaceMemberId };
+export type { WorkspaceMemberId, WorkspaceMemberInput };
 export { createWorkspaceMemberId, workspaceMemberIdSchema };
 
 export const listWorkspaceMembers = async (input: AttioClientInput = {}) =>

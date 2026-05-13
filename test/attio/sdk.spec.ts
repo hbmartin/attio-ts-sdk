@@ -29,6 +29,26 @@ const mocks = vi.hoisted(() => ({
     updateListEntry: vi.fn().mockResolvedValue({}),
     removeListEntry: vi.fn().mockResolvedValue(true),
   },
+  notes: {
+    listNotes: vi.fn().mockResolvedValue([]),
+    getNote: vi.fn().mockResolvedValue({}),
+    createNote: vi.fn().mockResolvedValue({}),
+    deleteNote: vi.fn().mockResolvedValue(true),
+  },
+  tasks: {
+    listTasks: vi.fn().mockResolvedValue([]),
+    getTask: vi.fn().mockResolvedValue({}),
+    createTask: vi.fn().mockResolvedValue({}),
+    updateTask: vi.fn().mockResolvedValue({}),
+    deleteTask: vi.fn().mockResolvedValue({}),
+  },
+  search: {
+    searchRecords: vi.fn().mockResolvedValue([]),
+  },
+  workspaceMembers: {
+    listWorkspaceMembers: vi.fn().mockResolvedValue([]),
+    getWorkspaceMember: vi.fn().mockResolvedValue({}),
+  },
   metadata: {
     listAttributes: vi.fn().mockResolvedValue([]),
     getAttribute: vi.fn().mockResolvedValue({}),
@@ -43,6 +63,10 @@ const mocks = vi.hoisted(() => ({
 vi.mock("../../src/attio/objects", () => mocks.objects);
 vi.mock("../../src/attio/records", () => mocks.records);
 vi.mock("../../src/attio/lists", () => mocks.lists);
+vi.mock("../../src/attio/notes", () => mocks.notes);
+vi.mock("../../src/attio/tasks", () => mocks.tasks);
+vi.mock("../../src/attio/search", () => mocks.search);
+vi.mock("../../src/attio/workspace-members", () => mocks.workspaceMembers);
 vi.mock("../../src/attio/metadata", () => mocks.metadata);
 vi.mock("../../src/attio/schema", () => mocks.schema);
 
@@ -98,6 +122,40 @@ describe("createAttioSdk", () => {
       entryValues: {},
     });
     await sdk.lists.removeEntry({ list: "list_1", entryId: "entry_1" });
+
+    await sdk.notes.list({ parentObject: "people", parentRecordId: "rec_1" });
+    await sdk.notes.get({ noteId: "note_1" });
+    await sdk.notes.create({
+      parentObject: "people",
+      parentRecordId: "rec_1",
+      title: "Intro call",
+      format: "plaintext",
+      content: "Discussed next steps.",
+    });
+    await sdk.notes.delete({ noteId: "note_1" });
+
+    await sdk.tasks.list({ isCompleted: false });
+    await sdk.tasks.get({ taskId: "task_1" });
+    await sdk.tasks.create({
+      data: {
+        content: "Follow up",
+        format: "plaintext",
+        deadline_at: null,
+        is_completed: false,
+        linked_records: [],
+        assignees: [],
+      },
+    });
+    await sdk.tasks.update({
+      taskId: "task_1",
+      data: { is_completed: true },
+    });
+    await sdk.tasks.delete({ taskId: "task_1" });
+
+    await sdk.search.records({ query: "acme", objects: ["companies"] });
+
+    await sdk.workspaceMembers.list();
+    await sdk.workspaceMembers.get({ workspaceMemberId: "member_1" });
 
     await sdk.metadata.listAttributes({
       target: "objects",
@@ -198,6 +256,71 @@ describe("createAttioSdk", () => {
       client,
       list: "list_1",
       entryId: "entry_1",
+    });
+
+    expect(mocks.notes.listNotes).toHaveBeenCalledWith({
+      client,
+      parentObject: "people",
+      parentRecordId: "rec_1",
+    });
+    expect(mocks.notes.getNote).toHaveBeenCalledWith({
+      client,
+      noteId: "note_1",
+    });
+    expect(mocks.notes.createNote).toHaveBeenCalledWith({
+      client,
+      parentObject: "people",
+      parentRecordId: "rec_1",
+      title: "Intro call",
+      format: "plaintext",
+      content: "Discussed next steps.",
+    });
+    expect(mocks.notes.deleteNote).toHaveBeenCalledWith({
+      client,
+      noteId: "note_1",
+    });
+
+    expect(mocks.tasks.listTasks).toHaveBeenCalledWith({
+      client,
+      isCompleted: false,
+    });
+    expect(mocks.tasks.getTask).toHaveBeenCalledWith({
+      client,
+      taskId: "task_1",
+    });
+    expect(mocks.tasks.createTask).toHaveBeenCalledWith({
+      client,
+      data: {
+        content: "Follow up",
+        format: "plaintext",
+        deadline_at: null,
+        is_completed: false,
+        linked_records: [],
+        assignees: [],
+      },
+    });
+    expect(mocks.tasks.updateTask).toHaveBeenCalledWith({
+      client,
+      taskId: "task_1",
+      data: { is_completed: true },
+    });
+    expect(mocks.tasks.deleteTask).toHaveBeenCalledWith({
+      client,
+      taskId: "task_1",
+    });
+
+    expect(mocks.search.searchRecords).toHaveBeenCalledWith({
+      client,
+      query: "acme",
+      objects: ["companies"],
+    });
+
+    expect(mocks.workspaceMembers.listWorkspaceMembers).toHaveBeenCalledWith({
+      client,
+    });
+    expect(mocks.workspaceMembers.getWorkspaceMember).toHaveBeenCalledWith({
+      client,
+      workspaceMemberId: "member_1",
     });
 
     expect(mocks.metadata.listAttributes).toHaveBeenCalledWith({
@@ -345,5 +468,8 @@ describe("createAttioSdk", () => {
     expectTypeOf(
       sdk.lists.queryEntries({ list, paginate: "stream", itemSchema }),
     ).toEqualTypeOf<AsyncIterable<Item>>();
+    expectTypeOf(
+      sdk.search.records({ query: "acme", objects: ["companies"], itemSchema }),
+    ).toEqualTypeOf<Promise<Item[]>>();
   });
 });
