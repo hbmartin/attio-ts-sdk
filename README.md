@@ -306,6 +306,10 @@ The returned `sdk` object exposes these namespaces:
 | `sdk.objects` | `list`, `get`, `create`, `update` |
 | `sdk.records` | `create`, `update`, `upsert`, `get`, `getMany`, `delete`, `query` |
 | `sdk.lists` | `list`, `get`, `queryEntries`, `addEntry`, `updateEntry`, `removeEntry` |
+| `sdk.notes` | `list`, `get`, `create`, `delete` |
+| `sdk.tasks` | `list`, `get`, `create`, `update`, `delete` |
+| `sdk.search` | `records` |
+| `sdk.workspaceMembers` | `list`, `get` |
 | `sdk.metadata` | `listAttributes`, `findAttribute`, `getAttribute`, `getAttributeOptions`, `getAttributeStatuses`, `listAllowedValues`, `schema` |
 
 The underlying `AttioClient` is also available as `sdk.client` when you need to drop down to the generated endpoints.
@@ -622,8 +626,8 @@ For more control or when working directly with generated endpoints, use `paginat
 
 | Strategy | Helper | Endpoints |
 | --- | --- | --- |
-| **Offset-based** | `paginateOffset` | Record queries (`postV2ObjectsByObjectRecordsQuery`), list entry queries (`postV2ListsByListEntriesQuery`) |
-| **Cursor-based** | `paginate` | Meetings (`getV2Meetings`), notes (`getV2Notes`), tasks (`getV2Tasks`), webhooks, and most `GET` list endpoints |
+| **Offset-based** | `paginateOffset` | Record queries (`postV2ObjectsByObjectRecordsQuery`), list entry queries (`postV2ListsByListEntriesQuery`), notes (`getV2Notes`), tasks (`getV2Tasks`) |
+| **Cursor-based** | `paginate` | Meetings (`getV2Meetings`), webhooks, and most `GET` list endpoints |
 
 Both helpers automatically extract items and pagination metadata from raw API responses.
 
@@ -1000,99 +1004,77 @@ const { data: entry } = await postV2ListsByListEntries({
 ### Notes and Tasks
 
 ```typescript
-import { postV2Notes, postV2Tasks, patchV2TasksByTaskId } from 'attio-ts-sdk';
+import { createAttioSdk } from 'attio-ts-sdk';
 
-// Create a note on a record
-const { data: note } = await postV2Notes({
-  client,
-  body: {
-    data: {
-      parent_object: 'companies',
-      parent_record_id: 'abc-123',
-      title: 'Meeting Notes',
-      content: 'Discussed Q4 roadmap...',
-    },
+const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
+
+// Create a note on a record.
+const note = await sdk.notes.create({
+  parentObject: 'companies',
+  parentRecordId: 'abc-123',
+  title: 'Meeting Notes',
+  format: 'markdown',
+  content: 'Discussed Q4 roadmap...',
+});
+
+// Create a task.
+const task = await sdk.tasks.create({
+  data: {
+    content: 'Follow up on proposal',
+    format: 'plaintext',
+    deadline_at: '2024-12-31T17:00:00Z',
+    is_completed: false,
+    linked_records: [{ target_object: 'companies', target_record_id: 'abc-123' }],
+    assignees: [],
   },
 });
 
-// Create a task
-const { data: task } = await postV2Tasks({
-  client,
-  body: {
-    data: {
-      content: 'Follow up on proposal',
-      deadline_at: '2024-12-31T17:00:00Z',
-      linked_records: [{ target_object: 'companies', target_record_id: 'abc-123' }],
-    },
-  },
-});
-
-// Mark task as complete
-await patchV2TasksByTaskId({
-  client,
-  path: { task_id: task.data.id.task_id },
-  body: { data: { is_completed: true } },
+// Mark task as complete.
+await sdk.tasks.update({
+  taskId: task.id.task_id,
+  data: { is_completed: true },
 });
 ```
 
 ### Listing and Viewing Person Notes
 
-Use `getV2Notes` with `parent_object: 'people'` and the person's record ID to list notes attached to a specific person. The notes API uses offset pagination, so keep requesting pages until the API returns fewer than the requested limit.
+Use `sdk.notes.list` with `parentObject: 'people'` and the person's record ID to list notes attached to a specific person. Set `paginate: true` to collect every page, or `paginate: 'stream'` to iterate notes lazily.
 
 ```typescript
-import type { Note } from 'attio-ts-sdk';
-import {
-  assertOk,
-  createAttioClient,
-  getV2Notes,
-  getV2NotesByNoteId,
-} from 'attio-ts-sdk';
+import { createAttioSdk } from 'attio-ts-sdk';
 
-const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
+const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
 const personRecordId = 'person-record-id';
 
-const listPersonNotes = async (recordId: string): Promise<Note[]> => {
-  const limit = 50;
-  const notes: Note[] = [];
-
-  for (let offset = 0; ; offset += limit) {
-    const page = assertOk(
-      await getV2Notes({
-        client,
-        query: {
-          parent_object: 'people',
-          parent_record_id: recordId,
-          limit,
-          offset,
-        },
-      }),
-    );
-
-    notes.push(...page.data);
-
-    if (page.data.length < limit) {
-      return notes;
-    }
-  }
-};
-
-const personNotes = await listPersonNotes(personRecordId);
+const personNotes = await sdk.notes.list({
+  parentObject: 'people',
+  parentRecordId: personRecordId,
+  paginate: true,
+  limit: 50,
+});
 
 const firstNote = personNotes[0];
 if (firstNote) {
-  const note = assertOk(
-    await getV2NotesByNoteId({
-      client,
-      path: { note_id: firstNote.id.note_id },
-    }),
-  );
+  const note = await sdk.notes.get({ noteId: firstNote.id.note_id });
 
-  console.log(note.data.title);
-  console.log(note.data.content_markdown ?? note.data.content_plaintext);
+  console.log(note.title);
+  console.log(note.content_markdown ?? note.content_plaintext);
 }
 ```
 
 The integration token needs `note:read`, `object_configuration:read`, and `record_permission:read` scopes for these reads.
+
+The task wrapper exposes the generated list filters as camelCase inputs:
+
+```typescript
+const openTasksForPerson = await sdk.tasks.list({
+  linkedRecord: { object: 'people', recordId: personRecordId },
+  assignee: 'owner@example.com',
+  isCompleted: false,
+  sort: 'created_at:desc',
+  paginate: true,
+});
+```
 
 ### Webhooks
 

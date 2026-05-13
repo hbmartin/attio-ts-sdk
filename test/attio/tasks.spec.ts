@@ -103,6 +103,93 @@ describe("tasks", () => {
 
       expect(resolveAttioClient).toHaveBeenCalledWith({ apiKey: "test-key" });
     });
+
+    it("passes filters, sort, and pagination query parameters", async () => {
+      getTasksRequest.mockResolvedValue({ data: { data: [] } });
+
+      await listTasks({
+        limit: 100,
+        offset: 200,
+        sort: "completed_at:desc",
+        assignee: null,
+        isCompleted: true,
+        linkedRecord: {
+          object: "people",
+          recordId: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+        },
+        options: { headers: { "X-Custom": "value" } },
+      });
+
+      expect(getTasksRequest).toHaveBeenCalledWith({
+        client: {},
+        query: {
+          limit: 100,
+          offset: 200,
+          sort: "completed_at:desc",
+          linked_object: "people",
+          linked_record_id: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+          assignee: null,
+          is_completed: true,
+        },
+        headers: { "X-Custom": "value" },
+      });
+    });
+
+    it("collects all task pages when pagination is enabled", async () => {
+      const task1 = createMockTask({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          task_id: "11111111-1111-4111-8111-111111111111",
+        },
+      });
+      const task2 = createMockTask({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          task_id: "22222222-2222-4222-8222-222222222222",
+        },
+      });
+      const task3 = createMockTask({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          task_id: "33333333-3333-4333-8333-333333333333",
+        },
+      });
+      getTasksRequest
+        .mockResolvedValueOnce({ data: { data: [task1, task2] } })
+        .mockResolvedValueOnce({ data: { data: [task3] } });
+
+      const result = await listTasks({
+        paginate: true,
+        limit: 2,
+        isCompleted: false,
+      });
+
+      expect(result).toEqual([task1, task2, task3]);
+      expect(getTasksRequest).toHaveBeenNthCalledWith(1, {
+        client: {},
+        query: {
+          limit: 2,
+          offset: 0,
+          sort: undefined,
+          linked_object: undefined,
+          linked_record_id: undefined,
+          assignee: undefined,
+          is_completed: false,
+        },
+      });
+      expect(getTasksRequest).toHaveBeenNthCalledWith(2, {
+        client: {},
+        query: {
+          limit: 2,
+          offset: 2,
+          sort: undefined,
+          linked_object: undefined,
+          linked_record_id: undefined,
+          assignee: undefined,
+          is_completed: false,
+        },
+      });
+    });
   });
 
   describe("getTask", () => {

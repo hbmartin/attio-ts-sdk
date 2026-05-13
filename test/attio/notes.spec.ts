@@ -118,6 +118,80 @@ describe("notes", () => {
 
       expect(resolveAttioClient).toHaveBeenCalledWith({ apiKey: "test-key" });
     });
+
+    it("passes parent filters and pagination query parameters", async () => {
+      getNotesRequest.mockResolvedValue({ data: { data: [] } });
+
+      await listNotes({
+        parentObject: "people",
+        parentRecordId: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+        limit: 25,
+        offset: 50,
+        options: { headers: { "X-Custom": "value" } },
+      });
+
+      expect(getNotesRequest).toHaveBeenCalledWith({
+        client: {},
+        query: {
+          parent_object: "people",
+          parent_record_id: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+          limit: 25,
+          offset: 50,
+        },
+        headers: { "X-Custom": "value" },
+      });
+    });
+
+    it("collects all note pages when pagination is enabled", async () => {
+      const note1 = createMockNote({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          note_id: "11111111-1111-4111-8111-111111111111",
+        },
+      });
+      const note2 = createMockNote({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          note_id: "22222222-2222-4222-8222-222222222222",
+        },
+      });
+      const note3 = createMockNote({
+        id: {
+          workspace_id: "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+          note_id: "33333333-3333-4333-8333-333333333333",
+        },
+      });
+      getNotesRequest
+        .mockResolvedValueOnce({ data: { data: [note1, note2] } })
+        .mockResolvedValueOnce({ data: { data: [note3] } });
+
+      const result = await listNotes({
+        parentObject: "people",
+        parentRecordId: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+        paginate: true,
+        limit: 2,
+      });
+
+      expect(result).toEqual([note1, note2, note3]);
+      expect(getNotesRequest).toHaveBeenNthCalledWith(1, {
+        client: {},
+        query: {
+          parent_object: "people",
+          parent_record_id: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+          limit: 2,
+          offset: 0,
+        },
+      });
+      expect(getNotesRequest).toHaveBeenNthCalledWith(2, {
+        client: {},
+        query: {
+          parent_object: "people",
+          parent_record_id: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+          limit: 2,
+          offset: 2,
+        },
+      });
+    });
   });
 
   describe("getNote", () => {

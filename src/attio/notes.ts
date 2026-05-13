@@ -2,6 +2,7 @@ import type { z } from "zod";
 import type {
   DeleteV2NotesByNoteIdData,
   GetV2NotesByNoteIdData,
+  GetV2NotesData,
   Options,
   PostV2NotesData,
 } from "../generated";
@@ -12,13 +13,11 @@ import {
   postV2Notes,
 } from "../generated";
 import { zNote } from "../generated/zod.gen";
-import type { AttioClientInput } from "./client";
+import { type AttioClientInput, resolveAttioClient } from "./client";
 import { type BrandedId, createBrandedIdSchema } from "./ids";
-import {
-  callAndDelete,
-  callAndUnwrapData,
-  callAndUnwrapItems,
-} from "./operations";
+import { callAndDelete, callAndUnwrapData } from "./operations";
+import { resolveOffsetItems } from "./pagination";
+import { unwrapItems } from "./response";
 
 type Note = z.infer<typeof zNote>;
 
@@ -26,6 +25,7 @@ type NoteId = BrandedId<"NoteId">;
 type NoteParentObjectId = BrandedId<"NoteParentObjectId">;
 type NoteParentRecordId = BrandedId<"NoteParentRecordId">;
 type NoteFormat = PostV2NotesData["body"]["data"]["format"];
+type NoteListQuery = NonNullable<GetV2NotesData["query"]>;
 
 const noteIdSchema = createBrandedIdSchema<"NoteId">("NoteId");
 const noteParentObjectIdSchema = createBrandedIdSchema<"NoteParentObjectId">(
@@ -41,7 +41,7 @@ const createNoteParentObjectId = (id: string): NoteParentObjectId =>
 const createNoteParentRecordId = (id: string): NoteParentRecordId =>
   noteParentRecordIdSchema.parse(id);
 
-export interface NoteCreateInput extends AttioClientInput {
+interface NoteCreateInput extends AttioClientInput {
   parentObject: NoteParentObjectId;
   parentRecordId: NoteParentRecordId;
   title: string;
@@ -52,22 +52,93 @@ export interface NoteCreateInput extends AttioClientInput {
   options?: Omit<Options<PostV2NotesData>, "client" | "body">;
 }
 
-export interface NoteGetInput extends AttioClientInput {
+interface NoteGetInput extends AttioClientInput {
   noteId: NoteId;
   options?: Omit<Options<GetV2NotesByNoteIdData>, "client" | "path">;
 }
 
-export interface NoteDeleteInput extends AttioClientInput {
+interface NoteDeleteInput extends AttioClientInput {
   noteId: NoteId;
   options?: Omit<Options<DeleteV2NotesByNoteIdData>, "client" | "path">;
 }
 
-export const listNotes = async (
-  input: AttioClientInput = {},
-): Promise<Note[]> =>
-  callAndUnwrapItems(input, (client) => getV2Notes({ client }), {
-    schema: zNote,
-  });
+interface NoteListBaseInput extends AttioClientInput {
+  parentObject?: NoteListQuery["parent_object"];
+  parentRecordId?: NoteListQuery["parent_record_id"];
+  limit?: NoteListQuery["limit"];
+  offset?: NoteListQuery["offset"];
+  signal?: AbortSignal;
+  options?: Omit<Options<GetV2NotesData>, "client" | "query">;
+}
+
+interface NoteListSingleInput extends NoteListBaseInput {
+  paginate?: false;
+}
+
+interface NoteListCollectInput extends NoteListBaseInput {
+  paginate: true;
+  maxPages?: number;
+  maxItems?: number;
+}
+
+interface NoteListStreamInput extends NoteListBaseInput {
+  paginate: "stream";
+  maxPages?: number;
+  maxItems?: number;
+}
+
+type NoteListInput =
+  | NoteListSingleInput
+  | NoteListCollectInput
+  | NoteListStreamInput;
+
+const hasDefinedQueryValue = (query: NoteListQuery): boolean =>
+  Object.values(query).some((value) => value !== undefined);
+
+const buildNoteListQuery = (
+  input: NoteListBaseInput,
+  offset?: number,
+  limit?: number,
+): NoteListQuery | undefined => {
+  const query: NoteListQuery = {
+    limit,
+    offset,
+    parent_object: input.parentObject,
+    parent_record_id: input.parentRecordId,
+  };
+
+  return hasDefinedQueryValue(query) ? query : undefined;
+};
+
+export function listNotes(input: NoteListStreamInput): AsyncIterable<Note>;
+export function listNotes(
+  input?: NoteListSingleInput | NoteListCollectInput,
+): Promise<Note[]>;
+export function listNotes(
+  input: NoteListInput,
+): Promise<Note[]> | AsyncIterable<Note>;
+export function listNotes(
+  input: NoteListInput = {},
+): Promise<Note[]> | AsyncIterable<Note> {
+  const client = resolveAttioClient(input);
+
+  const fetchNotes = async (
+    offset?: number,
+    limit?: number,
+    signal?: AbortSignal,
+  ): Promise<Note[]> => {
+    const result = await getV2Notes({
+      client,
+      query: buildNoteListQuery(input, offset, limit),
+      ...input.options,
+      signal,
+    });
+
+    return unwrapItems<Note>(result, { schema: zNote });
+  };
+
+  return resolveOffsetItems(fetchNotes, input);
+}
 
 export const getNote = async (input: NoteGetInput): Promise<Note> =>
   callAndUnwrapData(
@@ -112,7 +183,20 @@ export const deleteNote = async (input: NoteDeleteInput): Promise<true> =>
     }),
   );
 
-export type { NoteFormat, NoteId, NoteParentObjectId, NoteParentRecordId };
+export type {
+  NoteCreateInput,
+  NoteDeleteInput,
+  NoteFormat,
+  NoteGetInput,
+  NoteId,
+  NoteListBaseInput,
+  NoteListCollectInput,
+  NoteListInput,
+  NoteListSingleInput,
+  NoteListStreamInput,
+  NoteParentObjectId,
+  NoteParentRecordId,
+};
 export {
   createNoteId,
   createNoteParentObjectId,
