@@ -17,6 +17,7 @@ interface BatchResult<T> {
 interface BatchOptions {
   concurrency?: number;
   stopOnError?: boolean;
+  signal?: AbortSignal;
 }
 
 interface BatchState<T> {
@@ -72,7 +73,7 @@ const recordFailure = <T>(params: RecordFailureParams<T>): void => {
     if (!state.stopped) {
       state.stopped = true;
       if (abortController && !abortController.signal.aborted) {
-        abortController.abort();
+        abortController.abort(error);
       }
       reject(error);
     }
@@ -98,6 +99,7 @@ interface LaunchNextItemParams<T> {
   resolve: (value: BatchResult<T>[]) => void;
   reject: (reason: unknown) => void;
   launchNext: () => void;
+  signal?: AbortSignal;
 }
 
 const launchNextItem = <T>(params: LaunchNextItemParams<T>): void => {
@@ -109,6 +111,7 @@ const launchNextItem = <T>(params: LaunchNextItemParams<T>): void => {
     isCancelled,
     reject,
     launchNext,
+    signal,
   } = params;
   const currentIndex = state.index;
   const item = items[currentIndex];
@@ -116,7 +119,7 @@ const launchNextItem = <T>(params: LaunchNextItemParams<T>): void => {
   state.active += 1;
 
   item
-    .run(abortController ? { signal: abortController.signal } : undefined)
+    .run(signal ? { signal } : undefined)
     .then((value) => {
       recordSuccess({
         state,
@@ -146,6 +149,47 @@ const launchNextItem = <T>(params: LaunchNextItemParams<T>): void => {
     });
 };
 
+const createAbortError = (): Error => {
+  const error = new Error("Batch operation was aborted.");
+  error.name = "AbortError";
+  return error;
+};
+
+const readAbortReason = (signal: AbortSignal): unknown =>
+  signal.reason ?? createAbortError();
+
+const combineAbortSignals = (
+  first: AbortSignal | undefined,
+  second: AbortSignal | undefined,
+): AbortSignal | undefined => {
+  if (!first) {
+    return second;
+  }
+  if (!second) {
+    return first;
+  }
+
+  const controller = new AbortController();
+  const abortFrom = (signal: AbortSignal): void => {
+    if (!controller.signal.aborted) {
+      controller.abort(readAbortReason(signal));
+    }
+  };
+
+  if (first.aborted) {
+    abortFrom(first);
+    return controller.signal;
+  }
+  if (second.aborted) {
+    abortFrom(second);
+    return controller.signal;
+  }
+
+  first.addEventListener("abort", () => abortFrom(first), { once: true });
+  second.addEventListener("abort", () => abortFrom(second), { once: true });
+  return controller.signal;
+};
+
 /**
  * Returns an empty results array when called with no items.
  */
@@ -166,11 +210,23 @@ const runBatch = <T>(
   const abortController = options.stopOnError
     ? new AbortController()
     : undefined;
+  const signal = combineAbortSignals(options.signal, abortController?.signal);
 
-  const isCancelled = (): boolean =>
-    abortController?.signal.aborted ?? state.stopped;
+  const isCancelled = (): boolean => state.stopped || signal?.aborted === true;
+
+  if (signal?.aborted) {
+    return Promise.reject(readAbortReason(signal));
+  }
 
   return new Promise((resolve, reject) => {
+    if (signal) {
+      const onAbort = (): void => {
+        state.stopped = true;
+        reject(readAbortReason(signal));
+      };
+      signal.addEventListener("abort", onAbort, { once: true });
+    }
+
     const launchNext = (): void => {
       if (isCancelled()) {
         return;
@@ -191,6 +247,7 @@ const runBatch = <T>(
           resolve,
           reject,
           launchNext,
+          signal,
         });
       }
     };

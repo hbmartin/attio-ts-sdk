@@ -467,6 +467,35 @@ describe("metadata", () => {
       ]);
     });
 
+    it("forwards request options while resolving the allowed value type", async () => {
+      const getMock = vi.mocked(getV2ByTargetByIdentifierAttributesByAttribute);
+      const statusesMock = vi.mocked(
+        getV2ByTargetByIdentifierAttributesByAttributeStatuses,
+      );
+      const headers = { "X-Request-Id": "req-123" };
+      getMock.mockResolvedValue({
+        data: createMockAttribute({ api_slug: "stage", type: "status" }),
+      });
+      statusesMock.mockResolvedValue({
+        data: [createMockStatus({ title: "Active" })],
+      });
+
+      await listAllowedValues({
+        ...buildInput("stage"),
+        options: { headers, query: { show_archived: true } },
+      });
+
+      const attributeCall = getMock.mock.calls[0]?.[0];
+      expect(attributeCall).toEqual(expect.objectContaining({ headers }));
+      expect(attributeCall).not.toHaveProperty("query");
+      expect(statusesMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers,
+          query: { show_archived: true },
+        }),
+      );
+    });
+
     it("rejects attributes without allowed values", async () => {
       const getMock = vi.mocked(getV2ByTargetByIdentifierAttributesByAttribute);
       getMock.mockResolvedValue({

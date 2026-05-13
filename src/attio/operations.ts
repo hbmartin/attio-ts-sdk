@@ -27,20 +27,33 @@ interface RecordQueryRuntime<T extends AttioRecordLike> {
   schema: ZodType<T>;
 }
 
-interface RecordQueryRuntimeInput<T extends AttioRecordLike>
+interface RecordQueryRuntimeInput<T extends AttioRecordLike = AttioRecordLike>
   extends AttioClientInput {
   filter?: AttioFilter;
   itemSchema?: ZodType<T>;
 }
 
-const createRecordQueryRuntime = <T extends AttioRecordLike>(
+function createRecordQueryRuntime<T extends AttioRecordLike>(
+  input: RecordQueryRuntimeInput<T> & { itemSchema: ZodType<T> },
+): RecordQueryRuntime<T>;
+function createRecordQueryRuntime(
+  input: RecordQueryRuntimeInput,
+): RecordQueryRuntime<AttioRecordLike>;
+function createRecordQueryRuntime<T extends AttioRecordLike>(
   input: RecordQueryRuntimeInput<T>,
-): RecordQueryRuntime<T> => ({
-  client: resolveAttioClient(input),
-  filter:
-    input.filter === undefined ? undefined : parseAttioFilter(input.filter),
-  schema: (input.itemSchema ?? rawRecordSchema) as ZodType<T>,
-});
+): RecordQueryRuntime<T> | RecordQueryRuntime<AttioRecordLike> {
+  const runtime = {
+    client: resolveAttioClient(input),
+    filter:
+      input.filter === undefined ? undefined : parseAttioFilter(input.filter),
+  };
+
+  if (input.itemSchema) {
+    return { ...runtime, schema: input.itemSchema };
+  }
+
+  return { ...runtime, schema: rawRecordSchema };
+}
 
 /**
  * Resolve client, execute API call, and unwrap a single data response.

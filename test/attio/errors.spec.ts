@@ -329,7 +329,7 @@ describe("AttioError cause", () => {
 });
 
 describe("stable error helpers", () => {
-  it("narrows Attio errors without requiring instanceof", () => {
+  it("narrows Attio errors only when required Error fields are present", () => {
     expect(isAttioError(new AttioError("boom"))).toBe(true);
     expect(
       isAttioError({
@@ -338,6 +338,7 @@ describe("stable error helpers", () => {
         status: 404,
       }),
     ).toBe(true);
+    expect(isAttioError({ name: "AttioApiError", status: 404 })).toBe(false);
     expect(isAttioError({ name: "Error", message: "plain" })).toBe(false);
   });
 

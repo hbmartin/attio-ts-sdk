@@ -502,6 +502,51 @@ describe("records", () => {
       });
     });
 
+    it("does not launch more chunks after the caller signal aborts", async () => {
+      const controller = new AbortController();
+      const reason = new Error("cancelled getManyRecords");
+      queryRecordsRequest.mockImplementationOnce(async () => {
+        controller.abort(reason);
+        return {
+          data: {
+            data: [{ id: { record_id: "rec-1" }, values: {} }],
+          },
+        };
+      });
+
+      await expect(
+        getManyRecords({
+          object: "companies",
+          recordIds: ["rec-1", "rec-2"],
+          chunkSize: 1,
+          concurrency: 1,
+          signal: controller.signal,
+        }),
+      ).rejects.toBe(reason);
+
+      expect(queryRecordsRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it("preserves order before applying an itemSchema that strips IDs", async () => {
+      const itemSchema = z.object({ name: z.string() });
+      queryRecordsRequest.mockResolvedValueOnce({
+        data: {
+          data: [
+            { id: { record_id: "rec-2" }, values: {}, name: "Beta" },
+            { id: { record_id: "rec-1" }, values: {}, name: "Acme" },
+          ],
+        },
+      });
+
+      const result = await getManyRecords({
+        object: "companies",
+        recordIds: ["rec-1", "rec-2"],
+        itemSchema,
+      });
+
+      expect(result).toEqual([{ name: "Acme" }, { name: "Beta" }]);
+    });
+
     it("throws when requested records are missing and notFound is throw", async () => {
       queryRecordsRequest.mockResolvedValue({
         data: {
