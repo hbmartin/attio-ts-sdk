@@ -121,6 +121,22 @@ interface NormalizedAllowedValue {
   archived: boolean;
 }
 
+type AttributeRequestOptions = Omit<
+  Options<GetV2ByTargetByIdentifierAttributesByAttributeData>,
+  "client" | "path"
+>;
+
+const toAttributeRequestOptions = (
+  options: ListAllowedValuesInput["options"],
+): AttributeRequestOptions | undefined => {
+  if (!options) {
+    return;
+  }
+
+  const { query: _query, ...requestOptions } = options;
+  return requestOptions;
+};
+
 interface AttributeMetadataPath extends AttributePathWithAttribute {}
 
 type AttributeMetadataFetchParams<TData extends AttributeMetadataData> =
@@ -313,6 +329,7 @@ const resolveAllowedValueType = async (
     target: input.target,
     identifier: input.identifier,
     attribute: input.attribute,
+    options: toAttributeRequestOptions(input.options),
   });
   if (attribute.type === "select" || attribute.type === "status") {
     return attribute.type;

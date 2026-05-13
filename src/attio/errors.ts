@@ -188,7 +188,13 @@ const attioErrorInfoSchema = z
   })
   .passthrough();
 
+const attioErrorShapeSchema = attioErrorInfoSchema.extend({
+  name: z.string(),
+  message: z.string(),
+});
+
 type AttioErrorInfo = z.infer<typeof attioErrorInfoSchema>;
+type AttioErrorShape = z.infer<typeof attioErrorShapeSchema>;
 
 const RETRYABLE_ATTIO_STATUS_CODES = [408, 429, 500, 502, 503, 504];
 
@@ -206,12 +212,17 @@ const getAttioErrorStatus = (error: unknown): number | undefined => {
   return info?.response?.status ?? info?.status ?? info?.status_code;
 };
 
+const parseAttioErrorShape = (error: unknown): AttioErrorShape | undefined => {
+  const parsed = attioErrorShapeSchema.safeParse(error);
+  return parsed.success ? parsed.data : undefined;
+};
+
 const isAttioError = (error: unknown): error is AttioError => {
   if (error instanceof AttioError) {
     return true;
   }
 
-  const info = parseAttioErrorInfo(error);
+  const info = parseAttioErrorShape(error);
   if (!info) {
     return false;
   }

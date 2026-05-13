@@ -15,8 +15,12 @@ import {
   postV2ObjectsByObjectRecordsQuery,
   putV2ObjectsByObjectRecords,
 } from "../generated";
-import { runBatch } from "./batch";
-import { type AttioClientInput, resolveAttioClient } from "./client";
+import { type BatchItem, runBatch } from "./batch";
+import {
+  type AttioClient,
+  type AttioClientInput,
+  resolveAttioClient,
+} from "./client";
 import { AttioResponseError } from "./errors";
 import { type AttioFilter, filters, parseAttioFilter } from "./filters";
 import { type BrandedId, createBrandedIdSchema } from "./ids";
@@ -27,7 +31,12 @@ import {
   unwrapAndNormalizeRecords,
 } from "./operations";
 import { resolveOffsetItems, type SharedPaginationInput } from "./pagination";
-import { type AttioRecordLike, extractRecordId } from "./record-utils";
+import {
+  type AttioRecordLike,
+  extractRecordId,
+  normalizeRecords,
+} from "./record-utils";
+import { unwrapItems, validateItemsArray } from "./response";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -226,6 +235,66 @@ const orderRecordsByInputIds = <T extends AttioRecordLike>(
   return ordered;
 };
 
+const unwrapGetManyRecords = (result: unknown): AttioRecordLike[] =>
+  normalizeRecords(unwrapItems<Record<string, unknown>>(result));
+
+const validateGetManyRecords = <T extends AttioRecordLike>(
+  records: AttioRecordLike[],
+  itemSchema?: ZodType<T>,
+): T[] | AttioRecordLike[] => {
+  if (itemSchema) {
+    return validateItemsArray(records, itemSchema);
+  }
+
+  return validateItemsArray(records, rawRecordSchema);
+};
+
+const createGetManyBatchItems = <T extends AttioRecordLike>(
+  input: RecordGetManyInput<T>,
+  client: AttioClient,
+  chunks: RecordId[][],
+): BatchItem<AttioRecordLike[]>[] =>
+  chunks.map((recordIds) => ({
+    label: recordIds.join(","),
+    run: async ({ signal }: { signal?: AbortSignal } = {}) => {
+      const result = await postV2ObjectsByObjectRecordsQuery({
+        client,
+        path: { object: input.object },
+        body: {
+          filter: parseAttioFilter(filters.in("record_id", [...recordIds])),
+          limit: recordIds.length,
+          offset: 0,
+        },
+        ...input.options,
+        signal,
+      });
+      return unwrapGetManyRecords(result);
+    },
+  }));
+
+const findMissingRecordIds = (
+  records: AttioRecordLike[],
+  recordIds: readonly RecordId[],
+): RecordId[] => {
+  const foundIds = new Set<string>(
+    records.flatMap((record) => {
+      const recordId = extractRecordId(record);
+      return recordId ? [recordId] : [];
+    }),
+  );
+  return recordIds.filter((recordId) => !foundIds.has(recordId));
+};
+
+const assertAllRecordsFound = (
+  records: AttioRecordLike[],
+  recordIds: readonly RecordId[],
+): void => {
+  const missing = findMissingRecordIds(records, recordIds);
+  if (missing.length > 0) {
+    throw missingRecordsError(missing);
+  }
+};
+
 // Overload: With itemSchema - T is inferred from schema
 function createRecord<T extends AttioRecordLike>(
   input: RecordCreateInput<T> & { itemSchema: ZodType<T> },
@@ -341,14 +410,14 @@ function queryRecords(
 // Implementation signature
 function queryRecords<T extends AttioRecordLike>(
   input: RecordQueryInput<T>,
-): Promise<T[]> | AsyncIterable<T> {
+): Promise<T[] | AttioRecordLike[]> | AsyncIterable<T | AttioRecordLike> {
   const query = createRecordQueryRuntime(input);
 
   const fetchRecords = async (
     offset?: number,
     limit?: number,
     signal?: AbortSignal,
-  ): Promise<T[]> => {
+  ): Promise<T[] | AttioRecordLike[]> => {
     const result = await postV2ObjectsByObjectRecordsQuery({
       client: query.client,
       path: { object: input.object },
@@ -371,35 +440,18 @@ function getManyRecords(input: RecordGetManyInput): Promise<AttioRecordLike[]>;
 // Implementation
 async function getManyRecords<T extends AttioRecordLike>(
   input: RecordGetManyInput<T>,
-): Promise<T[]> {
+): Promise<T[] | AttioRecordLike[]> {
   if (input.recordIds.length === 0) {
     return [];
   }
 
   const client = resolveAttioClient(input);
-  const schema = input.itemSchema ?? rawRecordSchema;
   const chunkSize = clampPositiveInteger(
     input.chunkSize,
     DEFAULT_GET_MANY_CHUNK_SIZE,
   );
   const chunks = chunkRecordIds(input.recordIds, chunkSize);
-  const batchItems = chunks.map((recordIds) => ({
-    label: recordIds.join(","),
-    run: async ({ signal }: { signal?: AbortSignal } = {}) => {
-      const result = await postV2ObjectsByObjectRecordsQuery({
-        client,
-        path: { object: input.object },
-        body: {
-          filter: parseAttioFilter(filters.in("record_id", [...recordIds])),
-          limit: recordIds.length,
-          offset: 0,
-        },
-        ...input.options,
-        signal: signal ?? input.signal,
-      });
-      return unwrapAndNormalizeRecords(result, schema) as T[];
-    },
-  }));
+  const batchItems = createGetManyBatchItems(input, client, chunks);
 
   const results = await runBatch(batchItems, {
     concurrency: clampPositiveInteger(
@@ -407,30 +459,25 @@ async function getManyRecords<T extends AttioRecordLike>(
       DEFAULT_GET_MANY_CONCURRENCY,
     ),
     stopOnError: true,
+    signal: input.signal,
   });
 
   const records = results.flatMap((result) => result.value ?? []);
   const notFound = input.notFound ?? "omit";
   if (input.preserveOrder ?? true) {
-    return orderRecordsByInputIds(records, input.recordIds, notFound);
+    const orderedRecords = orderRecordsByInputIds(
+      records,
+      input.recordIds,
+      notFound,
+    );
+    return validateGetManyRecords(orderedRecords, input.itemSchema);
   }
 
   if (notFound === "throw") {
-    const foundIds = new Set<string>(
-      records.flatMap((record) => {
-        const recordId = extractRecordId(record);
-        return recordId ? [recordId] : [];
-      }),
-    );
-    const missing = input.recordIds.filter(
-      (recordId) => !foundIds.has(recordId),
-    );
-    if (missing.length > 0) {
-      throw missingRecordsError(missing);
-    }
+    assertAllRecordsFound(records, input.recordIds);
   }
 
-  return records;
+  return validateGetManyRecords(records, input.itemSchema);
 }
 
 export type {

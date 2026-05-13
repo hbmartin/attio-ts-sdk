@@ -212,14 +212,14 @@ export function queryListEntries(
 // Implementation signature
 export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput<T>,
-): Promise<T[]> | AsyncIterable<T> {
+): Promise<T[] | AttioRecordLike[]> | AsyncIterable<T | AttioRecordLike> {
   const query = createRecordQueryRuntime(input);
 
   const fetchEntries = async (
     offset?: number,
     limit?: number,
     signal?: AbortSignal,
-  ): Promise<T[]> => {
+  ): Promise<T[] | AttioRecordLike[]> => {
     const result = await postV2ListsByListEntriesQuery({
       client: query.client,
       path: { list: input.list },

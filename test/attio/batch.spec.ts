@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import type { BatchItem } from "../../src/attio/batch";
 import { runBatch } from "../../src/attio/batch";
@@ -95,6 +95,66 @@ describe("runBatch", () => {
     await runBatch(items, { stopOnError: false });
 
     expect(receivedSignal).toBeUndefined();
+  });
+
+  it("passes an external signal to items when provided", async () => {
+    const controller = new AbortController();
+    let receivedSignal: AbortSignal | undefined;
+
+    const items: BatchItem<string>[] = [
+      {
+        run: async (params) => {
+          receivedSignal = params?.signal;
+          return "ok";
+        },
+      },
+    ];
+
+    await runBatch(items, { signal: controller.signal });
+
+    expect(receivedSignal).toBe(controller.signal);
+  });
+
+  it("rejects without launching items when the external signal is already aborted", async () => {
+    const controller = new AbortController();
+    const reason = new Error("cancelled before start");
+    controller.abort(reason);
+    const run = vi.fn(async () => "never");
+
+    await expect(
+      runBatch([{ run }], { signal: controller.signal }),
+    ).rejects.toBe(reason);
+
+    expect(run).not.toHaveBeenCalled();
+  });
+
+  it("stops launching queued items after the external signal aborts", async () => {
+    const controller = new AbortController();
+    const reason = new Error("cancelled during batch");
+    const started: string[] = [];
+    const items: BatchItem<string>[] = [
+      {
+        label: "first",
+        run: async () => {
+          started.push("first");
+          controller.abort(reason);
+          return "first";
+        },
+      },
+      {
+        label: "second",
+        run: async () => {
+          started.push("second");
+          return "second";
+        },
+      },
+    ];
+
+    await expect(
+      runBatch(items, { concurrency: 1, signal: controller.signal }),
+    ).rejects.toBe(reason);
+
+    expect(started).toEqual(["first"]);
   });
 
   it("handles items without labels", async () => {
