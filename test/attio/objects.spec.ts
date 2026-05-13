@@ -28,16 +28,41 @@ describe("objects", () => {
   let getObject: typeof import("../../src/attio/objects").getObject;
   let createObject: typeof import("../../src/attio/objects").createObject;
   let updateObject: typeof import("../../src/attio/objects").updateObject;
+  let createObjectSlug: typeof import("../../src/attio/objects").createObjectSlug;
+  let createObjectApiSlug: typeof import("../../src/attio/objects").createObjectApiSlug;
+  let createObjectNoun: typeof import("../../src/attio/objects").createObjectNoun;
 
   beforeAll(async () => {
-    ({ listObjects, getObject, createObject, updateObject } = await import(
-      "../../src/attio/objects"
-    ));
+    ({
+      listObjects,
+      getObject,
+      createObject,
+      updateObject,
+      createObjectSlug,
+      createObjectApiSlug,
+      createObjectNoun,
+    } = await import("../../src/attio/objects"));
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
     resolveAttioClient.mockReturnValue({});
+  });
+
+  describe("ID factories", () => {
+    it("creates branded object identifiers", () => {
+      expect(createObjectSlug("people")).toBe("people");
+      expect(createObjectApiSlug("custom_deals")).toBe("custom_deals");
+      expect(createObjectNoun("Deal")).toBe("Deal");
+    });
+
+    it("rejects empty object identifiers", () => {
+      expect(() => createObjectSlug("")).toThrow("ObjectSlug cannot be empty");
+      expect(() => createObjectApiSlug("")).toThrow(
+        "Object API slug cannot be empty",
+      );
+      expect(() => createObjectNoun("")).toThrow("ObjectNoun cannot be empty");
+    });
   });
 
   it("lists objects", async () => {
@@ -143,6 +168,37 @@ describe("objects", () => {
     const calledBody = updateObjectRequest.mock.calls[0][0].body;
     expect(calledBody.data).not.toHaveProperty("api_slug");
     expect(calledBody.data).not.toHaveProperty("plural_noun");
+  });
+
+  it("updates an object with every optional field when provided", async () => {
+    updateObjectRequest.mockResolvedValue({
+      data: {
+        id: { workspace_id: "ws_1", object_id: "obj_1" },
+        api_slug: "opportunities",
+        singular_noun: "Opportunity",
+        plural_noun: "Opportunities",
+        created_at: "2024-01-01T00:00:00Z",
+      },
+    });
+
+    await updateObject({
+      object: "deals",
+      apiSlug: "opportunities",
+      singularNoun: "Opportunity",
+      pluralNoun: "Opportunities",
+    });
+
+    expect(updateObjectRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: {
+          data: {
+            api_slug: "opportunities",
+            singular_noun: "Opportunity",
+            plural_noun: "Opportunities",
+          },
+        },
+      }),
+    );
   });
 
   it("propagates errors from updateObject request", async () => {

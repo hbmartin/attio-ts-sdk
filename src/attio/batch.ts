@@ -256,17 +256,33 @@ const registerBatchAbortListener = <T>(
   params: RegisterBatchAbortListenerParams<T>,
 ): (() => void) => {
   const { signal, state, reject } = params;
+  let hasAborted = false;
+  let hasCleanedUp = false;
+  const cleanup = (): void => {
+    if (hasCleanedUp) {
+      return;
+    }
+    hasCleanedUp = true;
+    signal.removeEventListener("abort", onAbort);
+  };
   const onAbort = (): void => {
+    if (hasAborted) {
+      return;
+    }
+    hasAborted = true;
+    cleanup();
     state.stopped = true;
     reject(readAbortReason(signal));
   };
   signal.addEventListener("abort", onAbort, { once: true });
-  return () => {
-    signal.removeEventListener("abort", onAbort);
-  };
+  if (signal.aborted) {
+    onAbort();
+  }
+  return cleanup;
 };
 
-type CreateBatchLauncherParams<T> = Omit<LaunchNextItemParams<T>, "launchNext">;
+interface CreateBatchLauncherParams<T>
+  extends Omit<LaunchNextItemParams<T>, "launchNext"> {}
 
 const createBatchLauncher = <T>(
   params: CreateBatchLauncherParams<T>,

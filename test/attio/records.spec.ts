@@ -564,6 +564,75 @@ describe("records", () => {
         code: "RECORDS_NOT_FOUND",
       });
     });
+
+    it("returns records in fetched order when preserveOrder is false", async () => {
+      queryRecordsRequest.mockResolvedValue({
+        data: {
+          data: [
+            { id: { record_id: "rec-2" }, values: {} },
+            { id: { record_id: "rec-1" }, values: {} },
+          ],
+        },
+      });
+
+      const result = await getManyRecords({
+        object: "companies",
+        recordIds: ["rec-1", "rec-2"],
+        preserveOrder: false,
+      });
+
+      expect(result.map((record) => record.id)).toEqual([
+        { record_id: "rec-2" },
+        { record_id: "rec-1" },
+      ]);
+    });
+
+    it("throws for unordered results when notFound is throw and a record is missing", async () => {
+      queryRecordsRequest.mockResolvedValue({
+        data: {
+          data: [{ id: { record_id: "rec-1" }, values: {} }],
+        },
+      });
+
+      await expect(
+        getManyRecords({
+          object: "companies",
+          recordIds: ["rec-1", "rec-missing"],
+          preserveOrder: false,
+          notFound: "throw",
+        }),
+      ).rejects.toMatchObject({
+        code: "RECORDS_NOT_FOUND",
+        data: { recordIds: ["rec-missing"] },
+      });
+    });
+
+    it("uses fallback chunking and concurrency for invalid numeric options", async () => {
+      queryRecordsRequest.mockResolvedValue({
+        data: {
+          data: [
+            { id: { record_id: "rec-1" }, values: {} },
+            { id: { record_id: "rec-2" }, values: {} },
+          ],
+        },
+      });
+
+      await getManyRecords({
+        object: "companies",
+        recordIds: ["rec-1", "rec-2"],
+        chunkSize: Number.NaN,
+        concurrency: 0,
+      });
+
+      expect(queryRecordsRequest).toHaveBeenCalledTimes(1);
+      expect(queryRecordsRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            limit: 2,
+          }),
+        }),
+      );
+    });
   });
 
   describe("queryRecords", () => {

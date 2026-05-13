@@ -92,6 +92,7 @@
   "resolutions": {
     "@types/node": "^22"
   },
+  "packageManager": "pnpm@11.1.1",
   "jscpd": {
     "threshold": 0,
     "reporters": [

@@ -234,6 +234,12 @@ describe("filters", () => {
         },
       });
     });
+
+    it("rejects empty paths", () => {
+      expect(() => filters.path([], { value: "rec-123" })).toThrow(
+        "path segments must be non-empty",
+      );
+    });
   });
 
   describe("complex combinations", () => {
@@ -326,6 +332,23 @@ describe("filters", () => {
           ["people", "email_addresses"],
         ],
         constraints: { email_domain: { $contains: "example.com" } },
+      });
+    });
+
+    it("uses value as the default parent record contains field", () => {
+      expect(
+        filters.parentRecordContains({
+          list: "hiring-pipeline",
+          object: "people",
+          attribute: "name",
+          value: "Ada",
+        }),
+      ).toEqual({
+        path: [
+          ["hiring-pipeline", "parent_record"],
+          ["people", "name"],
+        ],
+        constraints: { value: { $contains: "Ada" } },
       });
     });
 
