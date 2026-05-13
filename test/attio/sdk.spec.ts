@@ -51,9 +51,11 @@ const mocks = vi.hoisted(() => ({
   },
   metadata: {
     listAttributes: vi.fn().mockResolvedValue([]),
+    findAttribute: vi.fn().mockResolvedValue(undefined),
     getAttribute: vi.fn().mockResolvedValue({}),
     getAttributeOptions: vi.fn().mockResolvedValue([]),
     getAttributeStatuses: vi.fn().mockResolvedValue([]),
+    listAllowedValues: vi.fn().mockResolvedValue([]),
   },
   schema: {
     createSchema: vi.fn().mockResolvedValue({ attributes: [] }),
@@ -170,6 +172,11 @@ describe("createAttioSdk", () => {
       target: "objects",
       identifier: "companies",
     });
+    await sdk.metadata.findAttribute({
+      target: "objects",
+      identifier: "companies",
+      slug: "name",
+    });
     await sdk.metadata.getAttribute({
       target: "objects",
       identifier: "companies",
@@ -181,6 +188,11 @@ describe("createAttioSdk", () => {
       attribute: "stage",
     });
     await sdk.metadata.getAttributeStatuses({
+      target: "objects",
+      identifier: "companies",
+      attribute: "stage",
+    });
+    await sdk.metadata.listAllowedValues({
       target: "objects",
       identifier: "companies",
       attribute: "stage",
@@ -337,6 +349,12 @@ describe("createAttioSdk", () => {
       target: "objects",
       identifier: "companies",
     });
+    expect(mocks.metadata.findAttribute).toHaveBeenCalledWith({
+      client,
+      target: "objects",
+      identifier: "companies",
+      slug: "name",
+    });
     expect(mocks.metadata.getAttribute).toHaveBeenCalledWith({
       client,
       target: "objects",
@@ -350,6 +368,12 @@ describe("createAttioSdk", () => {
       attribute: "stage",
     });
     expect(mocks.metadata.getAttributeStatuses).toHaveBeenCalledWith({
+      client,
+      target: "objects",
+      identifier: "companies",
+      attribute: "stage",
+    });
+    expect(mocks.metadata.listAllowedValues).toHaveBeenCalledWith({
       client,
       target: "objects",
       identifier: "companies",
