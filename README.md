@@ -397,6 +397,30 @@ const values = {
 await sdk.records.create({ object: 'companies', values });
 ```
 
+For metadata-aware writes, create a schema and use `buildValues`. It accepts
+attribute titles or `api_slug`s, rejects non-writable attributes, validates
+select/status values against metadata, and serializes native JavaScript values:
+
+```typescript
+const schema = await createSchema({
+  client,
+  target: 'objects',
+  identifier: 'companies',
+});
+
+const values = await schema.buildValues({
+  Name: 'Acme Corp',
+  Website: 'acme.com',
+  Stage: 'Customer',
+  owner_company: {
+    targetObject: 'companies',
+    targetRecordId: 'rec_123',
+  },
+});
+
+await sdk.records.create({ object: 'companies', values });
+```
+
 ### Record Value Accessors
 
 `getValue` and `getFirstValue` extract attribute values from a record object. Pass an optional Zod schema to get typed, validated results.

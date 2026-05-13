@@ -28,6 +28,10 @@ import {
   getFirstValueSafe,
   getValue,
 } from "./values";
+import {
+  type AttioWriteValuesBuilder,
+  createWriteValuesBuilder,
+} from "./write-values";
 
 type SchemaTarget = GetV2ByTargetByIdentifierAttributesData["path"]["target"];
 type SchemaIdentifier =
@@ -70,7 +74,7 @@ interface AttributeAccessor {
   firstValueTyped: (record: AttioRecordLike) => unknown | undefined;
 }
 
-interface AttioSchema {
+interface AttioSchema extends AttioWriteValuesBuilder {
   target: SchemaTarget;
   identifier: SchemaIdentifier;
   attributes: ZodAttribute[];
@@ -204,11 +208,17 @@ const createSchema = async (input: SchemaInput): Promise<AttioSchema> => {
   const getAccessorOrThrow = (slug: string) =>
     createAccessor(getAttributeOrThrow(slug));
 
+  const writeValuesBuilder = createWriteValuesBuilder({
+    ...input,
+    attributes,
+  });
+
   return {
     target: input.target,
     identifier: input.identifier,
     attributes,
     attributeSlugs,
+    buildValues: writeValuesBuilder.buildValues,
     getAttribute,
     getAttributeOrThrow,
     getAccessor,

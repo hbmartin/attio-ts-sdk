@@ -4,7 +4,9 @@ import {
   calculateRetryDelay,
   callWithRetry,
   DEFAULT_RETRY_CONFIG,
+  hasIdempotencyHeader,
   isRetryableError,
+  isRetryableRequest,
   isRetryableStatus,
   type RetryConfig,
   sleep,
@@ -15,7 +17,10 @@ const config: RetryConfig = {
   initialDelayMs: 500,
   maxDelayMs: 5000,
   retryableStatusCodes: [408, 429, 500],
+  retryableMethods: ["GET", "HEAD", "OPTIONS"],
   respectRetryAfter: true,
+  retryUnsafeRequests: false,
+  idempotencyHeaderNames: ["Idempotency-Key", "X-Idempotency-Key"],
 };
 
 afterEach(() => {
@@ -92,6 +97,62 @@ describe("retry", () => {
 
     it("treats undefined errors as retryable", () => {
       expect(isRetryableError(undefined, config)).toBe(true);
+    });
+  });
+
+  describe("isRetryableRequest", () => {
+    it("allows configured retryable methods", () => {
+      expect(isRetryableRequest({ method: "GET" }, config)).toBe(true);
+      expect(isRetryableRequest({ method: "HEAD" }, config)).toBe(true);
+      expect(isRetryableRequest({ method: "POST" }, config)).toBe(false);
+    });
+
+    it("allows non-idempotent methods with an idempotency header", () => {
+      expect(
+        isRetryableRequest(
+          {
+            method: "POST",
+            headers: { "Idempotency-Key": "create-company-1" },
+          },
+          config,
+        ),
+      ).toBe(true);
+    });
+
+    it("allows all methods when retryUnsafeRequests is enabled", () => {
+      expect(
+        isRetryableRequest(
+          { method: "POST" },
+          { ...config, retryUnsafeRequests: true },
+        ),
+      ).toBe(true);
+    });
+
+    it("preserves utility behavior when no request method is provided", () => {
+      expect(isRetryableRequest(undefined, config)).toBe(true);
+    });
+  });
+
+  describe("hasIdempotencyHeader", () => {
+    it("detects idempotency headers from Headers and object inputs", () => {
+      expect(
+        hasIdempotencyHeader(
+          new Headers({ "Idempotency-Key": "request-1" }),
+          config.idempotencyHeaderNames,
+        ),
+      ).toBe(true);
+      expect(
+        hasIdempotencyHeader(
+          { "X-Idempotency-Key": "request-2" },
+          config.idempotencyHeaderNames,
+        ),
+      ).toBe(true);
+      expect(
+        hasIdempotencyHeader(
+          { "X-Other-Header": "request-3" },
+          config.idempotencyHeaderNames,
+        ),
+      ).toBe(false);
     });
   });
 
@@ -175,7 +236,16 @@ describe("retry", () => {
       expect(DEFAULT_RETRY_CONFIG.initialDelayMs).toBe(500);
       expect(DEFAULT_RETRY_CONFIG.maxDelayMs).toBe(5000);
       expect(DEFAULT_RETRY_CONFIG.retryableStatusCodes).toContain(429);
+      expect(DEFAULT_RETRY_CONFIG.retryableMethods).toEqual([
+        "GET",
+        "HEAD",
+        "OPTIONS",
+      ]);
       expect(DEFAULT_RETRY_CONFIG.respectRetryAfter).toBe(true);
+      expect(DEFAULT_RETRY_CONFIG.retryUnsafeRequests).toBe(false);
+      expect(DEFAULT_RETRY_CONFIG.idempotencyHeaderNames).toContain(
+        "Idempotency-Key",
+      );
     });
   });
 });

@@ -135,6 +135,83 @@ describe("wrapClient", () => {
     await client.request({ url: "/test", method: "GET" });
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
+
+  it("does not retry unsafe methods by default", async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ error: "server error" }), {
+        status: 500,
+      }),
+    );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      retry: { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 },
+    });
+
+    await expect(client.post({ url: "/test", body: {} })).rejects.toThrow();
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("retries unsafe methods when explicitly enabled", async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: "server error" }), {
+          status: 500,
+        }),
+      )
+      .mockResolvedValue(
+        new Response(JSON.stringify({ data: "success" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      retry: { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 },
+    });
+
+    await client.post({
+      url: "/test",
+      body: {},
+      retry: { retryUnsafeRequests: true },
+    });
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
+
+  it("retries unsafe methods with an idempotency header", async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: "server error" }), {
+          status: 500,
+        }),
+      )
+      .mockResolvedValue(
+        new Response(JSON.stringify({ data: "success" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+
+    const client = createAttioClient({
+      authToken: TEST_TOKEN,
+      fetch: mockFetch,
+      retry: { maxRetries: 2, initialDelayMs: 1, maxDelayMs: 5 },
+    });
+
+    await client.post({
+      url: "/test",
+      body: {},
+      headers: { "Idempotency-Key": "create-company-1" },
+    });
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe("applyInterceptors", () => {

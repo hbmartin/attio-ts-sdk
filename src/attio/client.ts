@@ -270,7 +270,11 @@ type RequestWithMethodOptions<
 > = Omit<RequestOptions<TData, TResponseStyle, ThrowOnError>, "method"> &
   Pick<Required<RequestOptions<TData, TResponseStyle, ThrowOnError>>, "method">;
 
-const wrapClient = (base: Client, retry?: Partial<RetryConfig>): Client => {
+const wrapClient = (
+  base: Client,
+  retry?: Partial<RetryConfig>,
+  headers?: AttioClientConfig["headers"],
+): Client => {
   const requestWithRetry: Client["request"] = <
     TData = unknown,
     TError = unknown,
@@ -285,6 +289,10 @@ const wrapClient = (base: Client, retry?: Partial<RetryConfig>): Client => {
       {
         ...retry,
         ...retryOverride,
+      },
+      {
+        method: rest.method,
+        headers: mergeHeaders(headers, rest.headers),
       },
     );
   };
@@ -376,7 +384,7 @@ const createAttioClientWithAuthToken = ({
 
   applyInterceptors(base, hooks, correlationIds);
 
-  const wrapped = wrapClient(base, retry);
+  const wrapped = wrapClient(base, retry, mergedHeaders);
   const metadataCacheKey = buildMetadataCacheKey({
     config,
     authToken,
