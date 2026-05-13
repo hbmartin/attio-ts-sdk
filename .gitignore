@@ -17,3 +17,6 @@ report/
 stats.html
 attio_openapi.json
 schema.json
+
+triage_decisions.db
+reviews_triage/

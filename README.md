@@ -50,6 +50,7 @@ You still have full access to the generated, spec‑accurate endpoints.
   - [Using Generated Endpoints Directly](#using-generated-endpoints-directly)
   - [Managing Lists](#managing-lists)
   - [Notes and Tasks](#notes-and-tasks)
+  - [Listing and Viewing Person Notes](#listing-and-viewing-person-notes)
   - [Webhooks](#webhooks)
 - [Development](#development)
 
@@ -1033,6 +1034,65 @@ await patchV2TasksByTaskId({
   body: { data: { is_completed: true } },
 });
 ```
+
+### Listing and Viewing Person Notes
+
+Use `getV2Notes` with `parent_object: 'people'` and the person's record ID to list notes attached to a specific person. The notes API uses offset pagination, so keep requesting pages until the API returns fewer than the requested limit.
+
+```typescript
+import type { Note } from 'attio-ts-sdk';
+import {
+  assertOk,
+  createAttioClient,
+  getV2Notes,
+  getV2NotesByNoteId,
+} from 'attio-ts-sdk';
+
+const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
+const personRecordId = 'person-record-id';
+
+const listPersonNotes = async (recordId: string): Promise<Note[]> => {
+  const limit = 50;
+  const notes: Note[] = [];
+
+  for (let offset = 0; ; offset += limit) {
+    const page = assertOk(
+      await getV2Notes({
+        client,
+        query: {
+          parent_object: 'people',
+          parent_record_id: recordId,
+          limit,
+          offset,
+        },
+      }),
+    );
+
+    notes.push(...page.data);
+
+    if (page.data.length < limit) {
+      return notes;
+    }
+  }
+};
+
+const personNotes = await listPersonNotes(personRecordId);
+
+const firstNote = personNotes[0];
+if (firstNote) {
+  const note = assertOk(
+    await getV2NotesByNoteId({
+      client,
+      path: { note_id: firstNote.id.note_id },
+    }),
+  );
+
+  console.log(note.data.title);
+  console.log(note.data.content_markdown ?? note.data.content_plaintext);
+}
+```
+
+The integration token needs `note:read`, `object_configuration:read`, and `record_permission:read` scopes for these reads.
 
 ### Webhooks
 
