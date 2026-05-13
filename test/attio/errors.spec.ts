@@ -231,6 +231,28 @@ describe("normalizeAttioError", () => {
     expect(error.errors).toEqual([{ code: "validation_type" }]);
   });
 
+  it("extracts details from the first nested errors item", () => {
+    const response = new Response(null, { status: 400 });
+    const payload = {
+      errors: [
+        {
+          message: "First validation failed",
+          code: "validation_type",
+          type: "validation_error",
+          status_code: 422,
+        },
+      ],
+    };
+
+    const error = normalizeAttioError(payload, { response });
+
+    expect(error.message).toBe("First validation failed");
+    expect(error.code).toBe("validation_type");
+    expect(error.type).toBe("validation_error");
+    expect(error.status).toBe(400);
+    expect(error.errors).toEqual(payload.errors);
+  });
+
   it("extracts status_code from payload", () => {
     const error = normalizeAttioError({
       message: "Error",
@@ -372,6 +394,10 @@ describe("stable error helpers", () => {
   });
 
   it("extracts status from normalized and response-shaped errors", () => {
+    const responseError = new AttioApiError("conflict", { status: 422 });
+    responseError.response = new Response(null, { status: 409 });
+
+    expect(getAttioErrorStatus(responseError)).toBe(409);
     expect(
       getAttioErrorStatus(new AttioApiError("missing", { status: 404 })),
     ).toBe(404);

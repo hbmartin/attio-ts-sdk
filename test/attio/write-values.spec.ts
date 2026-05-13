@@ -60,6 +60,24 @@ const allowedValues = (
     archived: entry.archived ?? false,
   }));
 
+interface DeferredAllowedValues {
+  promise: Promise<NormalizedAllowedValue[]>;
+  resolve: (value: NormalizedAllowedValue[]) => void;
+}
+
+const createDeferredAllowedValues = (): DeferredAllowedValues => {
+  let resolveDeferred: ((value: NormalizedAllowedValue[]) => void) | undefined;
+  const promise = new Promise<NormalizedAllowedValue[]>((resolve) => {
+    resolveDeferred = resolve;
+  });
+
+  if (!resolveDeferred) {
+    throw new Error("Deferred allowed values resolver was not initialized.");
+  }
+
+  return { promise, resolve: resolveDeferred };
+};
+
 describe("createWriteValuesBuilder", () => {
   it("resolves titles and slugs, then serializes native values", async () => {
     const builder = createWriteValuesBuilder({
@@ -128,6 +146,73 @@ describe("createWriteValuesBuilder", () => {
       status: [{ status: "Customer" }],
     });
     expect(allowedValueResolver).toHaveBeenCalledTimes(2);
+  });
+
+  it("retries allowed value lookups after transient resolver failures", async () => {
+    const transientError = new Error("Metadata fetch failed");
+    const allowedValueResolver = vi
+      .fn<() => Promise<NormalizedAllowedValue[]>>()
+      .mockRejectedValueOnce(transientError)
+      .mockResolvedValue(allowedValues([{ id: "opt_1", title: "Prospect" }]));
+    const builder = createWriteValuesBuilder({
+      target: "objects",
+      identifier: "companies",
+      attributes: [
+        mockAttribute({ slug: "stage", title: "Stage", type: "select" }),
+      ],
+      allowedValueResolver,
+    });
+
+    await expect(builder.buildValues({ Stage: "Prospect" })).rejects.toThrow(
+      transientError,
+    );
+    await expect(builder.buildValues({ Stage: "Prospect" })).resolves.toEqual({
+      stage: [{ option: "Prospect" }],
+    });
+    expect(allowedValueResolver).toHaveBeenCalledTimes(2);
+  });
+
+  it("starts independent allowed value lookups before awaiting earlier fields", async () => {
+    const stageValues = createDeferredAllowedValues();
+    const statusValues = createDeferredAllowedValues();
+    const requestedAttributes: string[] = [];
+    const allowedValueResolver = vi.fn(({ attribute }) => {
+      requestedAttributes.push(attribute);
+
+      if (attribute === "stage") {
+        return stageValues.promise;
+      }
+
+      if (attribute === "status") {
+        return statusValues.promise;
+      }
+
+      return Promise.resolve([]);
+    });
+    const builder = createWriteValuesBuilder({
+      target: "objects",
+      identifier: "companies",
+      attributes: [
+        mockAttribute({ slug: "stage", title: "Stage", type: "select" }),
+        mockAttribute({ slug: "status", title: "Status", type: "status" }),
+      ],
+      allowedValueResolver,
+    });
+
+    const buildPromise = builder.buildValues({
+      Stage: "Prospect",
+      Status: "Customer",
+    });
+
+    expect(requestedAttributes).toEqual(["stage", "status"]);
+
+    stageValues.resolve(allowedValues([{ id: "opt_1", title: "Prospect" }]));
+    statusValues.resolve(allowedValues([{ id: "sta_1", title: "Customer" }]));
+
+    await expect(buildPromise).resolves.toEqual({
+      stage: [{ option: "Prospect" }],
+      status: [{ status: "Customer" }],
+    });
   });
 
   it("accepts existing value factory arrays and record reference objects", async () => {
@@ -276,6 +361,20 @@ describe("createWriteValuesBuilder", () => {
     ).rejects.toThrow(AttioResponseError);
     await expect(
       builder.buildValues({ Email: "not-an-email" }),
+    ).rejects.toMatchObject({ code: "INVALID_WRITE_VALUE" });
+  });
+
+  it("rejects invalid Date objects as invalid write values", async () => {
+    const builder = createWriteValuesBuilder({
+      target: "objects",
+      identifier: "companies",
+      attributes: [
+        mockAttribute({ slug: "founded", title: "Founded", type: "date" }),
+      ],
+    });
+
+    await expect(
+      builder.buildValues({ Founded: new Date("invalid") }),
     ).rejects.toMatchObject({ code: "INVALID_WRITE_VALUE" });
   });
 });

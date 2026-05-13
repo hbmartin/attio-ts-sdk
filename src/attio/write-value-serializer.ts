@@ -37,7 +37,10 @@ const rawValueObjectSchema = z
       });
     }
   });
-const dateLikeSchema = z.union([z.string(), z.date()]);
+const validDateSchema = z
+  .date()
+  .refine((date) => !Number.isNaN(date.getTime()), "Expected a valid date.");
+const dateLikeSchema = z.union([z.string(), validDateSchema]);
 const recordReferenceInputSchema = z.object({
   targetObject: nonEmptyStringSchema,
   targetRecordId: nonEmptyStringSchema,

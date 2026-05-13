@@ -154,6 +154,24 @@ describe("retry", () => {
         ),
       ).toBe(false);
     });
+
+    it("detects idempotency headers from tuple inputs and ignores empty values", () => {
+      expect(
+        hasIdempotencyHeader(
+          [["idempotency-key", "request-1"]],
+          config.idempotencyHeaderNames,
+        ),
+      ).toBe(true);
+      expect(
+        hasIdempotencyHeader(
+          [["idempotency-key", ""]],
+          config.idempotencyHeaderNames,
+        ),
+      ).toBe(false);
+      expect(
+        hasIdempotencyHeader("invalid", config.idempotencyHeaderNames),
+      ).toBe(false);
+    });
   });
 
   describe("callWithRetry", () => {
@@ -207,6 +225,22 @@ describe("retry", () => {
       const fn = vi.fn().mockRejectedValue(error);
 
       await expect(callWithRetry(fn)).rejects.toEqual(error);
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not retry unsafe requests without idempotency headers", async () => {
+      const error = { status: 500 };
+      const fn = vi.fn().mockRejectedValue(error);
+
+      await expect(
+        callWithRetry(
+          fn,
+          { maxRetries: 2, initialDelayMs: 1 },
+          {
+            method: "POST",
+          },
+        ),
+      ).rejects.toEqual(error);
       expect(fn).toHaveBeenCalledTimes(1);
     });
 
