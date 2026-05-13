@@ -39,9 +39,22 @@ const defineGlobalProperties = (properties: Record<string, unknown>): void => {
   }
 };
 
+const hasCallableThen = (value: unknown): boolean => {
+  if (value === null) {
+    return false;
+  }
+
+  const valueType = typeof value;
+  if (valueType !== "object" && valueType !== "function") {
+    return false;
+  }
+
+  return typeof Reflect.get(value, "then") === "function";
+};
+
 function withGlobalProperties<T>(
   properties: Record<string, unknown>,
-  action: () => Promise<T>,
+  action: () => PromiseLike<T>,
 ): Promise<T>;
 function withGlobalProperties<T>(
   properties: Record<string, unknown>,
@@ -49,15 +62,16 @@ function withGlobalProperties<T>(
 ): T;
 function withGlobalProperties<T>(
   properties: Record<string, unknown>,
-  action: () => T | Promise<T>,
-): T | Promise<T> {
+  action: () => T | PromiseLike<T>,
+): unknown {
   const snapshots = snapshotGlobalProperties(properties);
-  defineGlobalProperties(properties);
 
   try {
+    defineGlobalProperties(properties);
+
     const result = action();
-    if (result instanceof Promise) {
-      return result.finally(() => {
+    if (hasCallableThen(result)) {
+      return Promise.resolve(result).finally(() => {
         restoreGlobalProperties(snapshots);
       });
     }
