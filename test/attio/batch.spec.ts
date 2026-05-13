@@ -210,6 +210,33 @@ describe("runBatch", () => {
     expect(run).not.toHaveBeenCalled();
   });
 
+  it("rejects when the external signal becomes aborted while registering the abort listener", async () => {
+    const controller = new AbortController();
+    const reason = new Error("cancelled during listener registration");
+    const addSpy = vi.spyOn(controller.signal, "addEventListener");
+    const removeSpy = vi.spyOn(controller.signal, "removeEventListener");
+    const abortedSpy = vi.spyOn(controller.signal, "aborted", "get");
+    const reasonSpy = vi.spyOn(controller.signal, "reason", "get");
+    const run = vi.fn(async (): Promise<string> => "never");
+
+    abortedSpy.mockReturnValueOnce(false).mockReturnValue(true);
+    reasonSpy.mockReturnValue(reason);
+
+    await expect(
+      runBatch([{ run }], { signal: controller.signal }),
+    ).rejects.toBe(reason);
+
+    const abortListener = addSpy.mock.calls.find(
+      ([event]) => event === "abort",
+    )?.[1];
+    if (!abortListener) {
+      throw new Error("Expected runBatch to register an abort listener.");
+    }
+
+    expect(run).not.toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalledWith("abort", abortListener);
+  });
+
   it("stops launching queued items after the external signal aborts", async () => {
     const controller = new AbortController();
     const reason = new Error("cancelled during batch");
