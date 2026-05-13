@@ -2,6 +2,21 @@ import { z } from "zod";
 import type { InputValue } from "../generated";
 import { AttioResponseError } from "./errors";
 import type { AttioRecordLike } from "./record-utils";
+import {
+  checkboxValueSchema,
+  currencyValueSchema,
+  dateValueSchema,
+  domainValueSchema,
+  emailValueSchema,
+  enrichedSelectValueSchema,
+  enrichedStatusValueSchema,
+  numberValueSchema,
+  personalNameValueSchema,
+  phoneValueSchema,
+  ratingValueSchema,
+  textValueSchema,
+  timestampValueSchema,
+} from "./value-schemas";
 
 interface ValueCurrencyInput {
   currency_value: number;
@@ -133,10 +148,200 @@ function getFirstValue<T>(
   return values ? values[0] : undefined;
 }
 
-export { getFirstValue, getValue, value };
+type ValueResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; code: string; message: string };
+
+const safeParseValues = <T>(
+  raw: unknown[],
+  schema: z.ZodType<T>,
+  attribute: string,
+): ValueResult<T[]> => {
+  const parsed: T[] = [];
+  for (const entry of raw) {
+    const result = schema.safeParse(entry);
+    if (!result.success) {
+      return {
+        ok: false,
+        code: "INVALID_VALUE",
+        message: `Invalid API response: attribute "${attribute}" value mismatch`,
+      };
+    }
+    parsed.push(result.data);
+  }
+  return { ok: true, value: parsed };
+};
+
+const getValueSafe = <T>(
+  record: AttioRecordLike,
+  attribute: string,
+  schema: z.ZodType<T>,
+): ValueResult<T[] | undefined> => {
+  const values = extractValues(record);
+  const raw = values?.[attribute];
+  if (!raw) {
+    return { ok: true, value: undefined };
+  }
+  return safeParseValues(raw, schema, attribute);
+};
+
+const getFirstValueSafe = <T>(
+  record: AttioRecordLike,
+  attribute: string,
+  schema: z.ZodType<T>,
+): ValueResult<T | undefined> => {
+  const result = getValueSafe(record, attribute, schema);
+  if (!result.ok) {
+    return result;
+  }
+  return { ok: true, value: result.value?.[0] };
+};
+
+const extractFirstScalar = <T, R>(
+  record: AttioRecordLike,
+  attribute: string,
+  schema: z.ZodType<T>,
+  extract: (parsed: T) => R,
+): R | undefined => {
+  const result = getFirstValueSafe(record, attribute, schema);
+  if (!result.ok || result.value === undefined) {
+    return;
+  }
+  return extract(result.value);
+};
+
+const getFirstText = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(record, attribute, textValueSchema, (v) => v.value);
+
+const getFirstNumber = (
+  record: AttioRecordLike,
+  attribute: string,
+): number | undefined =>
+  extractFirstScalar(record, attribute, numberValueSchema, (v) => v.value);
+
+const getFirstDate = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(record, attribute, dateValueSchema, (v) => v.value);
+
+const getFirstTimestamp = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(record, attribute, timestampValueSchema, (v) => v.value);
+
+const getFirstCheckbox = (
+  record: AttioRecordLike,
+  attribute: string,
+): boolean | undefined =>
+  extractFirstScalar(record, attribute, checkboxValueSchema, (v) => v.value);
+
+const getFirstRating = (
+  record: AttioRecordLike,
+  attribute: string,
+): number | undefined =>
+  extractFirstScalar(record, attribute, ratingValueSchema, (v) => v.value);
+
+const getFirstCurrencyValue = (
+  record: AttioRecordLike,
+  attribute: string,
+): number | undefined =>
+  extractFirstScalar(
+    record,
+    attribute,
+    currencyValueSchema,
+    (v) => v.currency_value,
+  );
+
+const getFirstSelectTitle = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(
+    record,
+    attribute,
+    enrichedSelectValueSchema,
+    (v) => v.option.title,
+  );
+
+const getFirstStatusTitle = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(
+    record,
+    attribute,
+    enrichedStatusValueSchema,
+    (v) => v.status.title,
+  );
+
+const getFirstFullName = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(
+    record,
+    attribute,
+    personalNameValueSchema,
+    (v) => v.full_name,
+  );
+
+const getFirstEmail = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(
+    record,
+    attribute,
+    emailValueSchema,
+    (v) => v.email_address,
+  );
+
+const getFirstDomain = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(record, attribute, domainValueSchema, (v) => v.domain);
+
+const getFirstPhone = (
+  record: AttioRecordLike,
+  attribute: string,
+): string | undefined =>
+  extractFirstScalar(
+    record,
+    attribute,
+    phoneValueSchema,
+    (v) => v.phone_number,
+  );
+
+export {
+  getFirstCheckbox,
+  getFirstCurrencyValue,
+  getFirstDate,
+  getFirstDomain,
+  getFirstEmail,
+  getFirstFullName,
+  getFirstNumber,
+  getFirstPhone,
+  getFirstRating,
+  getFirstSelectTitle,
+  getFirstStatusTitle,
+  getFirstText,
+  getFirstTimestamp,
+  getFirstValue,
+  getFirstValueSafe,
+  getValue,
+  getValueSafe,
+  value,
+};
 export type {
   ValueCurrencyInput,
   ValueFactory,
   ValueInput,
   ValueLookupOptions,
+  ValueResult,
 };

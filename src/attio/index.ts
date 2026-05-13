@@ -22,5 +22,6 @@ export * from "./schema";
 export * from "./sdk";
 export * from "./search";
 export * from "./tasks";
+export * from "./value-schemas";
 export * from "./values";
 export * from "./workspace-members";
