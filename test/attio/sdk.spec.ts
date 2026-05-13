@@ -72,6 +72,12 @@ vi.mock("../../src/attio/schema", () => mocks.schema);
 
 describe("createAttioSdk", () => {
   it("binds client into convenience methods", async () => {
+    const { createNoteParentObjectId, createNoteParentRecordId } =
+      await vi.importActual<typeof import("../../src/attio/notes")>(
+        "../../src/attio/notes",
+      );
+    const noteParentObject = createNoteParentObjectId("people");
+    const noteParentRecordId = createNoteParentRecordId("rec_1");
     const mockFetch: typeof fetch = () =>
       Promise.resolve(
         new Response(JSON.stringify({ data: {} }), {
@@ -123,11 +129,14 @@ describe("createAttioSdk", () => {
     });
     await sdk.lists.removeEntry({ list: "list_1", entryId: "entry_1" });
 
-    await sdk.notes.list({ parentObject: "people", parentRecordId: "rec_1" });
+    await sdk.notes.list({
+      parentObject: noteParentObject,
+      parentRecordId: noteParentRecordId,
+    });
     await sdk.notes.get({ noteId: "note_1" });
     await sdk.notes.create({
-      parentObject: "people",
-      parentRecordId: "rec_1",
+      parentObject: noteParentObject,
+      parentRecordId: noteParentRecordId,
       title: "Intro call",
       format: "plaintext",
       content: "Discussed next steps.",
@@ -260,8 +269,8 @@ describe("createAttioSdk", () => {
 
     expect(mocks.notes.listNotes).toHaveBeenCalledWith({
       client,
-      parentObject: "people",
-      parentRecordId: "rec_1",
+      parentObject: noteParentObject,
+      parentRecordId: noteParentRecordId,
     });
     expect(mocks.notes.getNote).toHaveBeenCalledWith({
       client,
@@ -269,8 +278,8 @@ describe("createAttioSdk", () => {
     });
     expect(mocks.notes.createNote).toHaveBeenCalledWith({
       client,
-      parentObject: "people",
-      parentRecordId: "rec_1",
+      parentObject: noteParentObject,
+      parentRecordId: noteParentRecordId,
       title: "Intro call",
       format: "plaintext",
       content: "Discussed next steps.",
