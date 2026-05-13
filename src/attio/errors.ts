@@ -1,4 +1,5 @@
 // biome-ignore-all lint/security/noSecrets: false report
+import { z } from "zod";
 import { enhanceAttioError } from "./error-enhancer";
 
 interface AttioErrorDetails {
@@ -167,6 +168,73 @@ const extractDetails = (error: unknown): AttioErrorDetails => {
   };
 };
 
+const attioErrorInfoSchema = z
+  .object({
+    name: z.string().optional(),
+    message: z.string().optional(),
+    code: z.string().optional(),
+    type: z.string().optional(),
+    status: z.number().optional(),
+    status_code: z.number().optional(),
+    isApiError: z.boolean().optional(),
+    isNetworkError: z.boolean().optional(),
+    retryAfterMs: z.number().optional(),
+    response: z
+      .object({
+        status: z.number().optional(),
+      })
+      .passthrough()
+      .optional(),
+  })
+  .passthrough();
+
+type AttioErrorInfo = z.infer<typeof attioErrorInfoSchema>;
+
+const RETRYABLE_ATTIO_STATUS_CODES = [408, 429, 500, 502, 503, 504];
+
+const parseAttioErrorInfo = (error: unknown): AttioErrorInfo | undefined => {
+  const parsed = attioErrorInfoSchema.safeParse(error);
+  return parsed.success ? parsed.data : undefined;
+};
+
+const getAttioErrorStatus = (error: unknown): number | undefined => {
+  if (error instanceof AttioError) {
+    return error.response?.status ?? error.status;
+  }
+
+  const info = parseAttioErrorInfo(error);
+  return info?.response?.status ?? info?.status ?? info?.status_code;
+};
+
+const isAttioError = (error: unknown): error is AttioError => {
+  if (error instanceof AttioError) {
+    return true;
+  }
+
+  const info = parseAttioErrorInfo(error);
+  if (!info) {
+    return false;
+  }
+
+  return Boolean(
+    (info.name?.startsWith("Attio") && info.name.endsWith("Error")) ||
+      info.isApiError ||
+      info.isNetworkError,
+  );
+};
+
+const isAttioNotFound = (error: unknown): boolean =>
+  getAttioErrorStatus(error) === 404;
+
+const isRetryableAttioError = (error: unknown): boolean => {
+  const info = parseAttioErrorInfo(error);
+  if (info?.isNetworkError) {
+    return true;
+  }
+  const status = getAttioErrorStatus(error);
+  return status !== undefined && RETRYABLE_ATTIO_STATUS_CODES.includes(status);
+};
+
 const normalizeAttioError = (
   error: unknown,
   context: AttioErrorContext = {},
@@ -200,15 +268,19 @@ const normalizeAttioError = (
   return networkError;
 };
 
-export type { AttioErrorDetails, AttioErrorContext };
+export type { AttioErrorContext, AttioErrorDetails };
 export {
-  AttioError,
   AttioApiError,
   AttioBatchError,
   AttioConfigError,
   AttioEnvironmentError,
+  AttioError,
   AttioNetworkError,
   AttioResponseError,
   AttioRetryError,
+  getAttioErrorStatus,
+  isAttioError,
+  isAttioNotFound,
+  isRetryableAttioError,
   normalizeAttioError,
 };

@@ -356,15 +356,15 @@ export type {
   TtlCacheOptions,
 };
 export {
-  DEFAULT_METADATA_CACHE_MAX_ENTRIES,
-  DEFAULT_METADATA_CACHE_TTL_MS,
-  TtlCache,
+  clearClientCache,
+  clearMetadataCacheRegistry,
+  createAttioCacheManager,
   createTtlCache,
   createTtlCacheAdapter,
-  createAttioCacheManager,
-  clearMetadataCacheRegistry,
+  DEFAULT_METADATA_CACHE_MAX_ENTRIES,
+  DEFAULT_METADATA_CACHE_TTL_MS,
   getCachedClient,
-  setCachedClient,
-  clearClientCache,
   hashToken,
+  setCachedClient,
+  TtlCache,
 };

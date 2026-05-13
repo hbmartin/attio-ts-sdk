@@ -216,5 +216,5 @@ const createSchema = async (input: SchemaInput): Promise<AttioSchema> => {
   };
 };
 
-export type { AttributeAccessor, AttioSchema, SchemaInput };
+export type { AttioSchema, AttributeAccessor, SchemaInput };
 export { createSchema };

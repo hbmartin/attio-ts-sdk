@@ -287,6 +287,7 @@ function toResult<T>(
   };
 }
 
+export type { AttioResult, ResultOptions, UnwrapItemsOptions, UnwrapOptions };
 export {
   assertOk,
   createSchemaError,
@@ -298,4 +299,3 @@ export {
   validateItemsArray,
   validateWithSchema,
 };
-export type { AttioResult, ResultOptions, UnwrapItemsOptions, UnwrapOptions };

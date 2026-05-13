@@ -14,12 +14,25 @@ import {
   postV2Objects,
 } from "../generated";
 import type { AttioClientInput } from "./client";
+import { type BrandedId, createBrandedIdSchema } from "./ids";
 import { callAndUnwrapData, callAndUnwrapItems } from "./operations";
 
-type ObjectSlug = string & { readonly __brand: "ObjectSlug" };
-type ObjectApiSlug = string & { readonly __brand: "ObjectApiSlug" };
-type ObjectNoun = string & { readonly __brand: "ObjectNoun" };
+type ObjectSlug = BrandedId<"ObjectSlug">;
+type ObjectApiSlug = BrandedId<"ObjectApiSlug">;
+type ObjectNoun = BrandedId<"ObjectNoun">;
 type ObjectUpdateData = PatchV2ObjectsByObjectData["body"]["data"];
+
+const objectSlugSchema = createBrandedIdSchema<"ObjectSlug">("ObjectSlug");
+const objectApiSlugSchema =
+  createBrandedIdSchema<"ObjectApiSlug">("Object API slug");
+const objectNounSchema = createBrandedIdSchema<"ObjectNoun">("ObjectNoun");
+
+const createObjectSlug = (slug: string): ObjectSlug =>
+  objectSlugSchema.parse(slug);
+const createObjectApiSlug = (slug: string): ObjectApiSlug =>
+  objectApiSlugSchema.parse(slug);
+const createObjectNoun = (noun: string): ObjectNoun =>
+  objectNounSchema.parse(noun);
 
 const AttioObjectSchema: z.ZodType<AttioObject> = z
   .object({
@@ -127,4 +140,15 @@ export type {
   ObjectSlug,
   UpdateObjectInput,
 };
-export { createObject, getObject, listObjects, updateObject };
+export {
+  createObject,
+  createObjectApiSlug,
+  createObjectNoun,
+  createObjectSlug,
+  getObject,
+  listObjects,
+  objectApiSlugSchema,
+  objectNounSchema,
+  objectSlugSchema,
+  updateObject,
+};

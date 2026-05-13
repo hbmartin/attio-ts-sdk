@@ -51,9 +51,9 @@ interface AttioLogger {
 export type {
   AttioClientHooks,
   AttioErrorHookPayload,
-  LogContext,
-  LogValue,
   AttioLogger,
   AttioRequestHookPayload,
   AttioResponseHookPayload,
+  LogContext,
+  LogValue,
 };

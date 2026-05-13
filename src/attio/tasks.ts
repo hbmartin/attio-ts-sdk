@@ -16,7 +16,7 @@ import {
 } from "../generated";
 import { zTask } from "../generated/zod.gen";
 import { type AttioClientInput, resolveAttioClient } from "./client";
-import { type BrandedId, createBrandedId } from "./ids";
+import { type BrandedId, createBrandedIdSchema } from "./ids";
 import { callAndUnwrapData, callAndUnwrapItems } from "./operations";
 
 type Task = z.infer<typeof zTask>;
@@ -25,8 +25,9 @@ type TaskId = BrandedId<"TaskId">;
 type TaskCreateData = PostV2TasksData["body"]["data"];
 type TaskUpdateData = PatchV2TasksByTaskIdData["body"]["data"];
 
-const createTaskId = (id: string): TaskId =>
-  createBrandedId<"TaskId">(id, "TaskId");
+const taskIdSchema = createBrandedIdSchema<"TaskId">("TaskId");
+
+const createTaskId = (id: string): TaskId => taskIdSchema.parse(id);
 
 export interface TaskCreateInput extends AttioClientInput {
   data: TaskCreateData;
@@ -105,5 +106,5 @@ export const deleteTask = async (
   return result.data ?? {};
 };
 
-export { createTaskId };
 export type { TaskCreateData, TaskId, TaskUpdateData };
+export { createTaskId, taskIdSchema };

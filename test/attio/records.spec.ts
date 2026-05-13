@@ -29,6 +29,9 @@ vi.mock("../../src/attio/client", () => ({
 }));
 
 vi.mock("../../src/attio/record-utils", () => ({
+  extractRecordId: vi.fn((record: { id?: { record_id?: string } | string }) =>
+    typeof record.id === "string" ? record.id : record.id?.record_id,
+  ),
   normalizeRecord: vi.fn((record) => record),
   normalizeRecords: vi.fn((records) => records),
 }));
@@ -38,11 +41,13 @@ describe("records", () => {
   let updateRecord: typeof import("../../src/attio/records").updateRecord;
   let upsertRecord: typeof import("../../src/attio/records").upsertRecord;
   let getRecord: typeof import("../../src/attio/records").getRecord;
+  let getManyRecords: typeof import("../../src/attio/records").getManyRecords;
   let deleteRecord: typeof import("../../src/attio/records").deleteRecord;
   let queryRecords: typeof import("../../src/attio/records").queryRecords;
   let createRecordObjectId: typeof import("../../src/attio/records").createRecordObjectId;
   let createRecordId: typeof import("../../src/attio/records").createRecordId;
   let createMatchingAttribute: typeof import("../../src/attio/records").createMatchingAttribute;
+  let recordIdSchema: typeof import("../../src/attio/records").recordIdSchema;
   let filters: typeof import("../../src/attio/filters").filters;
 
   beforeAll(async () => {
@@ -51,11 +56,13 @@ describe("records", () => {
       updateRecord,
       upsertRecord,
       getRecord,
+      getManyRecords,
       deleteRecord,
       queryRecords,
       createRecordObjectId,
       createRecordId,
       createMatchingAttribute,
+      recordIdSchema,
     } = await import("../../src/attio/records"));
     ({ filters } = await import("../../src/attio/filters"));
   });
@@ -80,6 +87,11 @@ describe("records", () => {
       expect(() => createMatchingAttribute("")).toThrow(
         "MatchingAttribute cannot be empty",
       );
+    });
+
+    it("exports branded ID schemas", () => {
+      expect(recordIdSchema.parse("rec-123")).toBe("rec-123");
+      expect(() => recordIdSchema.parse("")).toThrow();
     });
   });
 
@@ -435,6 +447,77 @@ describe("records", () => {
       });
 
       expect(result).toBe(true);
+    });
+  });
+
+  describe("getManyRecords", () => {
+    it("returns an empty array without calling API for empty input", async () => {
+      const result = await getManyRecords({
+        object: "companies",
+        recordIds: [],
+      });
+
+      expect(result).toEqual([]);
+      expect(queryRecordsRequest).not.toHaveBeenCalled();
+    });
+
+    it("queries IDs in chunks and preserves input order", async () => {
+      queryRecordsRequest
+        .mockResolvedValueOnce({
+          data: {
+            data: [
+              { id: { record_id: "rec-2" }, values: {} },
+              { id: { record_id: "rec-1" }, values: {} },
+            ],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            data: [{ id: { record_id: "rec-3" }, values: {} }],
+          },
+        });
+
+      const result = await getManyRecords({
+        object: "companies",
+        recordIds: ["rec-1", "rec-2", "rec-3"],
+        chunkSize: 2,
+        concurrency: 1,
+      });
+
+      expect(result.map((record) => record.id)).toEqual([
+        { record_id: "rec-1" },
+        { record_id: "rec-2" },
+        { record_id: "rec-3" },
+      ]);
+      expect(queryRecordsRequest).toHaveBeenCalledTimes(2);
+      expect(queryRecordsRequest).toHaveBeenNthCalledWith(1, {
+        client: {},
+        path: { object: "companies" },
+        body: {
+          filter: { record_id: { $in: ["rec-1", "rec-2"] } },
+          limit: 2,
+          offset: 0,
+        },
+        signal: expect.any(AbortSignal),
+      });
+    });
+
+    it("throws when requested records are missing and notFound is throw", async () => {
+      queryRecordsRequest.mockResolvedValue({
+        data: {
+          data: [{ id: { record_id: "rec-1" }, values: {} }],
+        },
+      });
+
+      await expect(
+        getManyRecords({
+          object: "companies",
+          recordIds: ["rec-1", "rec-missing"],
+          notFound: "throw",
+        }),
+      ).rejects.toMatchObject({
+        code: "RECORDS_NOT_FOUND",
+      });
     });
   });
 

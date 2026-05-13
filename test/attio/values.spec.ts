@@ -2,21 +2,28 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { AttioResponseError } from "../../src/attio/errors";
 import {
+  getEmails,
   getFirstCheckbox,
   getFirstCurrencyValue,
   getFirstDate,
   getFirstDomain,
   getFirstEmail,
   getFirstFullName,
+  getFirstLocation,
   getFirstNumber,
   getFirstPhone,
   getFirstRating,
+  getFirstRecordReferenceId,
   getFirstSelectTitle,
   getFirstStatusTitle,
   getFirstText,
   getFirstTimestamp,
   getFirstValue,
   getFirstValueSafe,
+  getPhones,
+  getRecordReferenceIds,
+  getSelectTitles,
+  getStatusTitles,
   getValue,
   getValueSafe,
   value,
@@ -44,6 +51,49 @@ describe("value helpers", () => {
       { email_address: "hello@example.com" },
     ]);
     expect(value.currency(123)).toEqual([{ currency_value: 123 }]);
+  });
+
+  it("builds richer typed values", () => {
+    expect(value.text("hello")).toEqual([{ value: "hello" }]);
+    expect(value.phone("+15551234567")).toEqual([
+      { original_phone_number: "+15551234567" },
+    ]);
+    expect(value.phone("5551234567", "US")).toEqual([
+      { original_phone_number: "5551234567", country_code: "US" },
+    ]);
+    expect(value.personalName({ full_name: "Jane Doe" })).toEqual([
+      { full_name: "Jane Doe" },
+    ]);
+    expect(value.status("Active")).toEqual([{ status: "Active" }]);
+    expect(value.select("Enterprise")).toEqual([{ option: "Enterprise" }]);
+    expect(
+      value.recordReference({
+        targetObject: "companies",
+        targetRecordId: "rec-123",
+      }),
+    ).toEqual([{ target_object: "companies", target_record_id: "rec-123" }]);
+    expect(value.location({ locality: "Oakland", countryCode: "US" })).toEqual([
+      {
+        line_1: null,
+        line_2: null,
+        line_3: null,
+        line_4: null,
+        locality: "Oakland",
+        region: null,
+        postcode: null,
+        country_code: "US",
+        latitude: null,
+        longitude: null,
+      },
+    ]);
+  });
+
+  it("validates richer typed values", () => {
+    expect(() => value.phone("5551234567", "USA")).toThrow();
+    expect(() => value.personalName({})).toThrow();
+    expect(() =>
+      value.recordReference({ targetObject: "", targetRecordId: "rec-123" }),
+    ).toThrow();
   });
 });
 
@@ -172,6 +222,40 @@ describe("typed primitive getters", () => {
       phone: [
         { original_phone_number: "+15551234567", phone_number: "+15551234567" },
       ],
+      emails: [
+        {
+          original_email_address: "a@example.com",
+          email_address: "a@example.com",
+        },
+        {
+          original_email_address: "b@example.com",
+          email_address: "b@example.com",
+        },
+      ],
+      phones: [
+        { original_phone_number: "+15550000001", phone_number: "+15550000001" },
+        { original_phone_number: "+15550000002", phone_number: "+15550000002" },
+      ],
+      stages: [{ option: { title: "Seed" } }, { option: "opt_2" }],
+      statuses: [{ status: { title: "Open" } }, { status: "sta_2" }],
+      company: [
+        { target_object: "companies", target_record_id: "company-1" },
+        { target_object: "companies", target_record_id: "company-2" },
+      ],
+      office: [
+        {
+          line_1: "1 Market St",
+          line_2: null,
+          line_3: null,
+          line_4: null,
+          locality: "San Francisco",
+          region: "CA",
+          postcode: "94105",
+          country_code: "US",
+          latitude: null,
+          longitude: null,
+        },
+      ],
     },
   };
 
@@ -235,6 +319,31 @@ describe("typed primitive getters", () => {
 
   it("getFirstPhone extracts phone_number", () => {
     expect(getFirstPhone(record, "phone")).toBe("+15551234567");
+  });
+
+  it("plural readers extract common scalar values", () => {
+    expect(getEmails(record, "emails")).toEqual([
+      "a@example.com",
+      "b@example.com",
+    ]);
+    expect(getPhones(record, "phones")).toEqual([
+      "+15550000001",
+      "+15550000002",
+    ]);
+    expect(getSelectTitles(record, "stages")).toEqual(["Seed", "opt_2"]);
+    expect(getStatusTitles(record, "statuses")).toEqual(["Open", "sta_2"]);
+    expect(getRecordReferenceIds(record, "company")).toEqual([
+      "company-1",
+      "company-2",
+    ]);
+  });
+
+  it("record-reference and location readers extract first values", () => {
+    expect(getFirstRecordReferenceId(record, "company")).toBe("company-1");
+    expect(getFirstLocation(record, "office")).toMatchObject({
+      locality: "San Francisco",
+      country_code: "US",
+    });
   });
 
   it("returns undefined for missing attribute", () => {

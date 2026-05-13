@@ -3,20 +3,23 @@ import {
   getV2WorkspaceMembersByWorkspaceMemberId,
 } from "../generated";
 import type { AttioClientInput } from "./client";
-import { type BrandedId, createBrandedId } from "./ids";
+import { type BrandedId, createBrandedIdSchema } from "./ids";
 import { callAndUnwrapData, callAndUnwrapItems } from "./operations";
 
 type WorkspaceMemberId = BrandedId<"WorkspaceMemberId">;
 
+const workspaceMemberIdSchema =
+  createBrandedIdSchema<"WorkspaceMemberId">("WorkspaceMemberId");
+
 const createWorkspaceMemberId = (id: string): WorkspaceMemberId =>
-  createBrandedId<"WorkspaceMemberId">(id, "WorkspaceMemberId");
+  workspaceMemberIdSchema.parse(id);
 
 interface WorkspaceMemberInput extends AttioClientInput {
   workspaceMemberId: WorkspaceMemberId;
 }
 
-export { createWorkspaceMemberId };
 export type { WorkspaceMemberId };
+export { createWorkspaceMemberId, workspaceMemberIdSchema };
 
 export const listWorkspaceMembers = async (input: AttioClientInput = {}) =>
   callAndUnwrapItems(input, (client) => getV2WorkspaceMembers({ client }));

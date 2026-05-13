@@ -123,6 +123,25 @@ type PathSegment = z.output<typeof pathSegmentSchema>;
 type PathFilter = z.output<typeof pathFilterSchema>;
 type AttioFilter = z.output<typeof attioFilterSchema>;
 
+interface ParentRecordIdFilterInput {
+  list: string;
+  object: string;
+  recordId: string;
+}
+
+interface ParentRecordContainsFilterInput {
+  list: string;
+  object: string;
+  attribute: string;
+  value: string;
+  field?: string;
+}
+
+interface ListStatusFilterInput {
+  attribute: string;
+  status: string;
+}
+
 const parseAttioFilter = (filter: AttioFilter): Record<string, unknown> =>
   attioFilterSchema.parse(filter);
 
@@ -187,6 +206,38 @@ const filters = {
       constraints,
     };
   },
+
+  parentRecordId: ({
+    list,
+    object,
+    recordId,
+  }: ParentRecordIdFilterInput): PathFilter =>
+    filters.path(
+      [
+        [list, "parent_record"],
+        [object, "record_id"],
+      ],
+      { value: recordId },
+    ),
+
+  parentRecordContains: ({
+    list,
+    object,
+    attribute,
+    value,
+    field = "value",
+  }: ParentRecordContainsFilterInput): PathFilter =>
+    filters.path(
+      [
+        [list, "parent_record"],
+        [object, attribute],
+      ],
+      { [field]: { $contains: value } },
+    ),
+
+  listStatus: ({ attribute, status }: ListStatusFilterInput): AttioFilter => ({
+    [attribute]: { status: { $eq: status } },
+  }),
 };
 
 export type {
@@ -196,6 +247,9 @@ export type {
   ComparisonOperator,
   FieldCondition,
   FilterValue,
+  ListStatusFilterInput,
+  ParentRecordContainsFilterInput,
+  ParentRecordIdFilterInput,
   PathFilter,
   PathSegment,
   ShorthandValue,

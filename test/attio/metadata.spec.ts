@@ -8,9 +8,11 @@ import {
   buildAttributeMetadataPath,
   buildKey,
   extractTitles,
+  findAttribute,
   getAttribute,
   getAttributeOptions,
   getAttributeStatuses,
+  listAllowedValues,
   listAttributeMetadata,
   listAttributes,
 } from "../../src/attio/metadata";
@@ -359,6 +361,121 @@ describe("metadata", () => {
 
       const input = buildInput("status");
       await expect(getAttributeStatuses(input)).rejects.toThrow();
+    });
+  });
+
+  describe("findAttribute", () => {
+    it("finds an attribute by slug, title, and type", async () => {
+      const listMock = vi.mocked(getV2ByTargetByIdentifierAttributes);
+      const attributes = [
+        createMockAttribute({ api_slug: "name", title: "Name", type: "text" }),
+        createMockAttribute({
+          api_slug: "stage",
+          title: "Stage",
+          type: "status",
+        }),
+      ];
+      listMock.mockResolvedValue({ data: { data: attributes } });
+
+      const result = await findAttribute({
+        target: "objects",
+        identifier: "companies",
+        slug: "stage",
+        title: "Stage",
+        type: "status",
+        config: { apiKey },
+      });
+
+      expect(result).toEqual(attributes[1]);
+    });
+
+    it("returns undefined when no attribute matches", async () => {
+      const listMock = vi.mocked(getV2ByTargetByIdentifierAttributes);
+      listMock.mockResolvedValue({
+        data: { data: [createMockAttribute({ api_slug: "name" })] },
+      });
+
+      const result = await findAttribute({
+        target: "objects",
+        identifier: "companies",
+        slug: "missing",
+        config: { apiKey },
+      });
+
+      expect(result).toBeUndefined();
+    });
+
+    it("requires at least one find criterion", async () => {
+      await expect(
+        findAttribute({
+          target: "objects",
+          identifier: "companies",
+          config: { apiKey },
+        }),
+      ).rejects.toMatchObject({ code: "MISSING_ATTRIBUTE_CRITERIA" });
+    });
+  });
+
+  describe("listAllowedValues", () => {
+    it("normalizes select options", async () => {
+      const optionsMock = vi.mocked(
+        getV2ByTargetByIdentifierAttributesByAttributeOptions,
+      );
+      optionsMock.mockResolvedValue({
+        data: [
+          createMockSelectOption({
+            title: "Enterprise",
+            is_archived: true,
+          }),
+        ],
+      });
+
+      const result = await listAllowedValues({
+        ...buildInput("segment"),
+        type: "select",
+      });
+
+      expect(result).toEqual([
+        {
+          id: "550e8400-e29b-41d4-a716-446655440003",
+          title: "Enterprise",
+          archived: true,
+        },
+      ]);
+    });
+
+    it("normalizes statuses after resolving attribute type", async () => {
+      const getMock = vi.mocked(getV2ByTargetByIdentifierAttributesByAttribute);
+      const statusesMock = vi.mocked(
+        getV2ByTargetByIdentifierAttributesByAttributeStatuses,
+      );
+      getMock.mockResolvedValue({
+        data: createMockAttribute({ api_slug: "stage", type: "status" }),
+      });
+      statusesMock.mockResolvedValue({
+        data: [createMockStatus({ title: "Active" })],
+      });
+
+      const result = await listAllowedValues(buildInput("stage"));
+
+      expect(result).toEqual([
+        {
+          id: "550e8400-e29b-41d4-a716-446655440004",
+          title: "Active",
+          archived: false,
+        },
+      ]);
+    });
+
+    it("rejects attributes without allowed values", async () => {
+      const getMock = vi.mocked(getV2ByTargetByIdentifierAttributesByAttribute);
+      getMock.mockResolvedValue({
+        data: createMockAttribute({ api_slug: "name", type: "text" }),
+      });
+
+      await expect(listAllowedValues(buildInput("name"))).rejects.toMatchObject(
+        { code: "UNSUPPORTED_ATTRIBUTE_TYPE" },
+      );
     });
   });
 

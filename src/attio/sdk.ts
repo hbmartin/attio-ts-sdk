@@ -1,11 +1,16 @@
+import type { ZodType } from "zod";
 import type { AttioClient, AttioClientInput } from "./client";
 import { resolveAttioClient } from "./client";
+import type { AttioClientConfig } from "./config";
 import {
   type AddListEntryInput,
   addListEntry,
   type GetListInput,
   getList,
+  type ListQueryCollectInput,
   type ListQueryInput,
+  type ListQuerySingleInput,
+  type ListQueryStreamInput,
   listLists,
   queryListEntries,
   type RemoveListEntryInput,
@@ -14,11 +19,15 @@ import {
   updateListEntry,
 } from "./lists";
 import {
+  type AttributeFindInput,
   type AttributeInput,
   type AttributeListInput,
+  findAttribute,
   getAttribute,
   getAttributeOptions,
   getAttributeStatuses,
+  type ListAllowedValuesInput,
+  listAllowedValues,
   listAttributes,
 } from "./metadata";
 import {
@@ -31,14 +40,20 @@ import {
   type UpdateObjectInput,
   updateObject,
 } from "./objects";
+import type { AttioRecordLike } from "./record-utils";
 import {
   createRecord,
   deleteRecord,
+  getManyRecords,
   getRecord,
   queryRecords,
   type RecordCreateInput,
   type RecordGetInput,
+  type RecordGetManyInput,
+  type RecordQueryCollectInput,
   type RecordQueryInput,
+  type RecordQuerySingleInput,
+  type RecordQueryStreamInput,
   type RecordUpdateInput,
   type RecordUpsertInput,
   updateRecord,
@@ -47,10 +62,49 @@ import {
 import { createSchema, type SchemaInput } from "./schema";
 
 /** Helper type to omit client and config from input types for SDK methods */
-type SdkInput<T> = Omit<T, "client" | "config">;
+type SdkInput<T> = T extends unknown ? Omit<T, "client" | "config"> : never;
 
 /** Type alias for delete record input (same shape as RecordGetInput) */
 type RecordDeleteInput = RecordGetInput;
+
+type AttioSdkInput = AttioClientInput | AttioClientConfig;
+
+interface SdkRecordQuery {
+  <T extends AttioRecordLike>(
+    input: SdkInput<RecordQueryStreamInput<T>> & { itemSchema: ZodType<T> },
+  ): AsyncIterable<T>;
+  (input: SdkInput<RecordQueryStreamInput>): AsyncIterable<AttioRecordLike>;
+  <T extends AttioRecordLike>(
+    input: SdkInput<RecordQuerySingleInput<T> | RecordQueryCollectInput<T>> & {
+      itemSchema: ZodType<T>;
+    },
+  ): Promise<T[]>;
+  (
+    input: SdkInput<RecordQuerySingleInput | RecordQueryCollectInput>,
+  ): Promise<AttioRecordLike[]>;
+}
+
+interface SdkListQueryEntries {
+  <T extends AttioRecordLike>(
+    input: SdkInput<ListQueryStreamInput<T>> & { itemSchema: ZodType<T> },
+  ): AsyncIterable<T>;
+  (input: SdkInput<ListQueryStreamInput>): AsyncIterable<AttioRecordLike>;
+  <T extends AttioRecordLike>(
+    input: SdkInput<ListQuerySingleInput<T> | ListQueryCollectInput<T>> & {
+      itemSchema: ZodType<T>;
+    },
+  ): Promise<T[]>;
+  (
+    input: SdkInput<ListQuerySingleInput | ListQueryCollectInput>,
+  ): Promise<AttioRecordLike[]>;
+}
+
+interface SdkGetManyRecords {
+  <T extends AttioRecordLike>(
+    input: SdkInput<RecordGetManyInput<T>> & { itemSchema: ZodType<T> },
+  ): Promise<T[]>;
+  (input: SdkInput<RecordGetManyInput>): Promise<AttioRecordLike[]>;
+}
 
 interface AttioSdk {
   client: AttioClient;
@@ -77,19 +131,16 @@ interface AttioSdk {
       input: SdkInput<RecordUpsertInput>,
     ) => ReturnType<typeof upsertRecord>;
     get: (input: SdkInput<RecordGetInput>) => ReturnType<typeof getRecord>;
+    getMany: SdkGetManyRecords;
     delete: (
       input: SdkInput<RecordDeleteInput>,
     ) => ReturnType<typeof deleteRecord>;
-    query: (
-      input: SdkInput<RecordQueryInput>,
-    ) => ReturnType<typeof queryRecords>;
+    query: SdkRecordQuery;
   };
   lists: {
     list: (input?: SdkInput<AttioClientInput>) => ReturnType<typeof listLists>;
     get: (input: SdkInput<GetListInput>) => ReturnType<typeof getList>;
-    queryEntries: (
-      input: SdkInput<ListQueryInput>,
-    ) => ReturnType<typeof queryListEntries>;
+    queryEntries: SdkListQueryEntries;
     addEntry: (
       input: SdkInput<AddListEntryInput>,
     ) => ReturnType<typeof addListEntry>;
@@ -104,6 +155,9 @@ interface AttioSdk {
     listAttributes: (
       input: SdkInput<AttributeListInput>,
     ) => ReturnType<typeof listAttributes>;
+    findAttribute: (
+      input: SdkInput<AttributeFindInput>,
+    ) => ReturnType<typeof findAttribute>;
     getAttribute: (
       input: SdkInput<AttributeInput>,
     ) => ReturnType<typeof getAttribute>;
@@ -113,12 +167,86 @@ interface AttioSdk {
     getAttributeStatuses: (
       input: SdkInput<AttributeInput>,
     ) => ReturnType<typeof getAttributeStatuses>;
+    listAllowedValues: (
+      input: SdkInput<ListAllowedValuesInput>,
+    ) => ReturnType<typeof listAllowedValues>;
     schema: (input: SdkInput<SchemaInput>) => ReturnType<typeof createSchema>;
   };
 }
 
-const createAttioSdk = (input: AttioClientInput = {}): AttioSdk => {
-  const client = resolveAttioClient(input);
+const isAttioClientInput = (input: AttioSdkInput): input is AttioClientInput =>
+  "client" in input || "config" in input;
+
+const normalizeSdkInput = (input: AttioSdkInput): AttioClientInput => {
+  if (isAttioClientInput(input)) {
+    return input;
+  }
+  return { config: input };
+};
+
+function bindRecordQuery(client: AttioClient): SdkRecordQuery {
+  function query<T extends AttioRecordLike>(
+    input: SdkInput<RecordQueryStreamInput<T>> & { itemSchema: ZodType<T> },
+  ): AsyncIterable<T>;
+  function query(
+    input: SdkInput<RecordQueryStreamInput>,
+  ): AsyncIterable<AttioRecordLike>;
+  function query<T extends AttioRecordLike>(
+    input: SdkInput<RecordQuerySingleInput<T> | RecordQueryCollectInput<T>> & {
+      itemSchema: ZodType<T>;
+    },
+  ): Promise<T[]>;
+  function query(
+    input: SdkInput<RecordQuerySingleInput | RecordQueryCollectInput>,
+  ): Promise<AttioRecordLike[]>;
+  function query(
+    input: SdkInput<RecordQueryInput>,
+  ): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike> {
+    return queryRecords({ ...input, client });
+  }
+  return query;
+}
+
+function bindListQueryEntries(client: AttioClient): SdkListQueryEntries {
+  function queryEntries<T extends AttioRecordLike>(
+    input: SdkInput<ListQueryStreamInput<T>> & { itemSchema: ZodType<T> },
+  ): AsyncIterable<T>;
+  function queryEntries(
+    input: SdkInput<ListQueryStreamInput>,
+  ): AsyncIterable<AttioRecordLike>;
+  function queryEntries<T extends AttioRecordLike>(
+    input: SdkInput<ListQuerySingleInput<T> | ListQueryCollectInput<T>> & {
+      itemSchema: ZodType<T>;
+    },
+  ): Promise<T[]>;
+  function queryEntries(
+    input: SdkInput<ListQuerySingleInput | ListQueryCollectInput>,
+  ): Promise<AttioRecordLike[]>;
+  function queryEntries(
+    input: SdkInput<ListQueryInput>,
+  ): Promise<AttioRecordLike[]> | AsyncIterable<AttioRecordLike> {
+    return queryListEntries({ ...input, client });
+  }
+  return queryEntries;
+}
+
+function bindGetManyRecords(client: AttioClient): SdkGetManyRecords {
+  function getMany<T extends AttioRecordLike>(
+    input: SdkInput<RecordGetManyInput<T>> & { itemSchema: ZodType<T> },
+  ): Promise<T[]>;
+  function getMany(
+    input: SdkInput<RecordGetManyInput>,
+  ): Promise<AttioRecordLike[]>;
+  function getMany(
+    input: SdkInput<RecordGetManyInput>,
+  ): Promise<AttioRecordLike[]> {
+    return getManyRecords({ ...input, client });
+  }
+  return getMany;
+}
+
+const createAttioSdk = (input: AttioSdkInput = {}): AttioSdk => {
+  const client = resolveAttioClient(normalizeSdkInput(input));
 
   return {
     client,
@@ -133,28 +261,39 @@ const createAttioSdk = (input: AttioClientInput = {}): AttioSdk => {
       update: (params) => updateRecord({ ...params, client }),
       upsert: (params) => upsertRecord({ ...params, client }),
       get: (params) => getRecord({ ...params, client }),
+      getMany: bindGetManyRecords(client),
       delete: (params) => deleteRecord({ ...params, client }),
-      query: (params) => queryRecords({ ...params, client }),
+      query: bindRecordQuery(client),
     },
     lists: {
       list: (params = {}) => listLists({ ...params, client }),
       get: (params) => getList({ ...params, client }),
-      queryEntries: (params) => queryListEntries({ ...params, client }),
+      queryEntries: bindListQueryEntries(client),
       addEntry: (params) => addListEntry({ ...params, client }),
       updateEntry: (params) => updateListEntry({ ...params, client }),
       removeEntry: (params) => removeListEntry({ ...params, client }),
     },
     metadata: {
       listAttributes: (params) => listAttributes({ ...params, client }),
+      findAttribute: (params) => findAttribute({ ...params, client }),
       getAttribute: (params) => getAttribute({ ...params, client }),
       getAttributeOptions: (params) =>
         getAttributeOptions({ ...params, client }),
       getAttributeStatuses: (params) =>
         getAttributeStatuses({ ...params, client }),
+      listAllowedValues: (params) => listAllowedValues({ ...params, client }),
       schema: (params) => createSchema({ ...params, client }),
     },
   };
 };
 
-export type { AttioSdk, RecordDeleteInput, SdkInput };
+export type {
+  AttioSdk,
+  AttioSdkInput,
+  RecordDeleteInput,
+  SdkGetManyRecords,
+  SdkInput,
+  SdkListQueryEntries,
+  SdkRecordQuery,
+};
 export { createAttioSdk };
