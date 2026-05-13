@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.2.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.2.0...attio-ts-sdk-v2.2.1) (2026-05-13)
+
+
+### Bug Fixes
+
+* export offset pagination input contracts ([486fa73](https://github.com/hbmartin/attio-ts-sdk/commit/486fa73be7288ed3e140f3534579f2eac324bd69))
+* export offset pagination input contracts ([6821f61](https://github.com/hbmartin/attio-ts-sdk/commit/6821f61ceae1251f6880dc6735e684c6cab96a4b))
+* **types:** overload offset pagination resolver ([6f1d05c](https://github.com/hbmartin/attio-ts-sdk/commit/6f1d05c7eeefc855cafe9b12608b242a17972000))
+* **types:** overload offset pagination resolver ([ddb69c5](https://github.com/hbmartin/attio-ts-sdk/commit/ddb69c5bfc31ea5857f4e19fbe82b2ba997c881d))
+
 ## [2.2.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.1.0...attio-ts-sdk-v2.2.0) (2026-05-13)
 
 
