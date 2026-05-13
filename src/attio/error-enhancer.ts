@@ -125,4 +125,4 @@ const enhanceAttioError = (error: AttioError): AttioError => {
 };
 
 export type { AttioValueSuggestion };
-export { getKnownFieldValues, updateKnownFieldValues, enhanceAttioError };
+export { enhanceAttioError, getKnownFieldValues, updateKnownFieldValues };

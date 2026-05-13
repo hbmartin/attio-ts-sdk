@@ -18,22 +18,18 @@ import {
   postV2ListsByListEntriesQuery,
 } from "../generated";
 import { zPostV2ListsByListEntriesResponse } from "../generated/zod.gen";
-import { type AttioClientInput, resolveAttioClient } from "./client";
-import { type AttioFilter, parseAttioFilter } from "./filters";
-import { type BrandedId, createBrandedId } from "./ids";
+import type { AttioClientInput } from "./client";
+import type { AttioFilter } from "./filters";
+import { type BrandedId, createBrandedIdSchema } from "./ids";
 import {
   callAndDelete,
   callAndUnwrapData,
   callAndUnwrapItems,
+  createRecordQueryRuntime,
   unwrapAndNormalizeRecords,
 } from "./operations";
-import {
-  paginateOffset,
-  paginateOffsetAsync,
-  type SharedPaginationInput,
-} from "./pagination";
+import { resolveOffsetItems, type SharedPaginationInput } from "./pagination";
 import type { AttioRecordLike } from "./record-utils";
-import { rawRecordSchema } from "./schemas";
 
 const listSchema: z.ZodType<List> = z
   .object({
@@ -81,14 +77,19 @@ type EntryId = BrandedId<"EntryId">;
 type ParentObjectId = BrandedId<"ParentObjectId">;
 type ParentRecordId = BrandedId<"ParentRecordId">;
 
-const createListId = (id: string): ListId =>
-  createBrandedId<"ListId">(id, "ListId");
-const createEntryId = (id: string): EntryId =>
-  createBrandedId<"EntryId">(id, "EntryId");
+const listIdSchema = createBrandedIdSchema<"ListId">("ListId");
+const entryIdSchema = createBrandedIdSchema<"EntryId">("EntryId");
+const parentObjectIdSchema =
+  createBrandedIdSchema<"ParentObjectId">("ParentObjectId");
+const parentRecordIdSchema =
+  createBrandedIdSchema<"ParentRecordId">("ParentRecordId");
+
+const createListId = (id: string): ListId => listIdSchema.parse(id);
+const createEntryId = (id: string): EntryId => entryIdSchema.parse(id);
 const createParentObjectId = (id: string): ParentObjectId =>
-  createBrandedId<"ParentObjectId">(id, "ParentObjectId");
+  parentObjectIdSchema.parse(id);
 const createParentRecordId = (id: string): ParentRecordId =>
-  createBrandedId<"ParentRecordId">(id, "ParentRecordId");
+  parentRecordIdSchema.parse(id);
 
 type EntryValues = PostV2ListsByListEntriesData["body"]["data"]["entry_values"];
 
@@ -212,10 +213,7 @@ export function queryListEntries(
 export function queryListEntries<T extends AttioRecordLike>(
   input: ListQueryInput<T>,
 ): Promise<T[]> | AsyncIterable<T> {
-  const client = resolveAttioClient(input);
-  const schema = input.itemSchema ?? rawRecordSchema;
-  const filter =
-    input.filter === undefined ? undefined : parseAttioFilter(input.filter);
+  const query = createRecordQueryRuntime(input);
 
   const fetchEntries = async (
     offset?: number,
@@ -223,46 +221,16 @@ export function queryListEntries<T extends AttioRecordLike>(
     signal?: AbortSignal,
   ): Promise<T[]> => {
     const result = await postV2ListsByListEntriesQuery({
-      client,
+      client: query.client,
       path: { list: input.list },
-      body: { filter, limit, offset },
+      body: { filter: query.filter, limit, offset },
       ...input.options,
       signal,
     });
-    return unwrapAndNormalizeRecords(result, schema) as T[];
+    return unwrapAndNormalizeRecords(result, query.schema);
   };
 
-  if (input.paginate === "stream") {
-    return paginateOffsetAsync<T>(
-      async (offset, limit, signal) => ({
-        items: await fetchEntries(offset, limit, signal),
-      }),
-      {
-        offset: input.offset,
-        limit: input.limit,
-        maxPages: input.maxPages,
-        maxItems: input.maxItems,
-        signal: input.signal,
-      },
-    );
-  }
-
-  if (input.paginate === true) {
-    return paginateOffset<T>(
-      async (offset, limit, signal) => ({
-        items: await fetchEntries(offset, limit, signal),
-      }),
-      {
-        offset: input.offset,
-        limit: input.limit,
-        maxPages: input.maxPages,
-        maxItems: input.maxItems,
-        signal: input.signal,
-      },
-    );
-  }
-
-  return fetchEntries(input.offset, input.limit, input.signal);
+  return resolveOffsetItems(fetchEntries, input);
 }
 
 export const addListEntry = async (
@@ -311,13 +279,6 @@ export const removeListEntry = async (input: RemoveListEntryInput) =>
     }),
   );
 
-export {
-  createEntryId,
-  createListId,
-  createParentObjectId,
-  createParentRecordId,
-};
-
 export type {
   AddListEntryInput,
   EntryId,
@@ -336,4 +297,14 @@ export type {
   ParentRecordId,
   RemoveListEntryInput,
   UpdateListEntryInput,
+};
+export {
+  createEntryId,
+  createListId,
+  createParentObjectId,
+  createParentRecordId,
+  entryIdSchema,
+  listIdSchema,
+  parentObjectIdSchema,
+  parentRecordIdSchema,
 };

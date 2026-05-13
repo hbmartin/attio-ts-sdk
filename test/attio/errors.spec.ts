@@ -9,6 +9,10 @@ import {
   AttioNetworkError,
   AttioResponseError,
   AttioRetryError,
+  getAttioErrorStatus,
+  isAttioError,
+  isAttioNotFound,
+  isRetryableAttioError,
   normalizeAttioError,
 } from "../../src/attio/errors";
 
@@ -321,5 +325,47 @@ describe("AttioError cause", () => {
   it("does not set cause when not provided", () => {
     const error = new AttioError("no cause");
     expect(error.cause).toBeUndefined();
+  });
+});
+
+describe("stable error helpers", () => {
+  it("narrows Attio errors without requiring instanceof", () => {
+    expect(isAttioError(new AttioError("boom"))).toBe(true);
+    expect(
+      isAttioError({
+        name: "AttioApiError",
+        message: "not found",
+        status: 404,
+      }),
+    ).toBe(true);
+    expect(isAttioError({ name: "Error", message: "plain" })).toBe(false);
+  });
+
+  it("extracts status from normalized and response-shaped errors", () => {
+    expect(
+      getAttioErrorStatus(new AttioApiError("missing", { status: 404 })),
+    ).toBe(404);
+    expect(getAttioErrorStatus({ response: { status: 429 } })).toBe(429);
+    expect(getAttioErrorStatus({ status_code: 422 })).toBe(422);
+  });
+
+  it("detects not found errors", () => {
+    expect(isAttioNotFound({ name: "AttioApiError", status: 404 })).toBe(true);
+    expect(isAttioNotFound({ name: "AttioApiError", status: 400 })).toBe(false);
+  });
+
+  it("detects retryable Attio failures", () => {
+    expect(isRetryableAttioError({ name: "AttioApiError", status: 429 })).toBe(
+      true,
+    );
+    expect(
+      isRetryableAttioError({
+        name: "AttioNetworkError",
+        isNetworkError: true,
+      }),
+    ).toBe(true);
+    expect(isRetryableAttioError({ name: "AttioApiError", status: 400 })).toBe(
+      false,
+    );
   });
 });

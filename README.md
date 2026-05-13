@@ -74,6 +74,17 @@ const listId = createListId('sales-pipeline');
 
 The factory validates the input and throws if the string is empty.
 
+Every branded SDK identifier also has an exported Zod schema when you need to parse strings at your own boundaries:
+
+```typescript
+import { listIdSchema, recordIdSchema } from 'attio-ts-sdk';
+
+const listId = listIdSchema.parse(formData.get('listId'));
+const recordId = recordIdSchema.parse(params.recordId);
+```
+
+Schemas are exported for records (`recordIdSchema`, `recordObjectIdSchema`, `matchingAttributeSchema`), lists (`listIdSchema`, `entryIdSchema`, `parentObjectIdSchema`, `parentRecordIdSchema`), objects (`objectSlugSchema`, `objectApiSlugSchema`, `objectNounSchema`), notes, tasks, and workspace members.
+
 #### Strongly Typed Filters
 
 Filter types are now strongly typed instead of `Record<string, unknown>`. If you were passing arbitrary objects as filters, you may need to adjust your code to match the `AttioFilter` type.
@@ -148,6 +159,14 @@ filters.path(
   [['companies', 'primary_contact']],
   { email: { $contains: '@acme.com' } }
 )
+
+// List-entry relationship helpers
+filters.parentRecordId({
+  list: 'hiring-pipeline',
+  object: 'people',
+  recordId: 'rec_123',
+})
+filters.listStatus({ attribute: 'stage', status: 'Interview' })
 ```
 
 #### AbortSignal Support
@@ -272,26 +291,28 @@ console.log(objects);
 `createAttioSdk` builds on top of the convenience layer and the generated endpoints to provide a single, namespaced object you can pass around your application. It binds the client once so you don't repeat `{ client }` on every call, and groups operations by resource.
 
 ```typescript
-import { createAttioSdk } from 'attio-ts-sdk';
+import { createAttioSdk, filters } from 'attio-ts-sdk';
 
 const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
 ```
+
+`createAttioSdk` accepts the same flat client config as `createAttioClient`. You can also pass `{ config: { apiKey } }` or an existing `{ client }`.
 
 The returned `sdk` object exposes these namespaces:
 
 | Namespace | Methods |
 | --- | --- |
 | `sdk.objects` | `list`, `get`, `create`, `update` |
-| `sdk.records` | `create`, `update`, `upsert`, `get`, `delete`, `query` |
+| `sdk.records` | `create`, `update`, `upsert`, `get`, `getMany`, `delete`, `query` |
 | `sdk.lists` | `list`, `get`, `queryEntries`, `addEntry`, `updateEntry`, `removeEntry` |
-| `sdk.metadata` | `listAttributes`, `getAttribute`, `getAttributeOptions`, `getAttributeStatuses`, `schema` |
+| `sdk.metadata` | `listAttributes`, `findAttribute`, `getAttribute`, `getAttributeOptions`, `getAttributeStatuses`, `listAllowedValues`, `schema` |
 
 The underlying `AttioClient` is also available as `sdk.client` when you need to drop down to the generated endpoints.
 
 ```typescript
 const companies = await sdk.records.query({
   object: 'companies',
-  filter: { attribute: 'name', value: 'Acme' },
+  filter: filters.contains('name', 'Acme'),
 });
 
 const attributes = await sdk.metadata.listAttributes({
@@ -342,10 +363,17 @@ import { value } from 'attio-ts-sdk';
 | Helper | Signature | Description |
 | --- | --- | --- |
 | `value.string` | `(value: string) => ValueInput[]` | Non-empty string field. |
+| `value.text` | `(value: string) => ValueInput[]` | Alias for raw text fields. |
 | `value.number` | `(value: number) => ValueInput[]` | Finite numeric field. |
 | `value.boolean` | `(value: boolean) => ValueInput[]` | Boolean field. |
 | `value.domain` | `(value: string) => ValueInput[]` | Domain field (non-empty string). |
 | `value.email` | `(value: string) => ValueInput[]` | Email field (validated format). |
+| `value.phone` | `(value: string, countryCode?: string) => ValueInput[]` | Phone field, with optional ISO country code. |
+| `value.personalName` | `(input: ValuePersonalNameInput) => ValueInput[]` | Personal name values. |
+| `value.status` | `(value: string) => ValueInput[]` | Status by title or ID. |
+| `value.select` | `(value: string) => ValueInput[]` | Select option by title or ID. |
+| `value.recordReference` | `(input: ValueRecordReferenceInput) => ValueInput[]` | Record-reference value. |
+| `value.location` | `(input: ValueLocationInput) => ValueInput[]` | Location value with missing fields filled as `null`. |
 | `value.currency` | `(value: number, currencyCode?: string) => ValueInput[]` | Currency field. `currencyCode` is an optional ISO 4217 code (e.g. `"USD"`). |
 
 ```typescript
@@ -353,9 +381,12 @@ const values = {
   name: value.string('Acme Corp'),
   domains: value.domain('acme.com'),
   contact_email: value.email('hello@acme.com'),
+  phone_numbers: value.phone('+15551234567'),
+  status: value.status('Customer'),
   employee_count: value.number(150),
   is_customer: value.boolean(true),
   annual_revenue: value.currency(50000, 'USD'),
+  headquarters: value.location({ locality: 'San Francisco', countryCode: 'US' }),
 };
 
 await sdk.records.create({ object: 'companies', values });
@@ -378,6 +409,22 @@ import { z } from 'zod';
 const nameSchema = z.object({ value: z.string() });
 const typedName = getFirstValue(company, 'name', { schema: nameSchema });
 //    ^? { value: string } | undefined
+```
+
+Common value readers are exported for response shapes you usually do not want to parse by hand:
+
+```typescript
+import {
+  getFirstEmail,
+  getFirstPhone,
+  getRecordReferenceIds,
+  getSelectTitles,
+} from 'attio-ts-sdk';
+
+const email = getFirstEmail(person, 'email_addresses');
+const phone = getFirstPhone(person, 'phone_numbers');
+const segmentTitles = getSelectTitles(company, 'segments');
+const companyIds = getRecordReferenceIds(person, 'company');
 ```
 
 ### Schema Helpers
@@ -436,7 +483,7 @@ error.suggestions  // fuzzy-match suggestions for value mismatches (see below)
 #### Catching errors from the convenience layer
 
 ```typescript
-import { createAttioClient, createRecord, AttioError } from 'attio-ts-sdk';
+import { createAttioClient, createRecord, isAttioError } from 'attio-ts-sdk';
 
 const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 
@@ -447,13 +494,26 @@ try {
     values: { stage: [{ value: 'Prospectt' }] },
   });
 } catch (err) {
-  if (err instanceof AttioError) {
+  if (isAttioError(err)) {
     console.log(err.status, err.code, err.requestId, err.suggestions);
   } else {
     // Re-throw if it's not an error we specifically handle
     throw err;
   }
 }
+```
+
+Stable helpers are available when `instanceof` is unreliable across bundled or test environments:
+
+```typescript
+import {
+  getAttioErrorStatus,
+  isAttioNotFound,
+  isRetryableAttioError,
+} from 'attio-ts-sdk';
+
+if (isAttioNotFound(err)) return undefined;
+if (isRetryableAttioError(err)) console.log(getAttioErrorStatus(err));
 ```
 
 #### Smart suggestions for value mismatches
@@ -516,7 +576,7 @@ The SDK provides multiple approaches to pagination, from simple convenience opti
 The simplest way to paginate record queries is using the `paginate` option on `queryRecords`:
 
 ```typescript
-import { createAttioClient, queryRecords } from 'attio-ts-sdk';
+import { createAttioClient, filters, queryRecords } from 'attio-ts-sdk';
 
 const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 
@@ -524,7 +584,7 @@ const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 const allCompanies = await queryRecords({
   client,
   object: 'companies',
-  filter: { attribute: 'name', value: 'Acme' },
+  filter: filters.contains('name', 'Acme'),
   sorts: [{ attribute: 'created_at', direction: 'desc' }],
   paginate: true,
   maxItems: 10000,  // Optional: limit total items
@@ -542,6 +602,19 @@ for await (const company of queryRecords({
 
 The same pattern works with `queryListEntries` / `sdk.lists.queryEntries`.
 
+#### Fetching many records by ID
+
+Use `getManyRecords` or `sdk.records.getMany` when you already have record IDs. The helper chunks `$in` queries, runs them with bounded concurrency, and can preserve input order.
+
+```typescript
+const companies = await sdk.records.getMany({
+  object: 'companies',
+  recordIds: ['rec_1', 'rec_2', 'rec_3'],
+  preserveOrder: true,
+  notFound: 'throw',
+});
+```
+
 #### Using low-level pagination helpers
 
 For more control or when working directly with generated endpoints, use `paginateOffset` (offset-based) or `paginate` (cursor-based):
@@ -558,6 +631,7 @@ Both helpers automatically extract items and pagination metadata from raw API re
 ```typescript
 import {
   createAttioClient,
+  filters,
   paginateOffset,
   postV2ObjectsByObjectRecordsQuery,
 } from 'attio-ts-sdk';
@@ -572,7 +646,7 @@ const allCompanies = await paginateOffset(async (offset, limit) => {
     body: {
       offset,
       limit,
-      filter: { attribute: 'name', value: 'Acme' },
+      filter: filters.contains('name', 'Acme'),
       sorts: [{ attribute: 'created_at', direction: 'desc' }],
     },
   });
@@ -582,7 +656,7 @@ const allCompanies = await paginateOffset(async (offset, limit) => {
 #### Paginating list entry queries with `paginateOffset`
 
 ```typescript
-import { paginateOffset, postV2ListsByListEntriesQuery } from 'attio-ts-sdk';
+import { filters, paginateOffset, postV2ListsByListEntriesQuery } from 'attio-ts-sdk';
 
 const allEntries = await paginateOffset(async (offset, limit) => {
   return postV2ListsByListEntriesQuery({
@@ -591,7 +665,7 @@ const allEntries = await paginateOffset(async (offset, limit) => {
     body: {
       offset,
       limit,
-      filter: { attribute: 'stage', value: 'negotiation' },
+      filter: filters.listStatus({ attribute: 'stage', status: 'negotiation' }),
     },
   });
 });
@@ -788,7 +862,12 @@ Note: `createAttioClient` always creates a new client instance. Use `getAttioCli
 ### Metadata Helpers
 
 ```typescript
-import { createAttioClient, getAttributeOptions } from 'attio-ts-sdk';
+import {
+  createAttioClient,
+  findAttribute,
+  getAttributeOptions,
+  listAllowedValues,
+} from 'attio-ts-sdk';
 
 const client = createAttioClient({ apiKey: process.env.ATTIO_API_KEY });
 
@@ -798,6 +877,22 @@ const options = await getAttributeOptions({
   identifier: 'companies',
   attribute: 'stage',
 });
+
+const statusAttribute = await findAttribute({
+  client,
+  target: 'objects',
+  identifier: 'companies',
+  type: 'status',
+  title: 'Stage',
+});
+
+const allowedValues = await listAllowedValues({
+  client,
+  target: 'objects',
+  identifier: 'companies',
+  attribute: 'stage',
+});
+// [{ id, title, archived }]
 ```
 
 ### Working with Records

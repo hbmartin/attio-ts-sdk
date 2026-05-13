@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 type BrandedId<TBrand extends string> = string & { readonly __brand: TBrand };
 
 const createBrandedId = <TBrand extends string>(
@@ -10,5 +12,13 @@ const createBrandedId = <TBrand extends string>(
   return id as BrandedId<TBrand>;
 };
 
-export { createBrandedId };
+const createBrandedIdSchema = <TBrand extends string>(label: string) =>
+  z
+    .string()
+    .refine((id) => id.trim().length > 0, {
+      message: `${label} cannot be empty`,
+    })
+    .transform((id) => createBrandedId<TBrand>(id, label));
+
 export type { BrandedId };
+export { createBrandedId, createBrandedIdSchema };

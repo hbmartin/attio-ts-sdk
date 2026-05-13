@@ -134,10 +134,10 @@ async function callWithRetry<T>(
 
 export type { RetryConfig };
 export {
-  DEFAULT_RETRY_CONFIG,
-  sleep,
   calculateRetryDelay,
-  isRetryableStatus,
-  isRetryableError,
   callWithRetry,
+  DEFAULT_RETRY_CONFIG,
+  isRetryableError,
+  isRetryableStatus,
+  sleep,
 };

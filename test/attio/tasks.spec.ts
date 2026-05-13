@@ -16,6 +16,7 @@ const createMockTask = (overrides: Partial<Task> = {}): Task => ({
   content_plaintext: "Test task content",
   deadline_at: null,
   is_completed: false,
+  completed_at: null,
   linked_records: [],
   assignees: [],
   created_by_actor: {

@@ -74,6 +74,7 @@ describe("lists", () => {
   let createEntryId: typeof import("../../src/attio/lists").createEntryId;
   let createParentObjectId: typeof import("../../src/attio/lists").createParentObjectId;
   let createParentRecordId: typeof import("../../src/attio/lists").createParentRecordId;
+  let listIdSchema: typeof import("../../src/attio/lists").listIdSchema;
   let filters: typeof import("../../src/attio/filters").filters;
 
   beforeAll(async () => {
@@ -88,6 +89,7 @@ describe("lists", () => {
       createEntryId,
       createParentObjectId,
       createParentRecordId,
+      listIdSchema,
     } = await import("../../src/attio/lists"));
     ({ filters } = await import("../../src/attio/filters"));
   });
@@ -106,6 +108,11 @@ describe("lists", () => {
 
     it("throws error when id is empty string", () => {
       expect(() => createListId("")).toThrow("ListId cannot be empty");
+    });
+
+    it("exports a branded ListId schema", () => {
+      expect(listIdSchema.parse("list-123")).toBe("list-123");
+      expect(() => listIdSchema.parse("")).toThrow();
     });
   });
 

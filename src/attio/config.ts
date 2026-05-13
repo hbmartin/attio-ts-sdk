@@ -66,8 +66,8 @@ export {
   DEFAULT_BASE_URL,
   getEnvValue,
   normalizeBaseUrl,
-  resolveBaseUrl,
   resolveAuthToken,
+  resolveBaseUrl,
   resolveResponseStyle,
   resolveThrowOnError,
 };

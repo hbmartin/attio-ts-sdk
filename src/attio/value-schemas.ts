@@ -181,6 +181,28 @@ const valueSchemasByType = {
 
 type ValueAttributeType = keyof typeof valueSchemasByType;
 
+export type {
+  ActorReferenceValue,
+  CheckboxValue,
+  CurrencyValue,
+  DateValue,
+  DomainValue,
+  EmailValue,
+  EnrichedSelectValue,
+  EnrichedStatusValue,
+  InteractionValue,
+  LocationValue,
+  NumberValue,
+  PersonalNameValue,
+  PhoneValue,
+  RatingValue,
+  RecordReferenceValue,
+  SelectValue,
+  StatusValue,
+  TextValue,
+  TimestampValue,
+  ValueAttributeType,
+};
 export {
   actorReferenceValueSchema,
   checkboxValueSchema,
@@ -204,27 +226,4 @@ export {
   textValueSchema,
   timestampValueSchema,
   valueSchemasByType,
-};
-
-export type {
-  ActorReferenceValue,
-  CheckboxValue,
-  CurrencyValue,
-  DateValue,
-  DomainValue,
-  EmailValue,
-  EnrichedSelectValue,
-  EnrichedStatusValue,
-  InteractionValue,
-  LocationValue,
-  NumberValue,
-  PersonalNameValue,
-  PhoneValue,
-  RatingValue,
-  RecordReferenceValue,
-  SelectValue,
-  StatusValue,
-  TextValue,
-  TimestampValue,
-  ValueAttributeType,
 };

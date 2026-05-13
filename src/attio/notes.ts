@@ -13,7 +13,7 @@ import {
 } from "../generated";
 import { zNote } from "../generated/zod.gen";
 import type { AttioClientInput } from "./client";
-import { type BrandedId, createBrandedId } from "./ids";
+import { type BrandedId, createBrandedIdSchema } from "./ids";
 import {
   callAndDelete,
   callAndUnwrapData,
@@ -27,12 +27,19 @@ type NoteParentObjectId = BrandedId<"NoteParentObjectId">;
 type NoteParentRecordId = BrandedId<"NoteParentRecordId">;
 type NoteFormat = PostV2NotesData["body"]["data"]["format"];
 
-const createNoteId = (id: string): NoteId =>
-  createBrandedId<"NoteId">(id, "NoteId");
+const noteIdSchema = createBrandedIdSchema<"NoteId">("NoteId");
+const noteParentObjectIdSchema = createBrandedIdSchema<"NoteParentObjectId">(
+  "Note parent object id",
+);
+const noteParentRecordIdSchema = createBrandedIdSchema<"NoteParentRecordId">(
+  "Note parent record id",
+);
+
+const createNoteId = (id: string): NoteId => noteIdSchema.parse(id);
 const createNoteParentObjectId = (id: string): NoteParentObjectId =>
-  createBrandedId<"NoteParentObjectId">(id, "Note parent object id");
+  noteParentObjectIdSchema.parse(id);
 const createNoteParentRecordId = (id: string): NoteParentRecordId =>
-  createBrandedId<"NoteParentRecordId">(id, "Note parent record id");
+  noteParentRecordIdSchema.parse(id);
 
 export interface NoteCreateInput extends AttioClientInput {
   parentObject: NoteParentObjectId;
@@ -105,5 +112,12 @@ export const deleteNote = async (input: NoteDeleteInput): Promise<true> =>
     }),
   );
 
-export { createNoteId, createNoteParentObjectId, createNoteParentRecordId };
 export type { NoteFormat, NoteId, NoteParentObjectId, NoteParentRecordId };
+export {
+  createNoteId,
+  createNoteParentObjectId,
+  createNoteParentRecordId,
+  noteIdSchema,
+  noteParentObjectIdSchema,
+  noteParentRecordIdSchema,
+};

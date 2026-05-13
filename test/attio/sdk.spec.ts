@@ -1,5 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
+import { z } from "zod";
 import { createAttioClient } from "../../src/attio/client";
+import type { ListId } from "../../src/attio/lists";
+import type { RecordObjectId } from "../../src/attio/records";
 import { createAttioSdk } from "../../src/attio/sdk";
 
 const mocks = vi.hoisted(() => ({
@@ -14,6 +17,7 @@ const mocks = vi.hoisted(() => ({
     updateRecord: vi.fn().mockResolvedValue({}),
     upsertRecord: vi.fn().mockResolvedValue({}),
     getRecord: vi.fn().mockResolvedValue({}),
+    getManyRecords: vi.fn().mockResolvedValue([]),
     deleteRecord: vi.fn().mockResolvedValue(true),
     queryRecords: vi.fn().mockResolvedValue([]),
   },
@@ -80,6 +84,7 @@ describe("createAttioSdk", () => {
       values: {},
     });
     await sdk.records.get({ object: "companies", recordId: "rec_1" });
+    await sdk.records.getMany({ object: "companies", recordIds: ["rec_1"] });
     await sdk.records.delete({ object: "companies", recordId: "rec_1" });
     await sdk.records.query({ object: "companies" });
 
@@ -153,6 +158,11 @@ describe("createAttioSdk", () => {
       client,
       object: "companies",
       recordId: "rec_1",
+    });
+    expect(mocks.records.getManyRecords).toHaveBeenCalledWith({
+      client,
+      object: "companies",
+      recordIds: ["rec_1"],
     });
     expect(mocks.records.deleteRecord).toHaveBeenCalledWith({
       client,
@@ -278,5 +288,62 @@ describe("createAttioSdk", () => {
         pluralNoun: "Deals",
       }),
     ).rejects.toThrow("API Error");
+  });
+
+  it("accepts flat client config", async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: {} }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const sdk = createAttioSdk({
+      apiKey: "attio_test_token_12345",
+      fetch: mockFetch,
+    });
+
+    expect(sdk.client.getConfig().auth).toBe("attio_test_token_12345");
+  });
+
+  it("preserves query overload inference on namespaced methods", () => {
+    const mockFetch: typeof fetch = () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ data: {} }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    const client = createAttioClient({
+      authToken: "attio_test_token_12345",
+      fetch: mockFetch,
+    });
+    const sdk = createAttioSdk({ client });
+    const object = "companies" as RecordObjectId;
+    const list = "sales-pipeline" as ListId;
+    const itemSchema = z.object({
+      id: z.object({ record_id: z.string() }),
+      values: z.object({ name: z.array(z.object({ value: z.string() })) }),
+    });
+    type Item = z.infer<typeof itemSchema>;
+
+    expectTypeOf(
+      sdk.records.query({ object, paginate: false, itemSchema }),
+    ).toEqualTypeOf<Promise<Item[]>>();
+    expectTypeOf(
+      sdk.records.query({ object, paginate: true, itemSchema }),
+    ).toEqualTypeOf<Promise<Item[]>>();
+    expectTypeOf(
+      sdk.records.query({ object, paginate: "stream", itemSchema }),
+    ).toEqualTypeOf<AsyncIterable<Item>>();
+    expectTypeOf(
+      sdk.lists.queryEntries({ list, paginate: false, itemSchema }),
+    ).toEqualTypeOf<Promise<Item[]>>();
+    expectTypeOf(
+      sdk.lists.queryEntries({ list, paginate: true, itemSchema }),
+    ).toEqualTypeOf<Promise<Item[]>>();
+    expectTypeOf(
+      sdk.lists.queryEntries({ list, paginate: "stream", itemSchema }),
+    ).toEqualTypeOf<AsyncIterable<Item>>();
   });
 });

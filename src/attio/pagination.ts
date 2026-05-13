@@ -48,6 +48,15 @@ interface SharedPaginationInput {
   signal?: AbortSignal;
 }
 
+interface SharedOffsetPaginationInput extends SharedPaginationInput {
+  offset?: number;
+  limit?: number;
+}
+
+interface OffsetItemsQueryInput extends SharedOffsetPaginationInput {
+  paginate?: boolean | "stream";
+}
+
 const createPageResultSchema = <T>(
   itemSchema: ZodType<T>,
 ): ZodType<PageResult<T>> =>
@@ -118,30 +127,86 @@ const parseOffsetPageResult = <T>(
   return result.data;
 };
 
+interface PaginationLoopState {
+  pages: number;
+  itemCount: number;
+  maxPages: number;
+  maxItems: number;
+  signal?: AbortSignal;
+}
+
+const createPaginationLoopState = (
+  options: SharedPaginationInput,
+): PaginationLoopState => ({
+  pages: 0,
+  itemCount: 0,
+  maxPages: options.maxPages ?? Number.POSITIVE_INFINITY,
+  maxItems: options.maxItems ?? Number.POSITIVE_INFINITY,
+  signal: options.signal,
+});
+
+const shouldContinuePagination = (state: PaginationLoopState): boolean =>
+  state.pages < state.maxPages &&
+  state.itemCount < state.maxItems &&
+  !isAborted(state.signal);
+
+type CursorPageFetcher<T> = (
+  cursor: string | null | undefined,
+  signal?: AbortSignal,
+) => Promise<PageResult<T> | unknown>;
+
+type OffsetPageFetcher<T> = (
+  offset: number,
+  limit: number,
+  signal?: AbortSignal,
+) => Promise<OffsetPageResult<T> | unknown>;
+
+const readCursorPage = async <T>(
+  fetchPage: CursorPageFetcher<T>,
+  cursor: string | null | undefined,
+  options: PaginationAsyncOptions<T>,
+): Promise<PageResult<T>> => {
+  const page = await fetchPage(cursor, options.signal);
+  const parsed = parsePageResult(page, options.itemSchema);
+  return parsed ?? toPageResult<T>(page);
+};
+
+const readOffsetPage = async <T>(
+  fetchPage: OffsetPageFetcher<T>,
+  offset: number,
+  limit: number,
+  options: OffsetPaginationAsyncOptions<T>,
+): Promise<OffsetPageResult<T>> => {
+  const page = await fetchPage(offset, limit, options.signal);
+  const parsed = parseOffsetPageResult(page, options.itemSchema);
+  return parsed ?? toOffsetPageResult<T>(page);
+};
+
+const addCompletedPage = (
+  state: PaginationLoopState,
+  itemCount: number,
+): void => {
+  state.pages += 1;
+  state.itemCount = itemCount;
+};
+
 const paginate = async <T>(
-  fetchPage: (
-    cursor: string | null | undefined,
-    signal?: AbortSignal,
-  ) => Promise<PageResult<T> | unknown>,
+  fetchPage: CursorPageFetcher<T>,
   options: PaginationAsyncOptions<T> = {},
 ): Promise<T[]> => {
   const items: T[] = [];
   let cursor = options.cursor ?? null;
-  let pages = 0;
-  const maxPages = options.maxPages ?? Number.POSITIVE_INFINITY;
-  const maxItems = options.maxItems ?? Number.POSITIVE_INFINITY;
+  const state = createPaginationLoopState(options);
 
-  while (
-    pages < maxPages &&
-    items.length < maxItems &&
-    !isAborted(options.signal)
-  ) {
-    const page = await fetchPage(cursor, options.signal);
-    const parsed = parsePageResult(page, options.itemSchema);
-    const { items: pageItems, nextCursor } = parsed ?? toPageResult<T>(page);
+  while (shouldContinuePagination(state)) {
+    const { items: pageItems, nextCursor } = await readCursorPage(
+      fetchPage,
+      cursor,
+      options,
+    );
 
     items.push(...pageItems);
-    pages += 1;
+    addCompletedPage(state, items.length);
 
     if (!nextCursor) {
       break;
@@ -150,7 +215,7 @@ const paginate = async <T>(
     cursor = nextCursor;
   }
 
-  return items.slice(0, maxItems);
+  return items.slice(0, state.maxItems);
 };
 
 const DEFAULT_OFFSET_PAGE_SIZE = 50;
@@ -177,74 +242,146 @@ const resolveNextOffset = ({
   return currentOffset + limit;
 };
 
-interface OffsetPaginationState {
-  pages: number;
-  itemCount: number;
-  maxPages: number;
-  maxItems: number;
-  signal?: AbortSignal;
+interface OffsetPaginationRuntime {
+  limit: number;
+  offset: number;
+  state: PaginationLoopState;
 }
 
-const shouldContinueOffsetPagination = (
-  state: OffsetPaginationState,
-): boolean =>
-  state.pages < state.maxPages &&
-  state.itemCount < state.maxItems &&
-  !isAborted(state.signal);
+interface OffsetPageRead<T> {
+  pageItems: T[];
+  nextOffset?: number | null;
+  currentOffset: number;
+  limit: number;
+}
 
-const paginateOffset = async <T>(
-  fetchPage: (
+const createOffsetPaginationRuntime = (
+  options: OffsetPaginationAsyncOptions,
+): OffsetPaginationRuntime => ({
+  limit: Math.max(
+    1,
+    options.limit ?? options.pageSize ?? DEFAULT_OFFSET_PAGE_SIZE,
+  ),
+  offset: Math.max(0, options.offset ?? 0),
+  state: createPaginationLoopState(options),
+});
+
+type OffsetItemsFetcher<T> = (
+  offset?: number,
+  limit?: number,
+  signal?: AbortSignal,
+) => Promise<T[]>;
+
+const toOffsetItemsPageFetcher =
+  <T>(fetchItems: OffsetItemsFetcher<T>) =>
+  async (
     offset: number,
     limit: number,
-    signal?: AbortSignal,
-  ) => Promise<OffsetPageResult<T> | unknown>,
+    signal: AbortSignal | undefined,
+  ): Promise<OffsetPageResult<T>> => ({
+    items: await fetchItems(offset, limit, signal),
+  });
+
+const collectOffsetItems = <T>(
+  fetchItems: OffsetItemsFetcher<T>,
+  input: SharedOffsetPaginationInput,
+): Promise<T[]> =>
+  paginateOffset(toOffsetItemsPageFetcher(fetchItems), {
+    offset: input.offset,
+    limit: input.limit,
+    maxPages: input.maxPages,
+    maxItems: input.maxItems,
+    signal: input.signal,
+  });
+
+const streamOffsetItems = <T>(
+  fetchItems: OffsetItemsFetcher<T>,
+  input: SharedOffsetPaginationInput,
+): AsyncIterable<T> =>
+  paginateOffsetAsync(toOffsetItemsPageFetcher(fetchItems), {
+    offset: input.offset,
+    limit: input.limit,
+    maxPages: input.maxPages,
+    maxItems: input.maxItems,
+    signal: input.signal,
+  });
+
+const resolveOffsetItems = <T>(
+  fetchItems: OffsetItemsFetcher<T>,
+  input: OffsetItemsQueryInput,
+): Promise<T[]> | AsyncIterable<T> => {
+  if (input.paginate === "stream") {
+    return streamOffsetItems(fetchItems, input);
+  }
+
+  if (input.paginate === true) {
+    return collectOffsetItems(fetchItems, input);
+  }
+
+  return fetchItems(input.offset, input.limit, input.signal);
+};
+
+const readRuntimeOffsetPage = async <T>(
+  fetchPage: OffsetPageFetcher<T>,
+  runtime: OffsetPaginationRuntime,
+  options: OffsetPaginationAsyncOptions<T>,
+): Promise<OffsetPageRead<T>> => {
+  const { items: pageItems, nextOffset } = await readOffsetPage(
+    fetchPage,
+    runtime.offset,
+    runtime.limit,
+    options,
+  );
+  return {
+    pageItems,
+    nextOffset,
+    currentOffset: runtime.offset,
+    limit: runtime.limit,
+  };
+};
+
+const advanceOffset = <T>(
+  runtime: OffsetPaginationRuntime,
+  page: OffsetPageRead<T>,
+): boolean => {
+  const resolvedOffset = resolveNextOffset({
+    nextOffset: page.nextOffset,
+    pageItemsLength: page.pageItems.length,
+    limit: page.limit,
+    currentOffset: page.currentOffset,
+  });
+
+  if (resolvedOffset === null || resolvedOffset <= page.currentOffset) {
+    return false;
+  }
+
+  runtime.offset = resolvedOffset;
+  return true;
+};
+
+const paginateOffset = async <T>(
+  fetchPage: OffsetPageFetcher<T>,
   options: OffsetPaginationAsyncOptions<T> = {},
 ): Promise<T[]> => {
   const items: T[] = [];
-  const maxPages = options.maxPages ?? Number.POSITIVE_INFINITY;
-  const maxItems = options.maxItems ?? Number.POSITIVE_INFINITY;
-  const limit = Math.max(
-    1,
-    options.limit ?? options.pageSize ?? DEFAULT_OFFSET_PAGE_SIZE,
-  );
-  let offset = Math.max(0, options.offset ?? 0);
-  const state: OffsetPaginationState = {
-    pages: 0,
-    itemCount: 0,
-    maxPages,
-    maxItems,
-    signal: options.signal,
-  };
+  const runtime = createOffsetPaginationRuntime(options);
 
-  while (shouldContinueOffsetPagination(state)) {
-    const page = await fetchPage(offset, limit, options.signal);
-    const parsed = parseOffsetPageResult(page, options.itemSchema);
-    const { items: pageItems, nextOffset } =
-      parsed ?? toOffsetPageResult<T>(page);
+  while (shouldContinuePagination(runtime.state)) {
+    const page = await readRuntimeOffsetPage(fetchPage, runtime, options);
 
-    items.push(...pageItems);
-    state.pages += 1;
-    state.itemCount = items.length;
+    items.push(...page.pageItems);
+    addCompletedPage(runtime.state, items.length);
 
-    if (!shouldContinueOffsetPagination(state)) {
+    if (!shouldContinuePagination(runtime.state)) {
       break;
     }
 
-    const resolvedOffset = resolveNextOffset({
-      nextOffset,
-      pageItemsLength: pageItems.length,
-      limit,
-      currentOffset: offset,
-    });
-
-    if (resolvedOffset === null || resolvedOffset <= offset) {
+    if (!advanceOffset(runtime, page)) {
       break;
     }
-
-    offset = resolvedOffset;
   }
 
-  return items.slice(0, maxItems);
+  return items.slice(0, runtime.state.maxItems);
 };
 
 const isAborted = (signal: AbortSignal | undefined): boolean =>
@@ -266,39 +403,41 @@ function* yieldItems<T>(
   return false;
 }
 
+function* yieldPageItems<T>(
+  pageItems: T[],
+  state: PaginationLoopState,
+): Generator<T, boolean> {
+  const yieldState = { yielded: state.itemCount };
+  const stopped = yield* yieldItems(
+    pageItems,
+    state.signal,
+    yieldState,
+    state.maxItems,
+  );
+  if (!stopped) {
+    addCompletedPage(state, yieldState.yielded);
+  }
+  return stopped;
+}
+
 async function* paginateAsync<T>(
-  fetchPage: (
-    cursor: string | null | undefined,
-    signal: AbortSignal | undefined,
-  ) => Promise<PageResult<T> | unknown>,
+  fetchPage: CursorPageFetcher<T>,
   options: PaginationAsyncOptions<T> = {},
 ): AsyncIterable<T> {
   let cursor = options.cursor ?? null;
-  let pages = 0;
-  const state = { yielded: 0 };
-  const maxPages = options.maxPages ?? Number.POSITIVE_INFINITY;
-  const maxItems = options.maxItems ?? Number.POSITIVE_INFINITY;
+  const state = createPaginationLoopState(options);
 
-  while (
-    pages < maxPages &&
-    state.yielded < maxItems &&
-    !isAborted(options.signal)
-  ) {
-    const page = await fetchPage(cursor, options.signal);
-    const parsed = parsePageResult(page, options.itemSchema);
-    const { items: pageItems, nextCursor } = parsed ?? toPageResult<T>(page);
-
-    const stopped = yield* yieldItems(
-      pageItems,
-      options.signal,
-      state,
-      maxItems,
+  while (shouldContinuePagination(state)) {
+    const { items: pageItems, nextCursor } = await readCursorPage(
+      fetchPage,
+      cursor,
+      options,
     );
-    if (stopped) {
+
+    if (yield* yieldPageItems(pageItems, state)) {
       return;
     }
 
-    pages += 1;
     if (!nextCursor) {
       return;
     }
@@ -307,68 +446,37 @@ async function* paginateAsync<T>(
 }
 
 async function* paginateOffsetAsync<T>(
-  fetchPage: (
-    offset: number,
-    limit: number,
-    signal: AbortSignal | undefined,
-  ) => Promise<OffsetPageResult<T> | unknown>,
+  fetchPage: OffsetPageFetcher<T>,
   options: OffsetPaginationAsyncOptions<T> = {},
 ): AsyncIterable<T> {
-  const maxPages = options.maxPages ?? Number.POSITIVE_INFINITY;
-  const maxItems = options.maxItems ?? Number.POSITIVE_INFINITY;
-  const limit = Math.max(
-    1,
-    options.limit ?? options.pageSize ?? DEFAULT_OFFSET_PAGE_SIZE,
-  );
-  let offset = Math.max(0, options.offset ?? 0);
-  let pages = 0;
-  const state = { yielded: 0 };
+  const runtime = createOffsetPaginationRuntime(options);
 
-  while (
-    pages < maxPages &&
-    state.yielded < maxItems &&
-    !isAborted(options.signal)
-  ) {
-    const page = await fetchPage(offset, limit, options.signal);
-    const parsed = parseOffsetPageResult(page, options.itemSchema);
-    const { items: pageItems, nextOffset } =
-      parsed ?? toOffsetPageResult<T>(page);
+  while (shouldContinuePagination(runtime.state)) {
+    const page = await readRuntimeOffsetPage(fetchPage, runtime, options);
 
-    const stopped = yield* yieldItems(
-      pageItems,
-      options.signal,
-      state,
-      maxItems,
-    );
-    if (stopped) {
+    if (yield* yieldPageItems(page.pageItems, runtime.state)) {
       return;
     }
 
-    pages += 1;
-    const resolvedOffset = resolveNextOffset({
-      nextOffset,
-      pageItemsLength: pageItems.length,
-      limit,
-      currentOffset: offset,
-    });
-
-    if (resolvedOffset === null || resolvedOffset <= offset) {
+    if (!advanceOffset(runtime, page)) {
       return;
     }
-    offset = resolvedOffset;
   }
 }
 
 export type {
+  OffsetItemsQueryInput,
   OffsetPageResult,
   OffsetPaginationAsyncOptions,
   OffsetPaginationOptions,
   PageResult,
   PaginationAsyncOptions,
   PaginationOptions,
+  SharedOffsetPaginationInput,
   SharedPaginationInput,
 };
 export {
+  collectOffsetItems,
   createOffsetPageResultSchema,
   createPageResultSchema,
   paginate,
@@ -377,6 +485,8 @@ export {
   paginateOffsetAsync,
   parseOffsetPageResult,
   parsePageResult,
+  resolveOffsetItems,
+  streamOffsetItems,
   toOffsetPageResult,
   toPageResult,
 };

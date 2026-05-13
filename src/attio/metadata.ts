@@ -26,6 +26,7 @@ import {
   resolveAttioClient,
 } from "./client";
 import { updateKnownFieldValues } from "./error-enhancer";
+import { AttioConfigError, AttioResponseError } from "./errors";
 import { createSchemaError, unwrapData, unwrapItems } from "./response";
 
 const getMetadataCache = (
@@ -88,6 +89,36 @@ interface AttributeMetadataInput<TData extends AttributeMetadataData>
   extends AttioClientInput,
     AttributePathWithAttribute {
   options?: Partial<Omit<Options<TData>, "client" | "path">>;
+}
+
+interface AttributeFindInput extends AttioClientInput, AttributePathInput {
+  slug?: AttributeSlug;
+  title?: string;
+  type?: ZodAttribute["type"];
+  options?: Omit<
+    Options<GetV2ByTargetByIdentifierAttributesData>,
+    "client" | "path"
+  >;
+}
+
+type AllowedValueAttributeType = "select" | "status";
+
+interface ListAllowedValuesInput
+  extends AttioClientInput,
+    AttributePathWithAttribute {
+  type?: AllowedValueAttributeType;
+  options?: Partial<
+    Omit<
+      Options<GetV2ByTargetByIdentifierAttributesByAttributeOptionsData>,
+      "client" | "path"
+    >
+  >;
+}
+
+interface NormalizedAllowedValue {
+  id: string;
+  title: string;
+  archived: boolean;
 }
 
 interface AttributeMetadataPath extends AttributePathWithAttribute {}
@@ -226,19 +257,108 @@ const getAttributeStatuses = (
   });
 };
 
+const hasFindCriteria = (input: AttributeFindInput): boolean =>
+  input.slug !== undefined ||
+  input.title !== undefined ||
+  input.type !== undefined;
+
+const attributeMatchesFindInput = (
+  attribute: ZodAttribute,
+  input: AttributeFindInput,
+): boolean =>
+  (input.slug === undefined || attribute.api_slug === input.slug) &&
+  (input.title === undefined || attribute.title === input.title) &&
+  (input.type === undefined || attribute.type === input.type);
+
+const findAttribute = async (
+  input: AttributeFindInput,
+): Promise<ZodAttribute | undefined> => {
+  if (!hasFindCriteria(input)) {
+    throw new AttioConfigError(
+      "findAttribute requires at least one of slug, title, or type.",
+      { code: "MISSING_ATTRIBUTE_CRITERIA" },
+    );
+  }
+
+  const attributes = await listAttributes(input);
+  return attributes.find((attribute) =>
+    attributeMatchesFindInput(attribute, input),
+  );
+};
+
+const normalizeSelectOption = (
+  option: SelectOption,
+): NormalizedAllowedValue => ({
+  id: option.id.option_id,
+  title: option.title,
+  archived: option.is_archived,
+});
+
+const normalizeStatus = (status: Status): NormalizedAllowedValue => ({
+  id: status.id.status_id,
+  title: status.title,
+  archived: status.is_archived,
+});
+
+const resolveAllowedValueType = async (
+  input: ListAllowedValuesInput,
+): Promise<AllowedValueAttributeType> => {
+  if (input.type !== undefined) {
+    return input.type;
+  }
+
+  const attribute = await getAttribute({
+    client: input.client,
+    config: input.config,
+    target: input.target,
+    identifier: input.identifier,
+    attribute: input.attribute,
+  });
+  if (attribute.type === "select" || attribute.type === "status") {
+    return attribute.type;
+  }
+
+  throw new AttioResponseError("Attribute does not expose allowed values.", {
+    code: "UNSUPPORTED_ATTRIBUTE_TYPE",
+    data: { attribute: input.attribute, type: attribute.type },
+  });
+};
+
+const listAllowedValues = async (
+  input: ListAllowedValuesInput,
+): Promise<NormalizedAllowedValue[]> => {
+  const type = await resolveAllowedValueType(input);
+  if (type === "select") {
+    const options = await getAttributeOptions(input);
+    return options.map(normalizeSelectOption);
+  }
+
+  const statuses = await getAttributeStatuses(input);
+  return statuses.map(normalizeStatus);
+};
+
 export type {
-  AttributeListInput,
+  AllowedValueAttributeType,
+  AttributeFindInput,
+  AttributeIdentifier,
   AttributeInput,
+  AttributeListInput,
   AttributeMetadataRequestParams,
+  AttributeSlug,
+  AttributeTarget,
+  ListAllowedValuesInput,
+  NormalizedAllowedValue,
   ZodAttribute,
 };
 export {
-  listAttributes,
-  getAttribute,
-  getAttributeOptions,
-  getAttributeStatuses,
-  listAttributeMetadata,
   buildAttributeMetadataPath,
   buildKey,
   extractTitles,
+  findAttribute,
+  getAttribute,
+  getAttributeOptions,
+  getAttributeStatuses,
+  listAllowedValues,
+  listAttributeMetadata,
+  listAttributes,
 };

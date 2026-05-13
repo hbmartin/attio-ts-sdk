@@ -330,17 +330,17 @@ const createStructuredLoggerHooks = ({
   };
 };
 
-export {
-  DEFAULT_CORRELATION_ID_CONTEXT_KEY,
-  DEFAULT_CORRELATION_ID_HEADER,
-  createCorrelationIdManager,
-  createStructuredLoggerHooks,
-  redactLogContext,
-};
 export type {
   AttioCorrelationIdConfig,
-  AttioLogRedactionConfig,
   AttioLoggingConfig,
+  AttioLogRedactionConfig,
   CorrelationIdManager,
   StructuredLoggerHooksInput,
+};
+export {
+  createCorrelationIdManager,
+  createStructuredLoggerHooks,
+  DEFAULT_CORRELATION_ID_CONTEXT_KEY,
+  DEFAULT_CORRELATION_ID_HEADER,
+  redactLogContext,
 };

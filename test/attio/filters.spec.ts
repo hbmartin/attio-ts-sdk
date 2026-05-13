@@ -294,6 +294,50 @@ describe("filters", () => {
     });
   });
 
+  describe("relationship and list helpers", () => {
+    it("builds a parent record id path filter", () => {
+      expect(
+        filters.parentRecordId({
+          list: "hiring-pipeline",
+          object: "people",
+          recordId: "rec-123",
+        }),
+      ).toEqual({
+        path: [
+          ["hiring-pipeline", "parent_record"],
+          ["people", "record_id"],
+        ],
+        constraints: { value: "rec-123" },
+      });
+    });
+
+    it("builds a parent record contains path filter", () => {
+      expect(
+        filters.parentRecordContains({
+          list: "hiring-pipeline",
+          object: "people",
+          attribute: "email_addresses",
+          field: "email_domain",
+          value: "example.com",
+        }),
+      ).toEqual({
+        path: [
+          ["hiring-pipeline", "parent_record"],
+          ["people", "email_addresses"],
+        ],
+        constraints: { email_domain: { $contains: "example.com" } },
+      });
+    });
+
+    it("builds a nested list status filter", () => {
+      expect(
+        filters.listStatus({ attribute: "stage", status: "Interview" }),
+      ).toEqual({
+        stage: { status: { $eq: "Interview" } },
+      });
+    });
+  });
+
   describe("attioFilterSchema", () => {
     it("parses valid filters", () => {
       const filter = {

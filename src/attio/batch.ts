@@ -199,5 +199,5 @@ const runBatch = <T>(
   });
 };
 
-export type { BatchItemRunParams, BatchItem, BatchResult, BatchOptions };
+export type { BatchItem, BatchItemRunParams, BatchOptions, BatchResult };
 export { runBatch };

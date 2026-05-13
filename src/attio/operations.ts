@@ -4,6 +4,7 @@ import {
   type AttioClientInput,
   resolveAttioClient,
 } from "./client";
+import { type AttioFilter, parseAttioFilter } from "./filters";
 import {
   type AttioRecordLike,
   normalizeRecord,
@@ -19,6 +20,27 @@ import {
   validateWithSchema,
 } from "./response";
 import { rawRecordSchema } from "./schemas";
+
+interface RecordQueryRuntime<T extends AttioRecordLike> {
+  client: AttioClient;
+  filter?: Record<string, unknown>;
+  schema: ZodType<T>;
+}
+
+interface RecordQueryRuntimeInput<T extends AttioRecordLike>
+  extends AttioClientInput {
+  filter?: AttioFilter;
+  itemSchema?: ZodType<T>;
+}
+
+const createRecordQueryRuntime = <T extends AttioRecordLike>(
+  input: RecordQueryRuntimeInput<T>,
+): RecordQueryRuntime<T> => ({
+  client: resolveAttioClient(input),
+  filter:
+    input.filter === undefined ? undefined : parseAttioFilter(input.filter),
+  schema: (input.itemSchema ?? rawRecordSchema) as ZodType<T>,
+});
 
 /**
  * Resolve client, execute API call, and unwrap a single data response.
@@ -100,5 +122,6 @@ export {
   callAndUnwrapData,
   callAndUnwrapItems,
   callAndUnwrapRecord,
+  createRecordQueryRuntime,
   unwrapAndNormalizeRecords,
 };

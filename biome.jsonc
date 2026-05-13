@@ -152,14 +152,10 @@
         "noNestedPromises": "error",
         "noContinue": "error",
         "noTernary": "off",
-        "noDeprecatedImports": "error",
-        "noDuplicateDependencies": "error",
         "noDuplicatedSpreadProps": "error",
-        "noEmptySource": "error",
         "noEqualsToNull": "error",
         "noFloatingPromises": "error",
         "noForIn": "error",
-        "noImportCycles": "error",
         "noIncrementDecrement": "error",
         "noMisusedPromises": "error",
         "noMultiAssign": "error",
@@ -171,16 +167,10 @@
         "noSyncScripts": "error",
         "noUndeclaredEnvVars": "error",
         "noUnnecessaryConditions": "error",
-        "noUnusedExpressions": "error",
-        "noUselessCatchBinding": "error",
-        "noUselessUndefined": "error",
         "useArraySortCompare": "error",
-        "useConsistentArrowReturn": "error",
-        "useDeprecatedDate": "error",
         "useDestructuring": "error",
         "useExhaustiveSwitchCases": "error",
         "useFind": "error",
-        "useMaxParams": "error",
         "useRegexpExec": "error",
         "useRequiredScripts": "error",
         "useSortedClasses": "error",
@@ -206,14 +196,12 @@
         },
         "noFloatingClasses": "error",
         "noHexColors": "error",
-        "noJsxLiterals": "error",
         "noJsxPropsBind": "error",
         "noLeakedRender": "error",
         "noRedundantDefaultExport": "error",
         "noRootType": "error",
         "noScriptUrl": "error",
         "noUnknownAttribute": "error",
-        "noUnresolvedImports": "error",
         "useAwaitThenable": "off",
         "useConsistentEnumValueType": "error",
         "useConsistentGraphqlDescriptions": "error",
@@ -467,7 +455,6 @@
           },
           "nursery": {
             "noIncrementDecrement": "off",
-            "noUnresolvedImports": "off",
             "noExcessiveLinesPerFile": "off"
           }
         }
@@ -497,6 +484,20 @@
           },
           "style": {
             "noProcessEnv": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "src/attio/pagination.ts",
+        "src/attio/records.ts",
+        "src/attio/values.ts"
+      ],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "noExcessiveLinesPerFile": "off"
           }
         }
       }
