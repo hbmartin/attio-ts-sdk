@@ -150,6 +150,9 @@ const createAllowedValueGetter = ({
       attribute: attribute.api_slug,
       type: attribute.type === "status" ? "status" : "select",
       options,
+    }).catch((error: unknown) => {
+      allowedValueCache.delete(cacheKey);
+      throw error;
     });
     allowedValueCache.set(cacheKey, promise);
     return promise;
@@ -169,19 +172,19 @@ const serializeEntries = async ({
     attribute: ZodAttribute,
   ) => Promise<NormalizedAllowedValue[]>;
 }): Promise<unknown[]> => {
-  const serializedEntries: unknown[] = [];
+  const results = await Promise.all(
+    entries.map(async (entry): Promise<unknown[]> => {
+      if (entry === undefined || entry === null) {
+        return [];
+      }
 
-  for (const entry of entries) {
-    if (entry !== undefined && entry !== null) {
       try {
-        serializedEntries.push(
-          ...(await serializeAttributeEntry({
-            attribute,
-            entry,
-            options,
-            getAllowedValues,
-          })),
-        );
+        return await serializeAttributeEntry({
+          attribute,
+          entry,
+          options,
+          getAllowedValues,
+        });
       } catch (error) {
         if (error instanceof z.ZodError) {
           throw new AttioResponseError(
@@ -194,10 +197,10 @@ const serializeEntries = async ({
         }
         throw error;
       }
-    }
-  }
+    }),
+  );
 
-  return serializedEntries;
+  return results.flat();
 };
 
 const buildFieldValues = async ({
@@ -265,14 +268,19 @@ const createWriteValuesBuilder = ({
     };
     const values: SchemaWriteValues = {};
 
-    for (const [key, fieldValue] of Object.entries(input)) {
-      const result = await buildFieldValues({
-        lookup,
-        key,
-        fieldValue,
-        options: resolvedOptions,
-        getAllowedValues,
-      });
+    const results = await Promise.all(
+      Object.entries(input).map(([key, fieldValue]) =>
+        buildFieldValues({
+          lookup,
+          key,
+          fieldValue,
+          options: resolvedOptions,
+          getAllowedValues,
+        }),
+      ),
+    );
+
+    for (const result of results) {
       if (result) {
         values[result.slug] = result.values;
       }
