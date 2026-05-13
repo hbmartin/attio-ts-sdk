@@ -158,36 +158,155 @@ const createAbortError = (): Error => {
 const readAbortReason = (signal: AbortSignal): unknown =>
   signal.reason ?? createAbortError();
 
+const doNothing = (): void => undefined;
+
+interface CombinedAbortSignals {
+  signal?: AbortSignal;
+  cleanup?: () => void;
+}
+
 const combineAbortSignals = (
   first: AbortSignal | undefined,
   second: AbortSignal | undefined,
-): AbortSignal | undefined => {
+): CombinedAbortSignals => {
   if (!first) {
-    return second;
+    return { signal: second };
   }
   if (!second) {
-    return first;
+    return { signal: first };
   }
 
   const controller = new AbortController();
+  let cleanupListeners = doNothing;
   const abortFrom = (signal: AbortSignal): void => {
+    cleanupListeners();
     if (!controller.signal.aborted) {
       controller.abort(readAbortReason(signal));
     }
   };
+  const abortFromFirst = (): void => abortFrom(first);
+  const abortFromSecond = (): void => abortFrom(second);
+  let hasCleanedUp = false;
+  cleanupListeners = (): void => {
+    if (hasCleanedUp) {
+      return;
+    }
+    hasCleanedUp = true;
+    first.removeEventListener("abort", abortFromFirst);
+    second.removeEventListener("abort", abortFromSecond);
+  };
 
   if (first.aborted) {
     abortFrom(first);
-    return controller.signal;
+    return { signal: controller.signal };
   }
   if (second.aborted) {
     abortFrom(second);
-    return controller.signal;
+    return { signal: controller.signal };
   }
 
-  first.addEventListener("abort", () => abortFrom(first), { once: true });
-  second.addEventListener("abort", () => abortFrom(second), { once: true });
-  return controller.signal;
+  first.addEventListener("abort", abortFromFirst, { once: true });
+  second.addEventListener("abort", abortFromSecond, { once: true });
+  return { signal: controller.signal, cleanup: cleanupListeners };
+};
+
+interface BatchSettlementParams<T> {
+  resolve: (value: BatchResult<T>[]) => void;
+  reject: (reason?: unknown) => void;
+  cleanup: () => void;
+}
+
+interface BatchSettlement<T> {
+  resolve: (value: BatchResult<T>[]) => void;
+  reject: (reason: unknown) => void;
+}
+
+const createBatchSettlement = <T>(
+  params: BatchSettlementParams<T>,
+): BatchSettlement<T> => {
+  const { resolve, reject, cleanup } = params;
+  let settled = false;
+  return {
+    resolve: (value) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+      resolve(value);
+    },
+    reject: (reason) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+      reject(reason);
+    },
+  };
+};
+
+interface RegisterBatchAbortListenerParams<T> {
+  signal: AbortSignal;
+  state: BatchState<T>;
+  reject: (reason: unknown) => void;
+}
+
+const registerBatchAbortListener = <T>(
+  params: RegisterBatchAbortListenerParams<T>,
+): (() => void) => {
+  const { signal, state, reject } = params;
+  const onAbort = (): void => {
+    state.stopped = true;
+    reject(readAbortReason(signal));
+  };
+  signal.addEventListener("abort", onAbort, { once: true });
+  return () => {
+    signal.removeEventListener("abort", onAbort);
+  };
+};
+
+type CreateBatchLauncherParams<T> = Omit<LaunchNextItemParams<T>, "launchNext">;
+
+const createBatchLauncher = <T>(
+  params: CreateBatchLauncherParams<T>,
+): (() => void) => {
+  const {
+    items,
+    state,
+    concurrency,
+    abortController,
+    options,
+    isCancelled,
+    resolve,
+    reject,
+    signal,
+  } = params;
+  const launchNext = (): void => {
+    if (isCancelled()) {
+      return;
+    }
+    if (state.index >= items.length && state.active === 0) {
+      resolve(state.results);
+      return;
+    }
+
+    while (state.active < concurrency && state.index < items.length) {
+      launchNextItem({
+        items,
+        state,
+        concurrency,
+        abortController,
+        options,
+        isCancelled,
+        resolve,
+        reject,
+        launchNext,
+        signal,
+      });
+    }
+  };
+  return launchNext;
 };
 
 /**
@@ -210,48 +329,50 @@ const runBatch = <T>(
   const abortController = options.stopOnError
     ? new AbortController()
     : undefined;
-  const signal = combineAbortSignals(options.signal, abortController?.signal);
+  const combinedSignal = combineAbortSignals(
+    options.signal,
+    abortController?.signal,
+  );
+  const { signal, cleanup: cleanupCombinedSignal } = combinedSignal;
 
   const isCancelled = (): boolean => state.stopped || signal?.aborted === true;
 
   if (signal?.aborted) {
+    cleanupCombinedSignal?.();
     return Promise.reject(readAbortReason(signal));
   }
 
   return new Promise((resolve, reject) => {
+    let cleanupAbortListener = doNothing;
+    const cleanup = (): void => {
+      cleanupAbortListener();
+      cleanupCombinedSignal?.();
+    };
+    const batchSettlement = createBatchSettlement<T>({
+      resolve,
+      reject,
+      cleanup,
+    });
+
     if (signal) {
-      const onAbort = (): void => {
-        state.stopped = true;
-        reject(readAbortReason(signal));
-      };
-      signal.addEventListener("abort", onAbort, { once: true });
+      cleanupAbortListener = registerBatchAbortListener({
+        signal,
+        state,
+        reject: batchSettlement.reject,
+      });
     }
 
-    const launchNext = (): void => {
-      if (isCancelled()) {
-        return;
-      }
-      if (state.index >= items.length && state.active === 0) {
-        resolve(state.results);
-        return;
-      }
-
-      while (state.active < concurrency && state.index < items.length) {
-        launchNextItem({
-          items,
-          state,
-          concurrency,
-          abortController,
-          options,
-          isCancelled,
-          resolve,
-          reject,
-          launchNext,
-          signal,
-        });
-      }
-    };
-
+    const launchNext = createBatchLauncher({
+      items,
+      state,
+      concurrency,
+      abortController,
+      options,
+      isCancelled,
+      resolve: batchSettlement.resolve,
+      reject: batchSettlement.reject,
+      signal,
+    });
     launchNext();
   });
 };

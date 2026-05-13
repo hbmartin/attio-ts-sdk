@@ -115,6 +115,88 @@ describe("runBatch", () => {
     expect(receivedSignal).toBe(controller.signal);
   });
 
+  it("removes the external abort listener after completion", async () => {
+    const controller = new AbortController();
+    const addSpy = vi.spyOn(controller.signal, "addEventListener");
+    const removeSpy = vi.spyOn(controller.signal, "removeEventListener");
+
+    const results = await runBatch([{ label: "done", run: async () => "ok" }], {
+      signal: controller.signal,
+    });
+
+    const abortListener = addSpy.mock.calls.find(
+      ([event]) => event === "abort",
+    )?.[1];
+    if (!abortListener) {
+      throw new Error("Expected runBatch to register an abort listener.");
+    }
+
+    expect(results).toEqual([
+      { status: "fulfilled", value: "ok", label: "done" },
+    ]);
+    expect(removeSpy).toHaveBeenCalledWith("abort", abortListener);
+  });
+
+  it("removes combined source listeners after completion", async () => {
+    const controller = new AbortController();
+    const addSpy = vi.spyOn(controller.signal, "addEventListener");
+    const removeSpy = vi.spyOn(controller.signal, "removeEventListener");
+    let receivedSignal: AbortSignal | undefined;
+
+    await runBatch(
+      [
+        {
+          run: async (params) => {
+            receivedSignal = params?.signal;
+            return "ok";
+          },
+        },
+      ],
+      { signal: controller.signal, stopOnError: true },
+    );
+
+    const abortListener = addSpy.mock.calls.find(
+      ([event]) => event === "abort",
+    )?.[1];
+    if (!abortListener) {
+      throw new Error("Expected combined signal to watch the external signal.");
+    }
+
+    expect(receivedSignal).toBeDefined();
+    expect(receivedSignal).not.toBe(controller.signal);
+    expect(removeSpy).toHaveBeenCalledWith("abort", abortListener);
+  });
+
+  it("removes combined source listeners when the external signal aborts", async () => {
+    const controller = new AbortController();
+    const addSpy = vi.spyOn(controller.signal, "addEventListener");
+    const removeSpy = vi.spyOn(controller.signal, "removeEventListener");
+    const reason = new Error("cancelled");
+
+    await expect(
+      runBatch(
+        [
+          {
+            run: async () => {
+              controller.abort(reason);
+              return "ignored";
+            },
+          },
+        ],
+        { signal: controller.signal, stopOnError: true },
+      ),
+    ).rejects.toBe(reason);
+
+    const abortListener = addSpy.mock.calls.find(
+      ([event]) => event === "abort",
+    )?.[1];
+    if (!abortListener) {
+      throw new Error("Expected combined signal to watch the external signal.");
+    }
+
+    expect(removeSpy).toHaveBeenCalledWith("abort", abortListener);
+  });
+
   it("rejects without launching items when the external signal is already aborted", async () => {
     const controller = new AbortController();
     const reason = new Error("cancelled before start");

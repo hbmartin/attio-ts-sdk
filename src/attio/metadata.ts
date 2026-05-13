@@ -121,10 +121,11 @@ interface NormalizedAllowedValue {
   archived: boolean;
 }
 
-type AttributeRequestOptions = Omit<
-  Options<GetV2ByTargetByIdentifierAttributesByAttributeData>,
-  "client" | "path"
->;
+interface AttributeRequestOptions
+  extends Omit<
+    Options<GetV2ByTargetByIdentifierAttributesByAttributeData>,
+    "client" | "path"
+  > {}
 
 const toAttributeRequestOptions = (
   options: ListAllowedValuesInput["options"],
