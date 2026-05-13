@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
 
 import {
@@ -10,6 +10,7 @@ import {
   paginateOffsetAsync,
   parseOffsetPageResult,
   parsePageResult,
+  resolveOffsetItems,
   toOffsetPageResult,
   toPageResult,
 } from "../../src/attio/pagination";
@@ -168,6 +169,89 @@ describe("parsePageResult", () => {
     expect(parsePageResult(undefined)).toBeUndefined();
     expect(parsePageResult("string")).toBeUndefined();
     expect(parsePageResult(123)).toBeUndefined();
+  });
+});
+
+describe("resolveOffsetItems", () => {
+  interface Item {
+    id: number;
+  }
+
+  it("infers Promise for non-paginated calls", () => {
+    const fetchItems = async (): Promise<Item[]> => [];
+
+    expectTypeOf(resolveOffsetItems(fetchItems, {})).toEqualTypeOf<
+      Promise<Item[]>
+    >();
+    expectTypeOf(
+      resolveOffsetItems(fetchItems, { paginate: false }),
+    ).toEqualTypeOf<Promise<Item[]>>();
+  });
+
+  it("infers Promise for collected pagination", () => {
+    const fetchItems = async (): Promise<Item[]> => [];
+
+    expectTypeOf(
+      resolveOffsetItems(fetchItems, { paginate: true }),
+    ).toEqualTypeOf<Promise<Item[]>>();
+  });
+
+  it("infers AsyncIterable for streamed pagination", () => {
+    const fetchItems = async (): Promise<Item[]> => [];
+
+    expectTypeOf(
+      resolveOffsetItems(fetchItems, { paginate: "stream" }),
+    ).toEqualTypeOf<AsyncIterable<Item>>();
+  });
+
+  it("fetches a single page when pagination is disabled", async () => {
+    const controller = new AbortController();
+    const fetchItems = vi.fn().mockResolvedValue([{ id: 1 }]);
+
+    const result = await resolveOffsetItems(fetchItems, {
+      offset: 10,
+      limit: 25,
+      signal: controller.signal,
+    });
+
+    expect(result).toEqual([{ id: 1 }]);
+    expect(fetchItems).toHaveBeenCalledOnce();
+    expect(fetchItems).toHaveBeenCalledWith(10, 25, controller.signal);
+  });
+
+  it("collects all pages when pagination is enabled", async () => {
+    const fetchItems = vi
+      .fn()
+      .mockResolvedValueOnce([{ id: 1 }, { id: 2 }])
+      .mockResolvedValueOnce([{ id: 3 }]);
+
+    const result = await resolveOffsetItems(fetchItems, {
+      paginate: true,
+      limit: 2,
+    });
+
+    expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    expect(fetchItems).toHaveBeenNthCalledWith(1, 0, 2, undefined);
+    expect(fetchItems).toHaveBeenNthCalledWith(2, 2, 2, undefined);
+  });
+
+  it("streams pages when stream pagination is enabled", async () => {
+    const fetchItems = vi
+      .fn()
+      .mockResolvedValueOnce([{ id: 1 }, { id: 2 }])
+      .mockResolvedValueOnce([{ id: 3 }]);
+
+    const items: Item[] = [];
+    for await (const item of resolveOffsetItems(fetchItems, {
+      paginate: "stream",
+      limit: 2,
+    })) {
+      items.push(item);
+    }
+
+    expect(items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+    expect(fetchItems).toHaveBeenNthCalledWith(1, 0, 2, undefined);
+    expect(fetchItems).toHaveBeenNthCalledWith(2, 2, 2, undefined);
   });
 });
 
