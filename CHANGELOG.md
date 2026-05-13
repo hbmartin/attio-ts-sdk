@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.2.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.1.0...attio-ts-sdk-v2.2.0) (2026-05-13)
+
+
+### Features
+
+* add explicit return types to listLists, getList, addListEntry ([fcb1e4e](https://github.com/hbmartin/attio-ts-sdk/commit/fcb1e4e805539958b8c433e501a556c513dc4f5f))
+* add explicit return types to listLists, getList, addListEntry, updateListEntry ([b766d26](https://github.com/hbmartin/attio-ts-sdk/commit/b766d267893a55b29960a7f3c5935c2f3ef66d1f))
+* add exported Zod value schemas for all Attio attribute types ([fdd4fd0](https://github.com/hbmartin/attio-ts-sdk/commit/fdd4fd0663b0d604e9ae27996b9096c73fc3e69a))
+* add getValueSafe and getFirstValueSafe with ValueResult type ([04b28ab](https://github.com/hbmartin/attio-ts-sdk/commit/04b28abc63201a4e49da4335e754ee2ba5a6bbee))
+* add safer retries and schema write builder ([5f617fe](https://github.com/hbmartin/attio-ts-sdk/commit/5f617fe85c2a8cd7ecb7d048d8e20776e1420b77))
+* add safer retries and schema write builder ([39657a3](https://github.com/hbmartin/attio-ts-sdk/commit/39657a399ed9e3a493ccb66d86b35d95f7091fe6))
+* add schema-bound typed accessors to AttributeAccessor ([e36acec](https://github.com/hbmartin/attio-ts-sdk/commit/e36aceccfa4f8e7e4c733cc25aaf802187aaea29))
+* add typed primitive getters for common Attio value types ([0e76604](https://github.com/hbmartin/attio-ts-sdk/commit/0e766044d47974432c571a7371be9d95342109c4))
+* expand sdk ergonomics for notes and tasks ([3b357e5](https://github.com/hbmartin/attio-ts-sdk/commit/3b357e54abb3e7881e2439497fd6067432f92e38))
+* expand sdk ergonomics for notes and tasks ([8137444](https://github.com/hbmartin/attio-ts-sdk/commit/813744485f698508b72fe26b46ec52a8ec29aee5))
+* improve attio sdk ergonomics ([a67b47a](https://github.com/hbmartin/attio-ts-sdk/commit/a67b47a349f8055f45dd1abbdb254c56280ef04d))
+* improve attio sdk ergonomics ([49ab840](https://github.com/hbmartin/attio-ts-sdk/commit/49ab840045d02c0dadf577068c40b6cce168ae90))
+* **types:** add branded id factories for records tasks notes and members ([fdbdace](https://github.com/hbmartin/attio-ts-sdk/commit/fdbdacedd9f4c7829f46e87746a8ee60921d2890))
+* value schemas and typed accessors ([0dfc1e7](https://github.com/hbmartin/attio-ts-sdk/commit/0dfc1e7f0b5124fb7b799a3d088aff510bbdcb37))
+
+
+### Bug Fixes
+
+* address PR feedback on batching ([67936f0](https://github.com/hbmartin/attio-ts-sdk/commit/67936f0c3eac77ced017bea6ee1ed837f55e370d))
+* address PR feedback on batching ([0a25105](https://github.com/hbmartin/attio-ts-sdk/commit/0a25105ca8c249fc7e7573531ca39a653aad00ec))
+* address value schema review feedback ([3517bff](https://github.com/hbmartin/attio-ts-sdk/commit/3517bfff1e32fd7fc81ad24b8ac7f22a363e9f3c))
+* address value schema review feedback ([6e04cf2](https://github.com/hbmartin/attio-ts-sdk/commit/6e04cf2e4d5fd2fa1d636ada8e867f0345d0ca80))
+* address write value review feedback ([d3b0bac](https://github.com/hbmartin/attio-ts-sdk/commit/d3b0bacb134de6b6bf2faef9c674e081f434ffff))
+* clean up batch abort listeners ([03bf73d](https://github.com/hbmartin/attio-ts-sdk/commit/03bf73dd0cac148f32d89874fdfd615b92c01543))
+* clean up batch abort listeners ([c18caca](https://github.com/hbmartin/attio-ts-sdk/commit/c18cacaa65971d34bd22b40e0c923758201ba121))
+* close batch abort registration race ([5d31f1c](https://github.com/hbmartin/attio-ts-sdk/commit/5d31f1c1262a875e8c768f9b66760968c9bd47d6))
+* close batch abort registration race ([7d67499](https://github.com/hbmartin/attio-ts-sdk/commit/7d67499add80fccf1c1d08c3f107b5e55c903a9a))
+* use branded note parent ids ([0bbefe0](https://github.com/hbmartin/attio-ts-sdk/commit/0bbefe01674c2bfb1c335a8f004ca37f31ed8712))
+* use branded note parent ids ([acc7e40](https://github.com/hbmartin/attio-ts-sdk/commit/acc7e4066202c76f32e689da8d9f64903a74c786))
+
 ## [2.1.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.0.2...attio-ts-sdk-v2.1.0) (2026-02-12)
 
 
