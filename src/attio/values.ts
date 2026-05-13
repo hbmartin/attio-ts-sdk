@@ -540,5 +540,6 @@ export {
   getStatusTitles,
   getValue,
   getValueSafe,
+  locationInputSchema,
   value,
 };

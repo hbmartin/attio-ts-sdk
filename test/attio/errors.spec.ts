@@ -9,9 +9,16 @@ import {
   AttioNetworkError,
   AttioResponseError,
   AttioRetryError,
+  getAttioErrorCode,
+  getAttioErrorPayload,
   getAttioErrorStatus,
+  getAttioErrorType,
+  isAttioAuthError,
   isAttioError,
   isAttioNotFound,
+  isAttioPermissionError,
+  isAttioRateLimitError,
+  isAttioValidationError,
   isRetryableAttioError,
   normalizeAttioError,
 } from "../../src/attio/errors";
@@ -202,6 +209,28 @@ describe("normalizeAttioError", () => {
     expect(error.type).toBe("validation_error");
   });
 
+  it("extracts details from nested Attio error payloads", () => {
+    const response = new Response(null, { status: 400 });
+    const payload = {
+      error: {
+        message: "Nested validation failed",
+        code: "validation_type",
+        type: "validation_error",
+        status_code: 422,
+      },
+      errors: [{ code: "validation_type" }],
+    };
+
+    const error = normalizeAttioError(payload, { response });
+
+    expect(error.message).toBe("Nested validation failed");
+    expect(error.code).toBe("validation_type");
+    expect(error.type).toBe("validation_error");
+    expect(error.status).toBe(400);
+    expect(error.data).toEqual(payload);
+    expect(error.errors).toEqual([{ code: "validation_type" }]);
+  });
+
   it("extracts status_code from payload", () => {
     const error = normalizeAttioError({
       message: "Error",
@@ -350,9 +379,42 @@ describe("stable error helpers", () => {
     expect(getAttioErrorStatus({ status_code: 422 })).toBe(422);
   });
 
+  it("extracts code, type, and payload from nested error shapes", () => {
+    const payload = {
+      error: {
+        message: "missing",
+        code: "not_found",
+        type: "invalid_request_error",
+        status_code: 404,
+      },
+    };
+
+    expect(getAttioErrorStatus(payload)).toBe(404);
+    expect(getAttioErrorCode(payload)).toBe("not_found");
+    expect(getAttioErrorType(payload)).toBe("invalid_request_error");
+    expect(getAttioErrorPayload(payload)).toMatchObject({
+      code: "not_found",
+      status_code: 404,
+    });
+  });
+
   it("detects not found errors", () => {
     expect(isAttioNotFound({ name: "AttioApiError", status: 404 })).toBe(true);
+    expect(isAttioNotFound({ code: "not_found" })).toBe(true);
     expect(isAttioNotFound({ name: "AttioApiError", status: 400 })).toBe(false);
+  });
+
+  it("detects specialized API error classes by status, type, or code", () => {
+    expect(isAttioAuthError({ status: 401 })).toBe(true);
+    expect(isAttioAuthError({ type: "auth_error" })).toBe(true);
+    expect(isAttioPermissionError({ status: 403 })).toBe(true);
+    expect(isAttioPermissionError({ code: "system_edit_unauthorized" })).toBe(
+      true,
+    );
+    expect(isAttioRateLimitError({ status: 429 })).toBe(true);
+    expect(isAttioRateLimitError({ code: "rate_limited" })).toBe(true);
+    expect(isAttioValidationError({ status: 422 })).toBe(true);
+    expect(isAttioValidationError({ code: "validation_type" })).toBe(true);
   });
 
   it("detects retryable Attio failures", () => {

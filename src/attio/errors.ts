@@ -8,6 +8,7 @@ interface AttioErrorDetails {
   status?: number;
   message?: string;
   data?: unknown;
+  errors?: unknown[];
   cause?: unknown;
 }
 
@@ -26,6 +27,7 @@ class AttioError extends Error {
   response?: Response;
   request?: Request;
   retryAfterMs?: number;
+  errors?: unknown[];
   isNetworkError?: boolean;
   isApiError?: boolean;
   suggestions?: unknown;
@@ -37,6 +39,7 @@ class AttioError extends Error {
     this.code = details.code;
     this.type = details.type;
     this.data = details.data;
+    this.errors = details.errors;
   }
 }
 
@@ -154,17 +157,60 @@ const extractStatusCode = (
   return;
 };
 
+const attioErrorPayloadSchema = z
+  .object({
+    code: z.string().optional(),
+    type: z.string().optional(),
+    status: z.number().optional(),
+    status_code: z.number().optional(),
+    message: z.string().optional(),
+  })
+  .passthrough();
+
+const attioErrorEnvelopeSchema = z
+  .object({
+    error: z.unknown().optional(),
+    errors: z.array(z.unknown()).optional(),
+  })
+  .passthrough();
+
+const extractNestedErrorPayload = (error: unknown): unknown => {
+  const parsed = attioErrorEnvelopeSchema.safeParse(error);
+  if (!parsed.success) {
+    return error;
+  }
+
+  const nestedPayload = parsed.data.error ?? parsed.data.errors?.[0];
+  if (nestedPayload === undefined) {
+    return error;
+  }
+
+  const nestedResult = attioErrorPayloadSchema.safeParse(nestedPayload);
+  return nestedResult.success ? nestedResult.data : error;
+};
+
+const extractNestedErrors = (error: unknown): unknown[] | undefined => {
+  const parsed = attioErrorEnvelopeSchema.safeParse(error);
+  if (!parsed.success) {
+    return;
+  }
+  return parsed.data.errors;
+};
+
 const extractDetails = (error: unknown): AttioErrorDetails => {
-  if (!error || typeof error !== "object") {
+  const payloadSource = extractNestedErrorPayload(error);
+  const parsedPayload = attioErrorPayloadSchema.safeParse(payloadSource);
+  if (!parsedPayload.success) {
     return {};
   }
-  const payload = error as Record<string, unknown>;
+  const payload = parsedPayload.data;
   return {
-    code: typeof payload.code === "string" ? payload.code : undefined,
-    type: typeof payload.type === "string" ? payload.type : undefined,
+    code: payload.code,
+    type: payload.type,
     status: extractStatusCode(payload),
-    message: typeof payload.message === "string" ? payload.message : undefined,
-    data: payload,
+    message: payload.message,
+    data: error,
+    errors: extractNestedErrors(error),
   };
 };
 
@@ -209,7 +255,36 @@ const getAttioErrorStatus = (error: unknown): number | undefined => {
   }
 
   const info = parseAttioErrorInfo(error);
-  return info?.response?.status ?? info?.status ?? info?.status_code;
+  if (info?.response?.status ?? info?.status ?? info?.status_code) {
+    return info?.response?.status ?? info?.status ?? info?.status_code;
+  }
+
+  return extractDetails(error).status;
+};
+
+const getAttioErrorCode = (error: unknown): string | undefined => {
+  if (error instanceof AttioError) {
+    return error.code;
+  }
+
+  const info = parseAttioErrorInfo(error);
+  return info?.code ?? extractDetails(error).code;
+};
+
+const getAttioErrorType = (error: unknown): string | undefined => {
+  if (error instanceof AttioError) {
+    return error.type;
+  }
+
+  const info = parseAttioErrorInfo(error);
+  return info?.type ?? extractDetails(error).type;
+};
+
+const getAttioErrorPayload = (error: unknown): unknown => {
+  if (error instanceof AttioError) {
+    return error.data;
+  }
+  return extractNestedErrorPayload(error);
 };
 
 const parseAttioErrorShape = (error: unknown): AttioErrorShape | undefined => {
@@ -234,8 +309,48 @@ const isAttioError = (error: unknown): error is AttioError => {
   );
 };
 
+const isAttioAuthError = (error: unknown): boolean => {
+  const status = getAttioErrorStatus(error);
+  const type = getAttioErrorType(error);
+  const code = getAttioErrorCode(error);
+  return status === 401 || type === "auth_error" || code === "unauthorized";
+};
+
+const isAttioPermissionError = (error: unknown): boolean => {
+  const status = getAttioErrorStatus(error);
+  const code = getAttioErrorCode(error);
+  return (
+    status === 403 ||
+    code === "forbidden" ||
+    code === "permission_denied" ||
+    code === "system_edit_unauthorized"
+  );
+};
+
 const isAttioNotFound = (error: unknown): boolean =>
-  getAttioErrorStatus(error) === 404;
+  getAttioErrorStatus(error) === 404 ||
+  getAttioErrorCode(error) === "not_found";
+
+const isAttioRateLimitError = (error: unknown): boolean => {
+  const code = getAttioErrorCode(error);
+  return (
+    getAttioErrorStatus(error) === 429 ||
+    code === "rate_limited" ||
+    code === "rate_limit_exceeded"
+  );
+};
+
+const isAttioValidationError = (error: unknown): boolean => {
+  const status = getAttioErrorStatus(error);
+  const type = getAttioErrorType(error);
+  const code = getAttioErrorCode(error);
+  return (
+    status === 422 ||
+    type === "validation_error" ||
+    code === "validation_type" ||
+    code === "invalid_request"
+  );
+};
 
 const isRetryableAttioError = (error: unknown): boolean => {
   const info = parseAttioErrorInfo(error);
@@ -253,10 +368,8 @@ const normalizeAttioError = (
   const { response, request } = context;
   const details = extractDetails(error);
   const status = response?.status ?? details.status;
-  const message = extractMessage(
-    error,
-    response?.statusText ?? details.message,
-  );
+  const message =
+    details.message ?? extractMessage(error, response?.statusText);
   const requestId =
     getHeaderValue(response, "x-request-id") ??
     getHeaderValue(response, "x-attio-request-id");
@@ -289,9 +402,16 @@ export {
   AttioNetworkError,
   AttioResponseError,
   AttioRetryError,
+  getAttioErrorCode,
+  getAttioErrorPayload,
   getAttioErrorStatus,
+  getAttioErrorType,
+  isAttioAuthError,
   isAttioError,
   isAttioNotFound,
+  isAttioPermissionError,
+  isAttioRateLimitError,
+  isAttioValidationError,
   isRetryableAttioError,
   normalizeAttioError,
 };

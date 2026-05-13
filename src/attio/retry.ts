@@ -2,12 +2,31 @@ import { z } from "zod";
 import type { RequestResult, ResponseStyle } from "../generated/client";
 import { AttioError, AttioRetryError } from "./errors";
 
+type RetryHttpMethod =
+  | "CONNECT"
+  | "DELETE"
+  | "GET"
+  | "HEAD"
+  | "OPTIONS"
+  | "PATCH"
+  | "POST"
+  | "PUT"
+  | "TRACE";
+
+interface RetryRequestContext {
+  method?: RetryHttpMethod;
+  headers?: unknown;
+}
+
 interface RetryConfig {
   maxRetries: number;
   initialDelayMs: number;
   maxDelayMs: number;
   retryableStatusCodes: number[];
+  retryableMethods: RetryHttpMethod[];
   respectRetryAfter: boolean;
+  retryUnsafeRequests: boolean;
+  idempotencyHeaderNames: string[];
 }
 
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
@@ -15,7 +34,10 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
   initialDelayMs: 500,
   maxDelayMs: 5000,
   retryableStatusCodes: [408, 429, 500, 502, 503, 504],
+  retryableMethods: ["GET", "HEAD", "OPTIONS"],
   respectRetryAfter: true,
+  retryUnsafeRequests: false,
+  idempotencyHeaderNames: ["Idempotency-Key", "X-Idempotency-Key"],
 };
 
 const RetryErrorSchema = z.object({
@@ -23,6 +45,21 @@ const RetryErrorSchema = z.object({
   isNetworkError: z.boolean().optional(),
   retryAfterMs: z.number().optional(),
 });
+
+const retryHttpMethodSchema = z.enum([
+  "CONNECT",
+  "DELETE",
+  "GET",
+  "HEAD",
+  "OPTIONS",
+  "PATCH",
+  "POST",
+  "PUT",
+  "TRACE",
+]);
+
+const headerTupleSchema = z.tuple([z.string(), z.unknown()]);
+const headerRecordSchema = z.record(z.string(), z.unknown());
 
 type RetryErrorInfo = z.infer<typeof RetryErrorSchema>;
 
@@ -79,9 +116,75 @@ const isRetryableError = (error: unknown, config: RetryConfig): boolean => {
 const getRetryAfterMs = (error: unknown): number | undefined =>
   extractRetryErrorInfo(error)?.retryAfterMs;
 
+const getHeaderEntries = (headers: unknown): [string, unknown][] => {
+  if (headers === undefined) {
+    return [];
+  }
+
+  if (headers instanceof Headers) {
+    const entries: [string, string][] = [];
+    headers.forEach((value, key) => {
+      entries.push([key, value]);
+    });
+    return entries;
+  }
+
+  const tupleResult = z.array(headerTupleSchema).safeParse(headers);
+  if (tupleResult.success) {
+    return tupleResult.data;
+  }
+
+  const recordResult = headerRecordSchema.safeParse(headers);
+  if (recordResult.success) {
+    return Object.entries(recordResult.data);
+  }
+
+  return [];
+};
+
+const hasIdempotencyHeader = (
+  headers: unknown,
+  headerNames: readonly string[],
+): boolean => {
+  const normalizedNames = new Set(
+    headerNames.map((headerName) => headerName.toLowerCase()),
+  );
+
+  return getHeaderEntries(headers).some(([key, value]) => {
+    if (!normalizedNames.has(key.toLowerCase())) {
+      return false;
+    }
+    return value !== undefined && value !== null && String(value).length > 0;
+  });
+};
+
+const isRetryableRequest = (
+  context: RetryRequestContext | undefined,
+  config: RetryConfig,
+): boolean => {
+  if (config.retryUnsafeRequests) {
+    return true;
+  }
+
+  if (!context?.method) {
+    return true;
+  }
+
+  const methodResult = retryHttpMethodSchema.safeParse(context.method);
+  if (
+    methodResult.success &&
+    config.retryableMethods.includes(methodResult.data)
+  ) {
+    return true;
+  }
+
+  return hasIdempotencyHeader(context.headers, config.idempotencyHeaderNames);
+};
+
 function callWithRetry<T>(
   fn: () => Promise<T>,
   config?: Partial<RetryConfig>,
+  context?: RetryRequestContext,
 ): Promise<T>;
 function callWithRetry<
   TData,
@@ -91,10 +194,12 @@ function callWithRetry<
 >(
   fn: () => RequestResult<TData, TError, ThrowOnError, TResponseStyle>,
   config?: Partial<RetryConfig>,
+  context?: RetryRequestContext,
 ): RequestResult<TData, TError, ThrowOnError, TResponseStyle>;
 async function callWithRetry<T>(
   fn: () => Promise<T>,
   config?: Partial<RetryConfig>,
+  context?: RetryRequestContext,
 ): Promise<T> {
   const retryConfig: RetryConfig = {
     ...DEFAULT_RETRY_CONFIG,
@@ -106,7 +211,12 @@ async function callWithRetry<T>(
     try {
       return await fn();
     } catch (error) {
-      if (!isRetryableError(error, retryConfig)) {
+      if (
+        !(
+          isRetryableError(error, retryConfig) &&
+          isRetryableRequest(context, retryConfig)
+        )
+      ) {
         throw error;
       }
 
@@ -132,12 +242,14 @@ async function callWithRetry<T>(
   });
 }
 
-export type { RetryConfig };
+export type { RetryConfig, RetryHttpMethod, RetryRequestContext };
 export {
   calculateRetryDelay,
   callWithRetry,
   DEFAULT_RETRY_CONFIG,
+  hasIdempotencyHeader,
   isRetryableError,
+  isRetryableRequest,
   isRetryableStatus,
   sleep,
 };

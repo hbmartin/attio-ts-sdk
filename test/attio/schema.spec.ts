@@ -1,11 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { AttioResponseError } from "../../src/attio/errors";
-import { listAttributes, type ZodAttribute } from "../../src/attio/metadata";
+import {
+  listAllowedValues,
+  listAttributes,
+  type ZodAttribute,
+} from "../../src/attio/metadata";
 import { createSchema } from "../../src/attio/schema";
 
 vi.mock("../../src/attio/metadata", () => ({
   listAttributes: vi.fn(),
+  listAllowedValues: vi.fn(),
 }));
 
 interface MockAttributeInput {
@@ -82,6 +87,30 @@ describe("createSchema", () => {
 
     const strictAccessor = schema.getAccessorOrThrow("name");
     expect(strictAccessor.attribute.api_slug).toBe("name");
+  });
+
+  it("builds schema-bound write values", async () => {
+    const mockList = vi.mocked(listAttributes);
+    const mockAllowedValues = vi.mocked(listAllowedValues);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "name", type: "text" }),
+      mockAttribute({ slug: "stage", type: "select" }),
+    ]);
+    mockAllowedValues.mockResolvedValue([
+      { id: "opt_1", title: "Prospect", archived: false },
+    ]);
+
+    const schema = await createSchema({
+      target: "objects",
+      identifier: "companies",
+    });
+
+    await expect(
+      schema.buildValues({ name: "Acme", stage: "Prospect" }),
+    ).resolves.toEqual({
+      name: [{ value: "Acme" }],
+      stage: [{ option: "Prospect" }],
+    });
   });
 
   it("throws when attribute slug is unknown", async () => {
