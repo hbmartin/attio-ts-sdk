@@ -1,6 +1,11 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
 
+import type {
+  OffsetItemsCollectInput,
+  OffsetItemsQueryInput,
+  OffsetItemsStreamInput,
+} from "../../src/attio/pagination";
 import {
   createOffsetPageResultSchema,
   createPageResultSchema,
@@ -202,6 +207,29 @@ describe("resolveOffsetItems", () => {
     expectTypeOf(
       resolveOffsetItems(fetchItems, { paginate: "stream" }),
     ).toEqualTypeOf<AsyncIterable<Item>>();
+  });
+
+  it("exposes named input types for collected and streamed pagination", () => {
+    const fetchItems = async (): Promise<Item[]> => [];
+    const collectInput: OffsetItemsCollectInput = { paginate: true, limit: 2 };
+    const defaultInput: OffsetItemsCollectInput = { limit: 2 };
+    const streamInput: OffsetItemsStreamInput = {
+      paginate: "stream",
+      limit: 2,
+    };
+
+    expectTypeOf(collectInput).toMatchTypeOf<OffsetItemsQueryInput>();
+    expectTypeOf(defaultInput).toMatchTypeOf<OffsetItemsQueryInput>();
+    expectTypeOf(streamInput).toMatchTypeOf<OffsetItemsQueryInput>();
+    expectTypeOf(resolveOffsetItems(fetchItems, collectInput)).toEqualTypeOf<
+      Promise<Item[]>
+    >();
+    expectTypeOf(resolveOffsetItems(fetchItems, defaultInput)).toEqualTypeOf<
+      Promise<Item[]>
+    >();
+    expectTypeOf(resolveOffsetItems(fetchItems, streamInput)).toEqualTypeOf<
+      AsyncIterable<Item>
+    >();
   });
 
   it("fetches a single page when pagination is disabled", async () => {

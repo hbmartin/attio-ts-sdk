@@ -61,6 +61,10 @@ interface OffsetItemsCollectInput extends SharedOffsetPaginationInput {
   paginate?: boolean;
 }
 
+interface OffsetItemsStreamInput extends SharedOffsetPaginationInput {
+  paginate: "stream";
+}
+
 const createPageResultSchema = <T>(
   itemSchema: ZodType<T>,
 ): ZodType<PageResult<T>> =>
@@ -312,7 +316,7 @@ const streamOffsetItems = <T>(
 
 function resolveOffsetItems<T>(
   fetchItems: OffsetItemsFetcher<T>,
-  input: SharedOffsetPaginationInput & { paginate: "stream" },
+  input: OffsetItemsStreamInput,
 ): AsyncIterable<T>;
 function resolveOffsetItems<T>(
   fetchItems: OffsetItemsFetcher<T>,
@@ -481,7 +485,9 @@ async function* paginateOffsetAsync<T>(
 }
 
 export type {
+  OffsetItemsCollectInput,
   OffsetItemsQueryInput,
+  OffsetItemsStreamInput,
   OffsetPageResult,
   OffsetPaginationAsyncOptions,
   OffsetPaginationOptions,
