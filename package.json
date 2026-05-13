@@ -67,7 +67,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=24"
+    "node": ">=22"
   },
   "peerDependencies": {
     "zod": "^4"
@@ -78,7 +78,7 @@
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@hey-api/openapi-ts": "^0.97.1",
-    "@types/node": "^24",
+    "@types/node": "^22",
     "@vitest/coverage-istanbul": "^4.1.6",
     "husky": "^9.1.7",
     "jscpd": "^4.1.1",
@@ -90,7 +90,7 @@
     "zod": "^4.4.3"
   },
   "resolutions": {
-    "@types/node": "^24"
+    "@types/node": "^22"
   },
   "jscpd": {
     "threshold": 0,
