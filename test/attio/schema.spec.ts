@@ -1,14 +1,19 @@
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { AttioResponseError } from "../../src/attio/errors";
-import { listAttributes } from "../../src/attio/metadata";
+import { listAttributes, type ZodAttribute } from "../../src/attio/metadata";
 import { createSchema } from "../../src/attio/schema";
 
 vi.mock("../../src/attio/metadata", () => ({
   listAttributes: vi.fn(),
 }));
 
-const mockAttribute = (slug: string, type: string) => ({
+interface MockAttributeInput {
+  slug: ZodAttribute["api_slug"];
+  type: ZodAttribute["type"];
+}
+
+const mockAttribute = ({ slug, type }: MockAttributeInput): ZodAttribute => ({
   id: { workspace_id: "w1", object_id: "o1", attribute_id: `a_${slug}` },
   title: slug,
   description: null,
@@ -300,7 +305,7 @@ describe("typed accessor methods", () => {
   const mockList = vi.mocked(listAttributes);
 
   it("firstText extracts string value", async () => {
-    mockList.mockResolvedValue([mockAttribute("name", "text")]);
+    mockList.mockResolvedValue([mockAttribute({ slug: "name", type: "text" })]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -311,7 +316,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstNumber extracts number value", async () => {
-    mockList.mockResolvedValue([mockAttribute("revenue", "number")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "revenue", type: "number" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -322,7 +329,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstDate extracts date string", async () => {
-    mockList.mockResolvedValue([mockAttribute("founded", "date")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "founded", type: "date" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -333,7 +342,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstTimestamp extracts timestamp string", async () => {
-    mockList.mockResolvedValue([mockAttribute("updated_at", "timestamp")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "updated_at", type: "timestamp" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -345,8 +356,27 @@ describe("typed accessor methods", () => {
     expect(accessor.firstTimestamp(record)).toBe("2024-01-15T10:30:00Z");
   });
 
+  it("firstTimestamp accepts null attribute_type from API output", async () => {
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "updated_at", type: "timestamp" }),
+    ]);
+    const schema = await createSchema({
+      target: "objects",
+      identifier: "companies",
+    });
+    const accessor = schema.getAccessorOrThrow("updated_at");
+    const record = {
+      values: {
+        updated_at: [{ value: "2024-01-15T10:30:00Z", attribute_type: null }],
+      },
+    };
+    expect(accessor.firstTimestamp(record)).toBe("2024-01-15T10:30:00Z");
+  });
+
   it("firstCheckbox extracts boolean value", async () => {
-    mockList.mockResolvedValue([mockAttribute("is_active", "checkbox")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "is_active", type: "checkbox" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -357,7 +387,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstRating extracts rating number", async () => {
-    mockList.mockResolvedValue([mockAttribute("score", "rating")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "score", type: "rating" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -368,7 +400,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstCurrencyValue extracts currency_value", async () => {
-    mockList.mockResolvedValue([mockAttribute("arr", "currency")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "arr", type: "currency" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -381,7 +415,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstSelectTitle extracts option title", async () => {
-    mockList.mockResolvedValue([mockAttribute("stage", "select")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "stage", type: "select" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -393,8 +429,25 @@ describe("typed accessor methods", () => {
     expect(accessor.firstSelectTitle(record)).toBe("Series A");
   });
 
+  it("firstSelectTitle falls back to raw option string", async () => {
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "stage", type: "select" }),
+    ]);
+    const schema = await createSchema({
+      target: "objects",
+      identifier: "companies",
+    });
+    const accessor = schema.getAccessorOrThrow("stage");
+    const record = {
+      values: { stage: [{ option: "opt_abc123" }] },
+    };
+    expect(accessor.firstSelectTitle(record)).toBe("opt_abc123");
+  });
+
   it("firstStatusTitle extracts status title", async () => {
-    mockList.mockResolvedValue([mockAttribute("status", "status")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "status", type: "status" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -406,9 +459,24 @@ describe("typed accessor methods", () => {
     expect(accessor.firstStatusTitle(record)).toBe("Active");
   });
 
+  it("firstStatusTitle falls back to raw status string", async () => {
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "status", type: "status" }),
+    ]);
+    const schema = await createSchema({
+      target: "objects",
+      identifier: "companies",
+    });
+    const accessor = schema.getAccessorOrThrow("status");
+    const record = {
+      values: { status: [{ status: "sta_abc123" }] },
+    };
+    expect(accessor.firstStatusTitle(record)).toBe("sta_abc123");
+  });
+
   it("firstFullName extracts full_name", async () => {
     mockList.mockResolvedValue([
-      mockAttribute("contact_name", "personal-name"),
+      mockAttribute({ slug: "contact_name", type: "personal-name" }),
     ]);
     const schema = await createSchema({
       target: "objects",
@@ -426,7 +494,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstEmail extracts email_address", async () => {
-    mockList.mockResolvedValue([mockAttribute("email", "email-address")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "email", type: "email-address" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "people",
@@ -446,7 +516,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstDomain extracts domain", async () => {
-    mockList.mockResolvedValue([mockAttribute("website", "domain")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "website", type: "domain" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -457,7 +529,9 @@ describe("typed accessor methods", () => {
   });
 
   it("firstPhone extracts phone_number", async () => {
-    mockList.mockResolvedValue([mockAttribute("phone", "phone-number")]);
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "phone", type: "phone-number" }),
+    ]);
     const schema = await createSchema({
       target: "objects",
       identifier: "people",
@@ -478,9 +552,9 @@ describe("typed accessor methods", () => {
 
   it("firstValueTyped auto-selects extractor by attribute type", async () => {
     mockList.mockResolvedValue([
-      mockAttribute("name", "text"),
-      mockAttribute("revenue", "number"),
-      mockAttribute("status", "status"),
+      mockAttribute({ slug: "name", type: "text" }),
+      mockAttribute({ slug: "revenue", type: "number" }),
+      mockAttribute({ slug: "status", type: "status" }),
     ]);
     const schema = await createSchema({
       target: "objects",
@@ -505,8 +579,75 @@ describe("typed accessor methods", () => {
     );
   });
 
-  it("firstValueTyped falls back to getFirstValue for unknown types", async () => {
-    mockList.mockResolvedValue([mockAttribute("custom", "unknown-type")]);
+  it("firstValueTyped returns structured object values", async () => {
+    mockList.mockResolvedValue([
+      mockAttribute({ slug: "owner", type: "actor-reference" }),
+      mockAttribute({ slug: "company", type: "record-reference" }),
+      mockAttribute({ slug: "address", type: "location" }),
+      mockAttribute({ slug: "last_interaction", type: "interaction" }),
+    ]);
+    const schema = await createSchema({
+      target: "objects",
+      identifier: "companies",
+    });
+    const record = {
+      values: {
+        owner: [
+          {
+            referenced_actor_type: null,
+            referenced_actor_id: "mem_abc123",
+          },
+        ],
+        company: [
+          {
+            target_object: "companies",
+            target_record_id: "rec_abc123",
+          },
+        ],
+        address: [
+          {
+            line_1: "123 Main St",
+            line_2: null,
+            line_3: null,
+            line_4: null,
+            locality: "San Francisco",
+            region: "CA",
+            postcode: "94105",
+            country_code: "US",
+            latitude: "37.7749",
+            longitude: "-122.4194",
+          },
+        ],
+        last_interaction: [
+          {
+            interaction_type: "email",
+            interacted_at: "2024-01-15T10:30:00Z",
+            owner_actor: {},
+          },
+        ],
+      },
+    };
+
+    expect(schema.getAccessorOrThrow("owner").firstValueTyped(record)).toEqual({
+      referenced_actor_type: null,
+      referenced_actor_id: "mem_abc123",
+    });
+    expect(
+      schema.getAccessorOrThrow("company").firstValueTyped(record),
+    ).toEqual({
+      target_object: "companies",
+      target_record_id: "rec_abc123",
+    });
+    expect(
+      schema.getAccessorOrThrow("address").firstValueTyped(record),
+    ).toEqual(expect.objectContaining({ locality: "San Francisco" }));
+    expect(
+      schema.getAccessorOrThrow("last_interaction").firstValueTyped(record),
+    ).toEqual(expect.objectContaining({ interaction_type: "email" }));
+  });
+
+  it("firstValueTyped falls back to getFirstValue for null attribute type", async () => {
+    mockList.mockResolvedValue([mockAttribute({ slug: "custom", type: null })]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",
@@ -518,7 +659,7 @@ describe("typed accessor methods", () => {
   });
 
   it("typed accessors return undefined for missing attributes", async () => {
-    mockList.mockResolvedValue([mockAttribute("name", "text")]);
+    mockList.mockResolvedValue([mockAttribute({ slug: "name", type: "text" })]);
     const schema = await createSchema({
       target: "objects",
       identifier: "companies",

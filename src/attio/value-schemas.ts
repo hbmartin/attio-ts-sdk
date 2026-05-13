@@ -12,14 +12,17 @@ const checkboxValueSchema = z.object({ value: z.boolean() }).passthrough();
 type CheckboxValue = z.infer<typeof checkboxValueSchema>;
 
 const dateValueSchema = z
-  .object({ value: z.string(), attribute_type: z.literal("date").optional() })
+  .object({
+    value: z.iso.date(),
+    attribute_type: z.literal("date").nullable().optional(),
+  })
   .passthrough();
 type DateValue = z.infer<typeof dateValueSchema>;
 
 const timestampValueSchema = z
   .object({
-    value: z.string(),
-    attribute_type: z.literal("timestamp").optional(),
+    value: z.iso.datetime(),
+    attribute_type: z.literal("timestamp").nullable().optional(),
   })
   .passthrough();
 type TimestampValue = z.infer<typeof timestampValueSchema>;
@@ -97,12 +100,9 @@ type RecordReferenceValue = z.infer<typeof recordReferenceValueSchema>;
 
 const actorReferenceValueSchema = z
   .object({
-    referenced_actor_type: z.enum([
-      "api-token",
-      "workspace-member",
-      "system",
-      "app",
-    ]),
+    referenced_actor_type: z
+      .enum(["api-token", "workspace-member", "system", "app"])
+      .nullable(),
     referenced_actor_id: z.string().nullable(),
   })
   .passthrough();

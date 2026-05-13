@@ -156,7 +156,9 @@ describe("typed primitive getters", () => {
       rating: [{ value: 4 }],
       arr: [{ currency_value: 100_000, currency_code: "USD" }],
       stage: [{ option: { title: "Series A" } }],
+      stage_id: [{ option: "opt_abc123" }],
       status: [{ status: { title: "Active" } }],
+      status_id: [{ status: "sta_abc123" }],
       contact_name: [
         { first_name: "John", last_name: "Doe", full_name: "John Doe" },
       ],
@@ -207,8 +209,16 @@ describe("typed primitive getters", () => {
     expect(getFirstSelectTitle(record, "stage")).toBe("Series A");
   });
 
+  it("getFirstSelectTitle falls back to raw option string", () => {
+    expect(getFirstSelectTitle(record, "stage_id")).toBe("opt_abc123");
+  });
+
   it("getFirstStatusTitle extracts status title", () => {
     expect(getFirstStatusTitle(record, "status")).toBe("Active");
+  });
+
+  it("getFirstStatusTitle falls back to raw status string", () => {
+    expect(getFirstStatusTitle(record, "status_id")).toBe("sta_abc123");
   });
 
   it("getFirstFullName extracts full_name", () => {

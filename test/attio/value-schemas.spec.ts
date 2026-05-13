@@ -21,6 +21,7 @@ import {
   statusValueSchema,
   textValueSchema,
   timestampValueSchema,
+  type ValueAttributeType,
   valueSchemasByType,
 } from "../../src/attio/value-schemas";
 
@@ -41,7 +42,11 @@ describe("scalar value schemas", () => {
       extra: true,
     });
     expect(result.value).toBe("hello");
-    expect((result as Record<string, unknown>).extra).toBe(true);
+    expect(result).toMatchObject({
+      value: "hello",
+      attribute_type: "text",
+      extra: true,
+    });
   });
 
   it("numberValueSchema parses valid number", () => {
@@ -75,11 +80,37 @@ describe("scalar value schemas", () => {
     expect(result.attribute_type).toBe("date");
   });
 
+  it("dateValueSchema accepts null attribute_type from API output", () => {
+    const result = dateValueSchema.parse({
+      value: "2024-01-15",
+      attribute_type: null,
+    });
+    expect(result.attribute_type).toBeNull();
+  });
+
+  it("dateValueSchema rejects non-date strings", () => {
+    expect(() =>
+      dateValueSchema.parse({ value: "January 15, 2024" }),
+    ).toThrow();
+  });
+
   it("timestampValueSchema parses valid timestamp string", () => {
     const result = timestampValueSchema.parse({
       value: "2024-01-15T10:30:00Z",
     });
     expect(result.value).toBe("2024-01-15T10:30:00Z");
+  });
+
+  it("timestampValueSchema accepts null attribute_type from API output", () => {
+    const result = timestampValueSchema.parse({
+      value: "2024-01-15T10:30:00Z",
+      attribute_type: null,
+    });
+    expect(result.attribute_type).toBeNull();
+  });
+
+  it("timestampValueSchema rejects non-datetime strings", () => {
+    expect(() => timestampValueSchema.parse({ value: "2024-01-15" })).toThrow();
   });
 
   it("ratingValueSchema parses valid rating", () => {
@@ -207,6 +238,18 @@ describe("reference value schemas", () => {
     expect(result.referenced_actor_id).toBeNull();
   });
 
+  it("actorReferenceValueSchema accepts null actor type from API output", () => {
+    const result = actorReferenceValueSchema.parse({
+      referenced_actor_type: null,
+      referenced_actor_id: "mem_abc123",
+      attribute_type: "actor-reference",
+    });
+    expect(result).toMatchObject({
+      referenced_actor_type: null,
+      referenced_actor_id: "mem_abc123",
+    });
+  });
+
   it("interactionValueSchema parses interaction", () => {
     const result = interactionValueSchema.parse({
       interaction_type: "email",
@@ -236,7 +279,7 @@ describe("select/status value schemas", () => {
     const result = selectValueSchema.parse({
       option: { title: "Active", id: "opt_1" },
     });
-    expect((result.option as { title: string }).title).toBe("Active");
+    expect(result.option).toMatchObject({ title: "Active" });
   });
 
   it("enrichedSelectValueSchema requires option object with title", () => {
@@ -266,7 +309,7 @@ describe("select/status value schemas", () => {
     const result = statusValueSchema.parse({
       status: { title: "Active", id: "s_1" },
     });
-    expect((result.status as { title: string }).title).toBe("Active");
+    expect(result.status).toMatchObject({ title: "Active" });
   });
 
   it("enrichedStatusValueSchema requires status object with title", () => {
@@ -284,27 +327,27 @@ describe("select/status value schemas", () => {
 });
 
 describe("valueSchemasByType lookup", () => {
-  it("maps all expected attribute types", () => {
-    const expectedTypes = [
-      "text",
-      "number",
-      "checkbox",
-      "date",
-      "timestamp",
-      "rating",
-      "currency",
-      "domain",
-      "email-address",
-      "phone-number",
-      "personal-name",
-      "location",
-      "record-reference",
-      "actor-reference",
-      "interaction",
-      "select",
-      "status",
-    ] as const;
+  const expectedTypes: ValueAttributeType[] = [
+    "text",
+    "number",
+    "checkbox",
+    "date",
+    "timestamp",
+    "rating",
+    "currency",
+    "domain",
+    "email-address",
+    "phone-number",
+    "personal-name",
+    "location",
+    "record-reference",
+    "actor-reference",
+    "interaction",
+    "select",
+    "status",
+  ];
 
+  it("maps all expected attribute types", () => {
     for (const type of expectedTypes) {
       expect(valueSchemasByType[type]).toBeDefined();
     }
@@ -319,12 +362,12 @@ describe("valueSchemasByType lookup", () => {
   });
 
   it("each schema in the lookup parses valid data", () => {
-    const validData: Record<string, unknown> = {
+    const validData: Record<ValueAttributeType, unknown> = {
       text: { value: "hello" },
       number: { value: 42 },
       checkbox: { value: true },
       date: { value: "2024-01-01" },
-      timestamp: { value: "2024-01-01T00:00:00Z" },
+      timestamp: { value: "2024-01-01T00:00:00Z", attribute_type: null },
       rating: { value: 3 },
       currency: { currency_value: 100 },
       domain: { domain: "example.com" },
@@ -358,7 +401,7 @@ describe("valueSchemasByType lookup", () => {
         target_record_id: "r_1",
       },
       "actor-reference": {
-        referenced_actor_type: "system",
+        referenced_actor_type: null,
         referenced_actor_id: null,
       },
       interaction: {
@@ -370,10 +413,12 @@ describe("valueSchemasByType lookup", () => {
       status: { status: "active" },
     };
 
-    for (const [type, data] of Object.entries(validData)) {
-      const schema =
-        valueSchemasByType[type as keyof typeof valueSchemasByType];
-      expect(schema.safeParse(data).success, `${type} should parse`).toBe(true);
+    for (const type of expectedTypes) {
+      const schema = valueSchemasByType[type];
+      expect(
+        schema.safeParse(validData[type]).success,
+        `${type} should parse`,
+      ).toBe(true);
     }
   });
 });

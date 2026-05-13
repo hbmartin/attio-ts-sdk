@@ -8,12 +8,12 @@ import {
   dateValueSchema,
   domainValueSchema,
   emailValueSchema,
-  enrichedSelectValueSchema,
-  enrichedStatusValueSchema,
   numberValueSchema,
   personalNameValueSchema,
   phoneValueSchema,
   ratingValueSchema,
+  selectValueSchema,
+  statusValueSchema,
   textValueSchema,
   timestampValueSchema,
 } from "./value-schemas";
@@ -148,9 +148,11 @@ function getFirstValue<T>(
   return values ? values[0] : undefined;
 }
 
+type ValueErrorCode = "INVALID_VALUE";
+
 type ValueResult<T> =
   | { ok: true; value: T }
-  | { ok: false; code: string; message: string };
+  | { ok: false; code: ValueErrorCode; message: string };
 
 const safeParseValues = <T>(
   raw: unknown[],
@@ -261,22 +263,16 @@ const getFirstSelectTitle = (
   record: AttioRecordLike,
   attribute: string,
 ): string | undefined =>
-  extractFirstScalar(
-    record,
-    attribute,
-    enrichedSelectValueSchema,
-    (v) => v.option.title,
+  extractFirstScalar(record, attribute, selectValueSchema, (v) =>
+    typeof v.option === "string" ? v.option : v.option.title,
   );
 
 const getFirstStatusTitle = (
   record: AttioRecordLike,
   attribute: string,
 ): string | undefined =>
-  extractFirstScalar(
-    record,
-    attribute,
-    enrichedStatusValueSchema,
-    (v) => v.status.title,
+  extractFirstScalar(record, attribute, statusValueSchema, (v) =>
+    typeof v.status === "string" ? v.status : v.status.title,
   );
 
 const getFirstFullName = (
@@ -339,6 +335,7 @@ export {
   value,
 };
 export type {
+  ValueErrorCode,
   ValueCurrencyInput,
   ValueFactory,
   ValueInput,
