@@ -1004,14 +1004,20 @@ const { data: entry } = await postV2ListsByListEntries({
 ### Notes and Tasks
 
 ```typescript
-import { createAttioSdk } from 'attio-ts-sdk';
+import {
+  createAttioSdk,
+  createNoteParentObjectId,
+  createNoteParentRecordId,
+} from 'attio-ts-sdk';
 
 const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
+const companyObject = createNoteParentObjectId('companies');
+const companyRecordId = createNoteParentRecordId('abc-123');
 
 // Create a note on a record.
 const note = await sdk.notes.create({
-  parentObject: 'companies',
-  parentRecordId: 'abc-123',
+  parentObject: companyObject,
+  parentRecordId: companyRecordId,
   title: 'Meeting Notes',
   format: 'markdown',
   content: 'Discussed Q4 roadmap...',
@@ -1038,16 +1044,21 @@ await sdk.tasks.update({
 
 ### Listing and Viewing Person Notes
 
-Use `sdk.notes.list` with `parentObject: 'people'` and the person's record ID to list notes attached to a specific person. Set `paginate: true` to collect every page, or `paginate: 'stream'` to iterate notes lazily.
+Use `sdk.notes.list` with a branded `parentObject` for `people` and the person's branded record ID to list notes attached to a specific person. Set `paginate: true` to collect every page, or `paginate: 'stream'` to iterate notes lazily.
 
 ```typescript
-import { createAttioSdk } from 'attio-ts-sdk';
+import {
+  createAttioSdk,
+  createNoteParentObjectId,
+  createNoteParentRecordId,
+} from 'attio-ts-sdk';
 
 const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
-const personRecordId = 'person-record-id';
+const personObject = createNoteParentObjectId('people');
+const personRecordId = createNoteParentRecordId('person-record-id');
 
 const personNotes = await sdk.notes.list({
-  parentObject: 'people',
+  parentObject: personObject,
   parentRecordId: personRecordId,
   paginate: true,
   limit: 50,

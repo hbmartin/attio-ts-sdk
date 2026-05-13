@@ -63,8 +63,8 @@ interface NoteDeleteInput extends AttioClientInput {
 }
 
 interface NoteListBaseInput extends AttioClientInput {
-  parentObject?: NoteListQuery["parent_object"];
-  parentRecordId?: NoteListQuery["parent_record_id"];
+  parentObject?: NoteParentObjectId;
+  parentRecordId?: NoteParentRecordId;
   limit?: NoteListQuery["limit"];
   offset?: NoteListQuery["offset"];
   signal?: AbortSignal;

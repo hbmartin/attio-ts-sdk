@@ -121,10 +121,14 @@ describe("notes", () => {
 
     it("passes parent filters and pagination query parameters", async () => {
       getNotesRequest.mockResolvedValue({ data: { data: [] } });
+      const parentObject = createNoteParentObjectId("people");
+      const parentRecordId = createNoteParentRecordId(
+        "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+      );
 
       await listNotes({
-        parentObject: "people",
-        parentRecordId: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+        parentObject,
+        parentRecordId,
         limit: 25,
         offset: 50,
         options: { headers: { "X-Custom": "value" } },
@@ -161,13 +165,17 @@ describe("notes", () => {
           note_id: "33333333-3333-4333-8333-333333333333",
         },
       });
+      const parentObject = createNoteParentObjectId("people");
+      const parentRecordId = createNoteParentRecordId(
+        "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+      );
       getNotesRequest
         .mockResolvedValueOnce({ data: { data: [note1, note2] } })
         .mockResolvedValueOnce({ data: { data: [note3] } });
 
       const result = await listNotes({
-        parentObject: "people",
-        parentRecordId: "c3d4e5f6-a7b8-4c9d-ae0f-1a2b3c4d5e6f",
+        parentObject,
+        parentRecordId,
         paginate: true,
         limit: 2,
       });
@@ -213,10 +221,12 @@ describe("notes", () => {
     it("creates note with all parameters", async () => {
       const newNote = createMockNote({ title: "New note" });
       postNotesRequest.mockResolvedValue({ data: newNote });
+      const parentObject = createNoteParentObjectId("companies");
+      const parentRecordId = createNoteParentRecordId("rec-123");
 
       const result = await createNote({
-        parentObject: "companies",
-        parentRecordId: "rec-123",
+        parentObject,
+        parentRecordId,
         title: "New note",
         content: "Note content",
       });
@@ -238,10 +248,12 @@ describe("notes", () => {
     it("creates note with minimal parameters", async () => {
       const note = createMockNote();
       postNotesRequest.mockResolvedValue({ data: note });
+      const parentObject = createNoteParentObjectId("people");
+      const parentRecordId = createNoteParentRecordId("rec-456");
 
       await createNote({
-        parentObject: "people",
-        parentRecordId: "rec-456",
+        parentObject,
+        parentRecordId,
       });
 
       expect(postNotesRequest).toHaveBeenCalledWith({
@@ -260,10 +272,12 @@ describe("notes", () => {
     it("passes additional options", async () => {
       const note = createMockNote();
       postNotesRequest.mockResolvedValue({ data: note });
+      const parentObject = createNoteParentObjectId("companies");
+      const parentRecordId = createNoteParentRecordId("rec-123");
 
       await createNote({
-        parentObject: "companies",
-        parentRecordId: "rec-123",
+        parentObject,
+        parentRecordId,
         options: { headers: { "X-Custom": "value" } },
       });
 
