@@ -57,6 +57,10 @@ interface OffsetItemsQueryInput extends SharedOffsetPaginationInput {
   paginate?: boolean | "stream";
 }
 
+interface OffsetItemsCollectInput extends SharedOffsetPaginationInput {
+  paginate?: boolean;
+}
+
 const createPageResultSchema = <T>(
   itemSchema: ZodType<T>,
 ): ZodType<PageResult<T>> =>
@@ -306,10 +310,22 @@ const streamOffsetItems = <T>(
     signal: input.signal,
   });
 
-const resolveOffsetItems = <T>(
+function resolveOffsetItems<T>(
+  fetchItems: OffsetItemsFetcher<T>,
+  input: SharedOffsetPaginationInput & { paginate: "stream" },
+): AsyncIterable<T>;
+function resolveOffsetItems<T>(
+  fetchItems: OffsetItemsFetcher<T>,
+  input: OffsetItemsCollectInput,
+): Promise<T[]>;
+function resolveOffsetItems<T>(
   fetchItems: OffsetItemsFetcher<T>,
   input: OffsetItemsQueryInput,
-): Promise<T[]> | AsyncIterable<T> => {
+): Promise<T[]> | AsyncIterable<T>;
+function resolveOffsetItems<T>(
+  fetchItems: OffsetItemsFetcher<T>,
+  input: OffsetItemsQueryInput,
+): Promise<T[]> | AsyncIterable<T> {
   if (input.paginate === "stream") {
     return streamOffsetItems(fetchItems, input);
   }
@@ -319,7 +335,7 @@ const resolveOffsetItems = <T>(
   }
 
   return fetchItems(input.offset, input.limit, input.signal);
-};
+}
 
 const readRuntimeOffsetPage = async <T>(
   fetchPage: OffsetPageFetcher<T>,
