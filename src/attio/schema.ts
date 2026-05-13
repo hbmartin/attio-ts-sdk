@@ -81,10 +81,13 @@ interface AttioSchema {
   getAccessorOrThrow: (slug: string) => AttributeAccessor;
 }
 
-const typedExtractors: Record<
-  ValueAttributeType,
-  (record: AttioRecordLike, slug: string) => unknown | undefined
-> = {
+type AttributeType = NonNullable<ZodAttribute["type"]>;
+type TypedExtractor = (
+  record: AttioRecordLike,
+  slug: string,
+) => unknown | undefined;
+
+const typedExtractors = {
   text: getFirstText,
   number: getFirstNumber,
   date: getFirstDate,
@@ -118,6 +121,16 @@ const typedExtractors: Record<
     const result = getFirstValueSafe(record, slug, schema);
     return result.ok ? result.value : undefined;
   },
+} satisfies Record<AttributeType, TypedExtractor> &
+  Record<ValueAttributeType, TypedExtractor>;
+
+const getTypedExtractor = (
+  attributeType: ZodAttribute["type"],
+): TypedExtractor | undefined => {
+  if (attributeType === null) {
+    return;
+  }
+  return typedExtractors[attributeType];
 };
 
 const createAccessor = (attribute: ZodAttribute): AttributeAccessor => {
@@ -143,7 +156,7 @@ const createAccessor = (attribute: ZodAttribute): AttributeAccessor => {
     firstDomain: (record) => getFirstDomain(record, slug),
     firstPhone: (record) => getFirstPhone(record, slug),
     firstValueTyped: (record) => {
-      const extractor = typedExtractors[attribute.type as ValueAttributeType];
+      const extractor = getTypedExtractor(attribute.type);
       if (!extractor) {
         return getFirstValue(record, slug);
       }
