@@ -49,6 +49,7 @@
     "typecheck": "tsc --noEmit",
     "dev": "tsdown --watch",
     "lint": "biome check --error-on-warnings",
+    "lint:contracts": "node scripts/contract-lint.mjs",
     "lint:report": "biome check . --reporter=json | jq -r '  .diagnostics[]  | .category' | sort | uniq -c | sort -nr",
     "format": "biome check --write",
     "test": "vitest run --coverage",
