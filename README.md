@@ -400,14 +400,17 @@ import { queryRecords } from 'attio-ts-sdk';
 
 const controller = new AbortController();
 
-const records = await queryRecords({
+const recordsPromise = queryRecords({
   client,
   object: 'companies',
   paginate: true,
   signal: controller.signal,
 });
 
-controller.abort();
+setTimeout(() => controller.abort(), 0);
+
+// Abort before awaiting so pending request or pagination work can be cancelled.
+const records = await recordsPromise;
 ```
 
 ### Error Handling

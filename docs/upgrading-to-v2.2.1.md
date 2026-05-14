@@ -187,7 +187,9 @@ await sdk.notes.create({
 });
 ```
 
-Attio rejects `created_at` values before 1970 or in the future.
+The SDK accepts `createdAt` (camelCase), as shown above, but Attio validates the
+underlying timestamp field `created_at` (snake_case) — values before 1970 or in
+the future are rejected.
 
 ### List notes for a person or company
 
