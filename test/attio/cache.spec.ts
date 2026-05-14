@@ -94,6 +94,21 @@ describe("TtlCache", () => {
     expect(cache.get("key1")).toBe(100);
     expect(cache.get("key2")).toBe(2);
   });
+
+  it("reports cache hits, misses, and live entries", () => {
+    const cache = new TtlCache<string, number>({ ttlMs: 1000 });
+
+    cache.set("key1", 42);
+    expect(cache.stats()).toEqual({ entries: 1, hits: 0, misses: 0 });
+
+    expect(cache.get("key1")).toBe(42);
+    expect(cache.get("missing")).toBeUndefined();
+
+    expect(cache.stats()).toEqual({ entries: 1, hits: 1, misses: 1 });
+
+    vi.advanceTimersByTime(1001);
+    expect(cache.stats()).toEqual({ entries: 0, hits: 1, misses: 1 });
+  });
 });
 
 describe("createTtlCache", () => {
@@ -417,6 +432,80 @@ describe("metadata cache manager", () => {
 
     cache?.set("test-key", [{ value: 1 }]);
     expect(cache?.get("test-key")).toEqual([{ value: 1 }]);
+  });
+
+  it("reports metadata cache stats per scope", () => {
+    const manager = createAttioCacheManager("stats-key");
+    const cache = manager.metadata.get("attributes");
+
+    cache?.set("companies", [{ api_slug: "name" }]);
+    cache?.get("companies");
+    cache?.get("missing");
+
+    expect(manager.stats().metadata.attributes).toMatchObject({
+      enabled: true,
+      entries: 1,
+      hits: 1,
+      initialized: true,
+      misses: 1,
+      scope: "attributes",
+    });
+    expect(manager.stats().metadata.options).toMatchObject({
+      enabled: true,
+      entries: 0,
+      hits: 0,
+      initialized: false,
+      misses: 0,
+      scope: "options",
+    });
+  });
+
+  it("reports disabled metadata cache stats", () => {
+    const manager = createAttioCacheManager("disabled-stats", {
+      enabled: false,
+    });
+
+    expect(manager.stats().metadata.statuses).toMatchObject({
+      enabled: false,
+      entries: 0,
+      hits: 0,
+      initialized: false,
+      misses: 0,
+      scope: "statuses",
+    });
+  });
+
+  it("tracks stats for custom adapters without native stats support", () => {
+    const store = new Map<string, unknown[]>();
+    const manager = createAttioCacheManager("tracked-custom-adapter", {
+      metadata: {
+        adapter: {
+          create: () => ({
+            get: (key: string) => store.get(key),
+            set: (key: string, value: unknown[]) => {
+              store.set(key, value);
+            },
+            delete: (key: string) => {
+              store.delete(key);
+            },
+            clear: () => {
+              store.clear();
+            },
+          }),
+        },
+      },
+    });
+    const cache = manager.metadata.get("attributes");
+
+    cache?.set("companies", [{ api_slug: "name" }]);
+    cache?.get("companies");
+    cache?.get("missing");
+
+    expect(manager.stats().metadata.attributes).toMatchObject({
+      entries: 1,
+      hits: 1,
+      misses: 1,
+    });
   });
 
   it("uses default fingerprint when metadata config is undefined", () => {

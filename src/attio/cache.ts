@@ -1,4 +1,14 @@
 import type { ZodType } from "zod";
+import type {
+  CacheAdapterStats as AdapterStats,
+  MetadataCacheStats as CacheMetadataStats,
+  AttioCacheStats as CacheStats,
+} from "./cache-stats";
+import {
+  createMetadataScopeStats,
+  createMetadataStats,
+  withCacheStats,
+} from "./cache-stats";
 
 type MetadataCacheScope = "attributes" | "options" | "statuses";
 
@@ -7,6 +17,7 @@ interface CacheAdapter<K, V> {
   set(key: K, value: V): void;
   delete(key: K): void;
   clear(): void;
+  stats?: () => AdapterStats;
 }
 
 interface CacheAdapterParams {
@@ -56,11 +67,13 @@ type AttioCacheConfig = AttioCacheConfigEnabled | AttioCacheConfigDisabled;
 interface MetadataCacheManager {
   get(scope: MetadataCacheScope): CacheAdapter<string, unknown[]> | undefined;
   clear(): void;
+  stats(): CacheMetadataStats;
 }
 
 interface AttioCacheManager {
   metadata: MetadataCacheManager;
   clear(): void;
+  stats(): CacheStats;
 }
 
 const DEFAULT_METADATA_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -84,6 +97,8 @@ class TtlCache<K, V> {
   private readonly ttlMs: number;
   private readonly maxEntries: number | undefined;
   private readonly store = new Map<K, TtlCacheEntry<V>>();
+  private hits = 0;
+  private misses = 0;
 
   constructor(options: TtlCacheOptions) {
     this.ttlMs = options.ttlMs;
@@ -93,12 +108,15 @@ class TtlCache<K, V> {
   get(key: K): V | undefined {
     const entry = this.store.get(key);
     if (!entry) {
+      this.misses += 1;
       return;
     }
     if (Date.now() >= entry.expiresAt) {
       this.store.delete(key);
+      this.misses += 1;
       return;
     }
+    this.hits += 1;
     return entry.value;
   }
 
@@ -127,6 +145,24 @@ class TtlCache<K, V> {
   clear(): void {
     this.store.clear();
   }
+
+  stats(): AdapterStats {
+    this.pruneExpiredEntries();
+    return {
+      entries: this.store.size,
+      hits: this.hits,
+      misses: this.misses,
+    };
+  }
+
+  private pruneExpiredEntries(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.store.entries()) {
+      if (now >= entry.expiresAt) {
+        this.store.delete(key);
+      }
+    }
+  }
 }
 
 const createTtlCacheAdapter = (
@@ -142,6 +178,7 @@ const createTtlCacheAdapter = (
     set: (key, value) => cache.set(key, value),
     delete: (key) => cache.delete(key),
     clear: () => cache.clear(),
+    stats: () => cache.stats(),
   };
 };
 
@@ -221,6 +258,10 @@ const createMetadataCacheManager = (
     return {
       get: () => undefined,
       clear: () => undefined,
+      stats: () =>
+        createMetadataStats((scope) =>
+          createMetadataScopeStats(scope, false, false),
+        ),
     };
   }
 
@@ -237,11 +278,13 @@ const createMetadataCacheManager = (
       return existing;
     }
 
-    const adapter = adapterFactory.create({
-      scope,
-      ttlMs,
-      maxEntries: resolveMaxEntries(config.maxEntries, scope),
-    });
+    const adapter = withCacheStats(
+      adapterFactory.create({
+        scope,
+        ttlMs,
+        maxEntries: resolveMaxEntries(config.maxEntries, scope),
+      }),
+    );
     caches.set(scope, adapter);
     return adapter;
   };
@@ -253,7 +296,18 @@ const createMetadataCacheManager = (
     caches.clear();
   };
 
-  return { get, clear };
+  const stats = () =>
+    createMetadataStats((scope) => {
+      const adapter = caches.get(scope);
+      return createMetadataScopeStats(
+        scope,
+        true,
+        adapter !== undefined,
+        adapter?.stats?.(),
+      );
+    });
+
+  return { get, clear, stats };
 };
 
 const buildMetadataCacheFingerprint = (
@@ -335,9 +389,18 @@ const createAttioCacheManager = (
   const clear = () => {
     metadata.clear();
   };
-  return { metadata, clear };
+  const stats = (): CacheStats => ({
+    metadata: metadata.stats(),
+  });
+  return { metadata, clear, stats };
 };
 
+export type {
+  AttioCacheStats,
+  CacheAdapterStats,
+  MetadataCacheScopeStats,
+  MetadataCacheStats,
+} from "./cache-stats";
 export type {
   AttioCacheConfig,
   AttioCacheConfigDisabled,
