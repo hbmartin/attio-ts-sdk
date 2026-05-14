@@ -465,6 +465,8 @@
         "openapi-ts.config.ts",
         "tsdown.config.ts",
         "vitest.config.ts",
+        "vitest.integration.config.ts",
+        "vitest.performance.config.ts",
         "commitlint.config.js"
       ],
       "linter": {
