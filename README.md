@@ -16,20 +16,16 @@ A modern, type-safe TypeScript SDK for the [Attio](https://attio.com) CRM API. B
 - **Record normalization** - handles inconsistent response shapes
 - **Metadata caching** - attributes, select options, statuses
 - **Pagination helpers** - `paginate` + `paginateOffset` + cursor handling
+- **Filter helpers** - typed comparison, logical, path, and list-entry filters
+- **Request cancellation** - `AbortSignal` support for client, query, and pagination calls
 - **Runtime Validation** - Every request and response validated with Zod v4 schemas
 - **Tree-Shakeable** - Import only what you need
 - **TypeScript First** - Complete type definitions generated from OpenAPI spec
 
 You still have full access to the generated, spec‑accurate endpoints.
 
-### See Also
-
-- [attio-js](https://github.com/d-stoll/attio-js) - an alternative SDK generated with Speakeasy
-- [attio-tui](https://github.com/hbmartin/attio-tui) - a TUI for using Attio built with the library
-
 ## Table of Contents
 
-- [Migrating to v2](#migrating-to-v2)
 - [Installing](#installing)
 - [Getting Your API Key](#getting-your-api-key)
 - [Usage](#usage)
@@ -37,6 +33,7 @@ You still have full access to the generated, spec‑accurate endpoints.
   - [Recommended Pattern](#recommended-pattern)
   - [Attio SDK](#attio-sdk)
   - [Attio Convenience Layer](#attio-convenience-layer)
+  - [Filter Helpers](#filter-helpers)
   - [Value Helpers](#value-helpers)
   - [Record Value Accessors](#record-value-accessors)
   - [Schema Helpers](#schema-helpers)
@@ -53,140 +50,6 @@ You still have full access to the generated, spec‑accurate endpoints.
   - [Listing and Viewing Person Notes](#listing-and-viewing-person-notes)
   - [Webhooks](#webhooks)
 - [Development](#development)
-
-## Migrating to v2
-
-Version 2.0 brings enhanced type safety, auto-pagination, and new filtering capabilities. Most code will work without changes, but there are a few breaking changes to be aware of.
-
-### Breaking Changes
-
-#### ListId Validation
-
-`ListId` values can no longer be empty strings. Use the new `createListId()` factory function:
-
-```typescript
-// Before (v1)
-const listId = 'sales-pipeline' as ListId;
-
-// After (v2)
-import { createListId } from 'attio-ts-sdk';
-const listId = createListId('sales-pipeline');
-```
-
-The factory validates the input and throws if the string is empty.
-
-Every branded SDK identifier also has an exported Zod schema when you need to parse strings at your own boundaries:
-
-```typescript
-import { listIdSchema, recordIdSchema } from 'attio-ts-sdk';
-
-const listId = listIdSchema.parse(formData.get('listId'));
-const recordId = recordIdSchema.parse(params.recordId);
-```
-
-Schemas are exported for records (`recordIdSchema`, `recordObjectIdSchema`, `matchingAttributeSchema`), lists (`listIdSchema`, `entryIdSchema`, `parentObjectIdSchema`, `parentRecordIdSchema`), objects (`objectSlugSchema`, `objectApiSlugSchema`, `objectNounSchema`), notes, tasks, and workspace members.
-
-#### Strongly Typed Filters
-
-Filter types are now strongly typed instead of `Record<string, unknown>`. If you were passing arbitrary objects as filters, you may need to adjust your code to match the `AttioFilter` type.
-
-### New Features
-
-#### Auto-Pagination
-
-`queryRecords` and `queryListEntries` now support built-in pagination:
-
-```typescript
-// Collect all pages automatically
-const allRecords = await queryRecords({
-  client,
-  object: 'companies',
-  paginate: true,
-});
-
-// Stream records with async generators (memory-efficient)
-for await (const record of queryRecords({
-  client,
-  object: 'companies',
-  paginate: 'stream',
-})) {
-  console.log(record.id);
-}
-```
-
-#### Type-Safe Response Validation with itemSchema
-
-All record and list entry functions now support `itemSchema` for Zod validation with full type inference:
-
-```typescript
-import { z } from 'zod';
-
-const companySchema = z.object({
-  id: z.object({ record_id: z.string() }),
-  values: z.object({
-    name: z.array(z.object({ value: z.string() })),
-  }),
-});
-
-type Company = z.infer<typeof companySchema>;
-
-// TypeScript infers the return type from itemSchema
-const companies = await queryRecords<Company>({
-  client,
-  object: 'companies',
-  itemSchema: companySchema,
-  paginate: true,
-});
-// companies is Company[] with full type safety
-```
-
-#### New Filter Operators
-
-New comparison and path-based filter operators:
-
-```typescript
-import { filters } from 'attio-ts-sdk';
-
-// Comparison operators
-filters.lt('revenue', 100000)      // Less than
-filters.lte('revenue', 100000)     // Less than or equal
-filters.gt('revenue', 50000)       // Greater than
-filters.gte('revenue', 50000)      // Greater than or equal
-filters.in('status', ['active', 'pending'])  // Set membership
-filters.between('revenue', 50000, 100000)    // Range (inclusive start, exclusive end)
-
-// Path-based filters for record reference traversal
-filters.path(
-  [['companies', 'primary_contact']],
-  { email: { $contains: '@acme.com' } }
-)
-
-// List-entry relationship helpers
-filters.parentRecordId({
-  list: 'hiring-pipeline',
-  object: 'people',
-  recordId: 'rec_123',
-})
-filters.listStatus({ attribute: 'stage', status: 'Interview' })
-```
-
-#### AbortSignal Support
-
-Pagination and query functions now accept `signal` for request cancellation:
-
-```typescript
-const controller = new AbortController();
-
-const records = await queryRecords({
-  client,
-  object: 'companies',
-  paginate: true,
-  signal: controller.signal,
-});
-
-// Cancel in-flight requests
-controller.abort();
-```
 
 ## Installing
 
@@ -357,6 +220,38 @@ const matches = await searchRecords({
 });
 ```
 
+### Filter Helpers
+
+The `filters` namespace builds typed Attio filters for convenience helpers and generated endpoint bodies. Use it for equality, string matching, comparisons, ranges, logical groups, record-reference paths, and list-entry relationships.
+
+```typescript
+import { filters } from 'attio-ts-sdk';
+
+const revenueFilter = filters.and(
+  filters.gte('annual_revenue', 50000),
+  filters.lt('annual_revenue', 100000),
+  filters.in('stage', ['active', 'pending']),
+);
+
+const rangeFilter = filters.between('annual_revenue', 50000, 100000);
+
+const primaryContactFilter = filters.path(
+  [['companies', 'primary_contact']],
+  { email: { $contains: '@acme.com' } },
+);
+
+const listEntryFilter = filters.and(
+  filters.parentRecordId({
+    list: 'hiring-pipeline',
+    object: 'people',
+    recordId: 'rec_123',
+  }),
+  filters.listStatus({ attribute: 'stage', status: 'Interview' }),
+);
+```
+
+`filters.between` is inclusive at the start and exclusive at the end. The `parentRecordId`, `parentRecordContains`, and `listStatus` helpers cover common list-entry relationship filters without hand-building path objects.
+
 ### Value Helpers
 
 The `value` namespace provides factory functions that build correctly shaped field-value arrays for record creation and updates. Each helper validates its input with Zod before returning, so typos and bad data fail fast at the call site rather than in the API response.
@@ -472,6 +367,18 @@ const schema = await createSchema({
 const name = schema.getAccessorOrThrow('name').getFirstValue(company);
 ```
 
+Branded identifier factories and schemas are exported for validating IDs from forms, URLs, and job payloads before you call the SDK:
+
+```typescript
+import { createListId, listIdSchema, recordIdSchema } from 'attio-ts-sdk';
+
+const salesListId = createListId('sales-pipeline');
+const listId = listIdSchema.parse(formData.get('listId'));
+const recordId = recordIdSchema.parse(params.recordId);
+```
+
+Identifier schemas are exported for records (`recordIdSchema`, `recordObjectIdSchema`, `matchingAttributeSchema`), lists (`listIdSchema`, `entryIdSchema`, `parentObjectIdSchema`, `parentRecordIdSchema`), objects (`objectSlugSchema`, `objectApiSlugSchema`, `objectNounSchema`), notes, tasks, and workspace members.
+
 ### Client Configuration
 
 ```typescript
@@ -484,6 +391,23 @@ const client = createAttioClient({
   retry: { maxRetries: 4 },
   cache: { enabled: true },
 });
+```
+
+Pass an `AbortSignal` when request or pagination work needs to be cancellable:
+
+```typescript
+import { queryRecords } from 'attio-ts-sdk';
+
+const controller = new AbortController();
+
+const records = await queryRecords({
+  client,
+  object: 'companies',
+  paginate: true,
+  signal: controller.signal,
+});
+
+controller.abort();
 ```
 
 ### Error Handling
@@ -1138,6 +1062,7 @@ const { data: webhooks } = await getV2Webhooks({ client });
 
 - [attio-js](https://github.com/d-stoll/attio-js) - an alternative SDK generated with Speakeasy
 - [attio-tui](https://github.com/hbmartin/attio-tui) - a TUI for using Attio built with this library
+- [attio-mcp-server](https://github.com/kesslerio/attio-mcp-server) - an MCP server for using Attio from AI assistants
 
 ## Development
 
