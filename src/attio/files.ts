@@ -34,7 +34,11 @@ const fileEntryWithChildrenSchema = zFile
   .or(zConnectedFolder);
 const downloadResponseSchema = z
   .object({
-    response: z.instanceof(Response).optional(),
+    response: z
+      .custom<Response>(
+        (value) => typeof Response !== "undefined" && value instanceof Response,
+      )
+      .optional(),
   })
   .passthrough();
 
