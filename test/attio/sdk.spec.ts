@@ -462,6 +462,35 @@ describe("createAttioSdk", () => {
     expect(sdk.client.getConfig().auth).toBe("attio_test_token_12345");
   });
 
+  it("exposes diagnostics health and cache stats", () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: {} }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const sdk = createAttioSdk({
+      apiKey: "attio_test_token_12345",
+      fetch: mockFetch,
+    });
+
+    expect(sdk.diagnostics.health()).toMatchObject({
+      authConfigured: true,
+      baseUrl: "https://api.attio.com",
+      metadataCacheEnabled: true,
+      ok: true,
+    });
+    expect(sdk.diagnostics.cacheStats().metadata.attributes).toMatchObject({
+      enabled: true,
+      entries: 0,
+      hits: 0,
+      initialized: false,
+      misses: 0,
+      scope: "attributes",
+    });
+  });
+
   it("preserves query overload inference on namespaced methods", () => {
     const mockFetch: typeof fetch = () =>
       Promise.resolve(

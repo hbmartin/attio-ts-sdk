@@ -2,6 +2,7 @@ export * from "./batch";
 export * from "./cache";
 export * from "./client";
 export * from "./config";
+export * from "./diagnostics";
 export * from "./error-enhancer";
 export * from "./errors";
 export * from "./filters";

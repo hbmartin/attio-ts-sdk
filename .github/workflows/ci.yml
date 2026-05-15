@@ -34,6 +34,7 @@ jobs:
       # Biome
       - uses: biomejs/setup-biome@4c91541eaada48f67d7dbd7833600ce162b68f51 # v2.7.1
       - run: biome ci .
+      - run: pnpm lint:contracts
 
       # Build
       - run: pnpm build

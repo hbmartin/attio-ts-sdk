@@ -2,6 +2,8 @@ import type { ZodType } from "zod";
 import type { AttioClient, AttioClientInput } from "./client";
 import { resolveAttioClient } from "./client";
 import type { AttioClientConfig } from "./config";
+import type { AttioDiagnostics as SdkDiagnostics } from "./diagnostics";
+import { createDiagnostics } from "./diagnostics";
 import {
   type AddListEntryInput,
   addListEntry,
@@ -95,10 +97,8 @@ import {
   type WorkspaceMemberInput,
 } from "./workspace-members";
 
-/** Helper type to omit client and config from input types for SDK methods */
 type SdkInput<T> = T extends unknown ? Omit<T, "client" | "config"> : never;
 
-/** Type alias for delete record input (same shape as RecordGetInput) */
 type RecordDeleteInput = RecordGetInput;
 
 type AttioSdkInput = AttioClientInput | AttioClientConfig;
@@ -165,6 +165,7 @@ interface SdkSearchRecords {
 
 interface AttioSdk {
   client: AttioClient;
+  diagnostics: SdkDiagnostics;
   objects: {
     list: (
       input?: SdkInput<ListObjectsInput>,
@@ -264,6 +265,13 @@ const normalizeSdkInput = (input: AttioSdkInput): AttioClientInput => {
   }
   return { config: input };
 };
+
+const bindWorkspaceMembers = (
+  client: AttioClient,
+): AttioSdk["workspaceMembers"] => ({
+  list: (params = {}) => listWorkspaceMembers({ ...params, client }),
+  get: (params) => getWorkspaceMember({ ...params, client }),
+});
 
 function bindRecordQuery(client: AttioClient): SdkRecordQuery {
   function query<T extends AttioRecordLike>(
@@ -372,6 +380,7 @@ const createAttioSdk = (input: AttioSdkInput = {}): AttioSdk => {
 
   return {
     client,
+    diagnostics: createDiagnostics(client),
     objects: {
       list: (params = {}) => listObjects({ ...params, client }),
       get: (params) => getObject({ ...params, client }),
@@ -411,10 +420,7 @@ const createAttioSdk = (input: AttioSdkInput = {}): AttioSdk => {
     search: {
       records: bindSearchRecords(client),
     },
-    workspaceMembers: {
-      list: (params = {}) => listWorkspaceMembers({ ...params, client }),
-      get: (params) => getWorkspaceMember({ ...params, client }),
-    },
+    workspaceMembers: bindWorkspaceMembers(client),
     metadata: {
       listAttributes: (params) => listAttributes({ ...params, client }),
       findAttribute: (params) => findAttribute({ ...params, client }),
