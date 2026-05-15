@@ -5,6 +5,7 @@ export * from "./config";
 export * from "./diagnostics";
 export * from "./error-enhancer";
 export * from "./errors";
+export * from "./files";
 export * from "./filters";
 export * from "./hooks";
 export * from "./ids";

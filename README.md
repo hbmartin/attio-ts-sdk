@@ -47,6 +47,7 @@ You still have full access to the generated, spec‑accurate endpoints.
   - [Using Generated Endpoints Directly](#using-generated-endpoints-directly)
   - [Managing Lists](#managing-lists)
   - [Notes and Tasks](#notes-and-tasks)
+  - [Files](#files)
   - [Listing and Viewing Person Notes](#listing-and-viewing-person-notes)
   - [Webhooks](#webhooks)
 - [Development](#development)
@@ -171,6 +172,7 @@ The returned `sdk` object exposes these namespaces:
 | `sdk.lists` | `list`, `get`, `queryEntries`, `addEntry`, `updateEntry`, `removeEntry` |
 | `sdk.notes` | `list`, `get`, `create`, `delete` |
 | `sdk.tasks` | `list`, `get`, `create`, `update`, `delete` |
+| `sdk.files` | `list`, `listForPerson`, `get`, `download`, `getDownloadUrl` |
 | `sdk.search` | `records` |
 | `sdk.workspaceMembers` | `list`, `get` |
 | `sdk.metadata` | `listAttributes`, `findAttribute`, `getAttribute`, `getAttributeOptions`, `getAttributeStatuses`, `listAllowedValues`, `schema` |
@@ -992,6 +994,52 @@ await sdk.tasks.update({
   data: { is_completed: true },
 });
 ```
+
+### Files
+
+Use `sdk.files` to list file entries linked to a record, fetch file metadata, and download native Attio files. Generic file listing requires the object slug or ID plus the record ID. `listForPerson` removes the object boilerplate for person records.
+
+```typescript
+import {
+  createAttioSdk,
+  createFileId,
+  createFileObjectId,
+  createFileRecordId,
+} from 'attio-ts-sdk';
+
+const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
+
+const companyFiles = await sdk.files.list({
+  object: createFileObjectId('companies'),
+  recordId: createFileRecordId('bf071e1f-6035-429d-b874-d83ea64ea13b'),
+  storageProvider: 'google-drive',
+  paginate: true,
+  limit: 100,
+});
+
+const personFiles = await sdk.files.listForPerson({
+  personId: createFileRecordId('2f96e5cc-8aab-4db5-9074-5c5d510d4f38'),
+  paginate: 'stream',
+});
+
+for await (const file of personFiles) {
+  console.log(file.file_type, file.id.file_id);
+}
+
+const firstFile = companyFiles[0];
+if (firstFile) {
+  const fileId = createFileId(firstFile.id.file_id);
+  const metadata = await sdk.files.get({ fileId });
+  const bytes = await sdk.files.download({ fileId });
+  const signedUrl = await sdk.files.getDownloadUrl({ fileId });
+
+  console.log(metadata.file_type, bytes.byteLength, signedUrl);
+}
+```
+
+Pass `parseAs: 'blob'`, `parseAs: 'stream'`, or `parseAs: 'text'` to `sdk.files.download` when you need a different response type. File create, upload, and delete operations remain available through generated endpoints such as `postV2Files`, `postV2FilesUpload`, and `deleteV2FilesByFileId`.
+
+The integration token needs `file:read`, `object_configuration:read`, and `record_permission:read` scopes for file reads.
 
 ### Listing and Viewing Person Notes
 
