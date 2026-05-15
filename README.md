@@ -1074,7 +1074,7 @@ const { data: webhooks } = await getV2Webhooks({ client });
 - **[Hey API](https://heyapi.dev/)**: OpenAPI client and Zod schema generation
 - **Biome**: lint and format with a single tool
 - **Vitest**: fast tests with coverage and thresholds
-- **tsdown**: ESM builds for Node
+- **tsdown**: dual ESM/CJS builds for Node
 - **CI**: lint, typecheck, test, coverage, and size comments/badges
 - **Deno-friendly**: `.ts` source imports for direct consumption
 - **OIDC + Provenance**: publish to npm and JSR via manual CI release
