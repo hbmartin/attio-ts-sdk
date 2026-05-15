@@ -1,9 +1,31 @@
+// biome-ignore-all lint/nursery/noExcessiveLinesPerFile: SDK namespace intentionally centralizes resource bindings.
 import type { ZodType } from "zod";
 import type { AttioClient, AttioClientInput } from "./client";
 import { resolveAttioClient } from "./client";
 import type { AttioClientConfig } from "./config";
 import type { AttioDiagnostics as SdkDiagnostics } from "./diagnostics";
 import { createDiagnostics } from "./diagnostics";
+import {
+  type AttioFileEntry,
+  downloadFile,
+  type FileDownloadContent,
+  type FileDownloadInput,
+  type FileDownloadParseAs,
+  type FileDownloadUrlInput,
+  type FileGetInput,
+  type FileListCollectInput,
+  type FileListInput,
+  type FileListSingleInput,
+  type FileListStreamInput,
+  getFile,
+  getFileDownloadUrl,
+  listFiles,
+  listPersonFiles,
+  type PersonFileListCollectInput,
+  type PersonFileListInput,
+  type PersonFileListSingleInput,
+  type PersonFileListStreamInput,
+} from "./files";
 import {
   type AddListEntryInput,
   addListEntry,
@@ -156,6 +178,37 @@ interface SdkListTasks {
   ): Promise<SdkTask[]>;
 }
 
+interface SdkListFiles {
+  (input: SdkInput<FileListStreamInput>): AsyncIterable<AttioFileEntry>;
+  (
+    input: SdkInput<FileListSingleInput | FileListCollectInput>,
+  ): Promise<AttioFileEntry[]>;
+}
+
+interface SdkListPersonFiles {
+  (input: SdkInput<PersonFileListStreamInput>): AsyncIterable<AttioFileEntry>;
+  (
+    input: SdkInput<PersonFileListSingleInput | PersonFileListCollectInput>,
+  ): Promise<AttioFileEntry[]>;
+}
+
+interface SdkDownloadFile {
+  (
+    input: SdkInput<FileDownloadInput<"arrayBuffer">> & {
+      parseAs?: "arrayBuffer";
+    },
+  ): Promise<ArrayBuffer>;
+  (
+    input: SdkInput<FileDownloadInput<"blob">> & { parseAs: "blob" },
+  ): Promise<Blob>;
+  (
+    input: SdkInput<FileDownloadInput<"stream">> & { parseAs: "stream" },
+  ): Promise<ReadableStream<Uint8Array> | null>;
+  (
+    input: SdkInput<FileDownloadInput<"text">> & { parseAs: "text" },
+  ): Promise<string>;
+}
+
 interface SdkSearchRecords {
   <T extends AttioRecordLike>(
     input: SdkInput<RecordSearchInput<T>> & { itemSchema: ZodType<T> },
@@ -221,6 +274,15 @@ interface AttioSdk {
     create: (input: SdkInput<TaskCreateInput>) => ReturnType<typeof createTask>;
     update: (input: SdkInput<TaskUpdateInput>) => ReturnType<typeof updateTask>;
     delete: (input: SdkInput<TaskDeleteInput>) => ReturnType<typeof deleteTask>;
+  };
+  files: {
+    list: SdkListFiles;
+    listForPerson: SdkListPersonFiles;
+    get: (input: SdkInput<FileGetInput>) => ReturnType<typeof getFile>;
+    download: SdkDownloadFile;
+    getDownloadUrl: (
+      input: SdkInput<FileDownloadUrlInput>,
+    ) => ReturnType<typeof getFileDownloadUrl>;
   };
   search: {
     records: SdkSearchRecords;
@@ -360,6 +422,79 @@ function bindListTasks(client: AttioClient): SdkListTasks {
   return list;
 }
 
+function bindListFiles(client: AttioClient): SdkListFiles {
+  function list(
+    input: SdkInput<FileListStreamInput>,
+  ): AsyncIterable<AttioFileEntry>;
+  function list(
+    input: SdkInput<FileListSingleInput | FileListCollectInput>,
+  ): Promise<AttioFileEntry[]>;
+  function list(
+    input: SdkInput<FileListInput>,
+  ): Promise<AttioFileEntry[]> | AsyncIterable<AttioFileEntry> {
+    return listFiles({ ...input, client });
+  }
+  return list;
+}
+
+function bindListPersonFiles(client: AttioClient): SdkListPersonFiles {
+  function listForPerson(
+    input: SdkInput<PersonFileListStreamInput>,
+  ): AsyncIterable<AttioFileEntry>;
+  function listForPerson(
+    input: SdkInput<PersonFileListSingleInput | PersonFileListCollectInput>,
+  ): Promise<AttioFileEntry[]>;
+  function listForPerson(
+    input: SdkInput<PersonFileListInput>,
+  ): Promise<AttioFileEntry[]> | AsyncIterable<AttioFileEntry> {
+    return listPersonFiles({ ...input, client });
+  }
+  return listForPerson;
+}
+
+function bindDownloadFile(client: AttioClient): SdkDownloadFile {
+  function download(
+    input: SdkInput<FileDownloadInput<"arrayBuffer">> & {
+      parseAs?: "arrayBuffer";
+    },
+  ): Promise<ArrayBuffer>;
+  function download(
+    input: SdkInput<FileDownloadInput<"blob">> & { parseAs: "blob" },
+  ): Promise<Blob>;
+  function download(
+    input: SdkInput<FileDownloadInput<"stream">> & { parseAs: "stream" },
+  ): Promise<ReadableStream<Uint8Array> | null>;
+  function download(
+    input: SdkInput<FileDownloadInput<"text">> & { parseAs: "text" },
+  ): Promise<string>;
+  function download(
+    input: SdkInput<FileDownloadInput<FileDownloadParseAs>>,
+  ): Promise<FileDownloadContent> {
+    const parseAs = input.parseAs ?? "arrayBuffer";
+    const handlers: Record<
+      FileDownloadParseAs,
+      () => Promise<FileDownloadContent>
+    > = {
+      arrayBuffer: () =>
+        downloadFile({ ...input, client, parseAs: "arrayBuffer" }),
+      blob: () => downloadFile({ ...input, client, parseAs: "blob" }),
+      stream: () => downloadFile({ ...input, client, parseAs: "stream" }),
+      text: () => downloadFile({ ...input, client, parseAs: "text" }),
+    };
+
+    return handlers[parseAs]();
+  }
+  return download;
+}
+
+const bindFiles = (client: AttioClient): AttioSdk["files"] => ({
+  list: bindListFiles(client),
+  listForPerson: bindListPersonFiles(client),
+  get: (params) => getFile({ ...params, client }),
+  download: bindDownloadFile(client),
+  getDownloadUrl: (params) => getFileDownloadUrl({ ...params, client }),
+});
+
 function bindSearchRecords(client: AttioClient): SdkSearchRecords {
   function records<T extends AttioRecordLike>(
     input: SdkInput<RecordSearchInput<T>> & { itemSchema: ZodType<T> },
@@ -417,6 +552,7 @@ const createAttioSdk = (input: AttioSdkInput = {}): AttioSdk => {
       update: (params) => updateTask({ ...params, client }),
       delete: (params) => deleteTask({ ...params, client }),
     },
+    files: bindFiles(client),
     search: {
       records: bindSearchRecords(client),
     },
@@ -439,9 +575,12 @@ export type {
   AttioSdk,
   AttioSdkInput,
   RecordDeleteInput,
+  SdkDownloadFile,
   SdkGetManyRecords,
   SdkInput,
+  SdkListFiles,
   SdkListNotes,
+  SdkListPersonFiles,
   SdkListQueryEntries,
   SdkListTasks,
   SdkRecordQuery,

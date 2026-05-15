@@ -1,6 +1,12 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
 import { createAttioClient } from "../../src/attio/client";
+import type {
+  AttioFileEntry,
+  FileId,
+  FileObjectId,
+  FileRecordId,
+} from "../../src/attio/files";
 import type { ListId } from "../../src/attio/lists";
 import type { RecordObjectId } from "../../src/attio/records";
 import { createAttioSdk } from "../../src/attio/sdk";
@@ -42,6 +48,15 @@ const mocks = vi.hoisted(() => ({
     updateTask: vi.fn().mockResolvedValue({}),
     deleteTask: vi.fn().mockResolvedValue({}),
   },
+  files: {
+    listFiles: vi.fn().mockResolvedValue([]),
+    listPersonFiles: vi.fn().mockResolvedValue([]),
+    getFile: vi.fn().mockResolvedValue({}),
+    downloadFile: vi.fn().mockResolvedValue(new ArrayBuffer(0)),
+    getFileDownloadUrl: vi
+      .fn()
+      .mockResolvedValue("https://files.example.com/signed"),
+  },
   search: {
     searchRecords: vi.fn().mockResolvedValue([]),
   },
@@ -67,6 +82,7 @@ vi.mock("../../src/attio/records", () => mocks.records);
 vi.mock("../../src/attio/lists", () => mocks.lists);
 vi.mock("../../src/attio/notes", () => mocks.notes);
 vi.mock("../../src/attio/tasks", () => mocks.tasks);
+vi.mock("../../src/attio/files", () => mocks.files);
 vi.mock("../../src/attio/search", () => mocks.search);
 vi.mock("../../src/attio/workspace-members", () => mocks.workspaceMembers);
 vi.mock("../../src/attio/metadata", () => mocks.metadata);
@@ -80,6 +96,9 @@ describe("createAttioSdk", () => {
       );
     const noteParentObject = createNoteParentObjectId("people");
     const noteParentRecordId = createNoteParentRecordId("rec_1");
+    const fileObject = "people" as FileObjectId;
+    const fileRecordId = "33333333-3333-4333-8333-333333333333" as FileRecordId;
+    const fileId = "44444444-4444-4444-8444-444444444444" as FileId;
     const mockFetch: typeof fetch = () =>
       Promise.resolve(
         new Response(JSON.stringify({ data: {} }), {
@@ -162,6 +181,12 @@ describe("createAttioSdk", () => {
       data: { is_completed: true },
     });
     await sdk.tasks.delete({ taskId: "task_1" });
+
+    await sdk.files.list({ object: fileObject, recordId: fileRecordId });
+    await sdk.files.listForPerson({ personId: fileRecordId });
+    await sdk.files.get({ fileId });
+    await sdk.files.download({ fileId });
+    await sdk.files.getDownloadUrl({ fileId });
 
     await sdk.search.records({ query: "acme", objects: ["companies"] });
 
@@ -328,6 +353,29 @@ describe("createAttioSdk", () => {
     expect(mocks.tasks.deleteTask).toHaveBeenCalledWith({
       client,
       taskId: "task_1",
+    });
+
+    expect(mocks.files.listFiles).toHaveBeenCalledWith({
+      client,
+      object: fileObject,
+      recordId: fileRecordId,
+    });
+    expect(mocks.files.listPersonFiles).toHaveBeenCalledWith({
+      client,
+      personId: fileRecordId,
+    });
+    expect(mocks.files.getFile).toHaveBeenCalledWith({
+      client,
+      fileId,
+    });
+    expect(mocks.files.downloadFile).toHaveBeenCalledWith({
+      client,
+      fileId,
+      parseAs: "arrayBuffer",
+    });
+    expect(mocks.files.getFileDownloadUrl).toHaveBeenCalledWith({
+      client,
+      fileId,
     });
 
     expect(mocks.search.searchRecords).toHaveBeenCalledWith({
@@ -506,6 +554,9 @@ describe("createAttioSdk", () => {
     const sdk = createAttioSdk({ client });
     const object = "companies" as RecordObjectId;
     const list = "sales-pipeline" as ListId;
+    const fileObject = "companies" as FileObjectId;
+    const fileRecordId = "33333333-3333-4333-8333-333333333333" as FileRecordId;
+    const fileId = "44444444-4444-4444-8444-444444444444" as FileId;
     const itemSchema = z.object({
       id: z.object({ record_id: z.string() }),
       values: z.object({ name: z.array(z.object({ value: z.string() })) }),
@@ -530,6 +581,32 @@ describe("createAttioSdk", () => {
     expectTypeOf(
       sdk.lists.queryEntries({ list, paginate: "stream", itemSchema }),
     ).toEqualTypeOf<AsyncIterable<Item>>();
+    expectTypeOf(
+      sdk.files.list({ object: fileObject, recordId: fileRecordId }),
+    ).toEqualTypeOf<Promise<AttioFileEntry[]>>();
+    expectTypeOf(
+      sdk.files.list({
+        object: fileObject,
+        recordId: fileRecordId,
+        paginate: true,
+      }),
+    ).toEqualTypeOf<Promise<AttioFileEntry[]>>();
+    expectTypeOf(
+      sdk.files.list({
+        object: fileObject,
+        recordId: fileRecordId,
+        paginate: "stream",
+      }),
+    ).toEqualTypeOf<AsyncIterable<AttioFileEntry>>();
+    expectTypeOf(
+      sdk.files.listForPerson({ personId: fileRecordId, paginate: "stream" }),
+    ).toEqualTypeOf<AsyncIterable<AttioFileEntry>>();
+    expectTypeOf(sdk.files.download({ fileId })).toEqualTypeOf<
+      Promise<ArrayBuffer>
+    >();
+    expectTypeOf(sdk.files.download({ fileId, parseAs: "text" })).toEqualTypeOf<
+      Promise<string>
+    >();
     expectTypeOf(
       sdk.search.records({ query: "acme", objects: ["companies"], itemSchema }),
     ).toEqualTypeOf<Promise<Item[]>>();
