@@ -997,12 +997,23 @@ await sdk.tasks.update({
 
 ### Files
 
-Use `sdk.files` to list file entries linked to a record, fetch file metadata, and download native Attio files. Generic file listing requires the object slug or ID plus the record ID. `listForPerson` removes the object boilerplate for person records.
+Use `sdk.files` to list file entries linked to a record, fetch file metadata, and download native Attio files. The same helpers are also exported as standalone functions when you prefer to pass `{ client }` explicitly.
+
+| Method | Purpose |
+| --- | --- |
+| `sdk.files.list` / `listFiles` | List files and folders for any object record. |
+| `sdk.files.listForPerson` / `listPersonFiles` | List files and folders for a person record without passing `object: 'people'`. |
+| `sdk.files.get` / `getFile` | Fetch metadata for a single file entry. |
+| `sdk.files.download` / `downloadFile` | Download a native Attio file. |
+| `sdk.files.getDownloadUrl` / `getFileDownloadUrl` | Read the signed redirect URL when the runtime exposes it. |
+
+#### Generic record file access
+
+Generic file listing requires the object slug or ID plus the record ID. Set `paginate: true` to collect all pages, or `paginate: 'stream'` to iterate lazily.
 
 ```typescript
 import {
   createAttioSdk,
-  createFileId,
   createFileObjectId,
   createFileRecordId,
 } from 'attio-ts-sdk';
@@ -1016,15 +1027,44 @@ const companyFiles = await sdk.files.list({
   paginate: true,
   limit: 100,
 });
+```
+
+#### Person file convenience methods
+
+For person records, use `sdk.files.listForPerson` so you only provide the person's record ID. This is equivalent to `sdk.files.list({ object: createFileObjectId('people'), recordId: personId })`.
+
+```typescript
+import {
+  createAttioSdk,
+  createFileRecordId,
+  listPersonFiles,
+} from 'attio-ts-sdk';
+
+const sdk = createAttioSdk({ apiKey: process.env.ATTIO_API_KEY });
+const personId = createFileRecordId('2f96e5cc-8aab-4db5-9074-5c5d510d4f38');
 
 const personFiles = await sdk.files.listForPerson({
-  personId: createFileRecordId('2f96e5cc-8aab-4db5-9074-5c5d510d4f38'),
+  personId,
   paginate: 'stream',
 });
 
 for await (const file of personFiles) {
   console.log(file.file_type, file.id.file_id);
 }
+
+const sameFiles = await listPersonFiles({
+  client: sdk.client,
+  personId,
+  paginate: true,
+});
+```
+
+#### Metadata and downloads
+
+Use `get` for file-entry metadata, `download` for file contents, and `getDownloadUrl` when you need the signed redirect URL directly.
+
+```typescript
+import { createFileId } from 'attio-ts-sdk';
 
 const firstFile = companyFiles[0];
 if (firstFile) {
