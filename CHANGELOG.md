@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.3.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.2.1...attio-ts-sdk-v2.3.0) (2026-05-15)
+
+
+### Features
+
+* add cache diagnostics ([373211e](https://github.com/hbmartin/attio-ts-sdk/commit/373211eb64bb0631b570c1e977b0069d7ac63cd8))
+* add cache diagnostics and helper contract lint ([bc96a69](https://github.com/hbmartin/attio-ts-sdk/commit/bc96a695a0b40656b79f7c868ead231c41cd93c4))
+* add file access helpers ([652c12e](https://github.com/hbmartin/attio-ts-sdk/commit/652c12e23b5a74f4c5e61e752d574738167eaba5))
+* add file access helpers ([712fe4e](https://github.com/hbmartin/attio-ts-sdk/commit/712fe4e006a3aae6696952c6a113f994628ad4bf))
+
+
+### Bug Fixes
+
+* guard Response schema check ([6b973ae](https://github.com/hbmartin/attio-ts-sdk/commit/6b973ae1f602be95510463153381c2ea1af7b815))
+* guard Response schema check ([76418bd](https://github.com/hbmartin/attio-ts-sdk/commit/76418bd55f1f503513acc0d361eef38af97d49d1))
+* publish dual esm cjs package ([7ba3756](https://github.com/hbmartin/attio-ts-sdk/commit/7ba3756a3f9d0ff47f584a14db55de80f9a46437))
+* publish dual esm cjs package ([d24bf4a](https://github.com/hbmartin/attio-ts-sdk/commit/d24bf4ab60abe052e64150259f5147b377c0ab37))
+
 ## [2.2.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.2.0...attio-ts-sdk-v2.2.1) (2026-05-13)
 
 
