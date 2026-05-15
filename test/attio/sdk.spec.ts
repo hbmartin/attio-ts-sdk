@@ -115,6 +115,7 @@ describe("createAttioSdk", () => {
     const sdk = createAttioSdk({ client });
 
     await sdk.objects.list();
+    await sdk.objects.list({});
     await sdk.objects.get({ object: "companies" });
     await sdk.objects.create({
       apiSlug: "deals",
@@ -140,6 +141,7 @@ describe("createAttioSdk", () => {
     await sdk.records.query({ object: "companies" });
 
     await sdk.lists.list();
+    await sdk.lists.list({});
     await sdk.lists.get({ list: "list_1" });
     await sdk.lists.queryEntries({ list: "list_1" });
     await sdk.lists.addEntry({ list: "list_1", parentRecordId: "rec_1" });
@@ -154,6 +156,7 @@ describe("createAttioSdk", () => {
       parentObject: noteParentObject,
       parentRecordId: noteParentRecordId,
     });
+    await sdk.notes.list();
     await sdk.notes.get({ noteId: "note_1" });
     await sdk.notes.create({
       parentObject: noteParentObject,
@@ -165,6 +168,7 @@ describe("createAttioSdk", () => {
     await sdk.notes.delete({ noteId: "note_1" });
 
     await sdk.tasks.list({ isCompleted: false });
+    await sdk.tasks.list();
     await sdk.tasks.get({ taskId: "task_1" });
     await sdk.tasks.create({
       data: {
@@ -186,11 +190,15 @@ describe("createAttioSdk", () => {
     await sdk.files.listForPerson({ personId: fileRecordId });
     await sdk.files.get({ fileId });
     await sdk.files.download({ fileId });
+    await sdk.files.download({ fileId, parseAs: "blob" });
+    await sdk.files.download({ fileId, parseAs: "stream" });
+    await sdk.files.download({ fileId, parseAs: "text" });
     await sdk.files.getDownloadUrl({ fileId });
 
     await sdk.search.records({ query: "acme", objects: ["companies"] });
 
     await sdk.workspaceMembers.list();
+    await sdk.workspaceMembers.list({});
     await sdk.workspaceMembers.get({ workspaceMemberId: "member_1" });
 
     await sdk.metadata.listAttributes({
@@ -373,6 +381,21 @@ describe("createAttioSdk", () => {
       fileId,
       parseAs: "arrayBuffer",
     });
+    expect(mocks.files.downloadFile).toHaveBeenCalledWith({
+      client,
+      fileId,
+      parseAs: "blob",
+    });
+    expect(mocks.files.downloadFile).toHaveBeenCalledWith({
+      client,
+      fileId,
+      parseAs: "stream",
+    });
+    expect(mocks.files.downloadFile).toHaveBeenCalledWith({
+      client,
+      fileId,
+      parseAs: "text",
+    });
     expect(mocks.files.getFileDownloadUrl).toHaveBeenCalledWith({
       client,
       fileId,
@@ -508,6 +531,15 @@ describe("createAttioSdk", () => {
     });
 
     expect(sdk.client.getConfig().auth).toBe("attio_test_token_12345");
+  });
+
+  it("accepts default SDK construction", () => {
+    const sdk = createAttioSdk();
+
+    expect(sdk.diagnostics.health()).toMatchObject({
+      baseUrl: "https://api.attio.com",
+      ok: true,
+    });
   });
 
   it("exposes diagnostics health and cache stats", () => {

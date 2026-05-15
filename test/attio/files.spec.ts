@@ -164,6 +164,21 @@ describe("files", () => {
       });
     });
 
+    it("accepts already-unwrapped generated list responses", async () => {
+      const file = createMockFile();
+      getFilesRequest.mockResolvedValue({
+        data: [file],
+        pagination: { next_cursor: null },
+      });
+
+      const result = await listFiles({
+        object: createFileObjectId("people"),
+        recordId: createFileRecordId(recordId),
+      });
+
+      expect(result).toEqual([file]);
+    });
+
     it("collects cursor pages when pagination is enabled", async () => {
       const file = createMockFile();
       const folder = createMockFolder();
@@ -302,6 +317,51 @@ describe("files", () => {
         parseAs: "text",
         responseStyle: "fields",
       });
+    });
+
+    it("returns blob content when requested", async () => {
+      const blob = new Blob(["hello"], { type: "text/plain" });
+      downloadFileRequest.mockResolvedValue({ data: blob });
+
+      const result = await downloadFile({
+        fileId: createFileId(fileId),
+        parseAs: "blob",
+      });
+
+      expect(result).toBe(blob);
+    });
+
+    it("returns null stream content when the runtime has no body", async () => {
+      downloadFileRequest.mockResolvedValue({ data: null });
+
+      const result = await downloadFile({
+        fileId: createFileId(fileId),
+        parseAs: "stream",
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it("returns stream content when requested", async () => {
+      const stream = new ReadableStream<Uint8Array>();
+      downloadFileRequest.mockResolvedValue({ data: stream });
+
+      const result = await downloadFile({
+        fileId: createFileId(fileId),
+        parseAs: "stream",
+      });
+
+      expect(result).toBe(stream);
+    });
+
+    it("throws when downloaded content does not match parse mode", async () => {
+      downloadFileRequest.mockResolvedValue({
+        data: new Uint8Array([1, 2, 3]).buffer,
+      });
+
+      await expect(
+        downloadFile({ fileId: createFileId(fileId), parseAs: "text" }),
+      ).rejects.toThrow("Invalid file download response.");
     });
   });
 
