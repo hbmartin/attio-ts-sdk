@@ -1493,6 +1493,15 @@ export type PostV2ObjectsData = {
 
 export type PostV2ObjectsErrors = {
     /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'quota_exceeded';
+        message: string;
+    };
+    /**
      * Conflict
      */
     409: {
