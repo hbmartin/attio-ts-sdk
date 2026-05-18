@@ -61,6 +61,16 @@ const listSchema: z.ZodType<List> = z
 const zListEntryData = zPostV2ListsByListEntriesResponse.shape.data;
 type ListEntryData = z.infer<typeof zListEntryData>;
 
+const listEntryQueryResponseSchema = z
+  .object({
+    data: z.array(z.object({}).passthrough()),
+  })
+  .passthrough();
+
+const validateListEntryQueryResponse = async (
+  data: unknown,
+): Promise<unknown> => listEntryQueryResponseSchema.parseAsync(data);
+
 /**
  * Infers the entry type from an input object.
  * If `itemSchema` is provided, the type is inferred from the schema.
@@ -225,6 +235,8 @@ export function queryListEntries<T extends AttioRecordLike>(
       path: { list: input.list },
       body: { filter: query.filter, limit, offset },
       ...input.options,
+      responseValidator:
+        input.options?.responseValidator ?? validateListEntryQueryResponse,
       signal,
     });
     return unwrapAndNormalizeRecords(result, query.schema);
