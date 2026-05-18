@@ -27,6 +27,12 @@ const schemaDirectUnwrapFiles = new Set([
 	"src/attio/tasks.ts",
 ]);
 
+const generatedListEntryResponseSchemas = new Set([
+	"zPostV2ListsByListEntriesResponse",
+	"zPutV2ListsByListEntriesResponse",
+	"zPatchV2ListsByListEntriesByEntryIdResponse",
+]);
+
 const failures = [];
 let optionsChecked = 0;
 let overloadGroupsChecked = 0;
@@ -202,11 +208,34 @@ function checkSchemaContracts(sourceFile) {
 	});
 }
 
+function checkListEntrySchemaContracts(sourceFile) {
+	if (sourceFile.fileName !== "src/attio/lists.ts") {
+		return;
+	}
+
+	walk(sourceFile, (node) => {
+		if (!ts.isIdentifier(node)) {
+			return;
+		}
+
+		if (!generatedListEntryResponseSchemas.has(node.text)) {
+			return;
+		}
+
+		addFailure(
+			sourceFile,
+			node,
+			"list entry wrappers must use the relaxed hand-written list entry schema instead of generated response schemas.",
+		);
+	});
+}
+
 for (const file of helperFiles) {
 	const { sourceFile } = readSource(file);
 	checkOptionsContracts(sourceFile);
 	checkOverloadContracts(sourceFile);
 	checkSchemaContracts(sourceFile);
+	checkListEntrySchemaContracts(sourceFile);
 }
 
 if (failures.length > 0) {

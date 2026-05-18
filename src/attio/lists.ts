@@ -17,7 +17,6 @@ import {
   postV2ListsByListEntries,
   postV2ListsByListEntriesQuery,
 } from "../generated";
-import { zPostV2ListsByListEntriesResponse } from "../generated/zod.gen";
 import type { AttioClientInput } from "./client";
 import type { AttioFilter } from "./filters";
 import { type BrandedId, createBrandedIdSchema } from "./ids";
@@ -58,8 +57,22 @@ const listSchema: z.ZodType<List> = z
   })
   .passthrough();
 
-const zListEntryData = zPostV2ListsByListEntriesResponse.shape.data;
-type ListEntryData = z.infer<typeof zListEntryData>;
+const listEntryDataSchema = z
+  .object({
+    id: z
+      .object({
+        workspace_id: z.string(),
+        list_id: z.string(),
+        entry_id: z.string(),
+      })
+      .passthrough(),
+    parent_record_id: z.string(),
+    parent_object: z.string(),
+    created_at: z.string(),
+    entry_values: z.record(z.string(), z.array(z.unknown())),
+  })
+  .passthrough();
+type ListEntryData = z.infer<typeof listEntryDataSchema>;
 
 const listEntryQueryResponseSchema = z
   .object({
@@ -67,9 +80,19 @@ const listEntryQueryResponseSchema = z
   })
   .passthrough();
 
+const listEntryMutationResponseSchema = z
+  .object({
+    data: listEntryDataSchema,
+  })
+  .passthrough();
+
 const validateListEntryQueryResponse = async (
   data: unknown,
 ): Promise<unknown> => listEntryQueryResponseSchema.parseAsync(data);
+
+const validateListEntryMutationResponse = async (
+  data: unknown,
+): Promise<unknown> => listEntryMutationResponseSchema.parseAsync(data);
 
 /**
  * Infers the entry type from an input object.
@@ -262,8 +285,10 @@ export const addListEntry = async (
           },
         },
         ...input.options,
+        responseValidator:
+          input.options?.responseValidator ?? validateListEntryMutationResponse,
       }),
-    { schema: zListEntryData },
+    { schema: listEntryDataSchema },
   );
 
 export const updateListEntry = async (
@@ -277,8 +302,10 @@ export const updateListEntry = async (
         path: { list: input.list, entry_id: input.entryId },
         body: { data: { entry_values: input.entryValues } },
         ...input.options,
+        responseValidator:
+          input.options?.responseValidator ?? validateListEntryMutationResponse,
       }),
-    { schema: zListEntryData },
+    { schema: listEntryDataSchema },
   );
 
 export const removeListEntry = async (input: RemoveListEntryInput) =>

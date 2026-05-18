@@ -66,6 +66,32 @@ const makeEntry = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+const makeListBackedStatusEntryValues = () => ({
+  stage: [
+    {
+      active_from: "2024-01-01T00:00:00.000Z",
+      active_until: null,
+      created_by_actor: {
+        id: MEMBER_ID,
+        type: "workspace-member",
+      },
+      status: {
+        id: {
+          workspace_id: WS_ID,
+          list_id: LIST_ID_1,
+          attribute_id: ATTRIBUTE_ID,
+          status_id: STATUS_ID,
+        },
+        title: "Qualified",
+        is_archived: false,
+        celebration_enabled: false,
+        target_time_in_status: null,
+      },
+      attribute_type: "status",
+    },
+  ],
+});
+
 describe("lists", () => {
   let listLists: typeof import("../../src/attio/lists").listLists;
   let getList: typeof import("../../src/attio/lists").getList;
@@ -535,31 +561,7 @@ describe("lists", () => {
 
       it("lets itemSchema narrow entries with list-backed status values", async () => {
         const entry = makeEntry({
-          entry_values: {
-            stage: [
-              {
-                active_from: "2024-01-01T00:00:00.000Z",
-                active_until: null,
-                created_by_actor: {
-                  id: MEMBER_ID,
-                  type: "workspace-member",
-                },
-                status: {
-                  id: {
-                    workspace_id: WS_ID,
-                    list_id: LIST_ID_1,
-                    attribute_id: ATTRIBUTE_ID,
-                    status_id: STATUS_ID,
-                  },
-                  title: "Qualified",
-                  is_archived: false,
-                  celebration_enabled: false,
-                  target_time_in_status: null,
-                },
-                attribute_type: "status",
-              },
-            ],
-          },
+          entry_values: makeListBackedStatusEntryValues(),
         });
         const apiResponse = { data: [entry] };
         queryEntriesRequest.mockImplementationOnce(async (options) => {
@@ -710,6 +712,7 @@ describe("lists", () => {
             entry_values: {},
           },
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -733,7 +736,32 @@ describe("lists", () => {
             entry_values: { stage: "qualified" },
           },
         },
+        responseValidator: expect.any(Function),
       });
+    });
+
+    it("relaxes response validation for list-backed status values", async () => {
+      const entry = makeEntry({
+        entry_values: makeListBackedStatusEntryValues(),
+      });
+      const apiResponse = { data: entry };
+      addEntryRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await addListEntry({
+        list: "list-1",
+        parentObject: "companies",
+        parentRecordId: RECORD_ID,
+      });
+
+      expect(result).toEqual(entry);
+      expect(addEntryRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: expect.any(Function),
+        }),
+      );
     });
 
     it("passes additional options", async () => {
@@ -757,7 +785,26 @@ describe("lists", () => {
           },
         },
         headers: { "X-Custom": "value" },
+        responseValidator: expect.any(Function),
       });
+    });
+
+    it("preserves a caller-provided response validator", async () => {
+      const customResponseValidator = vi.fn(async (data: unknown) => data);
+      addEntryRequest.mockResolvedValue({ data: makeEntry() });
+
+      await addListEntry({
+        list: "list-1",
+        parentObject: "companies",
+        parentRecordId: "rec-123",
+        options: { responseValidator: customResponseValidator },
+      });
+
+      expect(addEntryRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: customResponseValidator,
+        }),
+      );
     });
   });
 
@@ -781,7 +828,32 @@ describe("lists", () => {
             entry_values: { stage: "won" },
           },
         },
+        responseValidator: expect.any(Function),
       });
+    });
+
+    it("relaxes response validation for list-backed status values", async () => {
+      const entry = makeEntry({
+        entry_values: makeListBackedStatusEntryValues(),
+      });
+      const apiResponse = { data: entry };
+      updateEntryRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await updateListEntry({
+        list: "list-1",
+        entryId: ENTRY_ID_1,
+        entryValues: { stage: "qualified" },
+      });
+
+      expect(result).toEqual(entry);
+      expect(updateEntryRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: expect.any(Function),
+        }),
+      );
     });
 
     it("passes additional options", async () => {
@@ -803,7 +875,26 @@ describe("lists", () => {
           },
         },
         headers: { "X-Custom": "value" },
+        responseValidator: expect.any(Function),
       });
+    });
+
+    it("preserves a caller-provided response validator", async () => {
+      const customResponseValidator = vi.fn(async (data: unknown) => data);
+      updateEntryRequest.mockResolvedValue({ data: makeEntry() });
+
+      await updateListEntry({
+        list: "list-1",
+        entryId: "entry-1",
+        entryValues: { stage: "lost" },
+        options: { responseValidator: customResponseValidator },
+      });
+
+      expect(updateEntryRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: customResponseValidator,
+        }),
+      );
     });
   });
 
