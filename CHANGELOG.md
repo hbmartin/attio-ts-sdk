@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.3.0...attio-ts-sdk-v2.3.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* allow null currency attribute config ([d48d2e3](https://github.com/hbmartin/attio-ts-sdk/commit/d48d2e36510f39052e193fc90eaa24a28a63fc86))
+* allow null currency attribute config ([f49d0d8](https://github.com/hbmartin/attio-ts-sdk/commit/f49d0d86409624142498759323c98c5d71460064))
+* harden post-generate currency nullability ([bfb37c6](https://github.com/hbmartin/attio-ts-sdk/commit/bfb37c645c2ed7c940b0dbf1f0320f4a6b6d810c))
+* harden post-generate currency nullability ([b4879d7](https://github.com/hbmartin/attio-ts-sdk/commit/b4879d7e8a69d686ae2d6056af414bb76e337e29))
+
 ## [2.3.0](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.2.1...attio-ts-sdk-v2.3.0) (2026-05-15)
 
 
