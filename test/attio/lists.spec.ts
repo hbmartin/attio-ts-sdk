@@ -1,5 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
+import { zPostV2ListsByListEntriesQueryResponse } from "../../src/generated/zod.gen";
 
 const getListsRequest = vi.fn();
 const getListByIdRequest = vi.fn();
@@ -39,6 +40,8 @@ const LIST_ID_2 = "22222222-3333-4444-a555-666666666666";
 const ENTRY_ID_1 = "33333333-4444-4555-a666-777777777777";
 const RECORD_ID = "44444444-5555-4666-a777-888888888888";
 const MEMBER_ID = "55555555-6666-4777-a888-999999999999";
+const ATTRIBUTE_ID = "66666666-7777-4888-a999-000000000000";
+const STATUS_ID = "77777777-8888-4999-a000-111111111111";
 
 const makeList = (overrides: Record<string, unknown> = {}) => ({
   id: { workspace_id: WS_ID, list_id: LIST_ID_1 },
@@ -200,15 +203,18 @@ describe("lists", () => {
       });
 
       expect(result).toEqual(entries);
-      expect(queryEntriesRequest).toHaveBeenCalledWith({
-        client: {},
-        path: { list: "list-1" },
-        body: {
-          filter: { status: { $eq: "active" } },
-          limit: undefined,
-          offset: undefined,
-        },
-      });
+      expect(queryEntriesRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          client: {},
+          path: { list: "list-1" },
+          body: {
+            filter: { status: { $eq: "active" } },
+            limit: undefined,
+            offset: undefined,
+          },
+          responseValidator: expect.any(Function),
+        }),
+      );
     });
 
     it("accepts filters helper output", async () => {
@@ -223,15 +229,18 @@ describe("lists", () => {
         filter,
       });
 
-      expect(queryEntriesRequest).toHaveBeenCalledWith({
-        client: {},
-        path: { list: "list-1" },
-        body: {
-          filter,
-          limit: undefined,
-          offset: undefined,
-        },
-      });
+      expect(queryEntriesRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          client: {},
+          path: { list: "list-1" },
+          body: {
+            filter,
+            limit: undefined,
+            offset: undefined,
+          },
+          responseValidator: expect.any(Function),
+        }),
+      );
     });
 
     it("throws when filter shape is invalid", () => {
@@ -255,15 +264,18 @@ describe("lists", () => {
         offset: 20,
       });
 
-      expect(queryEntriesRequest).toHaveBeenCalledWith({
-        client: {},
-        path: { list: "list-1" },
-        body: {
-          filter: undefined,
-          limit: 10,
-          offset: 20,
-        },
-      });
+      expect(queryEntriesRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          client: {},
+          path: { list: "list-1" },
+          body: {
+            filter: undefined,
+            limit: 10,
+            offset: 20,
+          },
+          responseValidator: expect.any(Function),
+        }),
+      );
     });
 
     it("passes additional options", async () => {
@@ -274,16 +286,19 @@ describe("lists", () => {
         options: { headers: { "X-Custom": "value" } },
       });
 
-      expect(queryEntriesRequest).toHaveBeenCalledWith({
-        client: {},
-        path: { list: "list-1" },
-        body: {
-          filter: undefined,
-          limit: undefined,
-          offset: undefined,
-        },
-        headers: { "X-Custom": "value" },
-      });
+      expect(queryEntriesRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          client: {},
+          path: { list: "list-1" },
+          body: {
+            filter: undefined,
+            limit: undefined,
+            offset: undefined,
+          },
+          headers: { "X-Custom": "value" },
+          responseValidator: expect.any(Function),
+        }),
+      );
     });
 
     describe("with paginate: true", () => {
@@ -518,6 +533,57 @@ describe("lists", () => {
         expect(result).toEqual(entries);
       });
 
+      it("lets itemSchema narrow entries with list-backed status values", async () => {
+        const entry = makeEntry({
+          entry_values: {
+            stage: [
+              {
+                active_from: "2024-01-01T00:00:00.000Z",
+                active_until: null,
+                created_by_actor: {
+                  id: MEMBER_ID,
+                  type: "workspace-member",
+                },
+                status: {
+                  id: {
+                    workspace_id: WS_ID,
+                    list_id: LIST_ID_1,
+                    attribute_id: ATTRIBUTE_ID,
+                    status_id: STATUS_ID,
+                  },
+                  title: "Qualified",
+                  is_archived: false,
+                  celebration_enabled: false,
+                  target_time_in_status: null,
+                },
+                attribute_type: "status",
+              },
+            ],
+          },
+        });
+        const apiResponse = { data: [entry] };
+        queryEntriesRequest.mockImplementationOnce(async (options) => {
+          const responseValidator =
+            options.responseValidator ??
+            ((data: unknown) =>
+              zPostV2ListsByListEntriesQueryResponse.parseAsync(data));
+          await responseValidator(apiResponse);
+          return { data: apiResponse };
+        });
+
+        const result = await queryListEntries({
+          list: "list-1",
+          itemSchema: z.object({ parent_record_id: z.string() }),
+        });
+
+        expect(result).toEqual([{ parent_record_id: RECORD_ID }]);
+        expect(queryEntriesRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            responseValidator: expect.any(Function),
+          }),
+        );
+      });
+
       it("throws error when entries fail schema validation", async () => {
         const invalidEntries = [{ invalid: "structure" }];
         queryEntriesRequest.mockResolvedValue({
@@ -597,6 +663,27 @@ describe("lists", () => {
         };
 
         await expect(consumeStream()).rejects.toThrow("Invalid API response");
+      });
+
+      it("preserves a caller-provided response validator", async () => {
+        const customResponseValidator = vi.fn(async (data: unknown) => data);
+        const apiResponse = { data: [] };
+        queryEntriesRequest.mockImplementationOnce(async (options) => {
+          await options.responseValidator?.(apiResponse);
+          return { data: apiResponse };
+        });
+
+        await queryListEntries({
+          list: "list-1",
+          options: { responseValidator: customResponseValidator },
+        });
+
+        expect(customResponseValidator).toHaveBeenCalledWith(apiResponse);
+        expect(queryEntriesRequest).toHaveBeenCalledWith(
+          expect.objectContaining({
+            responseValidator: customResponseValidator,
+          }),
+        );
       });
     });
   });
