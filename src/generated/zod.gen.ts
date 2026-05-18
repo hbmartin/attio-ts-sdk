@@ -1674,13 +1674,13 @@ export const zAttribute = z.object({
                 'AED',
                 'UYU',
                 'USD'
-            ]),
+            ]).nullable(),
             display_type: z.enum([
                 'code',
                 'name',
                 'narrowSymbol',
                 'symbol'
-            ])
+            ]).nullable()
         }),
         record_reference: z.object({
             allowed_object_ids: z.array(z.uuid()).nullable()
