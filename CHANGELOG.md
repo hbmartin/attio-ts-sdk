@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.2](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.3.1...attio-ts-sdk-v2.3.2) (2026-05-18)
+
+
+### Bug Fixes
+
+* relax list entry mutation validation ([c0c5e9f](https://github.com/hbmartin/attio-ts-sdk/commit/c0c5e9f53364ca6a3f4680914457457eb156b0b7))
+* relax list entry mutation validation ([2bc3644](https://github.com/hbmartin/attio-ts-sdk/commit/2bc36441b85a7fb1fc9373d67dfc1c3f01f7b53c))
+* relax list entry query response validation ([1ceb55f](https://github.com/hbmartin/attio-ts-sdk/commit/1ceb55fd9c4db23a8002691400e6a42a8839e73c))
+* relax list entry query response validation ([acf8687](https://github.com/hbmartin/attio-ts-sdk/commit/acf86877a2c873c8cae4d5465513eb9eeb1aed11))
+
 ## [2.3.1](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.3.0...attio-ts-sdk-v2.3.1) (2026-05-18)
 
 
