@@ -2,9 +2,20 @@ import { z } from "zod";
 
 const looseValueMapSchema = z.record(z.string(), z.array(z.unknown()));
 
+const recordIdSchema = z
+  .object({
+    workspace_id: z.string(),
+    object_id: z.string(),
+    record_id: z.string(),
+  })
+  .passthrough();
+
 const looseRecordDataSchema = z
   .object({
-    values: looseValueMapSchema.optional(),
+    id: recordIdSchema,
+    created_at: z.string(),
+    web_url: z.url(),
+    values: looseValueMapSchema.nullish(),
   })
   .passthrough();
 
@@ -34,19 +45,13 @@ const listEntryDataSchema = z
     parent_record_id: z.string(),
     parent_object: z.string(),
     created_at: z.string(),
-    entry_values: looseValueMapSchema,
+    entry_values: looseValueMapSchema.nullish(),
   })
   .passthrough();
 
 const looseListEntryQueryResponseSchema = z
   .object({
-    data: z.array(
-      z
-        .object({
-          entry_values: looseValueMapSchema.optional(),
-        })
-        .passthrough(),
-    ),
+    data: z.array(listEntryDataSchema),
   })
   .passthrough();
 

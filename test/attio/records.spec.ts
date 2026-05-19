@@ -47,6 +47,18 @@ const makeUnknownRecordValues = () => ({
   ],
 });
 
+const makeRecord = (overrides: Record<string, unknown> = {}) => ({
+  id: {
+    workspace_id: "ws-1",
+    object_id: "companies",
+    record_id: "rec-1",
+  },
+  created_at: "2024-01-01T00:00:00.000Z",
+  web_url: "https://app.attio.com/companies/record/rec-1",
+  values: {},
+  ...overrides,
+});
+
 describe("records", () => {
   let createRecord: typeof import("../../src/attio/records").createRecord;
   let updateRecord: typeof import("../../src/attio/records").updateRecord;
@@ -440,10 +452,9 @@ describe("records", () => {
     });
 
     it("allows unrelated record values with unknown shapes", async () => {
-      const record = {
-        id: { record_id: "rec-1" },
+      const record = makeRecord({
         values: makeUnknownRecordValues(),
-      };
+      });
       const apiResponse = { data: record };
       getRecordRequest.mockImplementationOnce(async (options) => {
         await options.responseValidator?.(apiResponse);
@@ -696,10 +707,9 @@ describe("records", () => {
     });
 
     it("allows unrelated fetched record values with unknown shapes", async () => {
-      const record = {
-        id: { record_id: "rec-1" },
+      const record = makeRecord({
         values: makeUnknownRecordValues(),
-      };
+      });
       const apiResponse = { data: [record] };
       queryRecordsRequest.mockImplementationOnce(async (options) => {
         await options.responseValidator?.(apiResponse);
@@ -847,10 +857,9 @@ describe("records", () => {
     });
 
     it("allows unrelated queried record values with unknown shapes", async () => {
-      const record = {
-        id: { record_id: "rec-1" },
+      const record = makeRecord({
         values: makeUnknownRecordValues(),
-      };
+      });
       const apiResponse = { data: [record] };
       queryRecordsRequest.mockImplementationOnce(async (options) => {
         await options.responseValidator?.(apiResponse);

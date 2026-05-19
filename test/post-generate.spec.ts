@@ -100,6 +100,13 @@ describe("post-generate value response schemas", () => {
       "});",
     ].join("\n");
 
+  const looseResponseBlock = (constName: string, fieldName: string) =>
+    [
+      `export const ${constName} = z.object({`,
+      `  ${fieldName}: z.record(z.string(), z.array(z.unknown()))`,
+      "});",
+    ].join("\n");
+
   it("loosens generated record and list value response maps only", () => {
     const content = [
       responseBlock("zPostV2ObjectsByObjectRecordsQueryResponse", "values"),
@@ -135,12 +142,12 @@ describe("post-generate value response schemas", () => {
 
     expect(
       result.match(
-        /^ {2}values: z\.record\(z\.string\(\), z\.array\(z\.unknown\(\)\)\)/gm,
+        /^ {2}values: z\.record\(z\.string\(\), z\.array\(z\.unknown\(\)\)\)\.nullish\(\)/gm,
       ),
     ).toHaveLength(6);
     expect(
       result.match(
-        /^ {2}entry_values: z\.record\(z\.string\(\), z\.array\(z\.unknown\(\)\)\)/gm,
+        /^ {2}entry_values: z\.record\(z\.string\(\), z\.array\(z\.unknown\(\)\)\)\.nullish\(\)/gm,
       ),
     ).toHaveLength(6);
     expect(result).toContain(
@@ -149,5 +156,52 @@ describe("post-generate value response schemas", () => {
         "  values: z.record(z.string(), z.array(z.union([",
       ].join("\n"),
     );
+  });
+
+  it("adds nullish to already-loosened response maps", () => {
+    const content = [
+      looseResponseBlock(
+        "zPostV2ObjectsByObjectRecordsQueryResponse",
+        "values",
+      ),
+      looseResponseBlock("zPostV2ObjectsByObjectRecordsResponse", "values"),
+      looseResponseBlock("zPutV2ObjectsByObjectRecordsResponse", "values"),
+      looseResponseBlock(
+        "zGetV2ObjectsByObjectRecordsByRecordIdResponse",
+        "values",
+      ),
+      looseResponseBlock(
+        "zPatchV2ObjectsByObjectRecordsByRecordIdResponse",
+        "values",
+      ),
+      looseResponseBlock(
+        "zPutV2ObjectsByObjectRecordsByRecordIdResponse",
+        "values",
+      ),
+      looseResponseBlock(
+        "zPostV2ListsByListEntriesQueryResponse",
+        "entry_values",
+      ),
+      looseResponseBlock("zPostV2ListsByListEntriesResponse", "entry_values"),
+      looseResponseBlock("zPutV2ListsByListEntriesResponse", "entry_values"),
+      looseResponseBlock(
+        "zGetV2ListsByListEntriesByEntryIdResponse",
+        "entry_values",
+      ),
+      looseResponseBlock(
+        "zPatchV2ListsByListEntriesByEntryIdResponse",
+        "entry_values",
+      ),
+      looseResponseBlock(
+        "zPutV2ListsByListEntriesByEntryIdResponse",
+        "entry_values",
+      ),
+    ].join("\n");
+
+    const result = loosenValueResponseSchemas(content);
+
+    expect(
+      result.match(/z\.array\(z\.unknown\(\)\)\)\.nullish\(\)/g),
+    ).toHaveLength(12);
   });
 });

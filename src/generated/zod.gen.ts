@@ -2528,7 +2528,7 @@ export const zPostV2ObjectsByObjectRecordsQueryResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     }))
 });
 
@@ -2554,7 +2554,7 @@ export const zPostV2ObjectsByObjectRecordsResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2584,7 +2584,7 @@ export const zPutV2ObjectsByObjectRecordsResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2615,7 +2615,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2642,7 +2642,7 @@ export const zPatchV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2669,7 +2669,7 @@ export const zPutV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3751,7 +3751,7 @@ export const zPostV2ListsByListEntriesQueryResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     }))
 });
 
@@ -3780,7 +3780,7 @@ export const zPostV2ListsByListEntriesResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3809,7 +3809,7 @@ export const zPutV2ListsByListEntriesResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3841,7 +3841,7 @@ export const zGetV2ListsByListEntriesByEntryIdResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3869,7 +3869,7 @@ export const zPatchV2ListsByListEntriesByEntryIdResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3897,7 +3897,7 @@ export const zPutV2ListsByListEntriesByEntryIdResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
