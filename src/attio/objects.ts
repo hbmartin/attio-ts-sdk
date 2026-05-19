@@ -1,4 +1,3 @@
-import { z } from "zod";
 import type {
   Object as AttioObject,
   GetV2ObjectsByObjectData,
@@ -13,6 +12,7 @@ import {
   patchV2ObjectsByObject,
   postV2Objects,
 } from "../generated";
+import { zObject } from "../generated/zod.gen";
 import type { AttioClientInput } from "./client";
 import { type BrandedId, createBrandedIdSchema } from "./ids";
 import { callAndUnwrapData, callAndUnwrapItems } from "./operations";
@@ -33,16 +33,6 @@ const createObjectApiSlug = (slug: string): ObjectApiSlug =>
   objectApiSlugSchema.parse(slug);
 const createObjectNoun = (noun: string): ObjectNoun =>
   objectNounSchema.parse(noun);
-
-const AttioObjectSchema: z.ZodType<AttioObject> = z
-  .object({
-    id: z.object({ workspace_id: z.string(), object_id: z.string() }),
-    api_slug: z.string(),
-    singular_noun: z.string(),
-    plural_noun: z.string(),
-    created_at: z.string(),
-  })
-  .passthrough();
 
 interface ListObjectsInput extends AttioClientInput {
   options?: Omit<Options<GetV2ObjectsData>, "client">;
@@ -77,7 +67,7 @@ const listObjects = async (
   callAndUnwrapItems(
     input,
     (client) => getV2Objects({ client, ...input.options }),
-    { schema: AttioObjectSchema },
+    { schema: zObject },
   );
 
 const getObject = async (input: GetObjectInput): Promise<AttioObject> =>
@@ -89,7 +79,7 @@ const getObject = async (input: GetObjectInput): Promise<AttioObject> =>
         path: { object: input.object },
         ...input.options,
       }),
-    { schema: AttioObjectSchema },
+    { schema: zObject },
   );
 
 const createObject = async (input: CreateObjectInput): Promise<AttioObject> =>
@@ -107,7 +97,7 @@ const createObject = async (input: CreateObjectInput): Promise<AttioObject> =>
         },
         ...input.options,
       }),
-    { schema: AttioObjectSchema },
+    { schema: zObject },
   );
 
 const buildUpdateObjectData = (input: UpdateObjectInput): ObjectUpdateData => ({
@@ -128,7 +118,7 @@ const updateObject = async (input: UpdateObjectInput): Promise<AttioObject> =>
         body: { data: buildUpdateObjectData(input) },
         ...input.options,
       }),
-    { schema: AttioObjectSchema },
+    { schema: zObject },
   );
 
 export type {

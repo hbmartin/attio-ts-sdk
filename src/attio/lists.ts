@@ -1,5 +1,4 @@
 import type { ZodType } from "zod";
-import { z } from "zod";
 import type {
   DeleteV2ListsByListEntriesByEntryIdData,
   GetV2ListsByListData,
@@ -8,6 +7,7 @@ import type {
   PatchV2ListsByListEntriesByEntryIdData,
   PostV2ListsByListEntriesData,
   PostV2ListsByListEntriesQueryData,
+  PostV2ListsByListEntriesResponse,
 } from "../generated";
 import {
   deleteV2ListsByListEntriesByEntryId,
@@ -17,6 +17,11 @@ import {
   postV2ListsByListEntries,
   postV2ListsByListEntriesQuery,
 } from "../generated";
+import {
+  zList,
+  zPatchV2ListsByListEntriesByEntryIdResponse,
+  zPostV2ListsByListEntriesResponse,
+} from "../generated/zod.gen";
 import type { AttioClientInput } from "./client";
 import type { AttioFilter } from "./filters";
 import { type BrandedId, createBrandedIdSchema } from "./ids";
@@ -29,40 +34,8 @@ import {
 } from "./operations";
 import { resolveOffsetItems, type SharedPaginationInput } from "./pagination";
 import type { AttioRecordLike } from "./record-utils";
-import {
-  listEntryDataSchema,
-  validateListEntryMutationResponse,
-  validateListEntryQueryResponse,
-} from "./response-validators";
 
-const listSchema: z.ZodType<List> = z
-  .object({
-    id: z.object({ workspace_id: z.string(), list_id: z.string() }),
-    api_slug: z.string(),
-    name: z.string(),
-    parent_object: z.array(z.string()),
-    workspace_access: z.enum(["full-access", "read-and-write", "read-only"]),
-    workspace_member_access: z.array(
-      z
-        .object({
-          workspace_member_id: z.string(),
-          level: z.enum(["full-access", "read-and-write", "read-only"]),
-        })
-        .passthrough(),
-    ),
-    created_by_actor: z
-      .object({
-        id: z.string().optional(),
-        type: z
-          .enum(["api-token", "workspace-member", "system", "app"])
-          .optional(),
-      })
-      .passthrough(),
-    created_at: z.string(),
-  })
-  .passthrough();
-
-type ListEntryData = z.infer<typeof listEntryDataSchema>;
+type ListEntryData = NonNullable<PostV2ListsByListEntriesResponse["data"]>;
 
 /**
  * Infers the entry type from an input object.
@@ -175,7 +148,7 @@ export const listLists = async (
   input: AttioClientInput = {},
 ): Promise<List[]> =>
   callAndUnwrapItems(input, (client) => getV2Lists({ client }), {
-    schema: listSchema,
+    schema: zList,
   });
 
 export const getList = async (input: GetListInput): Promise<List> =>
@@ -187,7 +160,7 @@ export const getList = async (input: GetListInput): Promise<List> =>
         path: { list: input.list },
         ...input.options,
       }),
-    { schema: listSchema },
+    { schema: zList },
   );
 
 // Overload: Stream mode with itemSchema - T is inferred from schema
@@ -228,8 +201,6 @@ export function queryListEntries<T extends AttioRecordLike>(
       path: { list: input.list },
       body: { filter: query.filter, limit, offset },
       ...input.options,
-      responseValidator:
-        input.options?.responseValidator ?? validateListEntryQueryResponse,
       signal,
     });
     return unwrapAndNormalizeRecords(result, query.schema);
@@ -255,10 +226,8 @@ export const addListEntry = async (
           },
         },
         ...input.options,
-        responseValidator:
-          input.options?.responseValidator ?? validateListEntryMutationResponse,
       }),
-    { schema: listEntryDataSchema },
+    { schema: zPostV2ListsByListEntriesResponse.shape.data },
   );
 
 export const updateListEntry = async (
@@ -272,10 +241,8 @@ export const updateListEntry = async (
         path: { list: input.list, entry_id: input.entryId },
         body: { data: { entry_values: input.entryValues } },
         ...input.options,
-        responseValidator:
-          input.options?.responseValidator ?? validateListEntryMutationResponse,
       }),
-    { schema: listEntryDataSchema },
+    { schema: zPatchV2ListsByListEntriesByEntryIdResponse.shape.data },
   );
 
 export const removeListEntry = async (input: RemoveListEntryInput) =>

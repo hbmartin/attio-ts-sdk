@@ -1,17 +1,15 @@
 import { defineConfig } from "@hey-api/openapi-ts";
+import { patchAttioOpenApiSpec } from "./scripts/attio-openapi-patch";
 
 export default defineConfig({
   input: "https://api.attio.com/openapi/api",
   output: {
     path: "src/generated",
-    // Replace z.optional with z.nullish so optional fields also accept null,
-    // matching Attio's API behavior where optional fields may return null.
-    postProcess: [
-      {
-        command: "node",
-        args: ["scripts/post-generate.js"],
-      },
-    ],
+  },
+  parser: {
+    patch: {
+      input: patchAttioOpenApiSpec,
+    },
   },
   plugins: [
     "@hey-api/typescript",
@@ -27,16 +25,6 @@ export default defineConfig({
           if (schema.format === "date" || schema.format === "date-time") {
             ctx.nodes.format = () => $(z).attr("iso").attr("datetime").call();
           }
-        },
-        // Attio's API returns null for some required enum fields (e.g. country_code in locations)
-        // but the OpenAPI spec doesn't mark them as nullable. Override the nullable node to
-        // always wrap enums in z.nullable() so null values pass validation.
-        enum(ctx) {
-          ctx.nodes.nullable = (innerCtx) => {
-            const { $, symbols } = innerCtx;
-            const { z } = symbols;
-            return $(z).attr("nullable").call(innerCtx.chain.current);
-          };
         },
       },
     },

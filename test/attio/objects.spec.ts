@@ -5,6 +5,10 @@ const getObjectRequest = vi.fn();
 const createObjectRequest = vi.fn();
 const updateObjectRequest = vi.fn();
 const resolveAttioClient = vi.fn();
+const WORKSPACE_ID = "550e8400-e29b-41d4-a716-446655440000";
+const OBJECT_ID_1 = "550e8400-e29b-41d4-a716-446655440001";
+const OBJECT_ID_2 = "550e8400-e29b-41d4-a716-446655440002";
+const OBJECT_ID_3 = "550e8400-e29b-41d4-a716-446655440003";
 
 vi.mock("../../src/generated", async () => {
   const actual = await vi.importActual<typeof import("../../src/generated")>(
@@ -70,7 +74,7 @@ describe("objects", () => {
       data: {
         items: [
           {
-            id: { workspace_id: "ws_1", object_id: "obj_1" },
+            id: { workspace_id: WORKSPACE_ID, object_id: OBJECT_ID_1 },
             api_slug: "companies",
             singular_noun: "Company",
             plural_noun: "Companies",
@@ -89,7 +93,7 @@ describe("objects", () => {
   it("gets an object by slug", async () => {
     getObjectRequest.mockResolvedValue({
       data: {
-        id: { workspace_id: "ws_1", object_id: "obj_2" },
+        id: { workspace_id: WORKSPACE_ID, object_id: OBJECT_ID_2 },
         api_slug: "people",
         singular_noun: "Person",
         plural_noun: "People",
@@ -109,7 +113,7 @@ describe("objects", () => {
   it("creates an object", async () => {
     createObjectRequest.mockResolvedValue({
       data: {
-        id: { workspace_id: "ws_1", object_id: "obj_3" },
+        id: { workspace_id: WORKSPACE_ID, object_id: OBJECT_ID_3 },
         api_slug: "deals",
         singular_noun: "Deal",
         plural_noun: "Deals",
@@ -139,7 +143,7 @@ describe("objects", () => {
   it("updates an object with only defined fields", async () => {
     updateObjectRequest.mockResolvedValue({
       data: {
-        id: { workspace_id: "ws_1", object_id: "obj_1" },
+        id: { workspace_id: WORKSPACE_ID, object_id: OBJECT_ID_1 },
         api_slug: "deals",
         singular_noun: "Deal",
         plural_noun: "Deals",
@@ -173,7 +177,7 @@ describe("objects", () => {
   it("updates an object with every optional field when provided", async () => {
     updateObjectRequest.mockResolvedValue({
       data: {
-        id: { workspace_id: "ws_1", object_id: "obj_1" },
+        id: { workspace_id: WORKSPACE_ID, object_id: OBJECT_ID_1 },
         api_slug: "opportunities",
         singular_noun: "Opportunity",
         plural_noun: "Opportunities",
