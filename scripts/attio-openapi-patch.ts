@@ -77,10 +77,13 @@ const removeRequiredProperty = (
   schema.required = required.filter((field) => field !== propertyName);
 };
 
-const typeAllowsNull = (schema: JsonObject): boolean => {
-  const type = schema.type;
-  return Array.isArray(type) && type.includes("null");
+const schemaTypeIncludes = (schema: JsonObject, typeName: string): boolean => {
+  const { type } = schema;
+  return type === typeName || (Array.isArray(type) && type.includes(typeName));
 };
+
+const typeAllowsNull = (schema: JsonObject): boolean =>
+  schemaTypeIncludes(schema, "null");
 
 const markSchemaNullable = (schema: JsonObject): void => {
   const type = schema.type;
@@ -177,7 +180,7 @@ const getResponseDataSchema = (
     `${method} ${path} response.properties`,
   );
 
-  if (data.type === "array") {
+  if (schemaTypeIncludes(data, "array")) {
     return getRequiredObject(data, "items", `${method} ${path} response.data`);
   }
 
@@ -294,7 +297,11 @@ const assertCurrencyConfigFieldsAreNullable = (spec: JsonObject): void => {
       fieldName,
       "attribute.config.currency.properties",
     );
-    if (!typeAllowsNull(fieldSchema) || !getOptionalArray(fieldSchema, "enum").includes(null)) {
+    const enumValues = getOptionalArray(fieldSchema, "enum");
+    if (
+      !typeAllowsNull(fieldSchema) ||
+      (enumValues.length > 0 && !enumValues.includes(null))
+    ) {
       throw new Error(`Expected currency config ${fieldName} to be nullable.`);
     }
   }

@@ -27,10 +27,12 @@ const schemaDirectUnwrapFiles = new Set([
 	"src/attio/tasks.ts",
 ]);
 
-const generatedListEntryResponseSchemas = new Set([
-	"zPostV2ListsByListEntriesResponse",
-	"zPutV2ListsByListEntriesResponse",
-	"zPatchV2ListsByListEntriesByEntryIdResponse",
+const removedResponseValidatorSymbols = new Set([
+	"listEntryDataSchema",
+	"validateListEntryMutationResponse",
+	"validateListEntryQueryResponse",
+	"validateRecordDataResponse",
+	"validateRecordQueryResponse",
 ]);
 
 const failures = [];
@@ -208,24 +210,33 @@ function checkSchemaContracts(sourceFile) {
 	});
 }
 
-function checkListEntrySchemaContracts(sourceFile) {
-	if (sourceFile.fileName !== "src/attio/lists.ts") {
-		return;
-	}
-
+function checkRemovedResponseValidatorContracts(sourceFile) {
 	walk(sourceFile, (node) => {
+		if (
+			ts.isImportDeclaration(node) &&
+			ts.isStringLiteral(node.moduleSpecifier) &&
+			node.moduleSpecifier.text === "./response-validators"
+		) {
+			addFailure(
+				sourceFile,
+				node,
+				"helper wrappers must use patched generated schemas instead of local response validators.",
+			);
+			return;
+		}
+
 		if (!ts.isIdentifier(node)) {
 			return;
 		}
 
-		if (!generatedListEntryResponseSchemas.has(node.text)) {
+		if (!removedResponseValidatorSymbols.has(node.text)) {
 			return;
 		}
 
 		addFailure(
 			sourceFile,
 			node,
-			"list entry wrappers must use the relaxed hand-written list entry schema instead of generated response schemas.",
+			"helper wrappers must use patched generated schemas instead of local response validators.",
 		);
 	});
 }
@@ -235,7 +246,7 @@ for (const file of helperFiles) {
 	checkOptionsContracts(sourceFile);
 	checkOverloadContracts(sourceFile);
 	checkSchemaContracts(sourceFile);
-	checkListEntrySchemaContracts(sourceFile);
+	checkRemovedResponseValidatorContracts(sourceFile);
 }
 
 if (failures.length > 0) {

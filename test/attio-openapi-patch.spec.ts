@@ -186,7 +186,12 @@ const getSchema = (spec: JsonObject, name: string): JsonObject => {
 const getProperties = (schema: JsonObject): JsonObject =>
   objectFrom(schema.properties);
 
-const getResponseDataSchema = (
+const schemaTypeIncludes = (schema: JsonObject, typeName: string): boolean => {
+  const { type } = schema;
+  return type === typeName || (Array.isArray(type) && type.includes(typeName));
+};
+
+const getResponseDataWrapperSchema = (
   spec: JsonObject,
   method: string,
   path: string,
@@ -199,8 +204,16 @@ const getResponseDataSchema = (
   const content = objectFrom(response.content);
   const json = objectFrom(content["application/json"]);
   const responseSchema = objectFrom(json.schema);
-  const data = objectFrom(getProperties(responseSchema).data);
-  return data.type === "array" ? objectFrom(data.items) : data;
+  return objectFrom(getProperties(responseSchema).data);
+};
+
+const getResponseDataSchema = (
+  spec: JsonObject,
+  method: string,
+  path: string,
+): JsonObject => {
+  const data = getResponseDataWrapperSchema(spec, method, path);
+  return schemaTypeIncludes(data, "array") ? objectFrom(data.items) : data;
 };
 
 describe("Attio OpenAPI patch", () => {
@@ -260,6 +273,53 @@ describe("Attio OpenAPI patch", () => {
       null,
     );
     expect(objectFrom(currencyProperties.display_type).enum).toContain(null);
+  });
+
+  it("loosens nullable array response data schemas", () => {
+    const spec = makePatchSpec();
+    const dataSchema = getResponseDataSchema(
+      spec,
+      "post",
+      "/v2/lists/{list}/entries/query",
+    );
+    const dataWrapper = getResponseDataWrapperSchema(
+      spec,
+      "post",
+      "/v2/lists/{list}/entries/query",
+    );
+    dataWrapper.type = ["array", "null"];
+
+    patchAttioOpenApiSpec(spec);
+
+    const valueMap = objectFrom(getProperties(dataSchema).entry_values);
+    expect(dataSchema.required).not.toContain("entry_values");
+    expect(valueMap).toMatchObject({
+      type: ["object", "null"],
+      additionalProperties: {
+        type: "array",
+        items: {},
+      },
+    });
+  });
+
+  it("allows nullable currency fields without enum constraints", () => {
+    const spec = makePatchSpec();
+    const attributeProperties = getProperties(getSchema(spec, "attribute"));
+    const config = objectFrom(attributeProperties.config);
+    const currency = objectFrom(getProperties(config).currency);
+    const currencyProperties = getProperties(currency);
+    delete objectFrom(currencyProperties.default_currency_code).enum;
+    delete objectFrom(currencyProperties.display_type).enum;
+
+    expect(() => patchAttioOpenApiSpec(spec)).not.toThrow();
+    expect(objectFrom(currencyProperties.default_currency_code).type).toEqual([
+      "string",
+      "null",
+    ]);
+    expect(objectFrom(currencyProperties.display_type).type).toEqual([
+      "string",
+      "null",
+    ]);
   });
 
   it("fails loudly if an expected response target disappears", () => {
