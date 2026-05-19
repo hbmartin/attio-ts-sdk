@@ -1,15 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { zGetV2ByTargetByIdentifierAttributesResponse } from "../../src/generated/zod.gen";
 
+const WORKSPACE_ID = "550e8400-e29b-41d4-a716-446655440000";
+const OBJECT_ID = "550e8400-e29b-41d4-a716-446655440001";
+const ATTRIBUTE_ID = "550e8400-e29b-41d4-a716-446655440002";
+
 describe("generated attribute response validator", () => {
   it("accepts null currency config fields returned by Attio", () => {
     const result = zGetV2ByTargetByIdentifierAttributesResponse.safeParse({
       data: [
         {
           id: {
-            workspace_id: "550e8400-e29b-41d4-a716-446655440000",
-            object_id: "550e8400-e29b-41d4-a716-446655440001",
-            attribute_id: "550e8400-e29b-41d4-a716-446655440002",
+            workspace_id: WORKSPACE_ID,
+            object_id: OBJECT_ID,
+            attribute_id: ATTRIBUTE_ID,
           },
           title: "Amount",
           description: null,

@@ -10,9 +10,32 @@ const generatedDir = resolve(
   "../src/generated",
 );
 const currencyConfigFields = ["default_currency_code", "display_type"];
+const valueResponseSchemaNames = [
+  "zPostV2ObjectsByObjectRecordsQueryResponse",
+  "zPostV2ObjectsByObjectRecordsResponse",
+  "zPutV2ObjectsByObjectRecordsResponse",
+  "zGetV2ObjectsByObjectRecordsByRecordIdResponse",
+  "zPatchV2ObjectsByObjectRecordsByRecordIdResponse",
+  "zPutV2ObjectsByObjectRecordsByRecordIdResponse",
+  "zPostV2ListsByListEntriesQueryResponse",
+  "zPostV2ListsByListEntriesResponse",
+  "zPutV2ListsByListEntriesResponse",
+  "zGetV2ListsByListEntriesByEntryIdResponse",
+  "zPatchV2ListsByListEntriesByEntryIdResponse",
+  "zPutV2ListsByListEntriesByEntryIdResponse",
+];
+const looseValueFields = ["values", "entry_values"];
 const nullUnionPattern = /(^|\|)\s*null\b/;
 const trailingWhitespacePattern = /\s*$/;
 const lastMultilineUnionMemberPattern = /\n(\s*)\|[^\n]*$/;
+
+const replaceContentSlice = ({ content, startIndex, endIndex, replace }) => {
+  const before = content.slice(0, startIndex);
+  const block = content.slice(startIndex, endIndex);
+  const after = content.slice(endIndex);
+
+  return `${before}${replace(block)}${after}`;
+};
 
 const replaceInBlock = ({ content, start, end, replace }) => {
   const startIndex = content.indexOf(start);
@@ -25,11 +48,23 @@ const replaceInBlock = ({ content, start, end, replace }) => {
     throw new Error(`Could not find generated block end: ${end}`);
   }
 
-  const before = content.slice(0, startIndex);
-  const block = content.slice(startIndex, endIndex);
-  const after = content.slice(endIndex);
+  return replaceContentSlice({ content, startIndex, endIndex, replace });
+};
 
-  return `${before}${replace(block)}${after}`;
+const replaceInConstBlock = ({ content, constName, replace }) => {
+  const start = `export const ${constName} =`;
+  const startIndex = content.indexOf(start);
+  if (startIndex === -1) {
+    throw new Error(`Could not find generated const: ${constName}`);
+  }
+
+  const nextConstIndex = content.indexOf(
+    "\nexport const ",
+    startIndex + start.length,
+  );
+  const endIndex = nextConstIndex === -1 ? content.length : nextConstIndex;
+
+  return replaceContentSlice({ content, startIndex, endIndex, replace });
 };
 
 const zodEnumFieldPattern = (fieldName) =>
@@ -39,6 +74,12 @@ const zodEnumFieldPattern = (fieldName) =>
 
 const typeFieldPattern = (fieldName) =>
   new RegExp(`(${fieldName}:\\s*)([\\s\\S]*?)(\\s*;)`);
+
+const strictValueMapPattern = (fieldName) =>
+  new RegExp(
+    `^(\\s*)${fieldName}: z\\.record\\(z\\.string\\(\\), z\\.array\\(z\\.union\\(\\[\\n[\\s\\S]*?^\\s*\\]\\)\\)\\)`,
+    "gm",
+  );
 
 const appendNullToType = (type) => {
   if (nullUnionPattern.test(type)) {
@@ -92,13 +133,36 @@ export const nullableCurrencyConfigTypes = (content) =>
       ),
   });
 
+const loosenValueMapsInBlock = (block) =>
+  looseValueFields.reduce(
+    (updatedBlock, fieldName) =>
+      updatedBlock.replace(
+        strictValueMapPattern(fieldName),
+        `$1${fieldName}: z.record(z.string(), z.array(z.unknown()))`,
+      ),
+    block,
+  );
+
+export const loosenValueResponseSchemas = (content) =>
+  valueResponseSchemaNames.reduce(
+    (updatedContent, constName) =>
+      replaceInConstBlock({
+        content: updatedContent,
+        constName,
+        replace: loosenValueMapsInBlock,
+      }),
+    content,
+  );
+
 export const runPostGenerate = () => {
   const zodPath = resolve(generatedDir, "zod.gen.ts");
   const zodContent = readFileSync(zodPath, "utf8");
   writeFileSync(
     zodPath,
-    nullableCurrencyConfigEnums(
-      zodContent.replaceAll("z.optional(", "z.nullish("),
+    loosenValueResponseSchemas(
+      nullableCurrencyConfigEnums(
+        zodContent.replaceAll("z.optional(", "z.nullish("),
+      ),
     ),
   );
 
