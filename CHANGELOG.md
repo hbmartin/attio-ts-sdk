@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.3](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.3.2...attio-ts-sdk-v2.3.3) (2026-05-19)
+
+
+### Bug Fixes
+
+* harden loose response validators ([0e3a022](https://github.com/hbmartin/attio-ts-sdk/commit/0e3a0225b8c747adfb81201746e936b517472d6d))
+* harden openapi patch assertions ([0224034](https://github.com/hbmartin/attio-ts-sdk/commit/0224034d37ed3627066db2fe792575317e1c6a80))
+* loosen record value response validation ([158cd2a](https://github.com/hbmartin/attio-ts-sdk/commit/158cd2a8a5d919b4681d843de1ffa926ae2df8a8))
+* loosen record value response validation ([923f618](https://github.com/hbmartin/attio-ts-sdk/commit/923f6183dce0615f349680a3472d373084ab99b7))
+* patch attio schema validation at generation ([d9f1d42](https://github.com/hbmartin/attio-ts-sdk/commit/d9f1d42cf89781608513edf85695f619d007a1fc))
+* patch attio schema validation at generation ([ff32624](https://github.com/hbmartin/attio-ts-sdk/commit/ff32624eb3402ece310c22e3b4e201d75b6bbb13))
+* update schema contract lint ([c333967](https://github.com/hbmartin/attio-ts-sdk/commit/c333967b52860903a1ee0e579e64c1f59f0a6c08))
+* update schema contract lint ([678187a](https://github.com/hbmartin/attio-ts-sdk/commit/678187a7bcf717ded453be899e1bc0dfaa8e8443))
+
 ## [2.3.2](https://github.com/hbmartin/attio-ts-sdk/compare/attio-ts-sdk-v2.3.1...attio-ts-sdk-v2.3.2) (2026-05-18)
 
 
