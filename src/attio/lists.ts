@@ -29,6 +29,11 @@ import {
 } from "./operations";
 import { resolveOffsetItems, type SharedPaginationInput } from "./pagination";
 import type { AttioRecordLike } from "./record-utils";
+import {
+  listEntryDataSchema,
+  validateListEntryMutationResponse,
+  validateListEntryQueryResponse,
+} from "./response-validators";
 
 const listSchema: z.ZodType<List> = z
   .object({
@@ -57,42 +62,7 @@ const listSchema: z.ZodType<List> = z
   })
   .passthrough();
 
-const listEntryDataSchema = z
-  .object({
-    id: z
-      .object({
-        workspace_id: z.string(),
-        list_id: z.string(),
-        entry_id: z.string(),
-      })
-      .passthrough(),
-    parent_record_id: z.string(),
-    parent_object: z.string(),
-    created_at: z.string(),
-    entry_values: z.record(z.string(), z.array(z.unknown())),
-  })
-  .passthrough();
 type ListEntryData = z.infer<typeof listEntryDataSchema>;
-
-const listEntryQueryResponseSchema = z
-  .object({
-    data: z.array(z.object({}).passthrough()),
-  })
-  .passthrough();
-
-const listEntryMutationResponseSchema = z
-  .object({
-    data: listEntryDataSchema,
-  })
-  .passthrough();
-
-const validateListEntryQueryResponse = async (
-  data: unknown,
-): Promise<unknown> => listEntryQueryResponseSchema.parseAsync(data);
-
-const validateListEntryMutationResponse = async (
-  data: unknown,
-): Promise<unknown> => listEntryMutationResponseSchema.parseAsync(data);
 
 /**
  * Infers the entry type from an input object.

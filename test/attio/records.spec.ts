@@ -36,6 +36,17 @@ vi.mock("../../src/attio/record-utils", () => ({
   normalizeRecords: vi.fn((records) => records),
 }));
 
+const makeUnknownRecordValues = () => ({
+  future_custom_attribute: [
+    {
+      active_from: "2024-01-01T00:00:00.000Z",
+      active_until: null,
+      attribute_type: "future-value",
+      payload: { nested: true },
+    },
+  ],
+});
+
 describe("records", () => {
   let createRecord: typeof import("../../src/attio/records").createRecord;
   let updateRecord: typeof import("../../src/attio/records").updateRecord;
@@ -114,6 +125,7 @@ describe("records", () => {
             values: { name: "Acme" },
           },
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -135,6 +147,7 @@ describe("records", () => {
           },
         },
         headers: { "X-Custom": "value" },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -195,6 +208,7 @@ describe("records", () => {
             values: { name: "Updated Acme" },
           },
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -217,6 +231,7 @@ describe("records", () => {
           },
         },
         headers: { "X-Custom": "value" },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -282,6 +297,7 @@ describe("records", () => {
         query: {
           matching_attribute: "email",
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -307,6 +323,7 @@ describe("records", () => {
           matching_attribute: "email",
         },
         headers: { "X-Custom": "value" },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -365,6 +382,7 @@ describe("records", () => {
       expect(getRecordRequest).toHaveBeenCalledWith({
         client: {},
         path: { object: "companies", record_id: "rec-1" },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -381,6 +399,7 @@ describe("records", () => {
         client: {},
         path: { object: "companies", record_id: "rec-1" },
         headers: { "X-Custom": "value" },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -418,6 +437,47 @@ describe("records", () => {
           itemSchema: customSchema,
         }),
       ).rejects.toThrow();
+    });
+
+    it("allows unrelated record values with unknown shapes", async () => {
+      const record = {
+        id: { record_id: "rec-1" },
+        values: makeUnknownRecordValues(),
+      };
+      const apiResponse = { data: record };
+      getRecordRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await getRecord({
+        object: "companies",
+        recordId: "rec-1",
+      });
+
+      expect(result).toEqual(record);
+      expect(getRecordRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: expect.any(Function),
+        }),
+      );
+    });
+
+    it("preserves a caller-provided response validator", async () => {
+      const customResponseValidator = vi.fn(async (data: unknown) => data);
+      getRecordRequest.mockResolvedValue({ data: { id: "rec-1" } });
+
+      await getRecord({
+        object: "companies",
+        recordId: "rec-1",
+        options: { responseValidator: customResponseValidator },
+      });
+
+      expect(getRecordRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: customResponseValidator,
+        }),
+      );
     });
   });
 
@@ -498,6 +558,7 @@ describe("records", () => {
           limit: 2,
           offset: 0,
         },
+        responseValidator: expect.any(Function),
         signal: expect.any(AbortSignal),
       });
     });
@@ -633,6 +694,30 @@ describe("records", () => {
         }),
       );
     });
+
+    it("allows unrelated fetched record values with unknown shapes", async () => {
+      const record = {
+        id: { record_id: "rec-1" },
+        values: makeUnknownRecordValues(),
+      };
+      const apiResponse = { data: [record] };
+      queryRecordsRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await getManyRecords({
+        object: "companies",
+        recordIds: ["rec-1"],
+      });
+
+      expect(result).toEqual([record]);
+      expect(queryRecordsRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: expect.any(Function),
+        }),
+      );
+    });
   });
 
   describe("queryRecords", () => {
@@ -655,6 +740,7 @@ describe("records", () => {
           limit: undefined,
           offset: undefined,
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -679,6 +765,7 @@ describe("records", () => {
           limit: undefined,
           offset: undefined,
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -711,6 +798,7 @@ describe("records", () => {
           limit: undefined,
           offset: undefined,
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -732,6 +820,7 @@ describe("records", () => {
           limit: 10,
           offset: 20,
         },
+        responseValidator: expect.any(Function),
       });
     });
 
@@ -753,7 +842,31 @@ describe("records", () => {
           offset: undefined,
         },
         headers: { "X-Custom": "value" },
+        responseValidator: expect.any(Function),
       });
+    });
+
+    it("allows unrelated queried record values with unknown shapes", async () => {
+      const record = {
+        id: { record_id: "rec-1" },
+        values: makeUnknownRecordValues(),
+      };
+      const apiResponse = { data: [record] };
+      queryRecordsRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await queryRecords({
+        object: "companies",
+      });
+
+      expect(result).toEqual([record]);
+      expect(queryRecordsRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: expect.any(Function),
+        }),
+      );
     });
 
     describe("with paginate: true", () => {

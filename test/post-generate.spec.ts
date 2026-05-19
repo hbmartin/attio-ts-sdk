@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  loosenValueResponseSchemas,
   nullableCurrencyConfigEnums,
   nullableCurrencyConfigTypes,
 } from "../scripts/post-generate.js";
@@ -75,6 +76,77 @@ describe("post-generate currency config nullability", () => {
         "        | 'code'",
         "        | 'symbol'",
         "        | null;",
+      ].join("\n"),
+    );
+  });
+});
+
+describe("post-generate value response schemas", () => {
+  const strictValueMap = (fieldName: string) =>
+    [
+      `  ${fieldName}: z.record(z.string(), z.array(z.union([`,
+      "    z.object({",
+      "      active_from: z.iso.datetime(),",
+      "      attribute_type: z.enum(['text']),",
+      "      value: z.string()",
+      "    })",
+      "  ])))",
+    ].join("\n");
+
+  const responseBlock = (constName: string, fieldName: string) =>
+    [
+      `export const ${constName} = z.object({`,
+      strictValueMap(fieldName),
+      "});",
+    ].join("\n");
+
+  it("loosens generated record and list value response maps only", () => {
+    const content = [
+      responseBlock("zPostV2ObjectsByObjectRecordsQueryResponse", "values"),
+      responseBlock("zPostV2ObjectsByObjectRecordsResponse", "values"),
+      responseBlock("zPutV2ObjectsByObjectRecordsResponse", "values"),
+      responseBlock("zGetV2ObjectsByObjectRecordsByRecordIdResponse", "values"),
+      responseBlock(
+        "zPatchV2ObjectsByObjectRecordsByRecordIdResponse",
+        "values",
+      ),
+      responseBlock("zPutV2ObjectsByObjectRecordsByRecordIdResponse", "values"),
+      responseBlock("zPostV2ListsByListEntriesQueryResponse", "entry_values"),
+      responseBlock("zPostV2ListsByListEntriesResponse", "entry_values"),
+      responseBlock("zPutV2ListsByListEntriesResponse", "entry_values"),
+      responseBlock(
+        "zGetV2ListsByListEntriesByEntryIdResponse",
+        "entry_values",
+      ),
+      responseBlock(
+        "zPatchV2ListsByListEntriesByEntryIdResponse",
+        "entry_values",
+      ),
+      responseBlock(
+        "zPutV2ListsByListEntriesByEntryIdResponse",
+        "entry_values",
+      ),
+      "export const zPostV2ObjectsByObjectRecordsBody = z.object({",
+      strictValueMap("values"),
+      "});",
+    ].join("\n");
+
+    const result = loosenValueResponseSchemas(content);
+
+    expect(
+      result.match(
+        /^ {2}values: z\.record\(z\.string\(\), z\.array\(z\.unknown\(\)\)\)/gm,
+      ),
+    ).toHaveLength(6);
+    expect(
+      result.match(
+        /^ {2}entry_values: z\.record\(z\.string\(\), z\.array\(z\.unknown\(\)\)\)/gm,
+      ),
+    ).toHaveLength(6);
+    expect(result).toContain(
+      [
+        "export const zPostV2ObjectsByObjectRecordsBody = z.object({",
+        "  values: z.record(z.string(), z.array(z.union([",
       ].join("\n"),
     );
   });
