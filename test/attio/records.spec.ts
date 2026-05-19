@@ -47,6 +47,18 @@ const makeUnknownRecordValues = () => ({
   ],
 });
 
+const makeRecord = (overrides: Record<string, unknown> = {}) => ({
+  id: {
+    workspace_id: "ws-1",
+    object_id: "companies",
+    record_id: "rec-1",
+  },
+  created_at: "2024-01-01T00:00:00.000Z",
+  web_url: "https://app.attio.com/companies/record/rec-1",
+  values: {},
+  ...overrides,
+});
+
 describe("records", () => {
   let createRecord: typeof import("../../src/attio/records").createRecord;
   let updateRecord: typeof import("../../src/attio/records").updateRecord;
@@ -125,7 +137,6 @@ describe("records", () => {
             values: { name: "Acme" },
           },
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -147,7 +158,6 @@ describe("records", () => {
           },
         },
         headers: { "X-Custom": "value" },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -208,7 +218,6 @@ describe("records", () => {
             values: { name: "Updated Acme" },
           },
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -231,7 +240,6 @@ describe("records", () => {
           },
         },
         headers: { "X-Custom": "value" },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -297,7 +305,6 @@ describe("records", () => {
         query: {
           matching_attribute: "email",
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -323,7 +330,6 @@ describe("records", () => {
           matching_attribute: "email",
         },
         headers: { "X-Custom": "value" },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -382,7 +388,6 @@ describe("records", () => {
       expect(getRecordRequest).toHaveBeenCalledWith({
         client: {},
         path: { object: "companies", record_id: "rec-1" },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -399,7 +404,6 @@ describe("records", () => {
         client: {},
         path: { object: "companies", record_id: "rec-1" },
         headers: { "X-Custom": "value" },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -440,10 +444,9 @@ describe("records", () => {
     });
 
     it("allows unrelated record values with unknown shapes", async () => {
-      const record = {
-        id: { record_id: "rec-1" },
+      const record = makeRecord({
         values: makeUnknownRecordValues(),
-      };
+      });
       const apiResponse = { data: record };
       getRecordRequest.mockImplementationOnce(async (options) => {
         await options.responseValidator?.(apiResponse);
@@ -456,10 +459,8 @@ describe("records", () => {
       });
 
       expect(result).toEqual(record);
-      expect(getRecordRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(getRecordRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
 
@@ -558,7 +559,6 @@ describe("records", () => {
           limit: 2,
           offset: 0,
         },
-        responseValidator: expect.any(Function),
         signal: expect.any(AbortSignal),
       });
     });
@@ -696,10 +696,9 @@ describe("records", () => {
     });
 
     it("allows unrelated fetched record values with unknown shapes", async () => {
-      const record = {
-        id: { record_id: "rec-1" },
+      const record = makeRecord({
         values: makeUnknownRecordValues(),
-      };
+      });
       const apiResponse = { data: [record] };
       queryRecordsRequest.mockImplementationOnce(async (options) => {
         await options.responseValidator?.(apiResponse);
@@ -712,10 +711,8 @@ describe("records", () => {
       });
 
       expect(result).toEqual([record]);
-      expect(queryRecordsRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(queryRecordsRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
   });
@@ -740,7 +737,6 @@ describe("records", () => {
           limit: undefined,
           offset: undefined,
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -765,7 +761,6 @@ describe("records", () => {
           limit: undefined,
           offset: undefined,
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -798,7 +793,6 @@ describe("records", () => {
           limit: undefined,
           offset: undefined,
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -820,7 +814,6 @@ describe("records", () => {
           limit: 10,
           offset: 20,
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -842,15 +835,13 @@ describe("records", () => {
           offset: undefined,
         },
         headers: { "X-Custom": "value" },
-        responseValidator: expect.any(Function),
       });
     });
 
     it("allows unrelated queried record values with unknown shapes", async () => {
-      const record = {
-        id: { record_id: "rec-1" },
+      const record = makeRecord({
         values: makeUnknownRecordValues(),
-      };
+      });
       const apiResponse = { data: [record] };
       queryRecordsRequest.mockImplementationOnce(async (options) => {
         await options.responseValidator?.(apiResponse);
@@ -862,10 +853,8 @@ describe("records", () => {
       });
 
       expect(result).toEqual([record]);
-      expect(queryRecordsRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(queryRecordsRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
 

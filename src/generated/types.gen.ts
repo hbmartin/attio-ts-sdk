@@ -152,7 +152,7 @@ export type InputValue = {
         /**
          * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
          */
-        country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+        country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
     } | {
         /**
          * A raw text field. Values are limited to 10MB.
@@ -175,11 +175,11 @@ export type InputValue = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
 } | {
     /**
@@ -213,7 +213,7 @@ export type InputValue = {
     /**
      * The ISO 3166-1 alpha-2 country code for the country this location is in.
      */
-    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
     /**
      * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
      */
@@ -248,7 +248,7 @@ export type InputValue = {
     /**
      * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to. Optional if `original_phone_number` includes a country code prefix.
      */
-    country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+    country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
 } | {
     /**
      * The UUID or status title identifying the selected status.
@@ -309,7 +309,7 @@ export type OutputValue = {
     /**
      * The ISO4217 currency code representing the currency that the value is stored in.
      */
-    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD' | null;
     /**
      * The attribute type of the value.
      */
@@ -369,11 +369,11 @@ export type OutputValue = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * The attribute type of the value.
@@ -411,7 +411,7 @@ export type OutputValue = {
     /**
      * The ISO 3166-1 alpha-2 country code for the country this location is in.
      */
-    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
     /**
      * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
      */
@@ -711,7 +711,7 @@ export type List = {
     /**
      * The level of access granted to all members of the workspace for this list. `null` values represent a private list that only grants access to specific workspace members via the `workspace_member_access` property.
      */
-    workspace_access: 'full-access' | 'read-and-write' | 'read-only';
+    workspace_access: 'full-access' | 'read-and-write' | 'read-only' | null;
     /**
      * The level of access granted to specific workspace members for this list. An empty array represents a list that has granted access to no workspace members.
      */
@@ -723,7 +723,7 @@ export type List = {
         /**
          * The level of access to the list.
          */
-        level: 'full-access' | 'read-and-write' | 'read-only';
+        level: 'full-access' | 'read-and-write' | 'read-only' | null;
     }>;
     /**
      * The actor which created this list.
@@ -732,11 +732,11 @@ export type List = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * When the list was created.
@@ -891,11 +891,11 @@ export type Comment = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * When the note was created.
@@ -908,11 +908,11 @@ export type Comment = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
 };
 
@@ -953,11 +953,11 @@ export type File = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * Timestamp representing when the file entry was created.
@@ -1022,11 +1022,11 @@ export type Folder = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * Timestamp representing when the file entry was created.
@@ -1083,11 +1083,11 @@ export type ConnectedFile = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * Timestamp representing when the file entry was created.
@@ -1144,11 +1144,11 @@ export type ConnectedFolder = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * Timestamp representing when the file entry was created.
@@ -1263,11 +1263,11 @@ export type Meeting = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
 };
 
@@ -1346,11 +1346,11 @@ export type Note = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * When the note was created.
@@ -1384,7 +1384,7 @@ export type Task = {
     /**
      * When the task was completed, or null if it has not been completed.
      */
-    completed_at: string | null;
+    completed_at?: string | null;
     /**
      * Records linked to the task. Creating record links within task content text is not possible via the API at present.
      */
@@ -1418,11 +1418,11 @@ export type Task = {
         /**
          * An ID to identify the actor.
          */
-        id?: string;
+        id?: string | null;
         /**
          * The type of actor. [Read more information on actor types here](/docs/actors).
          */
-        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+        type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
     /**
      * When the task was created.
@@ -2563,590 +2563,9 @@ export type PostV2ObjectsByObjectRecordsQueryResponses = {
             /**
              * A record type with an attribute `api_slug` as the key, and an array of value objects as the values.
              */
-            values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         }>;
     };
 };
@@ -3228,590 +2647,9 @@ export type PostV2ObjectsByObjectRecordsResponses = {
             /**
              * A record type with an attribute `api_slug` as the key, and an array of value objects as the values.
              */
-            values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -3898,590 +2736,9 @@ export type PutV2ObjectsByObjectRecordsResponses = {
             /**
              * A record type with an attribute `api_slug` as the key, and an array of value objects as the values.
              */
-            values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -4590,590 +2847,9 @@ export type GetV2ObjectsByObjectRecordsByRecordIdResponses = {
             /**
              * A record type with an attribute `api_slug` as the key, and an array of value objects as the values.
              */
-            values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -5259,590 +2935,9 @@ export type PatchV2ObjectsByObjectRecordsByRecordIdResponses = {
             /**
              * A record type with an attribute `api_slug` as the key, and an array of value objects as the values.
              */
-            values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -5928,590 +3023,9 @@ export type PutV2ObjectsByObjectRecordsByRecordIdResponses = {
             /**
              * A record type with an attribute `api_slug` as the key, and an array of value objects as the values.
              */
-            values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -6595,11 +3109,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
@@ -6629,11 +3143,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
@@ -6659,11 +3173,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
@@ -6672,7 +3186,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The ISO4217 currency code representing the currency that the value is stored in.
              */
-            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD' | null;
             /**
              * The attribute type of the value.
              */
@@ -6693,11 +3207,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The attribute type of the value.
@@ -6723,11 +3237,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             domain: string;
             root_domain: string;
@@ -6751,11 +3265,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             original_email_address: string;
             email_address: string;
@@ -6782,11 +3296,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A slug identifying the object that the referenced record belongs to.
@@ -6816,11 +3330,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The type of interaction e.g. calendar or email.
@@ -6837,11 +3351,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The attribute type of the value.
@@ -6863,11 +3377,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
@@ -6900,7 +3414,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The ISO 3166-1 alpha-2 country code for the country this location is in.
              */
-            country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+            country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
             /**
              * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
              */
@@ -6929,11 +3443,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * Numbers are persisted as 64 bit floats.
@@ -6959,11 +3473,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The first name.
@@ -6997,11 +3511,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The raw, original phone number, as inputted.
@@ -7032,11 +3546,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             status: Status;
             /**
@@ -7059,11 +3573,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A number between 0 and 5 (inclusive) to represent a star rating.
@@ -7089,11 +3603,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             option: SelectOption;
             /**
@@ -7116,11 +3630,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A raw text field. Values are limited to 10MB.
@@ -7146,11 +3660,11 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The attribute type of the value.
@@ -7405,7 +3919,7 @@ export type PostV2ListsData = {
             /**
              * The level of access granted to all members of the workspace for this list. Pass `null` to keep the list private and only grant access to specific workspace members.
              */
-            workspace_access: 'full-access' | 'read-and-write' | 'read-only';
+            workspace_access: 'full-access' | 'read-and-write' | 'read-only' | null;
             /**
              * The level of access granted to specific workspace members for this list. Pass an empty array to grant access to no workspace members.
              */
@@ -7529,7 +4043,7 @@ export type PatchV2ListsByListData = {
             /**
              * The level of access granted to all members of the workspace for this list. Pass `null` to keep the list private and only grant access to specific workspace members.
              */
-            workspace_access?: 'full-access' | 'read-and-write' | 'read-only';
+            workspace_access?: 'full-access' | 'read-and-write' | 'read-only' | null;
             /**
              * The level of access granted to specific workspace members for this list. Pass an empty array to grant access to no workspace members.
              */
@@ -7755,590 +4269,9 @@ export type PostV2ListsByListEntriesQueryResponses = {
             /**
              * A list of attribute values for the list entry (not attribute values for its parent record).
              */
-            entry_values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            entry_values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         }>;
     };
 };
@@ -8432,590 +4365,9 @@ export type PostV2ListsByListEntriesResponses = {
             /**
              * A list of attribute values for the list entry (not attribute values for its parent record).
              */
-            entry_values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            entry_values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -9109,590 +4461,9 @@ export type PutV2ListsByListEntriesResponses = {
             /**
              * A list of attribute values for the list entry (not attribute values for its parent record).
              */
-            entry_values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            entry_values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -9805,590 +4576,9 @@ export type GetV2ListsByListEntriesByEntryIdResponses = {
             /**
              * A list of attribute values for the list entry (not attribute values for its parent record).
              */
-            entry_values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            entry_values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -10478,590 +4668,9 @@ export type PatchV2ListsByListEntriesByEntryIdResponses = {
             /**
              * A list of attribute values for the list entry (not attribute values for its parent record).
              */
-            entry_values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            entry_values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -11151,590 +4760,9 @@ export type PutV2ListsByListEntriesByEntryIdResponses = {
             /**
              * A list of attribute values for the list entry (not attribute values for its parent record).
              */
-            entry_values: {
-                [key: string]: Array<{
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
-                     */
-                    referenced_actor_type: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    /**
-                     * The ID of the referenced actor.
-                     */
-                    referenced_actor_id: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'actor-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
-                     */
-                    value: boolean;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'checkbox';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
-                     */
-                    currency_value: number;
-                    /**
-                     * The ISO4217 currency code representing the currency that the value is stored in.
-                     */
-                    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'currency';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'date';
-                    /**
-                     * A date represents a single calendar year, month and day, independent of timezone. If hours, months, seconds or timezones are provided, they will be trimmed. For example, "2023" and "2023-01" will be coerced into "2023-01-01", and "2023-01-02", "2023-01-02T13:00", "2023-01-02T14:00:00", "2023-01-02T15:00:00.000000000", and "2023-01-02T15:00:00.000000000+02:00" will all be coerced to "2023-01-02". If a timezone is provided that would result in a different calendar date in UTC, the date will be coerced to UTC and then the timezone component will be trimmed. For example, the value "2023-01-02T23:00:00-10:00" will be returned as "2023-01-03". The maximum date is "9999-12-31".
-                     */
-                    value: string;
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    domain: string;
-                    root_domain: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'domain';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    original_email_address: string;
-                    email_address: string;
-                    email_domain: string;
-                    email_root_domain: string;
-                    email_local_specifier: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'email-address';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A slug identifying the object that the referenced record belongs to.
-                     */
-                    target_object: string;
-                    /**
-                     * A UUID to identify the referenced record.
-                     */
-                    target_record_id: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'record-reference';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The type of interaction e.g. calendar or email.
-                     */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
-                    /**
-                     * When the interaction occurred.
-                     */
-                    interacted_at: string;
-                    /**
-                     * The actor that created this value.
-                     */
-                    owner_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'interaction';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_1: string | null;
-                    /**
-                     * The second line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_2: string | null;
-                    /**
-                     * The third line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_3: string | null;
-                    /**
-                     * The fourth line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
-                     */
-                    line_4: string | null;
-                    /**
-                     * The town, neighborhood or area the location is in.
-                     */
-                    locality: string | null;
-                    /**
-                     * The state, county, province or region that the location is in.
-                     */
-                    region: string | null;
-                    /**
-                     * The postcode or zip code for the location. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    postcode: string | null;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code for the country this location is in.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    /**
-                     * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    latitude: string | null;
-                    /**
-                     * The longitude of the location. Validated by the regular expression `/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
-                     */
-                    longitude: string | null;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'location';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * Numbers are persisted as 64 bit floats.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The first name.
-                     */
-                    first_name: string;
-                    /**
-                     * The last name.
-                     */
-                    last_name: string;
-                    /**
-                     * The full name.
-                     */
-                    full_name: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'personal-name';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The raw, original phone number, as inputted.
-                     */
-                    original_phone_number: string;
-                    /**
-                     * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
-                     */
-                    country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
-                    phone_number: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'phone-number';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    status: Status;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'status';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A number between 0 and 5 (inclusive) to represent a star rating.
-                     */
-                    value: number;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'rating';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    option: SelectOption;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'select';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * A raw text field. Values are limited to 10MB.
-                     */
-                    value: string;
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'text';
-                } | {
-                    /**
-                     * The point in time at which this value was made "active". `active_from` can be considered roughly analogous to `created_at`.
-                     */
-                    active_from: string;
-                    /**
-                     * The point in time at which this value was deactivated. If `null`, the value is active.
-                     */
-                    active_until: string | null;
-                    /**
-                     * The actor that created this value.
-                     */
-                    created_by_actor: {
-                        /**
-                         * An ID to identify the actor.
-                         */
-                        id?: string;
-                        /**
-                         * The type of actor. [Read more information on actor types here](/docs/actors).
-                         */
-                        type?: 'api-token' | 'workspace-member' | 'system' | 'app';
-                    };
-                    /**
-                     * The attribute type of the value.
-                     */
-                    attribute_type: 'timestamp';
-                    /**
-                     * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
-                     */
-                    value: string;
-                }>;
-            };
+            entry_values?: {
+                [key: string]: Array<unknown>;
+            } | null;
         };
     };
 };
@@ -11809,11 +4837,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The type of the referenced actor. [Read more information on actor types here](/docs/actors).
@@ -11843,11 +4871,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A boolean representing whether the checkbox is checked or not. The string values 'true' and 'false' are also accepted.
@@ -11873,11 +4901,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A numerical representation of the currency value. A decimal with a max of 4 decimal places.
@@ -11886,7 +4914,7 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The ISO4217 currency code representing the currency that the value is stored in.
              */
-            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD';
+            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'AED' | 'UYU' | 'USD' | null;
             /**
              * The attribute type of the value.
              */
@@ -11907,11 +4935,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The attribute type of the value.
@@ -11937,11 +4965,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             domain: string;
             root_domain: string;
@@ -11965,11 +4993,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             original_email_address: string;
             email_address: string;
@@ -11996,11 +5024,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A slug identifying the object that the referenced record belongs to.
@@ -12030,11 +5058,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The type of interaction e.g. calendar or email.
@@ -12051,11 +5079,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The attribute type of the value.
@@ -12077,11 +5105,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The first line of the address. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.
@@ -12114,7 +5142,7 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The ISO 3166-1 alpha-2 country code for the country this location is in.
              */
-            country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+            country_code: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
             /**
              * The latitude of the location. Validated by the regular expression `/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/`. Values are stored with up to 9 decimal places of precision. Note that this value is not currently represented in the UI but will be persisted and readable through API calls.}
              */
@@ -12143,11 +5171,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * Numbers are persisted as 64 bit floats.
@@ -12173,11 +5201,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The first name.
@@ -12211,11 +5239,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The raw, original phone number, as inputted.
@@ -12246,11 +5274,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             status: Status;
             /**
@@ -12273,11 +5301,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A number between 0 and 5 (inclusive) to represent a star rating.
@@ -12303,11 +5331,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             option: SelectOption;
             /**
@@ -12330,11 +5358,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * A raw text field. Values are limited to 10MB.
@@ -12360,11 +5388,11 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The attribute type of the value.
@@ -12747,7 +5775,7 @@ export type PostV2TasksData = {
                     /**
                      * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
                      */
-                    country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+                    country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
                 } | {
                     /**
                      * A raw text field. Values are limited to 10MB.
@@ -12942,7 +5970,7 @@ export type PatchV2TasksByTaskIdData = {
                     /**
                      * The ISO 3166-1 alpha-2 country code representing the country that this phone number belongs to.
                      */
-                    country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC';
+                    country_code?: 'AF' | 'AX' | 'AL' | 'DZ' | 'AS' | 'AD' | 'AO' | 'AI' | 'AQ' | 'AG' | 'AR' | 'AM' | 'AW' | 'AU' | 'AT' | 'AZ' | 'BS' | 'BH' | 'BD' | 'BB' | 'BY' | 'BE' | 'BZ' | 'BJ' | 'BM' | 'BT' | 'BO' | 'BA' | 'BW' | 'BV' | 'BR' | 'IO' | 'BN' | 'BG' | 'BF' | 'BI' | 'KH' | 'CM' | 'CA' | 'CV' | 'KY' | 'CF' | 'TD' | 'CL' | 'CN' | 'CX' | 'CC' | 'CO' | 'KM' | 'CG' | 'CD' | 'CK' | 'CR' | 'CI' | 'HR' | 'CU' | 'CW' | 'CY' | 'CZ' | 'DK' | 'DJ' | 'DM' | 'DO' | 'EC' | 'EG' | 'SV' | 'GQ' | 'ER' | 'EE' | 'ET' | 'FK' | 'FO' | 'FJ' | 'FI' | 'FR' | 'GF' | 'PF' | 'TF' | 'GA' | 'GM' | 'GE' | 'DE' | 'GH' | 'GI' | 'GR' | 'GL' | 'GD' | 'GP' | 'GU' | 'GT' | 'GG' | 'GN' | 'GW' | 'GY' | 'HT' | 'HM' | 'VA' | 'HN' | 'HK' | 'HU' | 'IS' | 'IN' | 'ID' | 'IR' | 'IQ' | 'IE' | 'IM' | 'IL' | 'IT' | 'JM' | 'JP' | 'JE' | 'JO' | 'KZ' | 'KE' | 'KI' | 'KR' | 'KW' | 'KG' | 'LA' | 'LV' | 'LB' | 'LS' | 'LR' | 'LY' | 'LI' | 'LT' | 'LU' | 'MO' | 'MK' | 'MG' | 'MW' | 'MY' | 'MV' | 'ML' | 'MT' | 'MH' | 'MQ' | 'MR' | 'MU' | 'YT' | 'MX' | 'FM' | 'MD' | 'MC' | 'MN' | 'ME' | 'MS' | 'MA' | 'MZ' | 'MM' | 'NA' | 'NR' | 'NP' | 'NL' | 'AN' | 'NC' | 'NZ' | 'NI' | 'NE' | 'NG' | 'NU' | 'NF' | 'MP' | 'NO' | 'OM' | 'PK' | 'PW' | 'PS' | 'PA' | 'PG' | 'PY' | 'PE' | 'PH' | 'PN' | 'PL' | 'PT' | 'PR' | 'QA' | 'RE' | 'RO' | 'RU' | 'RW' | 'BL' | 'SH' | 'KN' | 'LC' | 'MF' | 'PM' | 'VC' | 'WS' | 'SM' | 'ST' | 'SA' | 'SN' | 'SS' | 'RS' | 'SC' | 'SL' | 'SG' | 'SK' | 'SI' | 'SB' | 'SO' | 'ZA' | 'GS' | 'ES' | 'LK' | 'SD' | 'SR' | 'SJ' | 'SZ' | 'SE' | 'CH' | 'SY' | 'TW' | 'TJ' | 'TZ' | 'TH' | 'TL' | 'TG' | 'TK' | 'TO' | 'TT' | 'TN' | 'TR' | 'TM' | 'TC' | 'TV' | 'UG' | 'UA' | 'AE' | 'GB' | 'US' | 'UM' | 'UY' | 'UZ' | 'VU' | 'VE' | 'VN' | 'VG' | 'VI' | 'WF' | 'EH' | 'YE' | 'ZM' | 'ZW' | 'BQ' | 'KP' | 'SX' | 'XK' | 'AC' | null;
                 } | {
                     /**
                      * A raw text field. Values are limited to 10MB.
@@ -13568,11 +6596,11 @@ export type GetV2MeetingsByMeetingIdCallRecordingsResponses = {
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The timestamp of when the call recording was created.
@@ -13679,11 +6707,11 @@ export type PostV2MeetingsByMeetingIdCallRecordingsResponses = {
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The timestamp of when the call recording was created.
@@ -13801,11 +6829,11 @@ export type GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponses = {
                 /**
                  * An ID to identify the actor.
                  */
-                id?: string;
+                id?: string | null;
                 /**
                  * The type of actor. [Read more information on actor types here](/docs/actors).
                  */
-                type?: 'api-token' | 'workspace-member' | 'system' | 'app';
+                type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
             };
             /**
              * The timestamp of when the call recording was created.

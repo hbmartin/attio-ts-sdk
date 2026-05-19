@@ -249,7 +249,6 @@ describe("lists", () => {
             limit: undefined,
             offset: undefined,
           },
-          responseValidator: expect.any(Function),
         }),
       );
     });
@@ -275,7 +274,6 @@ describe("lists", () => {
             limit: undefined,
             offset: undefined,
           },
-          responseValidator: expect.any(Function),
         }),
       );
     });
@@ -310,7 +308,6 @@ describe("lists", () => {
             limit: 10,
             offset: 20,
           },
-          responseValidator: expect.any(Function),
         }),
       );
     });
@@ -333,7 +330,6 @@ describe("lists", () => {
             offset: undefined,
           },
           headers: { "X-Custom": "value" },
-          responseValidator: expect.any(Function),
         }),
       );
     });
@@ -353,10 +349,8 @@ describe("lists", () => {
       });
 
       expect(result).toEqual([entry]);
-      expect(queryEntriesRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(queryEntriesRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
 
@@ -612,10 +606,8 @@ describe("lists", () => {
         });
 
         expect(result).toEqual([{ parent_record_id: RECORD_ID }]);
-        expect(queryEntriesRequest).toHaveBeenCalledWith(
-          expect.objectContaining({
-            responseValidator: expect.any(Function),
-          }),
+        expect(queryEntriesRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+          "responseValidator",
         );
       });
 
@@ -745,7 +737,6 @@ describe("lists", () => {
             entry_values: {},
           },
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -769,7 +760,6 @@ describe("lists", () => {
             entry_values: { stage: "qualified" },
           },
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -790,10 +780,8 @@ describe("lists", () => {
       });
 
       expect(result).toEqual(entry);
-      expect(addEntryRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(addEntryRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
 
@@ -814,10 +802,8 @@ describe("lists", () => {
       });
 
       expect(result).toEqual(entry);
-      expect(addEntryRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(addEntryRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
 
@@ -842,7 +828,6 @@ describe("lists", () => {
           },
         },
         headers: { "X-Custom": "value" },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -885,7 +870,6 @@ describe("lists", () => {
             entry_values: { stage: "won" },
           },
         },
-        responseValidator: expect.any(Function),
       });
     });
 
@@ -906,10 +890,8 @@ describe("lists", () => {
       });
 
       expect(result).toEqual(entry);
-      expect(updateEntryRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(updateEntryRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
 
@@ -930,10 +912,8 @@ describe("lists", () => {
       });
 
       expect(result).toEqual(entry);
-      expect(updateEntryRequest).toHaveBeenCalledWith(
-        expect.objectContaining({
-          responseValidator: expect.any(Function),
-        }),
+      expect(updateEntryRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "responseValidator",
       );
     });
 
@@ -956,7 +936,6 @@ describe("lists", () => {
           },
         },
         headers: { "X-Custom": "value" },
-        responseValidator: expect.any(Function),
       });
     });
 

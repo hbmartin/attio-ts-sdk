@@ -323,7 +323,7 @@ export const zInputValue = z.union([
                     'SX',
                     'XK',
                     'AC'
-                ]).optional()
+                ]).nullish()
             }),
             z.object({
                 value: z.string().optional()
@@ -341,13 +341,13 @@ export const zInputValue = z.union([
         ]),
         interacted_at: z.iso.datetime(),
         owner_actor: z.object({
-            id: z.string().optional(),
+            id: z.string().nullish(),
             type: z.enum([
                 'api-token',
                 'workspace-member',
                 'system',
                 'app'
-            ]).optional()
+            ]).nullish()
         })
     }),
     z.object({
@@ -611,7 +611,7 @@ export const zInputValue = z.union([
             'SX',
             'XK',
             'AC'
-        ]),
+        ]).nullable(),
         latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
         longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable()
     }),
@@ -878,7 +878,7 @@ export const zInputValue = z.union([
             'SX',
             'XK',
             'AC'
-        ]).optional()
+        ]).nullish()
     }),
     z.object({
         status: z.string().min(1)
@@ -959,7 +959,7 @@ export const zOutputValue = z.union([
             'AED',
             'UYU',
             'USD'
-        ]).optional(),
+        ]).nullish(),
         attribute_type: z.enum(['currency'])
     }),
     z.object({
@@ -995,13 +995,13 @@ export const zOutputValue = z.union([
         ]),
         interacted_at: z.iso.datetime(),
         owner_actor: z.object({
-            id: z.string().optional(),
+            id: z.string().nullish(),
             type: z.enum([
                 'api-token',
                 'workspace-member',
                 'system',
                 'app'
-            ]).optional()
+            ]).nullish()
         }),
         attribute_type: z.enum(['interaction'])
     }),
@@ -1266,7 +1266,7 @@ export const zOutputValue = z.union([
             'SX',
             'XK',
             'AC'
-        ]),
+        ]).nullable(),
         latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
         longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
         attribute_type: z.enum(['location'])
@@ -1710,23 +1710,23 @@ export const zList = z.object({
         'full-access',
         'read-and-write',
         'read-only'
-    ]),
+    ]).nullable(),
     workspace_member_access: z.array(z.object({
         workspace_member_id: z.uuid(),
         level: z.enum([
             'full-access',
             'read-and-write',
             'read-only'
-        ])
+        ]).nullable()
     })),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string()
 });
@@ -1786,23 +1786,23 @@ export const zComment = z.object({
     }),
     resolved_at: z.string().nullable(),
     resolved_by: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string(),
     author: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     })
 });
 
@@ -1825,13 +1825,13 @@ export const zFile = z.object({
         'microsoft-onedrive'
     ]),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string(),
     file_type: z.enum(['file']),
@@ -1860,13 +1860,13 @@ export const zFolder = z.object({
         'microsoft-onedrive'
     ]),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string(),
     file_type: z.enum(['folder']),
@@ -1893,13 +1893,13 @@ export const zConnectedFile = z.object({
         'microsoft-onedrive'
     ]),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string(),
     file_type: z.enum(['connected-file']),
@@ -1926,13 +1926,13 @@ export const zConnectedFolder = z.object({
         'microsoft-onedrive'
     ]),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string(),
     file_type: z.enum(['connected-folder']),
@@ -1983,13 +1983,13 @@ export const zMeeting = z.object({
     })),
     created_at: z.string(),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     })
 });
 
@@ -2013,13 +2013,13 @@ export const zNote = z.object({
             record_id: z.uuid()
         })])),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string()
 });
@@ -2032,7 +2032,7 @@ export const zTask = z.object({
     content_plaintext: z.string(),
     deadline_at: z.string().nullable(),
     is_completed: z.boolean(),
-    completed_at: z.string().nullable(),
+    completed_at: z.string().nullish(),
     linked_records: z.array(z.object({
         target_object_id: z.string(),
         target_record_id: z.uuid()
@@ -2047,13 +2047,13 @@ export const zTask = z.object({
         referenced_actor_id: z.uuid()
     })),
     created_by_actor: z.object({
-        id: z.string().optional(),
+        id: z.string().nullish(),
         type: z.enum([
             'api-token',
             'workspace-member',
             'system',
             'app'
-        ]).optional()
+        ]).nullish()
     }),
     created_at: z.string()
 });
@@ -2528,7 +2528,7 @@ export const zPostV2ObjectsByObjectRecordsQueryResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     }))
 });
 
@@ -2554,7 +2554,7 @@ export const zPostV2ObjectsByObjectRecordsResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2584,7 +2584,7 @@ export const zPutV2ObjectsByObjectRecordsResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2615,7 +2615,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2642,7 +2642,7 @@ export const zPatchV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2669,7 +2669,7 @@ export const zPutV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
         }),
         created_at: z.string(),
         web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown()))
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -2694,13 +2694,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             referenced_actor_type: z.enum([
                 'api-token',
@@ -2715,13 +2715,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.boolean(),
             attribute_type: z.enum(['checkbox'])
@@ -2730,13 +2730,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             currency_value: z.number(),
             currency_code: z.enum([
@@ -2781,20 +2781,20 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'AED',
                 'UYU',
                 'USD'
-            ]).optional(),
+            ]).nullish(),
             attribute_type: z.enum(['currency'])
         }),
         z.object({
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             attribute_type: z.enum(['date']),
             value: z.string()
@@ -2803,13 +2803,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             domain: z.string(),
             root_domain: z.string(),
@@ -2819,13 +2819,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             original_email_address: z.string(),
             email_address: z.string(),
@@ -2838,13 +2838,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             target_object: z.string(),
             target_record_id: z.uuid(),
@@ -2854,13 +2854,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             interaction_type: z.enum([
                 'calendar-event',
@@ -2872,13 +2872,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             ]),
             interacted_at: z.iso.datetime(),
             owner_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             attribute_type: z.enum(['interaction'])
         }),
@@ -2886,13 +2886,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             line_1: z.string().nullable(),
             line_2: z.string().nullable(),
@@ -3154,7 +3154,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'SX',
                 'XK',
                 'AC'
-            ]),
+            ]).nullable(),
             latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
             longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
             attribute_type: z.enum(['location'])
@@ -3163,13 +3163,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.number(),
             attribute_type: z.enum(['number'])
@@ -3178,13 +3178,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             first_name: z.string(),
             last_name: z.string(),
@@ -3195,13 +3195,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             original_phone_number: z.string(),
             country_code: z.enum([
@@ -3465,13 +3465,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             status: zStatus,
             attribute_type: z.enum(['status'])
@@ -3480,13 +3480,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.number(),
             attribute_type: z.enum(['rating'])
@@ -3495,13 +3495,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             option: zSelectOption,
             attribute_type: z.enum(['select'])
@@ -3510,13 +3510,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.string(),
             attribute_type: z.enum(['text'])
@@ -3525,13 +3525,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             attribute_type: z.enum(['timestamp']),
             value: z.iso.datetime()
@@ -3637,7 +3637,7 @@ export const zPostV2ListsBody = z.object({
             'full-access',
             'read-and-write',
             'read-only'
-        ]),
+        ]).nullable(),
         workspace_member_access: z.array(z.object({
             workspace_member_id: z.uuid(),
             level: z.enum([
@@ -3675,7 +3675,7 @@ export const zPatchV2ListsByListBody = z.object({
             'full-access',
             'read-and-write',
             'read-only'
-        ]).optional(),
+        ]).nullish(),
         workspace_member_access: z.array(z.object({
             workspace_member_id: z.uuid(),
             level: z.enum([
@@ -3751,7 +3751,7 @@ export const zPostV2ListsByListEntriesQueryResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     }))
 });
 
@@ -3780,7 +3780,7 @@ export const zPostV2ListsByListEntriesResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3809,7 +3809,7 @@ export const zPutV2ListsByListEntriesResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3841,7 +3841,7 @@ export const zGetV2ListsByListEntriesByEntryIdResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3869,7 +3869,7 @@ export const zPatchV2ListsByListEntriesByEntryIdResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3897,7 +3897,7 @@ export const zPutV2ListsByListEntriesByEntryIdResponse = z.object({
         parent_record_id: z.uuid(),
         parent_object: z.string(),
         created_at: z.string(),
-        entry_values: z.record(z.string(), z.array(z.unknown()))
+        entry_values: z.record(z.string(), z.array(z.unknown())).nullish()
     })
 });
 
@@ -3922,13 +3922,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             referenced_actor_type: z.enum([
                 'api-token',
@@ -3943,13 +3943,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.boolean(),
             attribute_type: z.enum(['checkbox'])
@@ -3958,13 +3958,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             currency_value: z.number(),
             currency_code: z.enum([
@@ -4009,20 +4009,20 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'AED',
                 'UYU',
                 'USD'
-            ]).optional(),
+            ]).nullish(),
             attribute_type: z.enum(['currency'])
         }),
         z.object({
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             attribute_type: z.enum(['date']),
             value: z.string()
@@ -4031,13 +4031,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             domain: z.string(),
             root_domain: z.string(),
@@ -4047,13 +4047,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             original_email_address: z.string(),
             email_address: z.string(),
@@ -4066,13 +4066,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             target_object: z.string(),
             target_record_id: z.uuid(),
@@ -4082,13 +4082,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             interaction_type: z.enum([
                 'calendar-event',
@@ -4100,13 +4100,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             ]),
             interacted_at: z.iso.datetime(),
             owner_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             attribute_type: z.enum(['interaction'])
         }),
@@ -4114,13 +4114,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             line_1: z.string().nullable(),
             line_2: z.string().nullable(),
@@ -4382,7 +4382,7 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'SX',
                 'XK',
                 'AC'
-            ]),
+            ]).nullable(),
             latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
             longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
             attribute_type: z.enum(['location'])
@@ -4391,13 +4391,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.number(),
             attribute_type: z.enum(['number'])
@@ -4406,13 +4406,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             first_name: z.string(),
             last_name: z.string(),
@@ -4423,13 +4423,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             original_phone_number: z.string(),
             country_code: z.enum([
@@ -4693,13 +4693,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             status: zStatus,
             attribute_type: z.enum(['status'])
@@ -4708,13 +4708,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.number(),
             attribute_type: z.enum(['rating'])
@@ -4723,13 +4723,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             option: zSelectOption,
             attribute_type: z.enum(['select'])
@@ -4738,13 +4738,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             value: z.string(),
             attribute_type: z.enum(['text'])
@@ -4753,13 +4753,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
             active_from: z.iso.datetime(),
             active_until: z.iso.datetime().nullable(),
             created_by_actor: z.object({
-                id: z.string().optional(),
+                id: z.string().nullish(),
                 type: z.enum([
                     'api-token',
                     'workspace-member',
                     'system',
                     'app'
-                ]).optional()
+                ]).nullish()
             }),
             attribute_type: z.enum(['timestamp']),
             value: z.iso.datetime()
@@ -5138,7 +5138,7 @@ export const zPostV2TasksBody = z.object({
                                 'SX',
                                 'XK',
                                 'AC'
-                            ]).optional()
+                            ]).nullish()
                         }),
                         z.object({
                             value: z.string().optional()
@@ -5458,7 +5458,7 @@ export const zPatchV2TasksByTaskIdBody = z.object({
                                 'SX',
                                 'XK',
                                 'AC'
-                            ]).optional()
+                            ]).nullish()
                         }),
                         z.object({
                             value: z.string().optional()
@@ -5700,13 +5700,13 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsResponse = z.object({
         ]),
         web_url: z.url(),
         created_by_actor: z.object({
-            id: z.string().optional(),
+            id: z.string().nullish(),
             type: z.enum([
                 'api-token',
                 'workspace-member',
                 'system',
                 'app'
-            ]).optional()
+            ]).nullish()
         }),
         created_at: z.string()
     })),
@@ -5742,13 +5742,13 @@ export const zPostV2MeetingsByMeetingIdCallRecordingsResponse = z.object({
         ]),
         web_url: z.url(),
         created_by_actor: z.object({
-            id: z.string().optional(),
+            id: z.string().nullish(),
             type: z.enum([
                 'api-token',
                 'workspace-member',
                 'system',
                 'app'
-            ]).optional()
+            ]).nullish()
         }),
         created_at: z.string()
     })
@@ -5786,13 +5786,13 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse = 
         ]),
         web_url: z.url(),
         created_by_actor: z.object({
-            id: z.string().optional(),
+            id: z.string().nullish(),
             type: z.enum([
                 'api-token',
                 'workspace-member',
                 'system',
                 'app'
-            ]).optional()
+            ]).nullish()
         }),
         created_at: z.string()
     })

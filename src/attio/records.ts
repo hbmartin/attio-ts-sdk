@@ -37,10 +37,6 @@ import {
   normalizeRecords,
 } from "./record-utils";
 import { unwrapItems, validateItemsArray } from "./response";
-import {
-  validateRecordDataResponse,
-  validateRecordQueryResponse,
-} from "./response-validators";
 import { rawRecordSchema } from "./schemas";
 
 /**
@@ -270,8 +266,6 @@ const createGetManyBatchItems = <T extends AttioRecordLike>(
           offset: 0,
         },
         ...input.options,
-        responseValidator:
-          input.options?.responseValidator ?? validateRecordQueryResponse,
         signal,
       });
       return unwrapGetManyRecords(result);
@@ -317,8 +311,6 @@ function createRecord<T extends AttioRecordLike>(
       path: { object: input.object },
       body: { data: { values: input.values } },
       ...input.options,
-      responseValidator:
-        input.options?.responseValidator ?? validateRecordDataResponse,
     }),
   );
 }
@@ -339,8 +331,6 @@ function updateRecord<T extends AttioRecordLike>(
       path: { object: input.object, record_id: input.recordId },
       body: { data: { values: input.values } },
       ...input.options,
-      responseValidator:
-        input.options?.responseValidator ?? validateRecordDataResponse,
     }),
   );
 }
@@ -362,8 +352,6 @@ function upsertRecord<T extends AttioRecordLike>(
       body: { data: { values: input.values } },
       query: { matching_attribute: input.matchingAttribute },
       ...input.options,
-      responseValidator:
-        input.options?.responseValidator ?? validateRecordDataResponse,
     }),
   );
 }
@@ -383,8 +371,6 @@ function getRecord<T extends AttioRecordLike>(
       client,
       path: { object: input.object, record_id: input.recordId },
       ...input.options,
-      responseValidator:
-        input.options?.responseValidator ?? validateRecordDataResponse,
     }),
   );
 }
@@ -437,8 +423,6 @@ function queryRecords<T extends AttioRecordLike>(
       path: { object: input.object },
       body: { filter: query.filter, sorts: input.sorts, limit, offset },
       ...input.options,
-      responseValidator:
-        input.options?.responseValidator ?? validateRecordQueryResponse,
       signal,
     });
     return unwrapAndNormalizeRecords(result, query.schema);
