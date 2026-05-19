@@ -24,7 +24,7 @@ pnpm add attio-ts-sdk@2.2.1 zod@^4
 ```
 
 For local development in this repository, 2.2.1 targets Node.js `>=22` and uses
-`pnpm@11.1.1`.
+`pnpm@11.1.3`.
 
 ## Migration checklist
 
