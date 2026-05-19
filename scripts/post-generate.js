@@ -80,6 +80,11 @@ const strictValueMapPattern = (fieldName) =>
     `^(\\s*)${fieldName}: z\\.record\\(z\\.string\\(\\), z\\.array\\(z\\.union\\(\\[\\n[\\s\\S]*?^\\s*\\]\\)\\)\\)`,
     "gm",
   );
+const looseValueMapWithoutNullishPattern = (fieldName) =>
+  new RegExp(
+    `^(\\s*)${fieldName}: z\\.record\\(z\\.string\\(\\), z\\.array\\(z\\.unknown\\(\\)\\)\\)(?!\\.nullish\\(\\))`,
+    "gm",
+  );
 
 const appendNullToType = (type) => {
   if (nullUnionPattern.test(type)) {
@@ -135,11 +140,15 @@ export const nullableCurrencyConfigTypes = (content) =>
 
 const loosenValueMapsInBlock = (block) =>
   looseValueFields.reduce(
-    (updatedBlock, fieldName) =>
-      updatedBlock.replace(
-        strictValueMapPattern(fieldName),
-        `$1${fieldName}: z.record(z.string(), z.array(z.unknown()))`,
-      ),
+    (updatedBlock, fieldName) => {
+      const looseValueMap = `$1${fieldName}: z.record(z.string(), z.array(z.unknown())).nullish()`;
+      return updatedBlock
+        .replace(strictValueMapPattern(fieldName), looseValueMap)
+        .replace(
+          looseValueMapWithoutNullishPattern(fieldName),
+          looseValueMap,
+        );
+    },
     block,
   );
 
