@@ -92,6 +92,17 @@ const makeListBackedStatusEntryValues = () => ({
   ],
 });
 
+const makeUnknownEntryValues = () => ({
+  future_custom_attribute: [
+    {
+      active_from: "2024-01-01T00:00:00.000Z",
+      active_until: null,
+      attribute_type: "future-value",
+      payload: { nested: true },
+    },
+  ],
+});
+
 describe("lists", () => {
   let listLists: typeof import("../../src/attio/lists").listLists;
   let getList: typeof import("../../src/attio/lists").getList;
@@ -322,6 +333,28 @@ describe("lists", () => {
             offset: undefined,
           },
           headers: { "X-Custom": "value" },
+          responseValidator: expect.any(Function),
+        }),
+      );
+    });
+
+    it("allows unrelated entry values with unknown shapes", async () => {
+      const entry = makeEntry({
+        entry_values: makeUnknownEntryValues(),
+      });
+      const apiResponse = { data: [entry] };
+      queryEntriesRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await queryListEntries({
+        list: "list-1",
+      });
+
+      expect(result).toEqual([entry]);
+      expect(queryEntriesRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
           responseValidator: expect.any(Function),
         }),
       );
@@ -764,6 +797,30 @@ describe("lists", () => {
       );
     });
 
+    it("allows unrelated entry values with unknown shapes", async () => {
+      const entry = makeEntry({
+        entry_values: makeUnknownEntryValues(),
+      });
+      const apiResponse = { data: entry };
+      addEntryRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await addListEntry({
+        list: "list-1",
+        parentObject: "companies",
+        parentRecordId: RECORD_ID,
+      });
+
+      expect(result).toEqual(entry);
+      expect(addEntryRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: expect.any(Function),
+        }),
+      );
+    });
+
     it("passes additional options", async () => {
       addEntryRequest.mockResolvedValue({ data: makeEntry() });
 
@@ -835,6 +892,30 @@ describe("lists", () => {
     it("relaxes response validation for list-backed status values", async () => {
       const entry = makeEntry({
         entry_values: makeListBackedStatusEntryValues(),
+      });
+      const apiResponse = { data: entry };
+      updateEntryRequest.mockImplementationOnce(async (options) => {
+        await options.responseValidator?.(apiResponse);
+        return { data: apiResponse };
+      });
+
+      const result = await updateListEntry({
+        list: "list-1",
+        entryId: ENTRY_ID_1,
+        entryValues: { stage: "qualified" },
+      });
+
+      expect(result).toEqual(entry);
+      expect(updateEntryRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseValidator: expect.any(Function),
+        }),
+      );
+    });
+
+    it("allows unrelated entry values with unknown shapes", async () => {
+      const entry = makeEntry({
+        entry_values: makeUnknownEntryValues(),
       });
       const apiResponse = { data: entry };
       updateEntryRequest.mockImplementationOnce(async (options) => {
