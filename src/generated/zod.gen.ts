@@ -6001,10 +6001,7 @@ export const zPostScimV2UsersResponse = z.object({
         primary: z.boolean(),
         type: z.string().optional()
     })),
-    roles: z.array(z.object({
-        value: z.string(),
-        primary: z.boolean()
-    })),
+    appRole: z.enum(['admin', 'member']).optional(),
     profileUrl: z.string().optional(),
     active: z.boolean(),
     meta: z.object({
@@ -6064,10 +6061,7 @@ export const zGetScimV2UsersByUserIdResponse = z.object({
         primary: z.boolean()
     })),
     active: z.boolean(),
-    roles: z.array(z.object({
-        value: z.string(),
-        primary: z.boolean()
-    })),
+    appRole: z.enum(['admin', 'member']).optional(),
     meta: z.object({
         resourceType: z.string(),
         created: z.string(),
@@ -6089,10 +6083,7 @@ export const zPatchScimV2UsersByUserIdResponse = z.union([
             primary: z.boolean(),
             type: z.string().optional()
         })),
-        roles: z.array(z.object({
-            value: z.string(),
-            primary: z.boolean()
-        })),
+        appRole: z.enum(['admin', 'member']).optional(),
         profileUrl: z.string().nullable(),
         active: z.boolean(),
         meta: z.object({
@@ -6118,10 +6109,7 @@ export const zPutScimV2UsersByUserIdResponse = z.union([
             primary: z.boolean(),
             type: z.string().optional()
         })),
-        roles: z.array(z.object({
-            value: z.string(),
-            primary: z.boolean()
-        })),
+        appRole: z.enum(['admin', 'member']).optional(),
         profileUrl: z.string().nullable(),
         active: z.boolean(),
         meta: z.object({
