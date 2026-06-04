@@ -1360,7 +1360,7 @@ export const getV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdTranscript =
 /**
  * List files
  *
- * Lists internal files, externally connected files and folders across the workspace. Optional query parameters may be provided to filter results by object, record, storage provider or parent folder.
+ * Lists internal files, externally connected files and folders for a specific record. Use the `object` and `record_id` query parameters to specify the record. Optional query parameters may be provided to filter results by storage provider or parent folder.
  *
  * This endpoint is in beta. We will aim to avoid breaking changes, but small updates may be made as we roll out to more users.
  *

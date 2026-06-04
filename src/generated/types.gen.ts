@@ -6938,7 +6938,7 @@ export type GetV2FilesData = {
          */
         object: string;
         /**
-         * Used to filter files to only those on a specific record.
+         * The record ID for the specific record whose files you want to list.
          */
         record_id: string;
         /**
@@ -7269,10 +7269,7 @@ export type PostScimV2UsersResponses = {
             primary: boolean;
             type?: string;
         }>;
-        roles: Array<{
-            value: string;
-            primary: boolean;
-        }>;
+        appRole?: 'admin' | 'member';
         profileUrl?: string;
         active: boolean;
         meta: {
@@ -7378,10 +7375,7 @@ export type GetScimV2UsersByUserIdResponses = {
             primary: boolean;
         }>;
         active: boolean;
-        roles: Array<{
-            value: string;
-            primary: boolean;
-        }>;
+        appRole?: 'admin' | 'member';
         meta: {
             resourceType: string;
             created: string;
@@ -7416,10 +7410,7 @@ export type PatchScimV2UsersByUserIdResponses = {
             primary: boolean;
             type?: string;
         }>;
-        roles: Array<{
-            value: string;
-            primary: boolean;
-        }>;
+        appRole?: 'admin' | 'member';
         profileUrl: string | null;
         active: boolean;
         meta: {
@@ -7462,10 +7453,7 @@ export type PutScimV2UsersByUserIdResponses = {
             primary: boolean;
             type?: string;
         }>;
-        roles: Array<{
-            value: string;
-            primary: boolean;
-        }>;
+        appRole?: 'admin' | 'member';
         profileUrl: string | null;
         active: boolean;
         meta: {
