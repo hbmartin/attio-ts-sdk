@@ -956,6 +956,7 @@ export const zOutputValue = z.union([
             'SEK',
             'CHF',
             'THB',
+            'TRY',
             'AED',
             'UYU',
             'USD'
@@ -1671,6 +1672,7 @@ export const zAttribute = z.object({
                 'SEK',
                 'CHF',
                 'THB',
+                'TRY',
                 'AED',
                 'UYU',
                 'USD'
@@ -2242,6 +2244,7 @@ export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
                     'SEK',
                     'CHF',
                     'THB',
+                    'TRY',
                     'AED',
                     'UYU',
                     'USD'
@@ -2346,6 +2349,7 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
                     'SEK',
                     'CHF',
                     'THB',
+                    'TRY',
                     'AED',
                     'UYU',
                     'USD'
@@ -2778,6 +2782,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'SEK',
                 'CHF',
                 'THB',
+                'TRY',
                 'AED',
                 'UYU',
                 'USD'
@@ -4006,6 +4011,7 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'SEK',
                 'CHF',
                 'THB',
+                'TRY',
                 'AED',
                 'UYU',
                 'USD'
@@ -6058,7 +6064,8 @@ export const zGetScimV2UsersByUserIdResponse = z.object({
     }),
     emails: z.array(z.object({
         value: z.string(),
-        primary: z.boolean()
+        primary: z.boolean(),
+        type: z.string()
     })),
     active: z.boolean(),
     appRole: z.enum(['admin', 'member']).optional(),
