@@ -956,6 +956,7 @@ export const zOutputValue = z.union([
             'SEK',
             'CHF',
             'THB',
+            'TRY',
             'AED',
             'UYU',
             'USD'
@@ -1671,6 +1672,7 @@ export const zAttribute = z.object({
                 'SEK',
                 'CHF',
                 'THB',
+                'TRY',
                 'AED',
                 'UYU',
                 'USD'
@@ -2242,6 +2244,7 @@ export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
                     'SEK',
                     'CHF',
                     'THB',
+                    'TRY',
                     'AED',
                     'UYU',
                     'USD'
@@ -2346,6 +2349,7 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
                     'SEK',
                     'CHF',
                     'THB',
+                    'TRY',
                     'AED',
                     'UYU',
                     'USD'
@@ -2778,6 +2782,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'SEK',
                 'CHF',
                 'THB',
+                'TRY',
                 'AED',
                 'UYU',
                 'USD'
@@ -4006,6 +4011,7 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'SEK',
                 'CHF',
                 'THB',
+                'TRY',
                 'AED',
                 'UYU',
                 'USD'
@@ -5961,223 +5967,6 @@ export const zGetV2FilesByFileIdResponse = z.object({
 
 export const zGetV2FilesByFileIdDownloadPath = z.object({
     file_id: z.uuid()
-});
-
-/**
- * Success
- */
-export const zGetScimV2SchemasResponse = z.object({
-    schemas: z.array(z.string()),
-    totalResults: z.number(),
-    startIndex: z.number(),
-    itemsPerPage: z.number(),
-    Resources: z.array(z.unknown())
-});
-
-/**
- * Success
- */
-export const zGetScimV2UsersResponse = z.object({
-    schemas: z.array(z.string()),
-    totalResults: z.number(),
-    startIndex: z.number(),
-    itemsPerPage: z.number(),
-    Resources: z.array(z.unknown())
-});
-
-/**
- * Created
- */
-export const zPostScimV2UsersResponse = z.object({
-    schemas: z.array(z.string()),
-    id: z.string(),
-    userName: z.string(),
-    name: z.object({
-        givenName: z.string(),
-        familyName: z.string()
-    }),
-    emails: z.array(z.object({
-        value: z.string(),
-        primary: z.boolean(),
-        type: z.string().optional()
-    })),
-    appRole: z.enum(['admin', 'member']).optional(),
-    profileUrl: z.string().optional(),
-    active: z.boolean(),
-    meta: z.object({
-        resourceType: z.string(),
-        created: z.string(),
-        lastModified: z.string()
-    })
-});
-
-/**
- * Success
- */
-export const zGetScimV2GroupsResponse = z.object({
-    schemas: z.array(z.string()),
-    totalResults: z.number(),
-    startIndex: z.number(),
-    itemsPerPage: z.number(),
-    Resources: z.array(z.unknown())
-});
-
-/**
- * Created
- */
-export const zPostScimV2GroupsResponse = z.object({
-    schemas: z.array(z.string()),
-    id: z.string(),
-    displayName: z.string(),
-    members: z.array(z.object({
-        value: z.string(),
-        $ref: z.string()
-    })),
-    meta: z.object({
-        resourceType: z.string(),
-        created: z.string(),
-        lastModified: z.string()
-    })
-});
-
-/**
- * No Content
- */
-export const zDeleteScimV2UsersByUserIdResponse = z.record(z.string(), z.unknown());
-
-/**
- * Success
- */
-export const zGetScimV2UsersByUserIdResponse = z.object({
-    schemas: z.array(z.string()),
-    id: z.string(),
-    userName: z.string(),
-    name: z.object({
-        familyName: z.string(),
-        givenName: z.string()
-    }),
-    emails: z.array(z.object({
-        value: z.string(),
-        primary: z.boolean()
-    })),
-    active: z.boolean(),
-    appRole: z.enum(['admin', 'member']).optional(),
-    meta: z.object({
-        resourceType: z.string(),
-        created: z.string(),
-        lastModified: z.string()
-    })
-});
-
-export const zPatchScimV2UsersByUserIdResponse = z.union([
-    z.object({
-        schemas: z.array(z.string()),
-        id: z.string(),
-        userName: z.string(),
-        name: z.object({
-            givenName: z.string(),
-            familyName: z.string()
-        }),
-        emails: z.array(z.object({
-            value: z.string(),
-            primary: z.boolean(),
-            type: z.string().optional()
-        })),
-        appRole: z.enum(['admin', 'member']).optional(),
-        profileUrl: z.string().nullable(),
-        active: z.boolean(),
-        meta: z.object({
-            resourceType: z.string(),
-            created: z.string(),
-            lastModified: z.string()
-        })
-    }),
-    z.record(z.string(), z.unknown())
-]);
-
-export const zPutScimV2UsersByUserIdResponse = z.union([
-    z.object({
-        schemas: z.array(z.string()),
-        id: z.string(),
-        userName: z.string(),
-        name: z.object({
-            givenName: z.string(),
-            familyName: z.string()
-        }),
-        emails: z.array(z.object({
-            value: z.string(),
-            primary: z.boolean(),
-            type: z.string().optional()
-        })),
-        appRole: z.enum(['admin', 'member']).optional(),
-        profileUrl: z.string().nullable(),
-        active: z.boolean(),
-        meta: z.object({
-            resourceType: z.string(),
-            created: z.string(),
-            lastModified: z.string()
-        })
-    }),
-    z.record(z.string(), z.unknown())
-]);
-
-/**
- * No Content
- */
-export const zDeleteScimV2GroupsByWorkspaceTeamIdResponse = z.record(z.string(), z.unknown());
-
-/**
- * Success
- */
-export const zGetScimV2GroupsByWorkspaceTeamIdResponse = z.object({
-    schemas: z.array(z.string()),
-    id: z.string(),
-    displayName: z.string(),
-    members: z.array(z.object({
-        value: z.string(),
-        $ref: z.string()
-    })),
-    meta: z.object({
-        resourceType: z.string(),
-        created: z.string(),
-        lastModified: z.string()
-    })
-});
-
-/**
- * Success
- */
-export const zPatchScimV2GroupsByWorkspaceTeamIdResponse = z.object({
-    schemas: z.array(z.string()),
-    id: z.string(),
-    displayName: z.string(),
-    members: z.array(z.object({
-        value: z.string(),
-        $ref: z.string()
-    })),
-    meta: z.object({
-        resourceType: z.string(),
-        created: z.string(),
-        lastModified: z.string()
-    })
-});
-
-/**
- * Success
- */
-export const zPutScimV2GroupsByWorkspaceTeamIdResponse = z.object({
-    schemas: z.array(z.string()),
-    id: z.string(),
-    displayName: z.string(),
-    members: z.array(z.object({
-        value: z.string(),
-        $ref: z.string()
-    })),
-    meta: z.object({
-        resourceType: z.string(),
-        created: z.string(),
-        lastModified: z.string()
-    })
 });
 
 export const zGetV2WebhooksQuery = z.object({
