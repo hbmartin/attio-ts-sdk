@@ -3626,6 +3626,19 @@ export const zPostV2ObjectsRecordsSearchResponse = z.object({
     ]))
 });
 
+export const zPostV2SqlBody = z.object({
+    sql: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2SqlResponse = z.object({
+    data: z.object({
+        rows: z.array(z.record(z.string(), z.unknown()))
+    })
+});
+
 /**
  * Success
  */
