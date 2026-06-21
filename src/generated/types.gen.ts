@@ -3883,6 +3883,47 @@ export type PostV2ObjectsRecordsSearchResponses = {
 
 export type PostV2ObjectsRecordsSearchResponse = PostV2ObjectsRecordsSearchResponses[keyof PostV2ObjectsRecordsSearchResponses];
 
+export type PostV2SqlData = {
+    body: {
+        /**
+         * The SQL query to be executed.
+         */
+        sql: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/v2/sql';
+};
+
+export type PostV2SqlErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'filter_error';
+        message: string;
+    };
+};
+
+export type PostV2SqlError = PostV2SqlErrors[keyof PostV2SqlErrors];
+
+export type PostV2SqlResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: {
+            rows: Array<{
+                [key: string]: unknown;
+            }>;
+        };
+    };
+};
+
+export type PostV2SqlResponse = PostV2SqlResponses[keyof PostV2SqlResponses];
+
 export type GetV2ListsData = {
     body?: never;
     path?: never;
