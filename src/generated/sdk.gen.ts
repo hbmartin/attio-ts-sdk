@@ -567,7 +567,7 @@ export const postV2ObjectsRecordsSearch = <ThrowOnError extends boolean = false>
  *
  * Query records and lists with SQL.
  *
- * This endpoint is in alpha and may be subject to breaking changes as we gather feedback.
+ * This endpoint is in beta. We will aim to avoid breaking changes, but small updates may be made as we roll out to more users.
  *
  * Required scopes: `record_permission:read`, `object_configuration:read`.
  */
