@@ -1209,7 +1209,7 @@ export const getV2CommentsByCommentId = <ThrowOnError extends boolean = false>(o
 /**
  * List meetings
  *
- * Lists all meetings in the workspace using a deterministic sort order.
+ * Lists all meetings in the workspace using a deterministic sort order. When both the `participants` and `linked_record_id` filters are supplied, they are combined with OR: meetings that match either filter are returned.
  *
  * This endpoint is in beta. We will aim to avoid breaking changes, but small updates may be made as we roll out to more users.
  *

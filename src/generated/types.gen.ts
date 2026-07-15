@@ -559,7 +559,7 @@ export type Attribute = {
      */
     is_system_attribute: boolean;
     /**
-     * Whether or not this attribute can be written to. Can only be false when `is_system_attribute` is `true` (user-defined attributes are always writeable). If `false`, this usually means the attribute is enriched by Attio.
+     * Whether or not this attribute can be written to. It is `false` for protected system attributes, which are usually enriched by Attio. It is also `false` for formula attributes, whose values are calculated automatically.
      */
     is_writable: boolean;
     /**
@@ -6372,11 +6372,11 @@ export type GetV2MeetingsData = {
          */
         linked_object?: string;
         /**
-         * Used to filter meetings to only those values that include a specific linked record. Must be a valid record ID. If provided, linked_object must also be provided.
+         * Used to filter meetings to only those values that include a specific linked record. Must be a valid record ID. If provided, linked_object must also be provided. When combined with `participants`, the filters are combined with OR: meetings matching either filter are returned.
          */
         linked_record_id?: string;
         /**
-         * A comma-separated list of emails to filter meetings by. If provided, meetings will be filtered to only include meetings that include at least one of the provided emails as participants.
+         * A comma-separated list of emails to filter meetings by. If provided, meetings will be filtered to only include meetings that include at least one of the provided emails as participants. When combined with `linked_record_id`, the filters are combined with OR: meetings matching either filter are returned.
          */
         participants?: string;
         /**
