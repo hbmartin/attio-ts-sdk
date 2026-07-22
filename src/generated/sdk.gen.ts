@@ -565,7 +565,7 @@ export const postV2ObjectsRecordsSearch = <ThrowOnError extends boolean = false>
 /**
  * Query SQL
  *
- * Query records and lists with SQL.
+ * Query records and lists with SQL. Your workspace must be on the Enterprise plan in order to access this endpoint.
  *
  * This endpoint is in beta. We will aim to avoid breaking changes, but small updates may be made as we roll out to more users.
  *
