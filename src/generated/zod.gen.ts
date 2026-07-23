@@ -5742,7 +5742,16 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsResponse = z.object({
 
 export const zPostV2MeetingsByMeetingIdCallRecordingsBody = z.object({
     data: z.object({
-        video_url: z.url()
+        video_url: z.url(),
+        transcript: z.array(z.object({
+            speech: z.string(),
+            start_time: z.number().gte(0),
+            end_time: z.number(),
+            speaker: z.object({
+                name: z.string(),
+                email_address: z.email().optional()
+            })
+        })).max(4000).optional()
     })
 });
 
@@ -5819,7 +5828,18 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse = 
                 'app'
             ]).nullish()
         }),
-        created_at: z.string()
+        created_at: z.string(),
+        transcript: z.object({
+            segments: z.array(z.object({
+                speech: z.string(),
+                start_time: z.number(),
+                end_time: z.number(),
+                speaker: z.object({
+                    name: z.string()
+                })
+            })),
+            raw_transcript: z.string()
+        }).nullable()
     })
 });
 
