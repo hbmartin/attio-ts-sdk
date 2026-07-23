@@ -6669,6 +6669,33 @@ export type PostV2MeetingsByMeetingIdCallRecordingsData = {
              * - **Accessibility:** For the request to be accepted, the URL must be publicly accessible. Attio will make a `HEAD` request to the URL to verify its accessibility and retrieve file metadata. The response to this request must include a `Content-Length` header.
              */
             video_url: string;
+            /**
+             * The call recording's transcript.
+             */
+            transcript?: Array<{
+                /**
+                 * The spoken text for this segment of the transcript.
+                 */
+                speech: string;
+                /**
+                 * The start time of this speech segment in seconds.
+                 */
+                start_time: number;
+                /**
+                 * The end time of this speech segment in seconds.
+                 */
+                end_time: number;
+                speaker: {
+                    /**
+                     * The name of the speaker.
+                     */
+                    name: string;
+                    /**
+                     * The email address of the speaker.
+                     */
+                    email_address?: string;
+                };
+            }>;
         };
     };
     path: {
@@ -6880,6 +6907,41 @@ export type GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponses = {
              * The timestamp of when the call recording was created.
              */
             created_at: string;
+            /**
+             * The transcript for this call recording, `null` if no transcript is available.
+             */
+            transcript: {
+                /**
+                 * The transcript segments with speech, timing, and speaker information.
+                 */
+                segments: Array<{
+                    /**
+                     * The spoken text for this segment of the transcript.
+                     */
+                    speech: string;
+                    /**
+                     * The start time of this speech segment in seconds, measured from the start of the recording.
+                     */
+                    start_time: number;
+                    /**
+                     * The end time of this speech segment in seconds, measured from the start of the recording.
+                     */
+                    end_time: number;
+                    /**
+                     * The speaker of this transcript segment.
+                     */
+                    speaker: {
+                        /**
+                         * The name of the speaker.
+                         */
+                        name: string;
+                    };
+                }>;
+                /**
+                 * The raw transcript of the call recording.
+                 */
+                raw_transcript: string;
+            } | null;
         };
     };
 };
