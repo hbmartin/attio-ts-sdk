@@ -1234,6 +1234,10 @@ export type Meeting = {
          * The normalized email address of the meeting participant.
          */
         email_address: string | null;
+        /**
+         * The participant's name. This is only set when the name was explicitly provided when the participant was created. It is null for any participant identified by an email address — including workspace members and person records — whose display names are not resolved into this field.
+         */
+        name: string | null;
     }>;
     /**
      * A list of records that are linked to the meeting. Participants with matching person records are automatically linked to the meeting but other records may also be linked explicitly.
@@ -6466,9 +6470,9 @@ export type PostV2MeetingsData = {
             is_all_day: boolean;
             participants: Array<{
                 /**
-                 * The email address of the participant. New person records and companies will automatically be created based upon the email address values provided.
+                 * The email address of the participant. New person records and companies will automatically be created based upon the email address values provided. If omitted, a name must be provided instead.
                  */
-                email_address: string;
+                email_address?: string;
                 /**
                  * Whether or not the participant is the organizer of the meeting.
                  */
@@ -6477,6 +6481,10 @@ export type PostV2MeetingsData = {
                  * The status of the individual meeting participant.
                  */
                 status: 'accepted' | 'tentative' | 'declined' | 'pending';
+                /**
+                 * The name of the participant. Required when no email_address is provided. Participants without an email do not create person or company records.
+                 */
+                name?: string;
             }>;
             /**
              * A list of records to link to the meeting. Each record is specified by its object (slug or UUID) and record ID (UUID). Attio will automatically link the meeting participants' companies to the meeting; this behavior is asynchronous.
@@ -6665,10 +6673,10 @@ export type PostV2MeetingsByMeetingIdCallRecordingsData = {
              * **Requirements:**
              * - **Protocol:** The URL must use the `https` protocol.
              * - **File type:** The file must be a `.mp4` file.
-             * - **File size:** The file must not exceed 500MB in size.
+             * - **File size:** The file must not exceed 1GB in size.
              * - **Accessibility:** For the request to be accepted, the URL must be publicly accessible. Attio will make a `HEAD` request to the URL to verify its accessibility and retrieve file metadata. The response to this request must include a `Content-Length` header.
              */
-            video_url: string;
+            video_url?: string;
             /**
              * The call recording's transcript.
              */

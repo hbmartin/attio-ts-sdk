@@ -1978,7 +1978,8 @@ export const zMeeting = z.object({
             'pending'
         ]),
         is_organizer: z.boolean(),
-        email_address: z.string().nullable()
+        email_address: z.string().nullable(),
+        name: z.string().nullable()
     })),
     linked_records: z.array(z.object({
         object_slug: z.string(),
@@ -5652,7 +5653,7 @@ export const zPostV2MeetingsBody = z.object({
         ]),
         is_all_day: z.boolean(),
         participants: z.array(z.object({
-            email_address: z.string(),
+            email_address: z.string().optional(),
             is_organizer: z.union([
                 z.boolean(),
                 z.enum(['true']),
@@ -5663,7 +5664,8 @@ export const zPostV2MeetingsBody = z.object({
                 'tentative',
                 'declined',
                 'pending'
-            ])
+            ]),
+            name: z.string().min(1).optional()
         })),
         linked_records: z.array(z.object({
             object: z.string(),
@@ -5742,7 +5744,7 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsResponse = z.object({
 
 export const zPostV2MeetingsByMeetingIdCallRecordingsBody = z.object({
     data: z.object({
-        video_url: z.url(),
+        video_url: z.url().optional(),
         transcript: z.array(z.object({
             speech: z.string(),
             start_time: z.number().gte(0),
