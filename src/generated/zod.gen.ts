@@ -5631,8 +5631,8 @@ export const zGetV2MeetingsResponse = z.object({
 
 export const zPostV2MeetingsBody = z.object({
     data: z.object({
-        title: z.string(),
-        description: z.string(),
+        title: z.string().max(1000),
+        description: z.string().max(10000),
         start: z.union([
             z.object({
                 datetime: z.iso.datetime(),
@@ -5666,11 +5666,11 @@ export const zPostV2MeetingsBody = z.object({
                 'pending'
             ]),
             name: z.string().min(1).optional()
-        })),
+        })).max(500),
         linked_records: z.array(z.object({
             object: z.string(),
             record_id: z.uuid()
-        })).optional(),
+        })).max(50).optional(),
         external_ref: z.union([
             z.string().min(1),
             z.object({
