@@ -2682,6 +2682,30 @@ export const zPutV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
     })
 });
 
+export const zPostV2ObjectsByObjectRecordsMergeBody = z.object({
+    data: z.object({
+        primary_record_id: z.uuid(),
+        secondary_record_id: z.uuid()
+    })
+});
+
+export const zPostV2ObjectsByObjectRecordsMergePath = z.object({
+    object: z.string()
+});
+
+export const zPostV2ObjectsByObjectRecordsMergeResponse = z.union([
+    z.object({
+        data: z.object({
+            new_record_id: z.uuid()
+        })
+    }),
+    z.object({
+        data: z.object({
+            new_record_id: z.uuid()
+        })
+    })
+]);
+
 export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesPath = z.object({
     object: z.string(),
     record_id: z.uuid(),

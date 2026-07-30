@@ -2813,7 +2813,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdErrors = {
     404: {
         status_code: 404;
         type: 'invalid_request_error';
-        code: 'not_found';
+        code: 'not_found' | 'merge_in_progress';
         message: string;
     };
 };
@@ -3035,6 +3035,88 @@ export type PutV2ObjectsByObjectRecordsByRecordIdResponses = {
 };
 
 export type PutV2ObjectsByObjectRecordsByRecordIdResponse = PutV2ObjectsByObjectRecordsByRecordIdResponses[keyof PutV2ObjectsByObjectRecordsByRecordIdResponses];
+
+export type PostV2ObjectsByObjectRecordsMergeData = {
+    body: {
+        data: {
+            /**
+             * The ID of the record to keep values from. Where both records have a value for the same attribute, the primary record's value takes precedence.
+             */
+            primary_record_id: string;
+            /**
+             * The ID of the record to merge into the primary record. Its values are only kept where the primary record has no value for that attribute.
+             */
+            secondary_record_id: string;
+        };
+    };
+    path: {
+        /**
+         * A UUID or slug of the object both records belong to.
+         */
+        object: string;
+    };
+    query?: never;
+    url: '/v2/objects/{object}/records/merge';
+};
+
+export type PostV2ObjectsByObjectRecordsMergeErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'self_merge';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found' | 'value_not_found';
+        message: string;
+    };
+};
+
+export type PostV2ObjectsByObjectRecordsMergeError = PostV2ObjectsByObjectRecordsMergeErrors[keyof PostV2ObjectsByObjectRecordsMergeErrors];
+
+export type PostV2ObjectsByObjectRecordsMergeResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: {
+            /**
+             * The ID of the merged record. This is a new ID, which will usually match neither of the records supplied in the request.
+             */
+            new_record_id: string;
+        };
+    };
+    /**
+     * Accepted. The merge has been committed but is still being applied, so the merged record is not yet readable.
+     */
+    202: {
+        data: {
+            /**
+             * The ID of the merged record. This is a new ID, which will usually match neither of the records supplied in the request.
+             */
+            new_record_id: string;
+        };
+    };
+};
+
+export type PostV2ObjectsByObjectRecordsMergeResponse = PostV2ObjectsByObjectRecordsMergeResponses[keyof PostV2ObjectsByObjectRecordsMergeResponses];
 
 export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesData = {
     body?: never;
