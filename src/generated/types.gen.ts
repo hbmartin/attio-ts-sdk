@@ -2813,7 +2813,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdErrors = {
     404: {
         status_code: 404;
         type: 'invalid_request_error';
-        code: 'not_found';
+        code: 'not_found' | 'merge_in_progress';
         message: string;
     };
 };
@@ -3035,6 +3035,88 @@ export type PutV2ObjectsByObjectRecordsByRecordIdResponses = {
 };
 
 export type PutV2ObjectsByObjectRecordsByRecordIdResponse = PutV2ObjectsByObjectRecordsByRecordIdResponses[keyof PutV2ObjectsByObjectRecordsByRecordIdResponses];
+
+export type PostV2ObjectsByObjectRecordsMergeData = {
+    body: {
+        data: {
+            /**
+             * The ID of the record to keep values from. Where both records have a value for the same attribute, the primary record's value takes precedence.
+             */
+            primary_record_id: string;
+            /**
+             * The ID of the record to merge into the primary record. Its values are only kept where the primary record has no value for that attribute.
+             */
+            secondary_record_id: string;
+        };
+    };
+    path: {
+        /**
+         * A UUID or slug of the object both records belong to.
+         */
+        object: string;
+    };
+    query?: never;
+    url: '/v2/objects/{object}/records/merge';
+};
+
+export type PostV2ObjectsByObjectRecordsMergeErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'self_merge';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found' | 'value_not_found';
+        message: string;
+    };
+};
+
+export type PostV2ObjectsByObjectRecordsMergeError = PostV2ObjectsByObjectRecordsMergeErrors[keyof PostV2ObjectsByObjectRecordsMergeErrors];
+
+export type PostV2ObjectsByObjectRecordsMergeResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: {
+            /**
+             * The ID of the merged record. This is a new ID, which will usually match neither of the records supplied in the request.
+             */
+            new_record_id: string;
+        };
+    };
+    /**
+     * Accepted. The merge has been committed but is still being applied, so the merged record is not yet readable.
+     */
+    202: {
+        data: {
+            /**
+             * The ID of the merged record. This is a new ID, which will usually match neither of the records supplied in the request.
+             */
+            new_record_id: string;
+        };
+    };
+};
+
+export type PostV2ObjectsByObjectRecordsMergeResponse = PostV2ObjectsByObjectRecordsMergeResponses[keyof PostV2ObjectsByObjectRecordsMergeResponses];
 
 export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesData = {
     body?: never;
@@ -6499,27 +6581,6 @@ export type PostV2MeetingsData = {
                  */
                 record_id: string;
             }>;
-            /**
-             * A consistent external reference used to match and de-duplicate meetings. Can be either a plain string (for external system IDs) or an object with `ical_uid` and `provider`. If you are writing data into Attio which is based upon calendar events that you have synced from a Google or Microsoft calendar, you must use the iCal format to avoid creating duplicate meetings inside Attio.
-             */
-            external_ref: string | {
-                /**
-                 * The ical uid of the meeting.
-                 */
-                ical_uid: string;
-                /**
-                 * The email provider used to sync the meeting.
-                 */
-                provider: 'google' | 'microsoft';
-                /**
-                 * The original start time of the meeting. Use a timestamp with a specified offset for all day and non-all day meetings. This property is required for recurring event exceptions and optional otherwise.
-                 */
-                original_start_time?: string;
-                /**
-                 * Whether or not the meeting is recurring.
-                 */
-                is_recurring: boolean;
-            };
         };
     };
     path?: never;
