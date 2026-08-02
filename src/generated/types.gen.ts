@@ -2693,7 +2693,7 @@ export type PutV2ObjectsByObjectRecordsErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'value_not_found';
+        code: 'value_not_found' | 'merge_in_progress';
         message: string;
     };
     /**
@@ -2892,7 +2892,7 @@ export type PatchV2ObjectsByObjectRecordsByRecordIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'missing_value';
+        code: 'missing_value' | 'merge_in_progress';
         message: string;
     };
     /**
@@ -2980,7 +2980,7 @@ export type PutV2ObjectsByObjectRecordsByRecordIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'missing_value';
+        code: 'missing_value' | 'merge_in_progress';
         message: string;
     };
     /**
@@ -4537,7 +4537,7 @@ export type PutV2ListsByListEntriesErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'multiple_match_results';
+        code: 'multiple_match_results' | 'merge_in_progress';
         message: string;
     };
     /**
@@ -4744,7 +4744,7 @@ export type PatchV2ListsByListEntriesByEntryIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'immutable_value';
+        code: 'immutable_value' | 'merge_in_progress';
         message: string;
     };
     /**
@@ -4836,7 +4836,7 @@ export type PutV2ListsByListEntriesByEntryIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'immutable_value';
+        code: 'immutable_value' | 'merge_in_progress';
         message: string;
     };
     /**
