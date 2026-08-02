@@ -2599,7 +2599,7 @@ export const zPutV2ObjectsByObjectRecordsResponse = z.object({
 
 export const zDeleteV2ObjectsByObjectRecordsByRecordIdPath = z.object({
     object: z.string(),
-    record_id: z.string()
+    record_id: z.uuid()
 });
 
 /**
