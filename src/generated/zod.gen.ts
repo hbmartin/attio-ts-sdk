@@ -1810,6 +1810,34 @@ export const zComment = z.object({
     })
 });
 
+export const zEmail = z.object({
+    id: z.object({
+        workspace_id: z.uuid(),
+        mailbox_id: z.uuid(),
+        email_id: z.uuid()
+    }),
+    sent_at: z.string(),
+    direction: z.enum(['inbound', 'outbound']),
+    subject_line: z.string().nullable(),
+    participants: z.array(z.object({
+        role: z.enum([
+            'from',
+            'reply-to',
+            'to',
+            'cc',
+            'bcc'
+        ]),
+        email_address: z.string(),
+        email_domain: z.string(),
+        name: z.string().nullable()
+    })),
+    linked_records: z.array(z.object({
+        object_slug: z.string(),
+        object_id: z.uuid(),
+        record_id: z.uuid()
+    }))
+});
+
 /**
  * File
  */
@@ -5629,6 +5657,27 @@ export const zGetV2CommentsByCommentIdPath = z.object({
  */
 export const zGetV2CommentsByCommentIdResponse = z.object({
     data: zComment
+});
+
+export const zGetV2EmailsQuery = z.object({
+    limit: z.int().gte(1).lte(50).optional().default(25),
+    cursor: z.string().optional(),
+    linked_object: z.string().min(1).optional(),
+    linked_record_ids: z.string().optional(),
+    participants: z.string().optional().default(''),
+    domain: z.string().min(1).optional(),
+    sent_after: z.string().nullish(),
+    sent_before: z.string().nullish()
+});
+
+/**
+ * Success
+ */
+export const zGetV2EmailsResponse = z.object({
+    data: z.array(zEmail),
+    pagination: z.object({
+        next_cursor: z.string().nullable()
+    })
 });
 
 export const zGetV2MeetingsQuery = z.object({
