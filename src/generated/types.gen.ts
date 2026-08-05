@@ -916,6 +916,73 @@ export type Comment = {
     };
 };
 
+export type Email = {
+    id: {
+        /**
+         * The ID of the workspace the email belongs to.
+         */
+        workspace_id: string;
+        /**
+         * The ID of the mailbox this copy of the email was read from. A single email sent to several people in your workspace is stored once per mailbox; this endpoint returns one entry per email, so the returned `mailbox_id` identifies whichever copy was readable.
+         */
+        mailbox_id: string;
+        /**
+         * The ID of the Attio email.
+         */
+        email_id: string;
+    };
+    /**
+     * Timestamp representing when the email was sent, taken from the email's own headers rather than from when Attio imported it.
+     */
+    sent_at: string;
+    /**
+     * Whether the email was sent from your workspace or received by it.
+     */
+    direction: 'inbound' | 'outbound';
+    /**
+     * The subject line of the email. This is `null` when the email has no subject or is from a mailbox shared as metadata only.
+     */
+    subject_line: string | null;
+    /**
+     * The participants on the email. Note that `bcc` participants are realistically only present on outbound email: inbound messages do not disclose the other recipients' blind copies, so an absent `bcc` participant is not evidence that there was none.
+     */
+    participants: Array<{
+        /**
+         * The role this participant had on the email.
+         */
+        role: 'from' | 'reply-to' | 'to' | 'cc' | 'bcc';
+        /**
+         * The normalized email address of the participant.
+         */
+        email_address: string;
+        /**
+         * The domain of the participant's email address.
+         */
+        email_domain: string;
+        /**
+         * The participant's name as it appeared on the email, when the email provided one.
+         */
+        name: string | null;
+    }>;
+    /**
+     * The person and company records whose email addresses or domains match this email's participants. Unlike meetings, this link is derived when you make the request rather than stored, so it reflects your records as they are now: creating a person record today will make older emails start reporting it.
+     */
+    linked_records: Array<{
+        /**
+         * The slug of the object the linked record belongs to.
+         */
+        object_slug: string;
+        /**
+         * The ID of the object the linked record belongs to.
+         */
+        object_id: string;
+        /**
+         * The ID of the linked record.
+         */
+        record_id: string;
+    }>;
+};
+
 /**
  * File
  */
@@ -6441,6 +6508,60 @@ export type GetV2CommentsByCommentIdResponses = {
 
 export type GetV2CommentsByCommentIdResponse = GetV2CommentsByCommentIdResponses[keyof GetV2CommentsByCommentIdResponses];
 
+export type GetV2EmailsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * The maximum number of emails to return. Must be between 1 and 50. Defaults to 25.
+         */
+        limit?: number;
+        /**
+         * A pagination cursor used to fetch the next page of emails. Responses with more emails will include a cursor for you to use here. If not provided, the first page will be returned.
+         */
+        cursor?: string;
+        /**
+         * The object to filter emails by. Must be the slug or ID of either the people or companies object. If provided, linked_record_ids must also be provided.
+         */
+        linked_object?: string;
+        /**
+         * A comma-separated list of up to 10 record IDs to filter emails by. All IDs must belong to the object given in `linked_object`, so filtering by both people and companies requires two requests. If provided, linked_object must also be provided.
+         */
+        linked_record_ids?: string;
+        /**
+         * A comma-separated list of up to 10 email addresses. Emails that include at least one of them as a participant are returned.
+         */
+        participants?: string;
+        /**
+         * A domain to filter emails by. Emails with at least one participant at this domain are returned.
+         */
+        domain?: string;
+        /**
+         * Only return emails sent after this timestamp. `sent_after` is exclusive, so an email sent at exactly this timestamp is not returned.
+         */
+        sent_after?: string | null;
+        /**
+         * Only return emails sent before this timestamp. `sent_before` is exclusive, so an email sent at exactly this timestamp is not returned.
+         */
+        sent_before?: string | null;
+    };
+    url: '/v2/emails';
+};
+
+export type GetV2EmailsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Array<Email>;
+        pagination: {
+            next_cursor: string | null;
+        };
+    };
+};
+
+export type GetV2EmailsResponse = GetV2EmailsResponses[keyof GetV2EmailsResponses];
+
 export type GetV2MeetingsData = {
     body?: never;
     path?: never;
@@ -6731,6 +6852,8 @@ export type PostV2MeetingsByMeetingIdCallRecordingsData = {
             /**
              * A publicly accessible URL to a video file of the call recording. Attio will download the video from this URL asynchronously.
              *
+             * This field is optional — a call recording can be created with only a `transcript` and no video.
+             *
              * **Requirements:**
              * - **Protocol:** The URL must use the `https` protocol.
              * - **File type:** The file must be a `.mp4` file.
@@ -6740,6 +6863,8 @@ export type PostV2MeetingsByMeetingIdCallRecordingsData = {
             video_url?: string;
             /**
              * The call recording's transcript.
+             *
+             * This field is technically optional for backwards compatibility, but you should always provide it — a call recording created without a transcript will be missing summaries and other transcript-derived features. This field will become required in a future version of this endpoint.
              */
             transcript?: Array<{
                 /**
@@ -7273,6 +7398,20 @@ export type PostV2FilesUploadData = {
     query?: never;
     url: '/v2/files/upload';
 };
+
+export type PostV2FilesUploadErrors = {
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'billing_error';
+        message: string;
+    };
+};
+
+export type PostV2FilesUploadError = PostV2FilesUploadErrors[keyof PostV2FilesUploadErrors];
 
 export type PostV2FilesUploadResponses = {
     /**
@@ -7868,21 +8007,21 @@ export type GetV2SelfResponses = {
         /**
          * Whether the token is currently active and usable.
          */
-        active: boolean;
+        active: true;
         /**
          * A space-separated list of scopes associated with this token
          */
         scope: string;
         /**
-         * The app ID of the OAuth application that requested this token
+         * Identifies the client the token was issued to. For app access tokens this is the app ID. Workspace access tokens have no OAuth client, so this is the workspace access token ID.
          */
         client_id: string;
         /**
-         * The type of token, always Bearer for tokens acquired via the OAuth 2.0 flow.
+         * The type of token, always Bearer.
          */
         token_type: 'Bearer';
         /**
-         * The time at which this token will expire, if set, as a number of seconds since January 1 1970 UTC.
+         * The time at which this token will expire, if set, as a number of seconds since January 1 1970 UTC. Attio access tokens do not currently expire, so this is always null.
          */
         exp: number | null;
         /**
@@ -7902,9 +8041,9 @@ export type GetV2SelfResponses = {
          */
         iss: 'attio.com';
         /**
-         * The ID of the workspace member who authorised this token initially.
+         * The ID of the workspace member who authorized this token initially. Almost every token has one, but it is omitted for the app access tokens that Attio created itself rather than on a member's behalf.
          */
-        authorized_by_workspace_member_id: string;
+        authorized_by_workspace_member_id?: string;
         /**
          * The ID of the workspace the token is scoped to.
          */
