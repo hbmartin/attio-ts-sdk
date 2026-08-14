@@ -930,6 +930,7 @@ export const zOutputValue = z.union([
             'DKK',
             'EUR',
             'FJD',
+            'GHS',
             'HKD',
             'HUF',
             'ISK',
@@ -945,11 +946,13 @@ export const zOutputValue = z.union([
             'NZD',
             'NGN',
             'NOK',
+            'OMR',
             'XPF',
             'PEN',
             'PHP',
             'PLN',
             'GBP',
+            'QAR',
             'RWF',
             'SAR',
             'SGD',
@@ -1647,6 +1650,7 @@ export const zAttribute = z.object({
                 'DKK',
                 'EUR',
                 'FJD',
+                'GHS',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -1662,11 +1666,13 @@ export const zAttribute = z.object({
                 'NZD',
                 'NGN',
                 'NOK',
+                'OMR',
                 'XPF',
                 'PEN',
                 'PHP',
                 'PLN',
                 'GBP',
+                'QAR',
                 'RWF',
                 'SAR',
                 'SGD',
@@ -1808,6 +1814,34 @@ export const zComment = z.object({
             'app'
         ]).nullish()
     })
+});
+
+export const zEmail = z.object({
+    id: z.object({
+        workspace_id: z.uuid(),
+        mailbox_id: z.uuid(),
+        email_id: z.uuid()
+    }),
+    sent_at: z.string(),
+    direction: z.enum(['inbound', 'outbound']),
+    subject_line: z.string().nullable(),
+    participants: z.array(z.object({
+        role: z.enum([
+            'from',
+            'reply-to',
+            'to',
+            'cc',
+            'bcc'
+        ]),
+        email_address: z.string(),
+        email_domain: z.string(),
+        name: z.string().nullable()
+    })),
+    linked_records: z.array(z.object({
+        object_slug: z.string(),
+        object_id: z.uuid(),
+        record_id: z.uuid()
+    }))
 });
 
 /**
@@ -2221,6 +2255,7 @@ export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
                     'DKK',
                     'EUR',
                     'FJD',
+                    'GHS',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -2236,11 +2271,13 @@ export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
                     'NZD',
                     'NGN',
                     'NOK',
+                    'OMR',
                     'XPF',
                     'PEN',
                     'PHP',
                     'PLN',
                     'GBP',
+                    'QAR',
                     'RWF',
                     'SAR',
                     'SGD',
@@ -2327,6 +2364,7 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
                     'DKK',
                     'EUR',
                     'FJD',
+                    'GHS',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -2342,11 +2380,13 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
                     'NZD',
                     'NGN',
                     'NOK',
+                    'OMR',
                     'XPF',
                     'PEN',
                     'PHP',
                     'PLN',
                     'GBP',
+                    'QAR',
                     'RWF',
                     'SAR',
                     'SGD',
@@ -2785,6 +2825,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'DKK',
                 'EUR',
                 'FJD',
+                'GHS',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -2800,11 +2841,13 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'NZD',
                 'NGN',
                 'NOK',
+                'OMR',
                 'XPF',
                 'PEN',
                 'PHP',
                 'PLN',
                 'GBP',
+                'QAR',
                 'RWF',
                 'SAR',
                 'SGD',
@@ -4028,6 +4071,7 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'DKK',
                 'EUR',
                 'FJD',
+                'GHS',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -4043,11 +4087,13 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'NZD',
                 'NGN',
                 'NOK',
+                'OMR',
                 'XPF',
                 'PEN',
                 'PHP',
                 'PLN',
                 'GBP',
+                'QAR',
                 'RWF',
                 'SAR',
                 'SGD',
@@ -5631,6 +5677,27 @@ export const zGetV2CommentsByCommentIdResponse = z.object({
     data: zComment
 });
 
+export const zGetV2EmailsQuery = z.object({
+    limit: z.int().gte(1).lte(50).optional().default(25),
+    cursor: z.string().optional(),
+    linked_object: z.string().min(1).optional(),
+    linked_record_ids: z.string().optional(),
+    participants: z.string().optional().default(''),
+    domain: z.string().min(1).optional(),
+    sent_after: z.string().nullish(),
+    sent_before: z.string().nullish()
+});
+
+/**
+ * Success
+ */
+export const zGetV2EmailsResponse = z.object({
+    data: z.array(zEmail),
+    pagination: z.object({
+        next_cursor: z.string().nullable()
+    })
+});
+
 export const zGetV2MeetingsQuery = z.object({
     limit: z.int().gte(1).lte(200).optional().default(50),
     cursor: z.string().optional(),
@@ -5846,6 +5913,7 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse = 
             ]).nullish()
         }),
         created_at: z.string(),
+        video_url: z.url().nullable(),
         transcript: z.object({
             segments: z.array(z.object({
                 speech: z.string(),
@@ -6474,7 +6542,7 @@ export const zGetV2SelfResponse = z.union([
         active: z.literal(false)
     }),
     z.object({
-        active: z.boolean(),
+        active: z.literal(true),
         scope: z.string(),
         client_id: z.string(),
         token_type: z.enum(['Bearer']),
@@ -6483,7 +6551,7 @@ export const zGetV2SelfResponse = z.union([
         sub: z.uuid(),
         aud: z.string(),
         iss: z.enum(['attio.com']),
-        authorized_by_workspace_member_id: z.uuid(),
+        authorized_by_workspace_member_id: z.uuid().optional(),
         workspace_id: z.uuid(),
         workspace_name: z.string(),
         workspace_slug: z.string(),

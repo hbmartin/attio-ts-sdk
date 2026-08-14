@@ -309,7 +309,7 @@ export type OutputValue = {
     /**
      * The ISO4217 currency code representing the currency that the value is stored in.
      */
-    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
+    currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'GHS' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'OMR' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'QAR' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
     /**
      * The attribute type of the value.
      */
@@ -642,7 +642,7 @@ export type Attribute = {
             /**
              * The ISO4217 code representing the currency that values for this attribute should be stored in.
              */
-            default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
+            default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'GHS' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'OMR' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'QAR' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
             /**
              * How the currency should be displayed across the app. "code" will display the ISO currency code e.g. "USD", "name" will display the localized currency name e.g. "British pound", "narrowSymbol" will display "$1" instead of "US$1" and "symbol" will display a localized currency symbol such as "$".
              */
@@ -914,6 +914,73 @@ export type Comment = {
          */
         type?: 'api-token' | 'workspace-member' | 'system' | 'app' | null;
     };
+};
+
+export type Email = {
+    id: {
+        /**
+         * The ID of the workspace the email belongs to.
+         */
+        workspace_id: string;
+        /**
+         * The ID of the mailbox this copy of the email was read from. A single email sent to several people in your workspace is stored once per mailbox; this endpoint returns one entry per email, so the returned `mailbox_id` identifies whichever copy was readable.
+         */
+        mailbox_id: string;
+        /**
+         * The ID of the Attio email.
+         */
+        email_id: string;
+    };
+    /**
+     * Timestamp representing when the email was sent, taken from the email's own headers rather than from when Attio imported it.
+     */
+    sent_at: string;
+    /**
+     * Whether the email was sent from your workspace or received by it.
+     */
+    direction: 'inbound' | 'outbound';
+    /**
+     * The subject line of the email. This is `null` when the email has no subject or is from a mailbox shared as metadata only.
+     */
+    subject_line: string | null;
+    /**
+     * The participants on the email. Note that `bcc` participants are realistically only present on outbound email: inbound messages do not disclose the other recipients' blind copies, so an absent `bcc` participant is not evidence that there was none.
+     */
+    participants: Array<{
+        /**
+         * The role this participant had on the email.
+         */
+        role: 'from' | 'reply-to' | 'to' | 'cc' | 'bcc';
+        /**
+         * The normalized email address of the participant.
+         */
+        email_address: string;
+        /**
+         * The domain of the participant's email address.
+         */
+        email_domain: string;
+        /**
+         * The participant's name as it appeared on the email, when the email provided one.
+         */
+        name: string | null;
+    }>;
+    /**
+     * The person and company records whose email addresses or domains match this email's participants. Unlike meetings, this link is derived when you make the request rather than stored, so it reflects your records as they are now: creating a person record today will make older emails start reporting it.
+     */
+    linked_records: Array<{
+        /**
+         * The slug of the object the linked record belongs to.
+         */
+        object_slug: string;
+        /**
+         * The ID of the object the linked record belongs to.
+         */
+        object_id: string;
+        /**
+         * The ID of the linked record.
+         */
+        record_id: string;
+    }>;
 };
 
 /**
@@ -1799,7 +1866,7 @@ export type PostV2ByTargetByIdentifierAttributesData = {
                     /**
                      * The ISO4217 code representing the currency that values for this attribute should be stored in.
                      */
-                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD';
+                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'GHS' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'OMR' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'QAR' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD';
                     /**
                      * How the currency should be displayed across the app. "code" will display the ISO currency code e.g. "USD", "name" will display the localized currency name e.g. "British pound", "narrowSymbol" will display "$1" instead of "US$1" and "symbol" will display a localized currency symbol such as "$".
                      */
@@ -1963,7 +2030,7 @@ export type PatchV2ByTargetByIdentifierAttributesByAttributeData = {
                     /**
                      * The ISO4217 code representing the currency that values for this attribute should be stored in.
                      */
-                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD';
+                    default_currency_code: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'GHS' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'OMR' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'QAR' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD';
                     /**
                      * How the currency should be displayed across the app. "code" will display the ISO currency code e.g. "USD", "name" will display the localized currency name e.g. "British pound", "narrowSymbol" will display "$1" instead of "US$1" and "symbol" will display a localized currency symbol such as "$".
                      */
@@ -3272,7 +3339,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The ISO4217 currency code representing the currency that the value is stored in.
              */
-            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
+            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'GHS' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'OMR' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'QAR' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
             /**
              * The attribute type of the value.
              */
@@ -5041,7 +5108,7 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The ISO4217 currency code representing the currency that the value is stored in.
              */
-            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
+            currency_code?: 'ARS' | 'AUD' | 'BRL' | 'BGN' | 'CAD' | 'CLP' | 'CNY' | 'COP' | 'CZK' | 'DKK' | 'EUR' | 'FJD' | 'GHS' | 'HKD' | 'HUF' | 'ISK' | 'INR' | 'IDR' | 'ILS' | 'JPY' | 'KES' | 'KRW' | 'MYR' | 'MXN' | 'NTD' | 'NZD' | 'NGN' | 'NOK' | 'OMR' | 'XPF' | 'PEN' | 'PHP' | 'PLN' | 'GBP' | 'QAR' | 'RWF' | 'SAR' | 'SGD' | 'ZAR' | 'SEK' | 'CHF' | 'THB' | 'TRY' | 'AED' | 'UYU' | 'USD' | null;
             /**
              * The attribute type of the value.
              */
@@ -5942,7 +6009,7 @@ export type PostV2TasksErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'validation_type';
+        code: 'validation_type' | 'limit_reached';
         message: string;
     };
     /**
@@ -6142,7 +6209,7 @@ export type PatchV2TasksByTaskIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'validation_type';
+        code: 'validation_type' | 'limit_reached';
         message: string;
     };
     /**
@@ -6441,6 +6508,60 @@ export type GetV2CommentsByCommentIdResponses = {
 
 export type GetV2CommentsByCommentIdResponse = GetV2CommentsByCommentIdResponses[keyof GetV2CommentsByCommentIdResponses];
 
+export type GetV2EmailsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * The maximum number of emails to return. Must be between 1 and 50. Defaults to 25.
+         */
+        limit?: number;
+        /**
+         * A pagination cursor used to fetch the next page of emails. Responses with more emails will include a cursor for you to use here. If not provided, the first page will be returned.
+         */
+        cursor?: string;
+        /**
+         * The object to filter emails by. Must be the slug or ID of either the people or companies object. If provided, linked_record_ids must also be provided.
+         */
+        linked_object?: string;
+        /**
+         * A comma-separated list of up to 10 record IDs to filter emails by. All IDs must belong to the object given in `linked_object`, so filtering by both people and companies requires two requests. If provided, linked_object must also be provided.
+         */
+        linked_record_ids?: string;
+        /**
+         * A comma-separated list of up to 10 email addresses. Emails that include at least one of them as a participant are returned.
+         */
+        participants?: string;
+        /**
+         * A domain to filter emails by. Emails with at least one participant at this domain are returned.
+         */
+        domain?: string;
+        /**
+         * Only return emails sent after this timestamp. `sent_after` is exclusive, so an email sent at exactly this timestamp is not returned.
+         */
+        sent_after?: string | null;
+        /**
+         * Only return emails sent before this timestamp. `sent_before` is exclusive, so an email sent at exactly this timestamp is not returned.
+         */
+        sent_before?: string | null;
+    };
+    url: '/v2/emails';
+};
+
+export type GetV2EmailsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Array<Email>;
+        pagination: {
+            next_cursor: string | null;
+        };
+    };
+};
+
+export type GetV2EmailsResponse = GetV2EmailsResponses[keyof GetV2EmailsResponses];
+
 export type GetV2MeetingsData = {
     body?: never;
     path?: never;
@@ -6731,6 +6852,8 @@ export type PostV2MeetingsByMeetingIdCallRecordingsData = {
             /**
              * A publicly accessible URL to a video file of the call recording. Attio will download the video from this URL asynchronously.
              *
+             * This field is optional — a call recording can be created with only a `transcript` and no video.
+             *
              * **Requirements:**
              * - **Protocol:** The URL must use the `https` protocol.
              * - **File type:** The file must be a `.mp4` file.
@@ -6740,6 +6863,8 @@ export type PostV2MeetingsByMeetingIdCallRecordingsData = {
             video_url?: string;
             /**
              * The call recording's transcript.
+             *
+             * This field is technically optional for backwards compatibility, but you should always provide it — a call recording created without a transcript will be missing summaries and other transcript-derived features. This field will become required in a future version of this endpoint.
              */
             transcript?: Array<{
                 /**
@@ -6976,6 +7101,10 @@ export type GetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponses = {
              * The timestamp of when the call recording was created.
              */
             created_at: string;
+            /**
+             * A short-lived URL for downloading the call recording's video. This is only available for call recordings captured by the Attio call recorder: it is always `null` for call recordings created through the API. The URL expires one hour after this response was generated. You can call this endpoint again to get a fresh URL.
+             */
+            video_url: string | null;
             /**
              * The transcript for this call recording, `null` if no transcript is available.
              */
@@ -7274,6 +7403,20 @@ export type PostV2FilesUploadData = {
     url: '/v2/files/upload';
 };
 
+export type PostV2FilesUploadErrors = {
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'billing_error' | 'quota_exceeded';
+        message: string;
+    };
+};
+
+export type PostV2FilesUploadError = PostV2FilesUploadErrors[keyof PostV2FilesUploadErrors];
+
 export type PostV2FilesUploadResponses = {
     /**
      * Created
@@ -7401,6 +7544,8 @@ export type GetV2WebhooksResponses = {
             target_url: string;
             /**
              * One or more events the webhook is subscribed to.
+             *
+             * Within a workspace, the combination of target URL, event type and filter must be unique across all of your webhooks. A duplicate — whether against another webhook or repeated within a single request — is rejected with a `409 uniqueness_conflict`.
              */
             subscriptions: Array<{
                 /**
@@ -7409,6 +7554,8 @@ export type GetV2WebhooksResponses = {
                 event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
+                 *
+                 * When filters are compared for uniqueness, key order and the order of operations are ignored.
                  */
                 filter: {
                     $or: Array<{
@@ -7465,6 +7612,8 @@ export type PostV2WebhooksData = {
             target_url: string;
             /**
              * One or more events the webhook is subscribed to.
+             *
+             * Within a workspace, the combination of target URL, event type and filter must be unique across all of your webhooks. A duplicate — whether against another webhook or repeated within a single request — is rejected with a `409 uniqueness_conflict`.
              */
             subscriptions: Array<{
                 /**
@@ -7473,6 +7622,8 @@ export type PostV2WebhooksData = {
                 event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
+                 *
+                 * When filters are compared for uniqueness, key order and the order of operations are ignored.
                  */
                 filter: {
                     $or: Array<{
@@ -7513,6 +7664,15 @@ export type PostV2WebhooksErrors = {
         code: 'validation_type';
         message: string;
     };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'uniqueness_conflict';
+        message: string;
+    };
 };
 
 export type PostV2WebhooksError = PostV2WebhooksErrors[keyof PostV2WebhooksErrors];
@@ -7529,6 +7689,8 @@ export type PostV2WebhooksResponses = {
             target_url: string;
             /**
              * One or more events the webhook is subscribed to.
+             *
+             * Within a workspace, the combination of target URL, event type and filter must be unique across all of your webhooks. A duplicate — whether against another webhook or repeated within a single request — is rejected with a `409 uniqueness_conflict`.
              */
             subscriptions: Array<{
                 /**
@@ -7537,6 +7699,8 @@ export type PostV2WebhooksResponses = {
                 event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
+                 *
+                 * When filters are compared for uniqueness, key order and the order of operations are ignored.
                  */
                 filter: {
                     $or: Array<{
@@ -7663,6 +7827,8 @@ export type GetV2WebhooksByWebhookIdResponses = {
             target_url: string;
             /**
              * One or more events the webhook is subscribed to.
+             *
+             * Within a workspace, the combination of target URL, event type and filter must be unique across all of your webhooks. A duplicate — whether against another webhook or repeated within a single request — is rejected with a `409 uniqueness_conflict`.
              */
             subscriptions: Array<{
                 /**
@@ -7671,6 +7837,8 @@ export type GetV2WebhooksByWebhookIdResponses = {
                 event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
+                 *
+                 * When filters are compared for uniqueness, key order and the order of operations are ignored.
                  */
                 filter: {
                     $or: Array<{
@@ -7727,6 +7895,8 @@ export type PatchV2WebhooksByWebhookIdData = {
             target_url?: string;
             /**
              * One or more events the webhook is subscribed to.
+             *
+             * Within a workspace, the combination of target URL, event type and filter must be unique across all of your webhooks. A duplicate — whether against another webhook or repeated within a single request — is rejected with a `409 uniqueness_conflict`.
              */
             subscriptions?: Array<{
                 /**
@@ -7735,6 +7905,8 @@ export type PatchV2WebhooksByWebhookIdData = {
                 event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
+                 *
+                 * When filters are compared for uniqueness, key order and the order of operations are ignored.
                  */
                 filter: {
                     $or: Array<{
@@ -7780,6 +7952,15 @@ export type PatchV2WebhooksByWebhookIdErrors = {
         code: 'not_found';
         message: string;
     };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'uniqueness_conflict';
+        message: string;
+    };
 };
 
 export type PatchV2WebhooksByWebhookIdError = PatchV2WebhooksByWebhookIdErrors[keyof PatchV2WebhooksByWebhookIdErrors];
@@ -7796,6 +7977,8 @@ export type PatchV2WebhooksByWebhookIdResponses = {
             target_url: string;
             /**
              * One or more events the webhook is subscribed to.
+             *
+             * Within a workspace, the combination of target URL, event type and filter must be unique across all of your webhooks. A duplicate — whether against another webhook or repeated within a single request — is rejected with a `409 uniqueness_conflict`.
              */
             subscriptions: Array<{
                 /**
@@ -7804,6 +7987,8 @@ export type PatchV2WebhooksByWebhookIdResponses = {
                 event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
+                 *
+                 * When filters are compared for uniqueness, key order and the order of operations are ignored.
                  */
                 filter: {
                     $or: Array<{
@@ -7868,21 +8053,21 @@ export type GetV2SelfResponses = {
         /**
          * Whether the token is currently active and usable.
          */
-        active: boolean;
+        active: true;
         /**
          * A space-separated list of scopes associated with this token
          */
         scope: string;
         /**
-         * The app ID of the OAuth application that requested this token
+         * Identifies the client the token was issued to. For app access tokens this is the app ID. Workspace access tokens have no OAuth client, so this is the workspace access token ID.
          */
         client_id: string;
         /**
-         * The type of token, always Bearer for tokens acquired via the OAuth 2.0 flow.
+         * The type of token, always Bearer.
          */
         token_type: 'Bearer';
         /**
-         * The time at which this token will expire, if set, as a number of seconds since January 1 1970 UTC.
+         * The time at which this token will expire, if set, as a number of seconds since January 1 1970 UTC. Attio access tokens do not currently expire, so this is always null.
          */
         exp: number | null;
         /**
@@ -7902,9 +8087,9 @@ export type GetV2SelfResponses = {
          */
         iss: 'attio.com';
         /**
-         * The ID of the workspace member who authorised this token initially.
+         * The ID of the workspace member who authorized this token initially. Almost every token has one, but it is omitted for the app access tokens that Attio created itself rather than on a member's behalf.
          */
-        authorized_by_workspace_member_id: string;
+        authorized_by_workspace_member_id?: string;
         /**
          * The ID of the workspace the token is scoped to.
          */
