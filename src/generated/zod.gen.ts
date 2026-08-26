@@ -2,6 +2,22 @@
 
 import * as z from 'zod';
 
+export const zActivity = z.object({
+    id: z.object({
+        workspace_id: z.uuid(),
+        activity_id: z.uuid()
+    }),
+    api_slug: z.string(),
+    singular_noun: z.string(),
+    plural_noun: z.string(),
+    extends: z.array(z.object({
+        schema_id: z.uuid(),
+        schema_slug: z.string()
+    })),
+    is_system_activity: z.boolean(),
+    created_at: z.string()
+});
+
 export const zStatus = z.object({
     id: z.object({
         workspace_id: z.uuid(),
@@ -928,8 +944,10 @@ export const zOutputValue = z.union([
             'COP',
             'CZK',
             'DKK',
+            'EGP',
             'EUR',
             'FJD',
+            'GHS',
             'HKD',
             'HUF',
             'ISK',
@@ -945,11 +963,13 @@ export const zOutputValue = z.union([
             'NZD',
             'NGN',
             'NOK',
+            'OMR',
             'XPF',
             'PEN',
             'PHP',
             'PLN',
             'GBP',
+            'QAR',
             'RWF',
             'SAR',
             'SGD',
@@ -1645,8 +1665,10 @@ export const zAttribute = z.object({
                 'COP',
                 'CZK',
                 'DKK',
+                'EGP',
                 'EUR',
                 'FJD',
+                'GHS',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -1662,11 +1684,13 @@ export const zAttribute = z.object({
                 'NZD',
                 'NGN',
                 'NOK',
+                'OMR',
                 'XPF',
                 'PEN',
                 'PHP',
                 'PLN',
                 'GBP',
+                'QAR',
                 'RWF',
                 'SAR',
                 'SGD',
@@ -1808,6 +1832,34 @@ export const zComment = z.object({
             'app'
         ]).nullish()
     })
+});
+
+export const zEmail = z.object({
+    id: z.object({
+        workspace_id: z.uuid(),
+        mailbox_id: z.uuid(),
+        email_id: z.uuid()
+    }),
+    sent_at: z.string(),
+    direction: z.enum(['inbound', 'outbound']),
+    subject_line: z.string().nullable(),
+    participants: z.array(z.object({
+        role: z.enum([
+            'from',
+            'reply-to',
+            'to',
+            'cc',
+            'bcc'
+        ]),
+        email_address: z.string(),
+        email_domain: z.string(),
+        name: z.string().nullable()
+    })),
+    linked_records: z.array(z.object({
+        object_slug: z.string(),
+        object_id: z.uuid(),
+        record_id: z.uuid()
+    }))
 });
 
 /**
@@ -2144,6 +2196,71 @@ export const zGetV2ObjectsByObjectViewsResponse = z.object({
     })
 });
 
+export const zGetV2ActivitiesQuery = z.object({
+    limit: z.int().gte(1).lte(1000).optional().default(100),
+    cursor: z.string().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ActivitiesResponse = z.object({
+    data: z.array(zActivity),
+    pagination: z.object({
+        next_cursor: z.string().nullable()
+    })
+});
+
+export const zPostV2ActivitiesBody = z.object({
+    data: z.object({
+        api_slug: z.string(),
+        singular_noun: z.string().min(1),
+        plural_noun: z.string().min(1),
+        extends: z.enum([
+            'activities',
+            'interactions',
+            'calls'
+        ])
+    })
+});
+
+/**
+ * Success
+ */
+export const zPostV2ActivitiesResponse = z.object({
+    data: zActivity
+});
+
+export const zGetV2ActivitiesByActivityPath = z.object({
+    activity: z.string()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ActivitiesByActivityResponse = z.object({
+    data: zActivity
+});
+
+export const zPatchV2ActivitiesByActivityBody = z.object({
+    data: z.object({
+        api_slug: z.string().optional(),
+        singular_noun: z.string().min(1).optional(),
+        plural_noun: z.string().min(1).optional()
+    })
+});
+
+export const zPatchV2ActivitiesByActivityPath = z.object({
+    activity: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2ActivitiesByActivityResponse = z.object({
+    data: zActivity
+});
+
 export const zGetV2ByTargetByIdentifierAttributesPath = z.object({
     target: z.enum(['objects', 'lists']),
     identifier: z.string()
@@ -2219,8 +2336,10 @@ export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
                     'COP',
                     'CZK',
                     'DKK',
+                    'EGP',
                     'EUR',
                     'FJD',
+                    'GHS',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -2236,11 +2355,13 @@ export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
                     'NZD',
                     'NGN',
                     'NOK',
+                    'OMR',
                     'XPF',
                     'PEN',
                     'PHP',
                     'PLN',
                     'GBP',
+                    'QAR',
                     'RWF',
                     'SAR',
                     'SGD',
@@ -2325,8 +2446,10 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
                     'COP',
                     'CZK',
                     'DKK',
+                    'EGP',
                     'EUR',
                     'FJD',
+                    'GHS',
                     'HKD',
                     'HUF',
                     'ISK',
@@ -2342,11 +2465,13 @@ export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
                     'NZD',
                     'NGN',
                     'NOK',
+                    'OMR',
                     'XPF',
                     'PEN',
                     'PHP',
                     'PLN',
                     'GBP',
+                    'QAR',
                     'RWF',
                     'SAR',
                     'SGD',
@@ -2783,8 +2908,10 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'COP',
                 'CZK',
                 'DKK',
+                'EGP',
                 'EUR',
                 'FJD',
+                'GHS',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -2800,11 +2927,895 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 'NZD',
                 'NGN',
                 'NOK',
+                'OMR',
                 'XPF',
                 'PEN',
                 'PHP',
                 'PLN',
                 'GBP',
+                'QAR',
+                'RWF',
+                'SAR',
+                'SGD',
+                'ZAR',
+                'SEK',
+                'CHF',
+                'THB',
+                'TRY',
+                'AED',
+                'UYU',
+                'USD'
+            ]).nullish(),
+            attribute_type: z.enum(['currency'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['date']),
+            value: z.string()
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            domain: z.string(),
+            root_domain: z.string(),
+            attribute_type: z.enum(['domain'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_email_address: z.string(),
+            email_address: z.string(),
+            email_domain: z.string(),
+            email_root_domain: z.string(),
+            email_local_specifier: z.string(),
+            attribute_type: z.enum(['email-address'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            target_object: z.string(),
+            target_record_id: z.uuid(),
+            attribute_type: z.enum(['record-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            interaction_type: z.enum([
+                'calendar-event',
+                'call',
+                'chat-thread',
+                'email',
+                'in-person-meeting',
+                'meeting'
+            ]),
+            interacted_at: z.iso.datetime(),
+            owner_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['interaction'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            line_1: z.string().nullable(),
+            line_2: z.string().nullable(),
+            line_3: z.string().nullable(),
+            line_4: z.string().nullable(),
+            locality: z.string().nullable(),
+            region: z.string().nullable(),
+            postcode: z.string().nullable(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]).nullable(),
+            latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
+            longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
+            attribute_type: z.enum(['location'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            first_name: z.string(),
+            last_name: z.string(),
+            full_name: z.string(),
+            attribute_type: z.enum(['personal-name'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_phone_number: z.string(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]),
+            phone_number: z.string(),
+            attribute_type: z.enum(['phone-number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            status: zStatus,
+            attribute_type: z.enum(['status'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['rating'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            option: zSelectOption,
+            attribute_type: z.enum(['select'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.string(),
+            attribute_type: z.enum(['text'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['timestamp']),
+            value: z.iso.datetime()
+        })
+    ]))
+});
+
+export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesBody = z.object({
+    data: z.object({
+        values: z.array(z.object({
+            value: z.union([
+                z.record(z.string(), z.unknown()),
+                z.string(),
+                z.number(),
+                z.boolean()
+            ]),
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable()
+        })).min(1).max(400),
+        replace_history: z.literal(true)
+    })
+});
+
+export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesPath = z.object({
+    object: z.string(),
+    record_id: z.uuid(),
+    attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponse = z.object({
+    data: z.array(z.union([
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            referenced_actor_type: z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ]),
+            referenced_actor_id: z.uuid().nullable(),
+            attribute_type: z.enum(['actor-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.boolean(),
+            attribute_type: z.enum(['checkbox'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            currency_value: z.number(),
+            currency_code: z.enum([
+                'ARS',
+                'AUD',
+                'BRL',
+                'BGN',
+                'CAD',
+                'CLP',
+                'CNY',
+                'COP',
+                'CZK',
+                'DKK',
+                'EGP',
+                'EUR',
+                'FJD',
+                'GHS',
+                'HKD',
+                'HUF',
+                'ISK',
+                'INR',
+                'IDR',
+                'ILS',
+                'JPY',
+                'KES',
+                'KRW',
+                'MYR',
+                'MXN',
+                'NTD',
+                'NZD',
+                'NGN',
+                'NOK',
+                'OMR',
+                'XPF',
+                'PEN',
+                'PHP',
+                'PLN',
+                'GBP',
+                'QAR',
                 'RWF',
                 'SAR',
                 'SGD',
@@ -4026,8 +5037,10 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'COP',
                 'CZK',
                 'DKK',
+                'EGP',
                 'EUR',
                 'FJD',
+                'GHS',
                 'HKD',
                 'HUF',
                 'ISK',
@@ -4043,11 +5056,895 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 'NZD',
                 'NGN',
                 'NOK',
+                'OMR',
                 'XPF',
                 'PEN',
                 'PHP',
                 'PLN',
                 'GBP',
+                'QAR',
+                'RWF',
+                'SAR',
+                'SGD',
+                'ZAR',
+                'SEK',
+                'CHF',
+                'THB',
+                'TRY',
+                'AED',
+                'UYU',
+                'USD'
+            ]).nullish(),
+            attribute_type: z.enum(['currency'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['date']),
+            value: z.string()
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            domain: z.string(),
+            root_domain: z.string(),
+            attribute_type: z.enum(['domain'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_email_address: z.string(),
+            email_address: z.string(),
+            email_domain: z.string(),
+            email_root_domain: z.string(),
+            email_local_specifier: z.string(),
+            attribute_type: z.enum(['email-address'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            target_object: z.string(),
+            target_record_id: z.uuid(),
+            attribute_type: z.enum(['record-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            interaction_type: z.enum([
+                'calendar-event',
+                'call',
+                'chat-thread',
+                'email',
+                'in-person-meeting',
+                'meeting'
+            ]),
+            interacted_at: z.iso.datetime(),
+            owner_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['interaction'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            line_1: z.string().nullable(),
+            line_2: z.string().nullable(),
+            line_3: z.string().nullable(),
+            line_4: z.string().nullable(),
+            locality: z.string().nullable(),
+            region: z.string().nullable(),
+            postcode: z.string().nullable(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]).nullable(),
+            latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
+            longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
+            attribute_type: z.enum(['location'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            first_name: z.string(),
+            last_name: z.string(),
+            full_name: z.string(),
+            attribute_type: z.enum(['personal-name'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_phone_number: z.string(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]),
+            phone_number: z.string(),
+            attribute_type: z.enum(['phone-number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            status: zStatus,
+            attribute_type: z.enum(['status'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['rating'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            option: zSelectOption,
+            attribute_type: z.enum(['select'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.string(),
+            attribute_type: z.enum(['text'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['timestamp']),
+            value: z.iso.datetime()
+        })
+    ]))
+});
+
+export const zPutV2ListsByListEntriesByEntryIdAttributesByAttributeValuesBody = z.object({
+    data: z.object({
+        values: z.array(z.object({
+            value: z.union([
+                z.record(z.string(), z.unknown()),
+                z.string(),
+                z.number(),
+                z.boolean()
+            ]),
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable()
+        })).min(1).max(400),
+        replace_history: z.literal(true)
+    })
+});
+
+export const zPutV2ListsByListEntriesByEntryIdAttributesByAttributeValuesPath = z.object({
+    list: z.string(),
+    entry_id: z.uuid(),
+    attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPutV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponse = z.object({
+    data: z.array(z.union([
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            referenced_actor_type: z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ]),
+            referenced_actor_id: z.uuid().nullable(),
+            attribute_type: z.enum(['actor-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.boolean(),
+            attribute_type: z.enum(['checkbox'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            currency_value: z.number(),
+            currency_code: z.enum([
+                'ARS',
+                'AUD',
+                'BRL',
+                'BGN',
+                'CAD',
+                'CLP',
+                'CNY',
+                'COP',
+                'CZK',
+                'DKK',
+                'EGP',
+                'EUR',
+                'FJD',
+                'GHS',
+                'HKD',
+                'HUF',
+                'ISK',
+                'INR',
+                'IDR',
+                'ILS',
+                'JPY',
+                'KES',
+                'KRW',
+                'MYR',
+                'MXN',
+                'NTD',
+                'NZD',
+                'NGN',
+                'NOK',
+                'OMR',
+                'XPF',
+                'PEN',
+                'PHP',
+                'PLN',
+                'GBP',
+                'QAR',
                 'RWF',
                 'SAR',
                 'SGD',
@@ -4888,6 +6785,25 @@ export const zGetV2NotesByNoteIdResponse = z.object({
     data: zNote
 });
 
+export const zPatchV2NotesByNoteIdBody = z.object({
+    data: z.object({
+        title: z.string().optional(),
+        format: z.enum(['plaintext', 'markdown']).optional(),
+        content: z.string().optional()
+    })
+});
+
+export const zPatchV2NotesByNoteIdPath = z.object({
+    note_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2NotesByNoteIdResponse = z.object({
+    data: zNote
+});
+
 export const zGetV2TasksQuery = z.object({
     limit: z.int().optional(),
     offset: z.int().optional(),
@@ -5631,6 +7547,43 @@ export const zGetV2CommentsByCommentIdResponse = z.object({
     data: zComment
 });
 
+export const zGetV2EmailsQuery = z.object({
+    limit: z.int().gte(1).lte(50).optional().default(25),
+    cursor: z.string().optional(),
+    linked_object: z.string().min(1).optional(),
+    linked_record_ids: z.string().optional(),
+    participants: z.string().optional().default(''),
+    domain: z.string().min(1).optional(),
+    sent_after: z.string().nullish(),
+    sent_before: z.string().nullish()
+});
+
+/**
+ * Success
+ */
+export const zGetV2EmailsResponse = z.object({
+    data: z.array(zEmail),
+    pagination: z.object({
+        next_cursor: z.string().nullable()
+    })
+});
+
+export const zPostV2SequencesUnsubscribedEmailsBody = z.object({
+    data: z.object({
+        email_addresses: z.array(z.email()).min(1).max(1000)
+    })
+});
+
+/**
+ * Success
+ */
+export const zPostV2SequencesUnsubscribedEmailsResponse = z.object({
+    data: z.array(z.object({
+        email_address: z.string(),
+        created_at: z.iso.datetime()
+    }))
+});
+
 export const zGetV2MeetingsQuery = z.object({
     limit: z.int().gte(1).lte(200).optional().default(50),
     cursor: z.string().optional(),
@@ -5846,6 +7799,7 @@ export const zGetV2MeetingsByMeetingIdCallRecordingsByCallRecordingIdResponse = 
             ]).nullish()
         }),
         created_at: z.string(),
+        video_url: z.url().nullable(),
         transcript: z.object({
             segments: z.array(z.object({
                 speech: z.string(),
@@ -6474,7 +8428,7 @@ export const zGetV2SelfResponse = z.union([
         active: z.literal(false)
     }),
     z.object({
-        active: z.boolean(),
+        active: z.literal(true),
         scope: z.string(),
         client_id: z.string(),
         token_type: z.enum(['Bearer']),
@@ -6483,7 +8437,7 @@ export const zGetV2SelfResponse = z.union([
         sub: z.uuid(),
         aud: z.string(),
         iss: z.enum(['attio.com']),
-        authorized_by_workspace_member_id: z.uuid(),
+        authorized_by_workspace_member_id: z.uuid().optional(),
         workspace_id: z.uuid(),
         workspace_name: z.string(),
         workspace_slug: z.string(),
