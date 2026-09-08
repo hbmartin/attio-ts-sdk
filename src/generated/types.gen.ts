@@ -2013,6 +2013,15 @@ export type DeleteV2ActivitiesByActivityErrors = {
         message: string;
     };
     /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
      * Not Found
      */
     404: {
