@@ -348,6 +348,7 @@ export const zInputValue = z.union([
     }),
     z.object({
         interaction_type: z.enum([
+            'activity',
             'calendar-event',
             'call',
             'chat-thread',
@@ -1008,6 +1009,7 @@ export const zOutputValue = z.union([
     }),
     z.object({
         interaction_type: z.enum([
+            'activity',
             'calendar-event',
             'call',
             'chat-thread',
@@ -2500,6 +2502,7 @@ export const zPostV2ActivitiesByActivityRecordsQueryResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
+                    'activity',
                     'calendar-event',
                     'call',
                     'chat-thread',
@@ -3378,6 +3381,7 @@ export const zPostV2ActivitiesByActivityRecordsResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
+                    'activity',
                     'calendar-event',
                     'call',
                     'chat-thread',
@@ -4261,6 +4265,7 @@ export const zGetV2ActivitiesByActivityRecordsByRecordIdResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
+                    'activity',
                     'calendar-event',
                     'call',
                     'chat-thread',
@@ -5140,6 +5145,7 @@ export const zPatchV2ActivitiesByActivityRecordsByRecordIdResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
+                    'activity',
                     'calendar-event',
                     'call',
                     'chat-thread',
@@ -6019,6 +6025,7 @@ export const zPutV2ActivitiesByActivityRecordsByRecordIdResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
+                    'activity',
                     'calendar-event',
                     'call',
                     'chat-thread',
@@ -7462,6 +7469,7 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 ]).nullish()
             }),
             interaction_type: z.enum([
+                'activity',
                 'calendar-event',
                 'call',
                 'chat-thread',
@@ -8344,6 +8352,7 @@ export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 ]).nullish()
             }),
             interaction_type: z.enum([
+                'activity',
                 'calendar-event',
                 'call',
                 'chat-thread',
@@ -9591,6 +9600,7 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 ]).nullish()
             }),
             interaction_type: z.enum([
+                'activity',
                 'calendar-event',
                 'call',
                 'chat-thread',
@@ -10473,6 +10483,7 @@ export const zPutV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 ]).nullish()
             }),
             interaction_type: z.enum([
+                'activity',
                 'calendar-event',
                 'call',
                 'chat-thread',

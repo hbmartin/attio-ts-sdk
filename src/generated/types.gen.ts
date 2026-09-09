@@ -209,7 +209,7 @@ export type InputValue = {
     /**
      * The type of interaction e.g. calendar or email.
      */
-    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+    interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
     /**
      * When the interaction occurred.
      */
@@ -403,7 +403,7 @@ export type OutputValue = {
     /**
      * The type of interaction e.g. calendar or email.
      */
-    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+    interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
     /**
      * When the interaction occurred.
      */
@@ -2013,6 +2013,15 @@ export type DeleteV2ActivitiesByActivityErrors = {
         message: string;
     };
     /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
      * Not Found
      */
     404: {
@@ -2509,7 +2518,7 @@ export type PostV2ActivitiesByActivityRecordsQueryResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
                     /**
                      * When the interaction occurred.
                      */
@@ -3179,7 +3188,7 @@ export type PostV2ActivitiesByActivityRecordsResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
                     /**
                      * When the interaction occurred.
                      */
@@ -3876,7 +3885,7 @@ export type GetV2ActivitiesByActivityRecordsByRecordIdResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
                     /**
                      * When the interaction occurred.
                      */
@@ -4550,7 +4559,7 @@ export type PatchV2ActivitiesByActivityRecordsByRecordIdResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
                     /**
                      * When the interaction occurred.
                      */
@@ -5224,7 +5233,7 @@ export type PutV2ActivitiesByActivityRecordsByRecordIdResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
                     /**
                      * When the interaction occurred.
                      */
@@ -7402,7 +7411,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
             /**
              * When the interaction occurred.
              */
@@ -8072,7 +8081,7 @@ export type PutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
             /**
              * When the interaction occurred.
              */
@@ -9886,7 +9895,7 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
             /**
              * When the interaction occurred.
              */
@@ -10556,7 +10565,7 @@ export type PutV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
             /**
              * When the interaction occurred.
              */
