@@ -861,7 +861,7 @@ export const putV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValues = 
 /**
  * List record entries
  *
- * List all entries, across all lists, for which this record is the parent.
+ * List all entries, across all lists, for which this record is the parent. The response includes metadata for each entry, including `entry_id`, `list_id`, and `created_at`, but does not include entry values. To retrieve the values, call [Get a list entry](/rest-api/endpoint-reference/entries/get-a-list-entry) separately for each entry.
  *
  * Required scopes: `record_permission:read`, `object_configuration:read`, `list_entry:read`.
  */
