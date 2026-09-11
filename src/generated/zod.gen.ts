@@ -348,12 +348,10 @@ export const zInputValue = z.union([
     }),
     z.object({
         interaction_type: z.enum([
-            'calendar-event',
-            'call',
-            'chat-thread',
+            'activity',
             'email',
-            'in-person-meeting',
-            'meeting'
+            'meeting',
+            'calendar-event'
         ]),
         interacted_at: z.iso.datetime(),
         owner_actor: z.object({
@@ -1008,12 +1006,10 @@ export const zOutputValue = z.union([
     }),
     z.object({
         interaction_type: z.enum([
-            'calendar-event',
-            'call',
-            'chat-thread',
+            'activity',
             'email',
-            'in-person-meeting',
-            'meeting'
+            'meeting',
+            'calendar-event'
         ]),
         interacted_at: z.iso.datetime(),
         owner_actor: z.object({
@@ -2500,12 +2496,10 @@ export const zPostV2ActivitiesByActivityRecordsQueryResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
-                    'calendar-event',
-                    'call',
-                    'chat-thread',
+                    'activity',
                     'email',
-                    'in-person-meeting',
-                    'meeting'
+                    'meeting',
+                    'calendar-event'
                 ]),
                 interacted_at: z.iso.datetime(),
                 owner_actor: z.object({
@@ -3378,12 +3372,10 @@ export const zPostV2ActivitiesByActivityRecordsResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
-                    'calendar-event',
-                    'call',
-                    'chat-thread',
+                    'activity',
                     'email',
-                    'in-person-meeting',
-                    'meeting'
+                    'meeting',
+                    'calendar-event'
                 ]),
                 interacted_at: z.iso.datetime(),
                 owner_actor: z.object({
@@ -4261,12 +4253,10 @@ export const zGetV2ActivitiesByActivityRecordsByRecordIdResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
-                    'calendar-event',
-                    'call',
-                    'chat-thread',
+                    'activity',
                     'email',
-                    'in-person-meeting',
-                    'meeting'
+                    'meeting',
+                    'calendar-event'
                 ]),
                 interacted_at: z.iso.datetime(),
                 owner_actor: z.object({
@@ -5140,12 +5130,10 @@ export const zPatchV2ActivitiesByActivityRecordsByRecordIdResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
-                    'calendar-event',
-                    'call',
-                    'chat-thread',
+                    'activity',
                     'email',
-                    'in-person-meeting',
-                    'meeting'
+                    'meeting',
+                    'calendar-event'
                 ]),
                 interacted_at: z.iso.datetime(),
                 owner_actor: z.object({
@@ -6019,12 +6007,10 @@ export const zPutV2ActivitiesByActivityRecordsByRecordIdResponse = z.object({
                     ]).nullish()
                 }),
                 interaction_type: z.enum([
-                    'calendar-event',
-                    'call',
-                    'chat-thread',
+                    'activity',
                     'email',
-                    'in-person-meeting',
-                    'meeting'
+                    'meeting',
+                    'calendar-event'
                 ]),
                 interacted_at: z.iso.datetime(),
                 owner_actor: z.object({
@@ -7462,12 +7448,10 @@ export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 ]).nullish()
             }),
             interaction_type: z.enum([
-                'calendar-event',
-                'call',
-                'chat-thread',
+                'activity',
                 'email',
-                'in-person-meeting',
-                'meeting'
+                'meeting',
+                'calendar-event'
             ]),
             interacted_at: z.iso.datetime(),
             owner_actor: z.object({
@@ -8344,12 +8328,10 @@ export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesRe
                 ]).nullish()
             }),
             interaction_type: z.enum([
-                'calendar-event',
-                'call',
-                'chat-thread',
+                'activity',
                 'email',
-                'in-person-meeting',
-                'meeting'
+                'meeting',
+                'calendar-event'
             ]),
             interacted_at: z.iso.datetime(),
             owner_actor: z.object({
@@ -9591,12 +9573,10 @@ export const zGetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 ]).nullish()
             }),
             interaction_type: z.enum([
-                'calendar-event',
-                'call',
-                'chat-thread',
+                'activity',
                 'email',
-                'in-person-meeting',
-                'meeting'
+                'meeting',
+                'calendar-event'
             ]),
             interacted_at: z.iso.datetime(),
             owner_actor: z.object({
@@ -10473,12 +10453,10 @@ export const zPutV2ListsByListEntriesByEntryIdAttributesByAttributeValuesRespons
                 ]).nullish()
             }),
             interaction_type: z.enum([
-                'calendar-event',
-                'call',
-                'chat-thread',
+                'activity',
                 'email',
-                'in-person-meeting',
-                'meeting'
+                'meeting',
+                'calendar-event'
             ]),
             interacted_at: z.iso.datetime(),
             owner_actor: z.object({
@@ -12436,6 +12414,13 @@ export const zGetV2WebhooksResponse = z.object({
         target_url: z.url().regex(/^https:\/\/.*/),
         subscriptions: z.array(z.object({
             event_type: z.enum([
+                'activity.created',
+                'activity.updated',
+                'activity.deleted',
+                'activity-attribute.created',
+                'activity-attribute.updated',
+                'activity-record.created',
+                'activity-record.deleted',
                 'call-recording.created',
                 'comment.created',
                 'comment.resolved',
@@ -12507,6 +12492,13 @@ export const zPostV2WebhooksBody = z.object({
         target_url: z.url().regex(/^https:\/\/.*/),
         subscriptions: z.array(z.object({
             event_type: z.enum([
+                'activity.created',
+                'activity.updated',
+                'activity.deleted',
+                'activity-attribute.created',
+                'activity-attribute.updated',
+                'activity-record.created',
+                'activity-record.deleted',
                 'call-recording.created',
                 'comment.created',
                 'comment.resolved',
@@ -12571,6 +12563,13 @@ export const zPostV2WebhooksResponse = z.object({
         target_url: z.url().regex(/^https:\/\/.*/),
         subscriptions: z.array(z.object({
             event_type: z.enum([
+                'activity.created',
+                'activity.updated',
+                'activity.deleted',
+                'activity-attribute.created',
+                'activity-attribute.updated',
+                'activity-record.created',
+                'activity-record.deleted',
                 'call-recording.created',
                 'comment.created',
                 'comment.resolved',
@@ -12659,6 +12658,13 @@ export const zGetV2WebhooksByWebhookIdResponse = z.object({
         target_url: z.url().regex(/^https:\/\/.*/),
         subscriptions: z.array(z.object({
             event_type: z.enum([
+                'activity.created',
+                'activity.updated',
+                'activity.deleted',
+                'activity-attribute.created',
+                'activity-attribute.updated',
+                'activity-record.created',
+                'activity-record.deleted',
                 'call-recording.created',
                 'comment.created',
                 'comment.resolved',
@@ -12730,6 +12736,13 @@ export const zPatchV2WebhooksByWebhookIdBody = z.object({
         target_url: z.url().regex(/^https:\/\/.*/).optional(),
         subscriptions: z.array(z.object({
             event_type: z.enum([
+                'activity.created',
+                'activity.updated',
+                'activity.deleted',
+                'activity-attribute.created',
+                'activity-attribute.updated',
+                'activity-record.created',
+                'activity-record.deleted',
                 'call-recording.created',
                 'comment.created',
                 'comment.resolved',
@@ -12798,6 +12811,13 @@ export const zPatchV2WebhooksByWebhookIdResponse = z.object({
         target_url: z.url().regex(/^https:\/\/.*/),
         subscriptions: z.array(z.object({
             event_type: z.enum([
+                'activity.created',
+                'activity.updated',
+                'activity.deleted',
+                'activity-attribute.created',
+                'activity-attribute.updated',
+                'activity-record.created',
+                'activity-record.deleted',
                 'call-recording.created',
                 'comment.created',
                 'comment.resolved',

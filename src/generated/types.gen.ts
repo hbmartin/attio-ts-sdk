@@ -209,7 +209,7 @@ export type InputValue = {
     /**
      * The type of interaction e.g. calendar or email.
      */
-    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+    interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
     /**
      * When the interaction occurred.
      */
@@ -403,7 +403,7 @@ export type OutputValue = {
     /**
      * The type of interaction e.g. calendar or email.
      */
-    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+    interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
     /**
      * When the interaction occurred.
      */
@@ -2013,6 +2013,15 @@ export type DeleteV2ActivitiesByActivityErrors = {
         message: string;
     };
     /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
      * Not Found
      */
     404: {
@@ -2509,7 +2518,7 @@ export type PostV2ActivitiesByActivityRecordsQueryResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
                     /**
                      * When the interaction occurred.
                      */
@@ -3179,7 +3188,7 @@ export type PostV2ActivitiesByActivityRecordsResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
                     /**
                      * When the interaction occurred.
                      */
@@ -3876,7 +3885,7 @@ export type GetV2ActivitiesByActivityRecordsByRecordIdResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
                     /**
                      * When the interaction occurred.
                      */
@@ -4550,7 +4559,7 @@ export type PatchV2ActivitiesByActivityRecordsByRecordIdResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
                     /**
                      * When the interaction occurred.
                      */
@@ -5224,7 +5233,7 @@ export type PutV2ActivitiesByActivityRecordsByRecordIdResponses = {
                     /**
                      * The type of interaction e.g. calendar or email.
                      */
-                    interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+                    interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
                     /**
                      * When the interaction occurred.
                      */
@@ -7402,7 +7411,7 @@ export type GetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
             /**
              * When the interaction occurred.
              */
@@ -8072,7 +8081,7 @@ export type PutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResp
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
             /**
              * When the interaction occurred.
              */
@@ -9886,7 +9895,7 @@ export type GetV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
             /**
              * When the interaction occurred.
              */
@@ -10556,7 +10565,7 @@ export type PutV2ListsByListEntriesByEntryIdAttributesByAttributeValuesResponses
             /**
              * The type of interaction e.g. calendar or email.
              */
-            interaction_type: 'calendar-event' | 'call' | 'chat-thread' | 'email' | 'in-person-meeting' | 'meeting';
+            interaction_type: 'activity' | 'email' | 'meeting' | 'calendar-event';
             /**
              * When the interaction occurred.
              */
@@ -12988,7 +12997,7 @@ export type GetV2WebhooksResponses = {
                 /**
                  * Type of event the webhook is subscribed to.
                  */
-                event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
+                event_type: 'activity.created' | 'activity.updated' | 'activity.deleted' | 'activity-attribute.created' | 'activity-attribute.updated' | 'activity-record.created' | 'activity-record.deleted' | 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
                  *
@@ -13056,7 +13065,7 @@ export type PostV2WebhooksData = {
                 /**
                  * Type of event the webhook is subscribed to.
                  */
-                event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
+                event_type: 'activity.created' | 'activity.updated' | 'activity.deleted' | 'activity-attribute.created' | 'activity-attribute.updated' | 'activity-record.created' | 'activity-record.deleted' | 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
                  *
@@ -13133,7 +13142,7 @@ export type PostV2WebhooksResponses = {
                 /**
                  * Type of event the webhook is subscribed to.
                  */
-                event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
+                event_type: 'activity.created' | 'activity.updated' | 'activity.deleted' | 'activity-attribute.created' | 'activity-attribute.updated' | 'activity-record.created' | 'activity-record.deleted' | 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
                  *
@@ -13271,7 +13280,7 @@ export type GetV2WebhooksByWebhookIdResponses = {
                 /**
                  * Type of event the webhook is subscribed to.
                  */
-                event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
+                event_type: 'activity.created' | 'activity.updated' | 'activity.deleted' | 'activity-attribute.created' | 'activity-attribute.updated' | 'activity-record.created' | 'activity-record.deleted' | 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
                  *
@@ -13339,7 +13348,7 @@ export type PatchV2WebhooksByWebhookIdData = {
                 /**
                  * Type of event the webhook is subscribed to.
                  */
-                event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
+                event_type: 'activity.created' | 'activity.updated' | 'activity.deleted' | 'activity-attribute.created' | 'activity-attribute.updated' | 'activity-record.created' | 'activity-record.deleted' | 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
                  *
@@ -13421,7 +13430,7 @@ export type PatchV2WebhooksByWebhookIdResponses = {
                 /**
                  * Type of event the webhook is subscribed to.
                  */
-                event_type: 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
+                event_type: 'activity.created' | 'activity.updated' | 'activity.deleted' | 'activity-attribute.created' | 'activity-attribute.updated' | 'activity-record.created' | 'activity-record.deleted' | 'call-recording.created' | 'comment.created' | 'comment.resolved' | 'comment.unresolved' | 'comment.deleted' | 'list.created' | 'list.updated' | 'list.deleted' | 'list-attribute.created' | 'list-attribute.updated' | 'list-entry.created' | 'list-entry.updated' | 'list-entry.deleted' | 'object-attribute.created' | 'object-attribute.updated' | 'note.created' | 'note-content.updated' | 'note.updated' | 'note.deleted' | 'record.created' | 'record.merged' | 'record.updated' | 'record.deleted' | 'task.created' | 'task.updated' | 'task.deleted' | 'workspace-member.created';
                 /**
                  * Filters to determine whether the webhook event should be sent. If null, the filter always passes.
                  *
