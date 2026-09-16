@@ -11942,6 +11942,10 @@ export type GetV2EmailsData = {
          * Only return emails sent before this timestamp. `sent_before` is exclusive, so an email sent at exactly this timestamp is not returned.
          */
         sent_before?: string | null;
+        /**
+         * If `true`, an email is only returned when at least one participant outside your workspace looks like a person rather than an automated sender (`notifications@`, `no-reply@`, meeting notetakers, …). Defaults to `false`, which returns every email regardless of who sent it.
+         */
+        exclude_automated_participants?: boolean;
     };
     url: '/v2/emails';
 };

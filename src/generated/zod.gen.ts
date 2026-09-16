@@ -11977,7 +11977,8 @@ export const zGetV2EmailsQuery = z.object({
     participants: z.string().optional().default(''),
     domain: z.string().min(1).optional(),
     sent_after: z.string().nullish(),
-    sent_before: z.string().nullish()
+    sent_before: z.string().nullish(),
+    exclude_automated_participants: z.boolean().optional().default(false)
 });
 
 /**
