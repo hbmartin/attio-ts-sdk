@@ -11977,7 +11977,8 @@ export const zGetV2EmailsQuery = z.object({
     participants: z.string().optional().default(''),
     domain: z.string().min(1).optional(),
     sent_after: z.string().nullish(),
-    sent_before: z.string().nullish()
+    sent_before: z.string().nullish(),
+    exclude_automated_participants: z.boolean().optional().default(false)
 });
 
 /**
@@ -12079,6 +12080,15 @@ export const zPostV2MeetingsBody = z.object({
 export const zPostV2MeetingsResponse = z.object({
     data: zMeeting
 });
+
+export const zDeleteV2MeetingsByMeetingIdPath = z.object({
+    meeting_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2MeetingsByMeetingIdResponse = z.record(z.string(), z.unknown());
 
 export const zGetV2MeetingsByMeetingIdPath = z.object({
     meeting_id: z.uuid()
