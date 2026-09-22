@@ -1963,7 +1963,7 @@ export type PostV2ActivitiesErrors = {
     403: {
         status_code: 403;
         type: 'auth_error';
-        code: 'unauthorized';
+        code: 'billing_error' | 'unauthorized';
         message: string;
     };
     /**
@@ -2898,7 +2898,7 @@ export type PostV2ActivitiesByActivityRecordsErrors = {
     403: {
         status_code: 403;
         type: 'auth_error';
-        code: 'unauthorized';
+        code: 'unauthorized' | 'billing_error';
         message: string;
     };
     /**
@@ -11942,6 +11942,10 @@ export type GetV2EmailsData = {
          * Only return emails sent before this timestamp. `sent_before` is exclusive, so an email sent at exactly this timestamp is not returned.
          */
         sent_before?: string | null;
+        /**
+         * If `true`, an email is only returned when at least one participant outside your workspace looks like a person rather than an automated sender (`notifications@`, `no-reply@`, meeting notetakers, …). Defaults to `false`, which returns every email regardless of who sent it.
+         */
+        exclude_automated_participants?: boolean;
     };
     url: '/v2/emails';
 };
@@ -12180,6 +12184,52 @@ export type PostV2MeetingsResponses = {
 
 export type PostV2MeetingsResponse = PostV2MeetingsResponses[keyof PostV2MeetingsResponses];
 
+export type DeleteV2MeetingsByMeetingIdData = {
+    body?: never;
+    path: {
+        /**
+         * A UUID which identifies the meeting to delete.
+         */
+        meeting_id: string;
+    };
+    query?: never;
+    url: '/v2/meetings/{meeting_id}';
+};
+
+export type DeleteV2MeetingsByMeetingIdErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'system_edit_unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type DeleteV2MeetingsByMeetingIdError = DeleteV2MeetingsByMeetingIdErrors[keyof DeleteV2MeetingsByMeetingIdErrors];
+
+export type DeleteV2MeetingsByMeetingIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type DeleteV2MeetingsByMeetingIdResponse = DeleteV2MeetingsByMeetingIdResponses[keyof DeleteV2MeetingsByMeetingIdResponses];
+
 export type GetV2MeetingsByMeetingIdData = {
     body?: never;
     path: {
@@ -12216,6 +12266,124 @@ export type GetV2MeetingsByMeetingIdResponses = {
 };
 
 export type GetV2MeetingsByMeetingIdResponse = GetV2MeetingsByMeetingIdResponses[keyof GetV2MeetingsByMeetingIdResponses];
+
+export type PatchV2MeetingsByMeetingIdData = {
+    body: {
+        data: {
+            linked_records: Array<{
+                /**
+                 * The slug or UUID of the object that the record being linked belongs to.
+                 */
+                object: string;
+                /**
+                 * The UUID of the record being linked.
+                 */
+                record_id: string;
+            }>;
+        };
+    };
+    path: {
+        /**
+         * A UUID which identifies the meeting to update.
+         */
+        meeting_id: string;
+    };
+    query?: never;
+    url: '/v2/meetings/{meeting_id}';
+};
+
+export type PatchV2MeetingsByMeetingIdErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'value_not_found' | 'validation_type';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type PatchV2MeetingsByMeetingIdError = PatchV2MeetingsByMeetingIdErrors[keyof PatchV2MeetingsByMeetingIdErrors];
+
+export type PatchV2MeetingsByMeetingIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Meeting;
+    };
+};
+
+export type PatchV2MeetingsByMeetingIdResponse = PatchV2MeetingsByMeetingIdResponses[keyof PatchV2MeetingsByMeetingIdResponses];
+
+export type PutV2MeetingsByMeetingIdData = {
+    body: {
+        data: {
+            linked_records: Array<{
+                /**
+                 * The slug or UUID of the object that the record being linked belongs to.
+                 */
+                object: string;
+                /**
+                 * The UUID of the record being linked.
+                 */
+                record_id: string;
+            }>;
+        };
+    };
+    path: {
+        /**
+         * A UUID which identifies the meeting to update.
+         */
+        meeting_id: string;
+    };
+    query?: never;
+    url: '/v2/meetings/{meeting_id}';
+};
+
+export type PutV2MeetingsByMeetingIdErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'value_not_found' | 'validation_type';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type PutV2MeetingsByMeetingIdError = PutV2MeetingsByMeetingIdErrors[keyof PutV2MeetingsByMeetingIdErrors];
+
+export type PutV2MeetingsByMeetingIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Meeting;
+    };
+};
+
+export type PutV2MeetingsByMeetingIdResponse = PutV2MeetingsByMeetingIdResponses[keyof PutV2MeetingsByMeetingIdResponses];
 
 export type GetV2MeetingsByMeetingIdCallRecordingsData = {
     body?: never;

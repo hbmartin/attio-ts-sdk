@@ -11977,7 +11977,8 @@ export const zGetV2EmailsQuery = z.object({
     participants: z.string().optional().default(''),
     domain: z.string().min(1).optional(),
     sent_after: z.string().nullish(),
-    sent_before: z.string().nullish()
+    sent_before: z.string().nullish(),
+    exclude_automated_participants: z.boolean().optional().default(false)
 });
 
 /**
@@ -12080,6 +12081,15 @@ export const zPostV2MeetingsResponse = z.object({
     data: zMeeting
 });
 
+export const zDeleteV2MeetingsByMeetingIdPath = z.object({
+    meeting_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2MeetingsByMeetingIdResponse = z.record(z.string(), z.unknown());
+
 export const zGetV2MeetingsByMeetingIdPath = z.object({
     meeting_id: z.uuid()
 });
@@ -12088,6 +12098,46 @@ export const zGetV2MeetingsByMeetingIdPath = z.object({
  * Success
  */
 export const zGetV2MeetingsByMeetingIdResponse = z.object({
+    data: zMeeting
+});
+
+export const zPatchV2MeetingsByMeetingIdBody = z.object({
+    data: z.object({
+        linked_records: z.array(z.object({
+            object: z.string(),
+            record_id: z.uuid()
+        })).max(50)
+    })
+});
+
+export const zPatchV2MeetingsByMeetingIdPath = z.object({
+    meeting_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2MeetingsByMeetingIdResponse = z.object({
+    data: zMeeting
+});
+
+export const zPutV2MeetingsByMeetingIdBody = z.object({
+    data: z.object({
+        linked_records: z.array(z.object({
+            object: z.string(),
+            record_id: z.uuid()
+        })).max(50)
+    })
+});
+
+export const zPutV2MeetingsByMeetingIdPath = z.object({
+    meeting_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zPutV2MeetingsByMeetingIdResponse = z.object({
     data: zMeeting
 });
 
