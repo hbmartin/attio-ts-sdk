@@ -2,22 +2,6 @@
 
 import * as z from 'zod';
 
-export const zActivity = z.object({
-    id: z.object({
-        workspace_id: z.uuid(),
-        activity_id: z.uuid()
-    }),
-    api_slug: z.string(),
-    singular_noun: z.string(),
-    plural_noun: z.string(),
-    extends: z.array(z.object({
-        schema_id: z.uuid(),
-        schema_slug: z.string()
-    })),
-    is_system_activity: z.boolean(),
-    created_at: z.string()
-});
-
 export const zStatus = z.object({
     id: z.object({
         workspace_id: z.uuid(),
@@ -1587,6 +1571,22 @@ export const zOutputValue = z.union([
         value: z.iso.datetime()
     })
 ]);
+
+export const zActivity = z.object({
+    id: z.object({
+        workspace_id: z.uuid(),
+        activity_id: z.uuid()
+    }),
+    api_slug: z.string(),
+    singular_noun: z.string(),
+    plural_noun: z.string(),
+    extends: z.array(z.object({
+        schema_id: z.uuid(),
+        schema_slug: z.string()
+    })),
+    is_system_activity: z.boolean(),
+    created_at: z.string()
+});
 
 export const zAttribute = z.object({
     id: z.object({

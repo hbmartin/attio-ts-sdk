@@ -4,52 +4,6 @@ export type ClientOptions = {
     baseUrl: 'https://api.attio.com' | (string & {});
 };
 
-export type Activity = {
-    id: {
-        /**
-         * A UUID to identify the workspace this activity belongs to.
-         */
-        workspace_id: string;
-        /**
-         * A UUID to identify the activity.
-         */
-        activity_id: string;
-    };
-    /**
-     * A unique, human-readable slug to access the activity through URLs and API calls. Formatted in snake case.
-     */
-    api_slug: string;
-    /**
-     * The singular form of the activity's name.
-     */
-    singular_noun: string;
-    /**
-     * The plural form of the activity's name.
-     */
-    plural_noun: string;
-    /**
-     * The schemas this activity directly extends, which supply its inherited attributes.
-     */
-    extends: Array<{
-        /**
-         * A UUID to identify the schema.
-         */
-        schema_id: string;
-        /**
-         * The human-readable slug of the schema.
-         */
-        schema_slug: string;
-    }>;
-    /**
-     * `true` when Attio defines the activity, `false` when it's a custom activity.
-     */
-    is_system_activity: boolean;
-    /**
-     * When the activity was created.
-     */
-    created_at: string;
-};
-
 export type Status = {
     id: {
         /**
@@ -567,6 +521,52 @@ export type OutputValue = {
      * A timestamp value represents a single, universal moment in time using an ISO 8601 formatted string. This means that a timestamp consists of a date, a time (with nanosecond precision), and a time zone. Attio will coerce timestamps which do not provide full nanosecond precision and UTC is assumed if no time zone is provided. For example, "2023", "2023-01", "2023-01-02", "2023-01-02T13:00", "2023-01-02T13:00:00", and "2023-01-02T13:00:00.000000000" will all be coerced to "2023-01-02T13:00:00.000000000Z". Timestamps are always returned in UTC. For example, writing a timestamp value using the string "2023-01-02T13:00:00.000000000+02:00" will result in the value "2023-01-02T11:00:00.000000000Z" being returned. The maximum date is "9999-12-31T23:59:59.999999999Z".
      */
     value: string;
+};
+
+export type Activity = {
+    id: {
+        /**
+         * A UUID to identify the workspace this activity belongs to.
+         */
+        workspace_id: string;
+        /**
+         * A UUID to identify the activity.
+         */
+        activity_id: string;
+    };
+    /**
+     * A unique, human-readable slug to access the activity through URLs and API calls. Formatted in snake case.
+     */
+    api_slug: string;
+    /**
+     * The singular form of the activity's name.
+     */
+    singular_noun: string;
+    /**
+     * The plural form of the activity's name.
+     */
+    plural_noun: string;
+    /**
+     * The schemas this activity directly extends, which supply its inherited attributes.
+     */
+    extends: Array<{
+        /**
+         * A UUID to identify the schema.
+         */
+        schema_id: string;
+        /**
+         * The human-readable slug of the schema.
+         */
+        schema_slug: string;
+    }>;
+    /**
+     * `true` when Attio defines the activity, `false` when it's a custom activity.
+     */
+    is_system_activity: boolean;
+    /**
+     * When the activity was created.
+     */
+    created_at: string;
 };
 
 export type Attribute = {
@@ -2889,7 +2889,7 @@ export type PostV2ActivitiesByActivityRecordsErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'value_not_found';
+        code: 'value_not_found' | 'particle_gate_violation';
         message: string;
     };
     /**
@@ -2908,6 +2908,15 @@ export type PostV2ActivitiesByActivityRecordsErrors = {
         status_code: 404;
         type: 'invalid_request_error';
         code: 'not_found';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'concurrent_write_conflict';
         message: string;
     };
 };
@@ -4260,7 +4269,7 @@ export type PatchV2ActivitiesByActivityRecordsByRecordIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'missing_value';
+        code: 'missing_value' | 'particle_gate_violation';
         message: string;
     };
     /**
@@ -4279,6 +4288,15 @@ export type PatchV2ActivitiesByActivityRecordsByRecordIdErrors = {
         status_code: 404;
         type: 'invalid_request_error';
         code: 'not_found';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'concurrent_write_conflict';
         message: string;
     };
 };
@@ -4934,7 +4952,7 @@ export type PutV2ActivitiesByActivityRecordsByRecordIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'missing_value';
+        code: 'missing_value' | 'particle_gate_violation';
         message: string;
     };
     /**
@@ -4953,6 +4971,15 @@ export type PutV2ActivitiesByActivityRecordsByRecordIdErrors = {
         status_code: 404;
         type: 'invalid_request_error';
         code: 'not_found';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'concurrent_write_conflict';
         message: string;
     };
 };
@@ -6545,7 +6572,7 @@ export type PostV2ObjectsByObjectRecordsErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'value_not_found';
+        code: 'value_not_found' | 'particle_gate_violation';
         message: string;
     };
     /**
@@ -6564,6 +6591,15 @@ export type PostV2ObjectsByObjectRecordsErrors = {
         status_code: 404;
         type: 'invalid_request_error';
         code: 'not_found';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'concurrent_write_conflict';
         message: string;
     };
 };
@@ -6643,7 +6679,7 @@ export type PutV2ObjectsByObjectRecordsErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'value_not_found' | 'merge_in_progress';
+        code: 'value_not_found' | 'merge_in_progress' | 'particle_gate_violation';
         message: string;
     };
     /**
@@ -6662,6 +6698,15 @@ export type PutV2ObjectsByObjectRecordsErrors = {
         status_code: 404;
         type: 'invalid_request_error';
         code: 'not_found';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'concurrent_write_conflict';
         message: string;
     };
 };
@@ -6860,7 +6905,7 @@ export type PatchV2ObjectsByObjectRecordsByRecordIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'missing_value' | 'merge_in_progress';
+        code: 'missing_value' | 'merge_in_progress' | 'particle_gate_violation';
         message: string;
     };
     /**
@@ -6879,6 +6924,15 @@ export type PatchV2ObjectsByObjectRecordsByRecordIdErrors = {
         status_code: 404;
         type: 'invalid_request_error';
         code: 'not_found';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'concurrent_write_conflict';
         message: string;
     };
 };
@@ -6957,7 +7011,7 @@ export type PutV2ObjectsByObjectRecordsByRecordIdErrors = {
     400: {
         status_code: 400;
         type: 'invalid_request_error';
-        code: 'missing_value' | 'merge_in_progress';
+        code: 'missing_value' | 'merge_in_progress' | 'particle_gate_violation';
         message: string;
     };
     /**
@@ -6976,6 +7030,15 @@ export type PutV2ObjectsByObjectRecordsByRecordIdErrors = {
         status_code: 404;
         type: 'invalid_request_error';
         code: 'not_found';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'concurrent_write_conflict';
         message: string;
     };
 };
