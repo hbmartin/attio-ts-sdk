@@ -2286,6 +2286,2436 @@ export const zPatchV2ActivitiesByActivityResponse = z.object({
     data: zActivity
 });
 
+export const zGetV2ByTargetByIdentifierAttributesPath = z.object({
+    target: z.enum([
+        'objects',
+        'lists',
+        'activities'
+    ]),
+    identifier: z.string()
+});
+
+export const zGetV2ByTargetByIdentifierAttributesQuery = z.object({
+    limit: z.int().optional(),
+    offset: z.int().optional(),
+    show_archived: z.boolean().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ByTargetByIdentifierAttributesResponse = z.object({
+    data: z.array(zAttribute)
+});
+
+export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
+    data: z.object({
+        title: z.string(),
+        description: z.string().nullable(),
+        api_slug: z.string(),
+        type: z.enum([
+            'text',
+            'number',
+            'checkbox',
+            'currency',
+            'date',
+            'timestamp',
+            'rating',
+            'status',
+            'select',
+            'record-reference',
+            'actor-reference',
+            'location',
+            'domain',
+            'email-address',
+            'phone-number'
+        ]),
+        is_required: z.boolean(),
+        is_unique: z.boolean(),
+        is_multiselect: z.boolean(),
+        default_value: z.union([
+            z.object({
+                type: z.enum(['dynamic']),
+                template: z.union([
+                    z.enum(['current-user']),
+                    z.string()
+                ])
+            }),
+            z.object({
+                type: z.enum(['static']),
+                template: z.array(zInputValue)
+            })
+        ]).nullish(),
+        relationship: z.object({
+            object: z.string(),
+            title: z.string(),
+            api_slug: z.string(),
+            is_multiselect: z.boolean()
+        }).nullish(),
+        config: z.object({
+            currency: z.object({
+                default_currency_code: z.enum([
+                    'ARS',
+                    'AUD',
+                    'BRL',
+                    'BGN',
+                    'CAD',
+                    'CLP',
+                    'CNY',
+                    'COP',
+                    'CZK',
+                    'DKK',
+                    'EGP',
+                    'EUR',
+                    'FJD',
+                    'GHS',
+                    'HKD',
+                    'HUF',
+                    'ISK',
+                    'INR',
+                    'IDR',
+                    'ILS',
+                    'JPY',
+                    'KES',
+                    'KRW',
+                    'MYR',
+                    'MXN',
+                    'NTD',
+                    'NZD',
+                    'NGN',
+                    'NOK',
+                    'OMR',
+                    'XPF',
+                    'PEN',
+                    'PHP',
+                    'PLN',
+                    'GBP',
+                    'QAR',
+                    'RWF',
+                    'SAR',
+                    'SGD',
+                    'ZAR',
+                    'SEK',
+                    'CHF',
+                    'THB',
+                    'TRY',
+                    'AED',
+                    'UYU',
+                    'USD'
+                ]),
+                display_type: z.enum([
+                    'code',
+                    'name',
+                    'narrowSymbol',
+                    'symbol'
+                ])
+            }).optional(),
+            record_reference: z.object({
+                allowed_objects: z.array(z.string()).min(1)
+            }).optional()
+        })
+    })
+});
+
+export const zPostV2ByTargetByIdentifierAttributesPath = z.object({
+    target: z.enum([
+        'objects',
+        'lists',
+        'activities'
+    ]),
+    identifier: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2ByTargetByIdentifierAttributesResponse = z.object({
+    data: zAttribute
+});
+
+export const zGetV2ByTargetByIdentifierAttributesByAttributePath = z.object({
+    target: z.enum([
+        'objects',
+        'lists',
+        'activities'
+    ]),
+    identifier: z.string(),
+    attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ByTargetByIdentifierAttributesByAttributeResponse = z.object({
+    data: zAttribute
+});
+
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
+    data: z.object({
+        title: z.string().optional(),
+        description: z.string().nullish(),
+        api_slug: z.string().optional(),
+        is_required: z.boolean().optional(),
+        is_unique: z.boolean().optional(),
+        default_value: z.union([
+            z.object({
+                type: z.enum(['dynamic']),
+                template: z.union([
+                    z.enum(['current-user']),
+                    z.string()
+                ])
+            }),
+            z.object({
+                type: z.enum(['static']),
+                template: z.array(zInputValue)
+            })
+        ]).nullish(),
+        config: z.object({
+            currency: z.object({
+                default_currency_code: z.enum([
+                    'ARS',
+                    'AUD',
+                    'BRL',
+                    'BGN',
+                    'CAD',
+                    'CLP',
+                    'CNY',
+                    'COP',
+                    'CZK',
+                    'DKK',
+                    'EGP',
+                    'EUR',
+                    'FJD',
+                    'GHS',
+                    'HKD',
+                    'HUF',
+                    'ISK',
+                    'INR',
+                    'IDR',
+                    'ILS',
+                    'JPY',
+                    'KES',
+                    'KRW',
+                    'MYR',
+                    'MXN',
+                    'NTD',
+                    'NZD',
+                    'NGN',
+                    'NOK',
+                    'OMR',
+                    'XPF',
+                    'PEN',
+                    'PHP',
+                    'PLN',
+                    'GBP',
+                    'QAR',
+                    'RWF',
+                    'SAR',
+                    'SGD',
+                    'ZAR',
+                    'SEK',
+                    'CHF',
+                    'THB',
+                    'TRY',
+                    'AED',
+                    'UYU',
+                    'USD'
+                ]),
+                display_type: z.enum([
+                    'code',
+                    'name',
+                    'narrowSymbol',
+                    'symbol'
+                ])
+            }).optional(),
+            record_reference: z.object({
+                allowed_objects: z.array(z.string()).min(1)
+            }).optional()
+        }).optional(),
+        is_archived: z.boolean().optional()
+    })
+});
+
+export const zPatchV2ByTargetByIdentifierAttributesByAttributePath = z.object({
+    target: z.enum([
+        'objects',
+        'lists',
+        'activities'
+    ]),
+    identifier: z.string(),
+    attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeResponse = z.object({
+    data: zAttribute
+});
+
+export const zGetV2ByTargetByIdentifierAttributesByAttributeOptionsPath = z.object({
+    target: z.enum([
+        'objects',
+        'lists',
+        'activities'
+    ]),
+    identifier: z.string(),
+    attribute: z.string()
+});
+
+export const zGetV2ByTargetByIdentifierAttributesByAttributeOptionsQuery = z.object({
+    show_archived: z.boolean().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ByTargetByIdentifierAttributesByAttributeOptionsResponse = z.object({
+    data: z.array(zSelectOption)
+});
+
+export const zPostV2ByTargetByIdentifierAttributesByAttributeOptionsBody = z.object({
+    data: z.object({
+        title: z.string().min(1)
+    })
+});
+
+export const zPostV2ByTargetByIdentifierAttributesByAttributeOptionsPath = z.object({
+    target: z.enum([
+        'objects',
+        'lists',
+        'activities'
+    ]),
+    identifier: z.string(),
+    attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2ByTargetByIdentifierAttributesByAttributeOptionsResponse = z.object({
+    data: zSelectOption
+});
+
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionBody = z.object({
+    data: z.object({
+        title: z.string().min(1).optional(),
+        is_archived: z.boolean().optional()
+    })
+});
+
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionPath = z.object({
+    target: z.enum([
+        'objects',
+        'lists',
+        'activities'
+    ]),
+    identifier: z.string(),
+    attribute: z.string(),
+    option: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionResponse = z.object({
+    data: zSelectOption
+});
+
+export const zGetV2ByTargetByIdentifierAttributesByAttributeStatusesPath = z.object({
+    target: z.enum(['lists', 'objects']),
+    identifier: z.string(),
+    attribute: z.string()
+});
+
+export const zGetV2ByTargetByIdentifierAttributesByAttributeStatusesQuery = z.object({
+    show_archived: z.boolean().optional().default(false)
+});
+
+/**
+ * Success
+ */
+export const zGetV2ByTargetByIdentifierAttributesByAttributeStatusesResponse = z.object({
+    data: z.array(zStatus)
+});
+
+export const zPostV2ByTargetByIdentifierAttributesByAttributeStatusesBody = z.object({
+    data: z.object({
+        title: z.string().min(1),
+        celebration_enabled: z.boolean().optional().default(false),
+        target_time_in_status: z.string().regex(/P(?:(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(?:T(\d+(?:[\.,]\d+)?H)?(\d+(?:[\.,]\d+)?M)?(\d+(?:[\.,]\d+)?S)?)?)/).nullish()
+    })
+});
+
+export const zPostV2ByTargetByIdentifierAttributesByAttributeStatusesPath = z.object({
+    target: z.enum(['lists', 'objects']),
+    identifier: z.string(),
+    attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2ByTargetByIdentifierAttributesByAttributeStatusesResponse = z.object({
+    data: zStatus
+});
+
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusBody = z.object({
+    data: z.object({
+        title: z.string().min(1).optional(),
+        celebration_enabled: z.boolean().optional().default(false),
+        target_time_in_status: z.string().regex(/P(?:(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(?:T(\d+(?:[\.,]\d+)?H)?(\d+(?:[\.,]\d+)?M)?(\d+(?:[\.,]\d+)?S)?)?)/).nullish(),
+        is_archived: z.boolean().optional()
+    })
+});
+
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusPath = z.object({
+    target: z.enum(['lists', 'objects']),
+    identifier: z.string(),
+    attribute: z.string(),
+    status: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResponse = z.object({
+    data: zStatus
+});
+
+export const zPostV2ObjectsByObjectRecordsQueryBody = z.object({
+    filter: z.record(z.string(), z.unknown()).optional(),
+    filter_view_id: z.uuid().optional(),
+    sorts: z.array(z.union([z.object({
+            direction: z.enum(['asc', 'desc']),
+            attribute: z.string(),
+            field: z.string().optional()
+        }), z.object({
+            direction: z.enum(['asc', 'desc']),
+            path: z.array(z.tuple([z.string(), z.string()])),
+            field: z.string().optional()
+        })])).optional(),
+    limit: z.number().optional(),
+    offset: z.number().optional()
+});
+
+export const zPostV2ObjectsByObjectRecordsQueryPath = z.object({
+    object: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2ObjectsByObjectRecordsQueryResponse = z.object({
+    data: z.array(z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            object_id: z.uuid(),
+            record_id: z.uuid()
+        }),
+        created_at: z.string(),
+        web_url: z.url(),
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
+    }))
+});
+
+export const zPostV2ObjectsByObjectRecordsBody = z.object({
+    data: z.object({
+        values: z.record(z.string(), z.array(z.unknown()))
+    })
+});
+
+export const zPostV2ObjectsByObjectRecordsPath = z.object({
+    object: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2ObjectsByObjectRecordsResponse = z.object({
+    data: z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            object_id: z.uuid(),
+            record_id: z.uuid()
+        }),
+        created_at: z.string(),
+        web_url: z.url(),
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
+    })
+});
+
+export const zPutV2ObjectsByObjectRecordsBody = z.object({
+    data: z.object({
+        values: z.record(z.string(), z.array(z.unknown()))
+    })
+});
+
+export const zPutV2ObjectsByObjectRecordsPath = z.object({
+    object: z.string()
+});
+
+export const zPutV2ObjectsByObjectRecordsQuery = z.object({
+    matching_attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPutV2ObjectsByObjectRecordsResponse = z.object({
+    data: z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            object_id: z.uuid(),
+            record_id: z.uuid()
+        }),
+        created_at: z.string(),
+        web_url: z.url(),
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
+    })
+});
+
+export const zDeleteV2ObjectsByObjectRecordsByRecordIdPath = z.object({
+    object: z.string(),
+    record_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2ObjectsByObjectRecordsByRecordIdResponse = z.record(z.string(), z.unknown());
+
+export const zGetV2ObjectsByObjectRecordsByRecordIdPath = z.object({
+    object: z.string(),
+    record_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
+    data: z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            object_id: z.uuid(),
+            record_id: z.uuid()
+        }),
+        created_at: z.string(),
+        web_url: z.url(),
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
+    })
+});
+
+export const zPatchV2ObjectsByObjectRecordsByRecordIdBody = z.object({
+    data: z.object({
+        values: z.record(z.string(), z.array(z.unknown()))
+    })
+});
+
+export const zPatchV2ObjectsByObjectRecordsByRecordIdPath = z.object({
+    object: z.string(),
+    record_id: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
+    data: z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            object_id: z.uuid(),
+            record_id: z.uuid()
+        }),
+        created_at: z.string(),
+        web_url: z.url(),
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
+    })
+});
+
+export const zPutV2ObjectsByObjectRecordsByRecordIdBody = z.object({
+    data: z.object({
+        values: z.record(z.string(), z.array(z.unknown()))
+    })
+});
+
+export const zPutV2ObjectsByObjectRecordsByRecordIdPath = z.object({
+    object: z.string(),
+    record_id: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPutV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
+    data: z.object({
+        id: z.object({
+            workspace_id: z.uuid(),
+            object_id: z.uuid(),
+            record_id: z.uuid()
+        }),
+        created_at: z.string(),
+        web_url: z.url(),
+        values: z.record(z.string(), z.array(z.unknown())).nullish()
+    })
+});
+
+export const zPostV2ObjectsByObjectRecordsMergeBody = z.object({
+    data: z.object({
+        primary_record_id: z.uuid(),
+        secondary_record_id: z.uuid()
+    })
+});
+
+export const zPostV2ObjectsByObjectRecordsMergePath = z.object({
+    object: z.string()
+});
+
+export const zPostV2ObjectsByObjectRecordsMergeResponse = z.union([
+    z.object({
+        data: z.object({
+            new_record_id: z.uuid()
+        })
+    }),
+    z.object({
+        data: z.object({
+            new_record_id: z.uuid()
+        })
+    })
+]);
+
+export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesPath = z.object({
+    object: z.string(),
+    record_id: z.uuid(),
+    attribute: z.string()
+});
+
+export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesQuery = z.object({
+    show_historic: z.boolean().optional().default(false),
+    limit: z.int().optional(),
+    offset: z.int().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponse = z.object({
+    data: z.array(z.union([
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            referenced_actor_type: z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ]),
+            referenced_actor_id: z.uuid().nullable(),
+            attribute_type: z.enum(['actor-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.boolean(),
+            attribute_type: z.enum(['checkbox'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            currency_value: z.number(),
+            currency_code: z.enum([
+                'ARS',
+                'AUD',
+                'BRL',
+                'BGN',
+                'CAD',
+                'CLP',
+                'CNY',
+                'COP',
+                'CZK',
+                'DKK',
+                'EGP',
+                'EUR',
+                'FJD',
+                'GHS',
+                'HKD',
+                'HUF',
+                'ISK',
+                'INR',
+                'IDR',
+                'ILS',
+                'JPY',
+                'KES',
+                'KRW',
+                'MYR',
+                'MXN',
+                'NTD',
+                'NZD',
+                'NGN',
+                'NOK',
+                'OMR',
+                'XPF',
+                'PEN',
+                'PHP',
+                'PLN',
+                'GBP',
+                'QAR',
+                'RWF',
+                'SAR',
+                'SGD',
+                'ZAR',
+                'SEK',
+                'CHF',
+                'THB',
+                'TRY',
+                'AED',
+                'UYU',
+                'USD'
+            ]).nullish(),
+            attribute_type: z.enum(['currency'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['date']),
+            value: z.string()
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            domain: z.string(),
+            root_domain: z.string(),
+            attribute_type: z.enum(['domain'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_email_address: z.string(),
+            email_address: z.string(),
+            email_domain: z.string(),
+            email_root_domain: z.string(),
+            email_local_specifier: z.string(),
+            attribute_type: z.enum(['email-address'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            target_object: z.string(),
+            target_record_id: z.uuid(),
+            attribute_type: z.enum(['record-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            interaction_type: z.enum([
+                'activity',
+                'email',
+                'meeting',
+                'calendar-event'
+            ]),
+            interacted_at: z.iso.datetime(),
+            owner_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['interaction'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            line_1: z.string().nullable(),
+            line_2: z.string().nullable(),
+            line_3: z.string().nullable(),
+            line_4: z.string().nullable(),
+            locality: z.string().nullable(),
+            region: z.string().nullable(),
+            postcode: z.string().nullable(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]).nullable(),
+            latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
+            longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
+            attribute_type: z.enum(['location'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            first_name: z.string(),
+            last_name: z.string(),
+            full_name: z.string(),
+            attribute_type: z.enum(['personal-name'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_phone_number: z.string(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]),
+            phone_number: z.string(),
+            attribute_type: z.enum(['phone-number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            status: zStatus,
+            attribute_type: z.enum(['status'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['rating'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            option: zSelectOption,
+            attribute_type: z.enum(['select'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.string(),
+            attribute_type: z.enum(['text'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['timestamp']),
+            value: z.iso.datetime()
+        })
+    ]))
+});
+
+export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesBody = z.object({
+    data: z.object({
+        values: z.array(z.object({
+            value: z.union([
+                z.record(z.string(), z.unknown()),
+                z.string(),
+                z.number(),
+                z.boolean()
+            ]),
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable()
+        })).min(1).max(400),
+        replace_history: z.literal(true)
+    })
+});
+
+export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesPath = z.object({
+    object: z.string(),
+    record_id: z.uuid(),
+    attribute: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponse = z.object({
+    data: z.array(z.union([
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            referenced_actor_type: z.enum([
+                'api-token',
+                'workspace-member',
+                'system',
+                'app'
+            ]),
+            referenced_actor_id: z.uuid().nullable(),
+            attribute_type: z.enum(['actor-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.boolean(),
+            attribute_type: z.enum(['checkbox'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            currency_value: z.number(),
+            currency_code: z.enum([
+                'ARS',
+                'AUD',
+                'BRL',
+                'BGN',
+                'CAD',
+                'CLP',
+                'CNY',
+                'COP',
+                'CZK',
+                'DKK',
+                'EGP',
+                'EUR',
+                'FJD',
+                'GHS',
+                'HKD',
+                'HUF',
+                'ISK',
+                'INR',
+                'IDR',
+                'ILS',
+                'JPY',
+                'KES',
+                'KRW',
+                'MYR',
+                'MXN',
+                'NTD',
+                'NZD',
+                'NGN',
+                'NOK',
+                'OMR',
+                'XPF',
+                'PEN',
+                'PHP',
+                'PLN',
+                'GBP',
+                'QAR',
+                'RWF',
+                'SAR',
+                'SGD',
+                'ZAR',
+                'SEK',
+                'CHF',
+                'THB',
+                'TRY',
+                'AED',
+                'UYU',
+                'USD'
+            ]).nullish(),
+            attribute_type: z.enum(['currency'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['date']),
+            value: z.string()
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            domain: z.string(),
+            root_domain: z.string(),
+            attribute_type: z.enum(['domain'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_email_address: z.string(),
+            email_address: z.string(),
+            email_domain: z.string(),
+            email_root_domain: z.string(),
+            email_local_specifier: z.string(),
+            attribute_type: z.enum(['email-address'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            target_object: z.string(),
+            target_record_id: z.uuid(),
+            attribute_type: z.enum(['record-reference'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            interaction_type: z.enum([
+                'activity',
+                'email',
+                'meeting',
+                'calendar-event'
+            ]),
+            interacted_at: z.iso.datetime(),
+            owner_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['interaction'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            line_1: z.string().nullable(),
+            line_2: z.string().nullable(),
+            line_3: z.string().nullable(),
+            line_4: z.string().nullable(),
+            locality: z.string().nullable(),
+            region: z.string().nullable(),
+            postcode: z.string().nullable(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]).nullable(),
+            latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
+            longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
+            attribute_type: z.enum(['location'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            first_name: z.string(),
+            last_name: z.string(),
+            full_name: z.string(),
+            attribute_type: z.enum(['personal-name'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            original_phone_number: z.string(),
+            country_code: z.enum([
+                'AF',
+                'AX',
+                'AL',
+                'DZ',
+                'AS',
+                'AD',
+                'AO',
+                'AI',
+                'AQ',
+                'AG',
+                'AR',
+                'AM',
+                'AW',
+                'AU',
+                'AT',
+                'AZ',
+                'BS',
+                'BH',
+                'BD',
+                'BB',
+                'BY',
+                'BE',
+                'BZ',
+                'BJ',
+                'BM',
+                'BT',
+                'BO',
+                'BA',
+                'BW',
+                'BV',
+                'BR',
+                'IO',
+                'BN',
+                'BG',
+                'BF',
+                'BI',
+                'KH',
+                'CM',
+                'CA',
+                'CV',
+                'KY',
+                'CF',
+                'TD',
+                'CL',
+                'CN',
+                'CX',
+                'CC',
+                'CO',
+                'KM',
+                'CG',
+                'CD',
+                'CK',
+                'CR',
+                'CI',
+                'HR',
+                'CU',
+                'CW',
+                'CY',
+                'CZ',
+                'DK',
+                'DJ',
+                'DM',
+                'DO',
+                'EC',
+                'EG',
+                'SV',
+                'GQ',
+                'ER',
+                'EE',
+                'ET',
+                'FK',
+                'FO',
+                'FJ',
+                'FI',
+                'FR',
+                'GF',
+                'PF',
+                'TF',
+                'GA',
+                'GM',
+                'GE',
+                'DE',
+                'GH',
+                'GI',
+                'GR',
+                'GL',
+                'GD',
+                'GP',
+                'GU',
+                'GT',
+                'GG',
+                'GN',
+                'GW',
+                'GY',
+                'HT',
+                'HM',
+                'VA',
+                'HN',
+                'HK',
+                'HU',
+                'IS',
+                'IN',
+                'ID',
+                'IR',
+                'IQ',
+                'IE',
+                'IM',
+                'IL',
+                'IT',
+                'JM',
+                'JP',
+                'JE',
+                'JO',
+                'KZ',
+                'KE',
+                'KI',
+                'KR',
+                'KW',
+                'KG',
+                'LA',
+                'LV',
+                'LB',
+                'LS',
+                'LR',
+                'LY',
+                'LI',
+                'LT',
+                'LU',
+                'MO',
+                'MK',
+                'MG',
+                'MW',
+                'MY',
+                'MV',
+                'ML',
+                'MT',
+                'MH',
+                'MQ',
+                'MR',
+                'MU',
+                'YT',
+                'MX',
+                'FM',
+                'MD',
+                'MC',
+                'MN',
+                'ME',
+                'MS',
+                'MA',
+                'MZ',
+                'MM',
+                'NA',
+                'NR',
+                'NP',
+                'NL',
+                'AN',
+                'NC',
+                'NZ',
+                'NI',
+                'NE',
+                'NG',
+                'NU',
+                'NF',
+                'MP',
+                'NO',
+                'OM',
+                'PK',
+                'PW',
+                'PS',
+                'PA',
+                'PG',
+                'PY',
+                'PE',
+                'PH',
+                'PN',
+                'PL',
+                'PT',
+                'PR',
+                'QA',
+                'RE',
+                'RO',
+                'RU',
+                'RW',
+                'BL',
+                'SH',
+                'KN',
+                'LC',
+                'MF',
+                'PM',
+                'VC',
+                'WS',
+                'SM',
+                'ST',
+                'SA',
+                'SN',
+                'SS',
+                'RS',
+                'SC',
+                'SL',
+                'SG',
+                'SK',
+                'SI',
+                'SB',
+                'SO',
+                'ZA',
+                'GS',
+                'ES',
+                'LK',
+                'SD',
+                'SR',
+                'SJ',
+                'SZ',
+                'SE',
+                'CH',
+                'SY',
+                'TW',
+                'TJ',
+                'TZ',
+                'TH',
+                'TL',
+                'TG',
+                'TK',
+                'TO',
+                'TT',
+                'TN',
+                'TR',
+                'TM',
+                'TC',
+                'TV',
+                'UG',
+                'UA',
+                'AE',
+                'GB',
+                'US',
+                'UM',
+                'UY',
+                'UZ',
+                'VU',
+                'VE',
+                'VN',
+                'VG',
+                'VI',
+                'WF',
+                'EH',
+                'YE',
+                'ZM',
+                'ZW',
+                'BQ',
+                'KP',
+                'SX',
+                'XK',
+                'AC'
+            ]),
+            phone_number: z.string(),
+            attribute_type: z.enum(['phone-number'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            status: zStatus,
+            attribute_type: z.enum(['status'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.number(),
+            attribute_type: z.enum(['rating'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            option: zSelectOption,
+            attribute_type: z.enum(['select'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            value: z.string(),
+            attribute_type: z.enum(['text'])
+        }),
+        z.object({
+            active_from: z.iso.datetime(),
+            active_until: z.iso.datetime().nullable(),
+            created_by_actor: z.object({
+                id: z.string().nullish(),
+                type: z.enum([
+                    'api-token',
+                    'workspace-member',
+                    'system',
+                    'app'
+                ]).nullish()
+            }),
+            attribute_type: z.enum(['timestamp']),
+            value: z.iso.datetime()
+        })
+    ]))
+});
+
+export const zGetV2ObjectsByObjectRecordsByRecordIdEntriesPath = z.object({
+    object: z.string(),
+    record_id: z.uuid()
+});
+
+export const zGetV2ObjectsByObjectRecordsByRecordIdEntriesQuery = z.object({
+    limit: z.int().optional(),
+    offset: z.int().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ObjectsByObjectRecordsByRecordIdEntriesResponse = z.object({
+    data: z.array(z.object({
+        list_id: z.uuid(),
+        list_api_slug: z.string(),
+        entry_id: z.uuid(),
+        created_at: z.string()
+    }))
+});
+
+export const zPostV2ObjectsRecordsSearchBody = z.object({
+    query: z.string().max(256),
+    limit: z.number().gte(1).lte(25).optional().default(25),
+    objects: z.array(z.string()).min(1),
+    request_as: z.union([
+        z.object({
+            type: z.enum(['workspace'])
+        }),
+        z.object({
+            type: z.enum(['workspace-member']),
+            workspace_member_id: z.uuid()
+        }),
+        z.object({
+            type: z.enum(['workspace-member']),
+            email_address: z.email()
+        })
+    ])
+});
+
+/**
+ * Success
+ */
+export const zPostV2ObjectsRecordsSearchResponse = z.object({
+    data: z.array(z.union([
+        z.object({
+            id: z.object({
+                workspace_id: z.uuid(),
+                object_id: z.uuid(),
+                record_id: z.uuid()
+            }),
+            record_text: z.string(),
+            record_image: z.string().nullable(),
+            object_slug: z.string()
+        }),
+        z.object({
+            id: z.object({
+                workspace_id: z.uuid(),
+                object_id: z.uuid(),
+                record_id: z.uuid()
+            }),
+            record_text: z.string(),
+            record_image: z.string().nullable(),
+            object_slug: z.enum(['people']),
+            email_addresses: z.array(z.string()),
+            phone_numbers: z.array(z.string())
+        }),
+        z.object({
+            id: z.object({
+                workspace_id: z.uuid(),
+                object_id: z.uuid(),
+                record_id: z.uuid()
+            }),
+            record_text: z.string(),
+            record_image: z.string().nullable(),
+            object_slug: z.enum(['companies']),
+            domains: z.array(z.string())
+        })
+    ]))
+});
+
 export const zPostV2ActivitiesByActivityRecordsQueryBody = z.object({
     filter: z.record(z.string(), z.unknown()).optional(),
     sorts: z.array(z.union([z.object({
@@ -7560,2408 +9990,6 @@ export const zPutV2ActivitiesByActivityRecordsByRecordIdResponse = z.object({
             })
         ])))
     })
-});
-
-export const zGetV2ByTargetByIdentifierAttributesPath = z.object({
-    target: z.enum(['objects', 'lists']),
-    identifier: z.string()
-});
-
-export const zGetV2ByTargetByIdentifierAttributesQuery = z.object({
-    limit: z.int().optional(),
-    offset: z.int().optional(),
-    show_archived: z.boolean().optional()
-});
-
-/**
- * Success
- */
-export const zGetV2ByTargetByIdentifierAttributesResponse = z.object({
-    data: z.array(zAttribute)
-});
-
-export const zPostV2ByTargetByIdentifierAttributesBody = z.object({
-    data: z.object({
-        title: z.string(),
-        description: z.string().nullable(),
-        api_slug: z.string(),
-        type: z.enum([
-            'text',
-            'number',
-            'checkbox',
-            'currency',
-            'date',
-            'timestamp',
-            'rating',
-            'status',
-            'select',
-            'record-reference',
-            'actor-reference',
-            'location',
-            'domain',
-            'email-address',
-            'phone-number'
-        ]),
-        is_required: z.boolean(),
-        is_unique: z.boolean(),
-        is_multiselect: z.boolean(),
-        default_value: z.union([
-            z.object({
-                type: z.enum(['dynamic']),
-                template: z.union([
-                    z.enum(['current-user']),
-                    z.string()
-                ])
-            }),
-            z.object({
-                type: z.enum(['static']),
-                template: z.array(zInputValue)
-            })
-        ]).nullish(),
-        relationship: z.object({
-            object: z.string(),
-            title: z.string(),
-            api_slug: z.string(),
-            is_multiselect: z.boolean()
-        }).nullish(),
-        config: z.object({
-            currency: z.object({
-                default_currency_code: z.enum([
-                    'ARS',
-                    'AUD',
-                    'BRL',
-                    'BGN',
-                    'CAD',
-                    'CLP',
-                    'CNY',
-                    'COP',
-                    'CZK',
-                    'DKK',
-                    'EGP',
-                    'EUR',
-                    'FJD',
-                    'GHS',
-                    'HKD',
-                    'HUF',
-                    'ISK',
-                    'INR',
-                    'IDR',
-                    'ILS',
-                    'JPY',
-                    'KES',
-                    'KRW',
-                    'MYR',
-                    'MXN',
-                    'NTD',
-                    'NZD',
-                    'NGN',
-                    'NOK',
-                    'OMR',
-                    'XPF',
-                    'PEN',
-                    'PHP',
-                    'PLN',
-                    'GBP',
-                    'QAR',
-                    'RWF',
-                    'SAR',
-                    'SGD',
-                    'ZAR',
-                    'SEK',
-                    'CHF',
-                    'THB',
-                    'TRY',
-                    'AED',
-                    'UYU',
-                    'USD'
-                ]),
-                display_type: z.enum([
-                    'code',
-                    'name',
-                    'narrowSymbol',
-                    'symbol'
-                ])
-            }).optional(),
-            record_reference: z.object({
-                allowed_objects: z.array(z.string()).min(1)
-            }).optional()
-        })
-    })
-});
-
-export const zPostV2ByTargetByIdentifierAttributesPath = z.object({
-    target: z.enum(['objects', 'lists']),
-    identifier: z.string()
-});
-
-/**
- * Success
- */
-export const zPostV2ByTargetByIdentifierAttributesResponse = z.object({
-    data: zAttribute
-});
-
-export const zGetV2ByTargetByIdentifierAttributesByAttributePath = z.object({
-    target: z.enum(['objects', 'lists']),
-    identifier: z.string(),
-    attribute: z.string()
-});
-
-/**
- * Success
- */
-export const zGetV2ByTargetByIdentifierAttributesByAttributeResponse = z.object({
-    data: zAttribute
-});
-
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeBody = z.object({
-    data: z.object({
-        title: z.string().optional(),
-        description: z.string().nullish(),
-        api_slug: z.string().optional(),
-        is_required: z.boolean().optional(),
-        is_unique: z.boolean().optional(),
-        default_value: z.union([
-            z.object({
-                type: z.enum(['dynamic']),
-                template: z.union([
-                    z.enum(['current-user']),
-                    z.string()
-                ])
-            }),
-            z.object({
-                type: z.enum(['static']),
-                template: z.array(zInputValue)
-            })
-        ]).nullish(),
-        config: z.object({
-            currency: z.object({
-                default_currency_code: z.enum([
-                    'ARS',
-                    'AUD',
-                    'BRL',
-                    'BGN',
-                    'CAD',
-                    'CLP',
-                    'CNY',
-                    'COP',
-                    'CZK',
-                    'DKK',
-                    'EGP',
-                    'EUR',
-                    'FJD',
-                    'GHS',
-                    'HKD',
-                    'HUF',
-                    'ISK',
-                    'INR',
-                    'IDR',
-                    'ILS',
-                    'JPY',
-                    'KES',
-                    'KRW',
-                    'MYR',
-                    'MXN',
-                    'NTD',
-                    'NZD',
-                    'NGN',
-                    'NOK',
-                    'OMR',
-                    'XPF',
-                    'PEN',
-                    'PHP',
-                    'PLN',
-                    'GBP',
-                    'QAR',
-                    'RWF',
-                    'SAR',
-                    'SGD',
-                    'ZAR',
-                    'SEK',
-                    'CHF',
-                    'THB',
-                    'TRY',
-                    'AED',
-                    'UYU',
-                    'USD'
-                ]),
-                display_type: z.enum([
-                    'code',
-                    'name',
-                    'narrowSymbol',
-                    'symbol'
-                ])
-            }).optional(),
-            record_reference: z.object({
-                allowed_objects: z.array(z.string()).min(1)
-            }).optional()
-        }).optional(),
-        is_archived: z.boolean().optional()
-    })
-});
-
-export const zPatchV2ByTargetByIdentifierAttributesByAttributePath = z.object({
-    target: z.enum(['objects', 'lists']),
-    identifier: z.string(),
-    attribute: z.string()
-});
-
-/**
- * Success
- */
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeResponse = z.object({
-    data: zAttribute
-});
-
-export const zGetV2ByTargetByIdentifierAttributesByAttributeOptionsPath = z.object({
-    target: z.enum(['objects', 'lists']),
-    identifier: z.string(),
-    attribute: z.string()
-});
-
-export const zGetV2ByTargetByIdentifierAttributesByAttributeOptionsQuery = z.object({
-    show_archived: z.boolean().optional()
-});
-
-/**
- * Success
- */
-export const zGetV2ByTargetByIdentifierAttributesByAttributeOptionsResponse = z.object({
-    data: z.array(zSelectOption)
-});
-
-export const zPostV2ByTargetByIdentifierAttributesByAttributeOptionsBody = z.object({
-    data: z.object({
-        title: z.string().min(1)
-    })
-});
-
-export const zPostV2ByTargetByIdentifierAttributesByAttributeOptionsPath = z.object({
-    target: z.enum(['objects', 'lists']),
-    identifier: z.string(),
-    attribute: z.string()
-});
-
-/**
- * Success
- */
-export const zPostV2ByTargetByIdentifierAttributesByAttributeOptionsResponse = z.object({
-    data: zSelectOption
-});
-
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionBody = z.object({
-    data: z.object({
-        title: z.string().min(1).optional(),
-        is_archived: z.boolean().optional()
-    })
-});
-
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionPath = z.object({
-    target: z.enum(['objects', 'lists']),
-    identifier: z.string(),
-    attribute: z.string(),
-    option: z.string()
-});
-
-/**
- * Success
- */
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeOptionsByOptionResponse = z.object({
-    data: zSelectOption
-});
-
-export const zGetV2ByTargetByIdentifierAttributesByAttributeStatusesPath = z.object({
-    target: z.enum(['lists', 'objects']),
-    identifier: z.string(),
-    attribute: z.string()
-});
-
-export const zGetV2ByTargetByIdentifierAttributesByAttributeStatusesQuery = z.object({
-    show_archived: z.boolean().optional().default(false)
-});
-
-/**
- * Success
- */
-export const zGetV2ByTargetByIdentifierAttributesByAttributeStatusesResponse = z.object({
-    data: z.array(zStatus)
-});
-
-export const zPostV2ByTargetByIdentifierAttributesByAttributeStatusesBody = z.object({
-    data: z.object({
-        title: z.string().min(1),
-        celebration_enabled: z.boolean().optional().default(false),
-        target_time_in_status: z.string().regex(/P(?:(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(?:T(\d+(?:[\.,]\d+)?H)?(\d+(?:[\.,]\d+)?M)?(\d+(?:[\.,]\d+)?S)?)?)/).nullish()
-    })
-});
-
-export const zPostV2ByTargetByIdentifierAttributesByAttributeStatusesPath = z.object({
-    target: z.enum(['lists', 'objects']),
-    identifier: z.string(),
-    attribute: z.string()
-});
-
-/**
- * Success
- */
-export const zPostV2ByTargetByIdentifierAttributesByAttributeStatusesResponse = z.object({
-    data: zStatus
-});
-
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusBody = z.object({
-    data: z.object({
-        title: z.string().min(1).optional(),
-        celebration_enabled: z.boolean().optional().default(false),
-        target_time_in_status: z.string().regex(/P(?:(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(?:T(\d+(?:[\.,]\d+)?H)?(\d+(?:[\.,]\d+)?M)?(\d+(?:[\.,]\d+)?S)?)?)/).nullish(),
-        is_archived: z.boolean().optional()
-    })
-});
-
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusPath = z.object({
-    target: z.enum(['lists', 'objects']),
-    identifier: z.string(),
-    attribute: z.string(),
-    status: z.string()
-});
-
-/**
- * Success
- */
-export const zPatchV2ByTargetByIdentifierAttributesByAttributeStatusesByStatusResponse = z.object({
-    data: zStatus
-});
-
-export const zPostV2ObjectsByObjectRecordsQueryBody = z.object({
-    filter: z.record(z.string(), z.unknown()).optional(),
-    filter_view_id: z.uuid().optional(),
-    sorts: z.array(z.union([z.object({
-            direction: z.enum(['asc', 'desc']),
-            attribute: z.string(),
-            field: z.string().optional()
-        }), z.object({
-            direction: z.enum(['asc', 'desc']),
-            path: z.array(z.tuple([z.string(), z.string()])),
-            field: z.string().optional()
-        })])).optional(),
-    limit: z.number().optional(),
-    offset: z.number().optional()
-});
-
-export const zPostV2ObjectsByObjectRecordsQueryPath = z.object({
-    object: z.string()
-});
-
-/**
- * Success
- */
-export const zPostV2ObjectsByObjectRecordsQueryResponse = z.object({
-    data: z.array(z.object({
-        id: z.object({
-            workspace_id: z.uuid(),
-            object_id: z.uuid(),
-            record_id: z.uuid()
-        }),
-        created_at: z.string(),
-        web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown())).nullish()
-    }))
-});
-
-export const zPostV2ObjectsByObjectRecordsBody = z.object({
-    data: z.object({
-        values: z.record(z.string(), z.array(z.unknown()))
-    })
-});
-
-export const zPostV2ObjectsByObjectRecordsPath = z.object({
-    object: z.string()
-});
-
-/**
- * Success
- */
-export const zPostV2ObjectsByObjectRecordsResponse = z.object({
-    data: z.object({
-        id: z.object({
-            workspace_id: z.uuid(),
-            object_id: z.uuid(),
-            record_id: z.uuid()
-        }),
-        created_at: z.string(),
-        web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown())).nullish()
-    })
-});
-
-export const zPutV2ObjectsByObjectRecordsBody = z.object({
-    data: z.object({
-        values: z.record(z.string(), z.array(z.unknown()))
-    })
-});
-
-export const zPutV2ObjectsByObjectRecordsPath = z.object({
-    object: z.string()
-});
-
-export const zPutV2ObjectsByObjectRecordsQuery = z.object({
-    matching_attribute: z.string()
-});
-
-/**
- * Success
- */
-export const zPutV2ObjectsByObjectRecordsResponse = z.object({
-    data: z.object({
-        id: z.object({
-            workspace_id: z.uuid(),
-            object_id: z.uuid(),
-            record_id: z.uuid()
-        }),
-        created_at: z.string(),
-        web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown())).nullish()
-    })
-});
-
-export const zDeleteV2ObjectsByObjectRecordsByRecordIdPath = z.object({
-    object: z.string(),
-    record_id: z.uuid()
-});
-
-/**
- * Success
- */
-export const zDeleteV2ObjectsByObjectRecordsByRecordIdResponse = z.record(z.string(), z.unknown());
-
-export const zGetV2ObjectsByObjectRecordsByRecordIdPath = z.object({
-    object: z.string(),
-    record_id: z.uuid()
-});
-
-/**
- * Success
- */
-export const zGetV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
-    data: z.object({
-        id: z.object({
-            workspace_id: z.uuid(),
-            object_id: z.uuid(),
-            record_id: z.uuid()
-        }),
-        created_at: z.string(),
-        web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown())).nullish()
-    })
-});
-
-export const zPatchV2ObjectsByObjectRecordsByRecordIdBody = z.object({
-    data: z.object({
-        values: z.record(z.string(), z.array(z.unknown()))
-    })
-});
-
-export const zPatchV2ObjectsByObjectRecordsByRecordIdPath = z.object({
-    object: z.string(),
-    record_id: z.string()
-});
-
-/**
- * Success
- */
-export const zPatchV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
-    data: z.object({
-        id: z.object({
-            workspace_id: z.uuid(),
-            object_id: z.uuid(),
-            record_id: z.uuid()
-        }),
-        created_at: z.string(),
-        web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown())).nullish()
-    })
-});
-
-export const zPutV2ObjectsByObjectRecordsByRecordIdBody = z.object({
-    data: z.object({
-        values: z.record(z.string(), z.array(z.unknown()))
-    })
-});
-
-export const zPutV2ObjectsByObjectRecordsByRecordIdPath = z.object({
-    object: z.string(),
-    record_id: z.string()
-});
-
-/**
- * Success
- */
-export const zPutV2ObjectsByObjectRecordsByRecordIdResponse = z.object({
-    data: z.object({
-        id: z.object({
-            workspace_id: z.uuid(),
-            object_id: z.uuid(),
-            record_id: z.uuid()
-        }),
-        created_at: z.string(),
-        web_url: z.url(),
-        values: z.record(z.string(), z.array(z.unknown())).nullish()
-    })
-});
-
-export const zPostV2ObjectsByObjectRecordsMergeBody = z.object({
-    data: z.object({
-        primary_record_id: z.uuid(),
-        secondary_record_id: z.uuid()
-    })
-});
-
-export const zPostV2ObjectsByObjectRecordsMergePath = z.object({
-    object: z.string()
-});
-
-export const zPostV2ObjectsByObjectRecordsMergeResponse = z.union([
-    z.object({
-        data: z.object({
-            new_record_id: z.uuid()
-        })
-    }),
-    z.object({
-        data: z.object({
-            new_record_id: z.uuid()
-        })
-    })
-]);
-
-export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesPath = z.object({
-    object: z.string(),
-    record_id: z.uuid(),
-    attribute: z.string()
-});
-
-export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesQuery = z.object({
-    show_historic: z.boolean().optional().default(false),
-    limit: z.int().optional(),
-    offset: z.int().optional()
-});
-
-/**
- * Success
- */
-export const zGetV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponse = z.object({
-    data: z.array(z.union([
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            referenced_actor_type: z.enum([
-                'api-token',
-                'workspace-member',
-                'system',
-                'app'
-            ]),
-            referenced_actor_id: z.uuid().nullable(),
-            attribute_type: z.enum(['actor-reference'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.boolean(),
-            attribute_type: z.enum(['checkbox'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            currency_value: z.number(),
-            currency_code: z.enum([
-                'ARS',
-                'AUD',
-                'BRL',
-                'BGN',
-                'CAD',
-                'CLP',
-                'CNY',
-                'COP',
-                'CZK',
-                'DKK',
-                'EGP',
-                'EUR',
-                'FJD',
-                'GHS',
-                'HKD',
-                'HUF',
-                'ISK',
-                'INR',
-                'IDR',
-                'ILS',
-                'JPY',
-                'KES',
-                'KRW',
-                'MYR',
-                'MXN',
-                'NTD',
-                'NZD',
-                'NGN',
-                'NOK',
-                'OMR',
-                'XPF',
-                'PEN',
-                'PHP',
-                'PLN',
-                'GBP',
-                'QAR',
-                'RWF',
-                'SAR',
-                'SGD',
-                'ZAR',
-                'SEK',
-                'CHF',
-                'THB',
-                'TRY',
-                'AED',
-                'UYU',
-                'USD'
-            ]).nullish(),
-            attribute_type: z.enum(['currency'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            attribute_type: z.enum(['date']),
-            value: z.string()
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            domain: z.string(),
-            root_domain: z.string(),
-            attribute_type: z.enum(['domain'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            original_email_address: z.string(),
-            email_address: z.string(),
-            email_domain: z.string(),
-            email_root_domain: z.string(),
-            email_local_specifier: z.string(),
-            attribute_type: z.enum(['email-address'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            target_object: z.string(),
-            target_record_id: z.uuid(),
-            attribute_type: z.enum(['record-reference'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            interaction_type: z.enum([
-                'activity',
-                'email',
-                'meeting',
-                'calendar-event'
-            ]),
-            interacted_at: z.iso.datetime(),
-            owner_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            attribute_type: z.enum(['interaction'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            line_1: z.string().nullable(),
-            line_2: z.string().nullable(),
-            line_3: z.string().nullable(),
-            line_4: z.string().nullable(),
-            locality: z.string().nullable(),
-            region: z.string().nullable(),
-            postcode: z.string().nullable(),
-            country_code: z.enum([
-                'AF',
-                'AX',
-                'AL',
-                'DZ',
-                'AS',
-                'AD',
-                'AO',
-                'AI',
-                'AQ',
-                'AG',
-                'AR',
-                'AM',
-                'AW',
-                'AU',
-                'AT',
-                'AZ',
-                'BS',
-                'BH',
-                'BD',
-                'BB',
-                'BY',
-                'BE',
-                'BZ',
-                'BJ',
-                'BM',
-                'BT',
-                'BO',
-                'BA',
-                'BW',
-                'BV',
-                'BR',
-                'IO',
-                'BN',
-                'BG',
-                'BF',
-                'BI',
-                'KH',
-                'CM',
-                'CA',
-                'CV',
-                'KY',
-                'CF',
-                'TD',
-                'CL',
-                'CN',
-                'CX',
-                'CC',
-                'CO',
-                'KM',
-                'CG',
-                'CD',
-                'CK',
-                'CR',
-                'CI',
-                'HR',
-                'CU',
-                'CW',
-                'CY',
-                'CZ',
-                'DK',
-                'DJ',
-                'DM',
-                'DO',
-                'EC',
-                'EG',
-                'SV',
-                'GQ',
-                'ER',
-                'EE',
-                'ET',
-                'FK',
-                'FO',
-                'FJ',
-                'FI',
-                'FR',
-                'GF',
-                'PF',
-                'TF',
-                'GA',
-                'GM',
-                'GE',
-                'DE',
-                'GH',
-                'GI',
-                'GR',
-                'GL',
-                'GD',
-                'GP',
-                'GU',
-                'GT',
-                'GG',
-                'GN',
-                'GW',
-                'GY',
-                'HT',
-                'HM',
-                'VA',
-                'HN',
-                'HK',
-                'HU',
-                'IS',
-                'IN',
-                'ID',
-                'IR',
-                'IQ',
-                'IE',
-                'IM',
-                'IL',
-                'IT',
-                'JM',
-                'JP',
-                'JE',
-                'JO',
-                'KZ',
-                'KE',
-                'KI',
-                'KR',
-                'KW',
-                'KG',
-                'LA',
-                'LV',
-                'LB',
-                'LS',
-                'LR',
-                'LY',
-                'LI',
-                'LT',
-                'LU',
-                'MO',
-                'MK',
-                'MG',
-                'MW',
-                'MY',
-                'MV',
-                'ML',
-                'MT',
-                'MH',
-                'MQ',
-                'MR',
-                'MU',
-                'YT',
-                'MX',
-                'FM',
-                'MD',
-                'MC',
-                'MN',
-                'ME',
-                'MS',
-                'MA',
-                'MZ',
-                'MM',
-                'NA',
-                'NR',
-                'NP',
-                'NL',
-                'AN',
-                'NC',
-                'NZ',
-                'NI',
-                'NE',
-                'NG',
-                'NU',
-                'NF',
-                'MP',
-                'NO',
-                'OM',
-                'PK',
-                'PW',
-                'PS',
-                'PA',
-                'PG',
-                'PY',
-                'PE',
-                'PH',
-                'PN',
-                'PL',
-                'PT',
-                'PR',
-                'QA',
-                'RE',
-                'RO',
-                'RU',
-                'RW',
-                'BL',
-                'SH',
-                'KN',
-                'LC',
-                'MF',
-                'PM',
-                'VC',
-                'WS',
-                'SM',
-                'ST',
-                'SA',
-                'SN',
-                'SS',
-                'RS',
-                'SC',
-                'SL',
-                'SG',
-                'SK',
-                'SI',
-                'SB',
-                'SO',
-                'ZA',
-                'GS',
-                'ES',
-                'LK',
-                'SD',
-                'SR',
-                'SJ',
-                'SZ',
-                'SE',
-                'CH',
-                'SY',
-                'TW',
-                'TJ',
-                'TZ',
-                'TH',
-                'TL',
-                'TG',
-                'TK',
-                'TO',
-                'TT',
-                'TN',
-                'TR',
-                'TM',
-                'TC',
-                'TV',
-                'UG',
-                'UA',
-                'AE',
-                'GB',
-                'US',
-                'UM',
-                'UY',
-                'UZ',
-                'VU',
-                'VE',
-                'VN',
-                'VG',
-                'VI',
-                'WF',
-                'EH',
-                'YE',
-                'ZM',
-                'ZW',
-                'BQ',
-                'KP',
-                'SX',
-                'XK',
-                'AC'
-            ]).nullable(),
-            latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
-            longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
-            attribute_type: z.enum(['location'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.number(),
-            attribute_type: z.enum(['number'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            first_name: z.string(),
-            last_name: z.string(),
-            full_name: z.string(),
-            attribute_type: z.enum(['personal-name'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            original_phone_number: z.string(),
-            country_code: z.enum([
-                'AF',
-                'AX',
-                'AL',
-                'DZ',
-                'AS',
-                'AD',
-                'AO',
-                'AI',
-                'AQ',
-                'AG',
-                'AR',
-                'AM',
-                'AW',
-                'AU',
-                'AT',
-                'AZ',
-                'BS',
-                'BH',
-                'BD',
-                'BB',
-                'BY',
-                'BE',
-                'BZ',
-                'BJ',
-                'BM',
-                'BT',
-                'BO',
-                'BA',
-                'BW',
-                'BV',
-                'BR',
-                'IO',
-                'BN',
-                'BG',
-                'BF',
-                'BI',
-                'KH',
-                'CM',
-                'CA',
-                'CV',
-                'KY',
-                'CF',
-                'TD',
-                'CL',
-                'CN',
-                'CX',
-                'CC',
-                'CO',
-                'KM',
-                'CG',
-                'CD',
-                'CK',
-                'CR',
-                'CI',
-                'HR',
-                'CU',
-                'CW',
-                'CY',
-                'CZ',
-                'DK',
-                'DJ',
-                'DM',
-                'DO',
-                'EC',
-                'EG',
-                'SV',
-                'GQ',
-                'ER',
-                'EE',
-                'ET',
-                'FK',
-                'FO',
-                'FJ',
-                'FI',
-                'FR',
-                'GF',
-                'PF',
-                'TF',
-                'GA',
-                'GM',
-                'GE',
-                'DE',
-                'GH',
-                'GI',
-                'GR',
-                'GL',
-                'GD',
-                'GP',
-                'GU',
-                'GT',
-                'GG',
-                'GN',
-                'GW',
-                'GY',
-                'HT',
-                'HM',
-                'VA',
-                'HN',
-                'HK',
-                'HU',
-                'IS',
-                'IN',
-                'ID',
-                'IR',
-                'IQ',
-                'IE',
-                'IM',
-                'IL',
-                'IT',
-                'JM',
-                'JP',
-                'JE',
-                'JO',
-                'KZ',
-                'KE',
-                'KI',
-                'KR',
-                'KW',
-                'KG',
-                'LA',
-                'LV',
-                'LB',
-                'LS',
-                'LR',
-                'LY',
-                'LI',
-                'LT',
-                'LU',
-                'MO',
-                'MK',
-                'MG',
-                'MW',
-                'MY',
-                'MV',
-                'ML',
-                'MT',
-                'MH',
-                'MQ',
-                'MR',
-                'MU',
-                'YT',
-                'MX',
-                'FM',
-                'MD',
-                'MC',
-                'MN',
-                'ME',
-                'MS',
-                'MA',
-                'MZ',
-                'MM',
-                'NA',
-                'NR',
-                'NP',
-                'NL',
-                'AN',
-                'NC',
-                'NZ',
-                'NI',
-                'NE',
-                'NG',
-                'NU',
-                'NF',
-                'MP',
-                'NO',
-                'OM',
-                'PK',
-                'PW',
-                'PS',
-                'PA',
-                'PG',
-                'PY',
-                'PE',
-                'PH',
-                'PN',
-                'PL',
-                'PT',
-                'PR',
-                'QA',
-                'RE',
-                'RO',
-                'RU',
-                'RW',
-                'BL',
-                'SH',
-                'KN',
-                'LC',
-                'MF',
-                'PM',
-                'VC',
-                'WS',
-                'SM',
-                'ST',
-                'SA',
-                'SN',
-                'SS',
-                'RS',
-                'SC',
-                'SL',
-                'SG',
-                'SK',
-                'SI',
-                'SB',
-                'SO',
-                'ZA',
-                'GS',
-                'ES',
-                'LK',
-                'SD',
-                'SR',
-                'SJ',
-                'SZ',
-                'SE',
-                'CH',
-                'SY',
-                'TW',
-                'TJ',
-                'TZ',
-                'TH',
-                'TL',
-                'TG',
-                'TK',
-                'TO',
-                'TT',
-                'TN',
-                'TR',
-                'TM',
-                'TC',
-                'TV',
-                'UG',
-                'UA',
-                'AE',
-                'GB',
-                'US',
-                'UM',
-                'UY',
-                'UZ',
-                'VU',
-                'VE',
-                'VN',
-                'VG',
-                'VI',
-                'WF',
-                'EH',
-                'YE',
-                'ZM',
-                'ZW',
-                'BQ',
-                'KP',
-                'SX',
-                'XK',
-                'AC'
-            ]),
-            phone_number: z.string(),
-            attribute_type: z.enum(['phone-number'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            status: zStatus,
-            attribute_type: z.enum(['status'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.number(),
-            attribute_type: z.enum(['rating'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            option: zSelectOption,
-            attribute_type: z.enum(['select'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.string(),
-            attribute_type: z.enum(['text'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            attribute_type: z.enum(['timestamp']),
-            value: z.iso.datetime()
-        })
-    ]))
-});
-
-export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesBody = z.object({
-    data: z.object({
-        values: z.array(z.object({
-            value: z.union([
-                z.record(z.string(), z.unknown()),
-                z.string(),
-                z.number(),
-                z.boolean()
-            ]),
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable()
-        })).min(1).max(400),
-        replace_history: z.literal(true)
-    })
-});
-
-export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesPath = z.object({
-    object: z.string(),
-    record_id: z.uuid(),
-    attribute: z.string()
-});
-
-/**
- * Success
- */
-export const zPutV2ObjectsByObjectRecordsByRecordIdAttributesByAttributeValuesResponse = z.object({
-    data: z.array(z.union([
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            referenced_actor_type: z.enum([
-                'api-token',
-                'workspace-member',
-                'system',
-                'app'
-            ]),
-            referenced_actor_id: z.uuid().nullable(),
-            attribute_type: z.enum(['actor-reference'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.boolean(),
-            attribute_type: z.enum(['checkbox'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            currency_value: z.number(),
-            currency_code: z.enum([
-                'ARS',
-                'AUD',
-                'BRL',
-                'BGN',
-                'CAD',
-                'CLP',
-                'CNY',
-                'COP',
-                'CZK',
-                'DKK',
-                'EGP',
-                'EUR',
-                'FJD',
-                'GHS',
-                'HKD',
-                'HUF',
-                'ISK',
-                'INR',
-                'IDR',
-                'ILS',
-                'JPY',
-                'KES',
-                'KRW',
-                'MYR',
-                'MXN',
-                'NTD',
-                'NZD',
-                'NGN',
-                'NOK',
-                'OMR',
-                'XPF',
-                'PEN',
-                'PHP',
-                'PLN',
-                'GBP',
-                'QAR',
-                'RWF',
-                'SAR',
-                'SGD',
-                'ZAR',
-                'SEK',
-                'CHF',
-                'THB',
-                'TRY',
-                'AED',
-                'UYU',
-                'USD'
-            ]).nullish(),
-            attribute_type: z.enum(['currency'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            attribute_type: z.enum(['date']),
-            value: z.string()
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            domain: z.string(),
-            root_domain: z.string(),
-            attribute_type: z.enum(['domain'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            original_email_address: z.string(),
-            email_address: z.string(),
-            email_domain: z.string(),
-            email_root_domain: z.string(),
-            email_local_specifier: z.string(),
-            attribute_type: z.enum(['email-address'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            target_object: z.string(),
-            target_record_id: z.uuid(),
-            attribute_type: z.enum(['record-reference'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            interaction_type: z.enum([
-                'activity',
-                'email',
-                'meeting',
-                'calendar-event'
-            ]),
-            interacted_at: z.iso.datetime(),
-            owner_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            attribute_type: z.enum(['interaction'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            line_1: z.string().nullable(),
-            line_2: z.string().nullable(),
-            line_3: z.string().nullable(),
-            line_4: z.string().nullable(),
-            locality: z.string().nullable(),
-            region: z.string().nullable(),
-            postcode: z.string().nullable(),
-            country_code: z.enum([
-                'AF',
-                'AX',
-                'AL',
-                'DZ',
-                'AS',
-                'AD',
-                'AO',
-                'AI',
-                'AQ',
-                'AG',
-                'AR',
-                'AM',
-                'AW',
-                'AU',
-                'AT',
-                'AZ',
-                'BS',
-                'BH',
-                'BD',
-                'BB',
-                'BY',
-                'BE',
-                'BZ',
-                'BJ',
-                'BM',
-                'BT',
-                'BO',
-                'BA',
-                'BW',
-                'BV',
-                'BR',
-                'IO',
-                'BN',
-                'BG',
-                'BF',
-                'BI',
-                'KH',
-                'CM',
-                'CA',
-                'CV',
-                'KY',
-                'CF',
-                'TD',
-                'CL',
-                'CN',
-                'CX',
-                'CC',
-                'CO',
-                'KM',
-                'CG',
-                'CD',
-                'CK',
-                'CR',
-                'CI',
-                'HR',
-                'CU',
-                'CW',
-                'CY',
-                'CZ',
-                'DK',
-                'DJ',
-                'DM',
-                'DO',
-                'EC',
-                'EG',
-                'SV',
-                'GQ',
-                'ER',
-                'EE',
-                'ET',
-                'FK',
-                'FO',
-                'FJ',
-                'FI',
-                'FR',
-                'GF',
-                'PF',
-                'TF',
-                'GA',
-                'GM',
-                'GE',
-                'DE',
-                'GH',
-                'GI',
-                'GR',
-                'GL',
-                'GD',
-                'GP',
-                'GU',
-                'GT',
-                'GG',
-                'GN',
-                'GW',
-                'GY',
-                'HT',
-                'HM',
-                'VA',
-                'HN',
-                'HK',
-                'HU',
-                'IS',
-                'IN',
-                'ID',
-                'IR',
-                'IQ',
-                'IE',
-                'IM',
-                'IL',
-                'IT',
-                'JM',
-                'JP',
-                'JE',
-                'JO',
-                'KZ',
-                'KE',
-                'KI',
-                'KR',
-                'KW',
-                'KG',
-                'LA',
-                'LV',
-                'LB',
-                'LS',
-                'LR',
-                'LY',
-                'LI',
-                'LT',
-                'LU',
-                'MO',
-                'MK',
-                'MG',
-                'MW',
-                'MY',
-                'MV',
-                'ML',
-                'MT',
-                'MH',
-                'MQ',
-                'MR',
-                'MU',
-                'YT',
-                'MX',
-                'FM',
-                'MD',
-                'MC',
-                'MN',
-                'ME',
-                'MS',
-                'MA',
-                'MZ',
-                'MM',
-                'NA',
-                'NR',
-                'NP',
-                'NL',
-                'AN',
-                'NC',
-                'NZ',
-                'NI',
-                'NE',
-                'NG',
-                'NU',
-                'NF',
-                'MP',
-                'NO',
-                'OM',
-                'PK',
-                'PW',
-                'PS',
-                'PA',
-                'PG',
-                'PY',
-                'PE',
-                'PH',
-                'PN',
-                'PL',
-                'PT',
-                'PR',
-                'QA',
-                'RE',
-                'RO',
-                'RU',
-                'RW',
-                'BL',
-                'SH',
-                'KN',
-                'LC',
-                'MF',
-                'PM',
-                'VC',
-                'WS',
-                'SM',
-                'ST',
-                'SA',
-                'SN',
-                'SS',
-                'RS',
-                'SC',
-                'SL',
-                'SG',
-                'SK',
-                'SI',
-                'SB',
-                'SO',
-                'ZA',
-                'GS',
-                'ES',
-                'LK',
-                'SD',
-                'SR',
-                'SJ',
-                'SZ',
-                'SE',
-                'CH',
-                'SY',
-                'TW',
-                'TJ',
-                'TZ',
-                'TH',
-                'TL',
-                'TG',
-                'TK',
-                'TO',
-                'TT',
-                'TN',
-                'TR',
-                'TM',
-                'TC',
-                'TV',
-                'UG',
-                'UA',
-                'AE',
-                'GB',
-                'US',
-                'UM',
-                'UY',
-                'UZ',
-                'VU',
-                'VE',
-                'VN',
-                'VG',
-                'VI',
-                'WF',
-                'EH',
-                'YE',
-                'ZM',
-                'ZW',
-                'BQ',
-                'KP',
-                'SX',
-                'XK',
-                'AC'
-            ]).nullable(),
-            latitude: z.string().regex(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/).nullable(),
-            longitude: z.string().regex(/^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/).nullable(),
-            attribute_type: z.enum(['location'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.number(),
-            attribute_type: z.enum(['number'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            first_name: z.string(),
-            last_name: z.string(),
-            full_name: z.string(),
-            attribute_type: z.enum(['personal-name'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            original_phone_number: z.string(),
-            country_code: z.enum([
-                'AF',
-                'AX',
-                'AL',
-                'DZ',
-                'AS',
-                'AD',
-                'AO',
-                'AI',
-                'AQ',
-                'AG',
-                'AR',
-                'AM',
-                'AW',
-                'AU',
-                'AT',
-                'AZ',
-                'BS',
-                'BH',
-                'BD',
-                'BB',
-                'BY',
-                'BE',
-                'BZ',
-                'BJ',
-                'BM',
-                'BT',
-                'BO',
-                'BA',
-                'BW',
-                'BV',
-                'BR',
-                'IO',
-                'BN',
-                'BG',
-                'BF',
-                'BI',
-                'KH',
-                'CM',
-                'CA',
-                'CV',
-                'KY',
-                'CF',
-                'TD',
-                'CL',
-                'CN',
-                'CX',
-                'CC',
-                'CO',
-                'KM',
-                'CG',
-                'CD',
-                'CK',
-                'CR',
-                'CI',
-                'HR',
-                'CU',
-                'CW',
-                'CY',
-                'CZ',
-                'DK',
-                'DJ',
-                'DM',
-                'DO',
-                'EC',
-                'EG',
-                'SV',
-                'GQ',
-                'ER',
-                'EE',
-                'ET',
-                'FK',
-                'FO',
-                'FJ',
-                'FI',
-                'FR',
-                'GF',
-                'PF',
-                'TF',
-                'GA',
-                'GM',
-                'GE',
-                'DE',
-                'GH',
-                'GI',
-                'GR',
-                'GL',
-                'GD',
-                'GP',
-                'GU',
-                'GT',
-                'GG',
-                'GN',
-                'GW',
-                'GY',
-                'HT',
-                'HM',
-                'VA',
-                'HN',
-                'HK',
-                'HU',
-                'IS',
-                'IN',
-                'ID',
-                'IR',
-                'IQ',
-                'IE',
-                'IM',
-                'IL',
-                'IT',
-                'JM',
-                'JP',
-                'JE',
-                'JO',
-                'KZ',
-                'KE',
-                'KI',
-                'KR',
-                'KW',
-                'KG',
-                'LA',
-                'LV',
-                'LB',
-                'LS',
-                'LR',
-                'LY',
-                'LI',
-                'LT',
-                'LU',
-                'MO',
-                'MK',
-                'MG',
-                'MW',
-                'MY',
-                'MV',
-                'ML',
-                'MT',
-                'MH',
-                'MQ',
-                'MR',
-                'MU',
-                'YT',
-                'MX',
-                'FM',
-                'MD',
-                'MC',
-                'MN',
-                'ME',
-                'MS',
-                'MA',
-                'MZ',
-                'MM',
-                'NA',
-                'NR',
-                'NP',
-                'NL',
-                'AN',
-                'NC',
-                'NZ',
-                'NI',
-                'NE',
-                'NG',
-                'NU',
-                'NF',
-                'MP',
-                'NO',
-                'OM',
-                'PK',
-                'PW',
-                'PS',
-                'PA',
-                'PG',
-                'PY',
-                'PE',
-                'PH',
-                'PN',
-                'PL',
-                'PT',
-                'PR',
-                'QA',
-                'RE',
-                'RO',
-                'RU',
-                'RW',
-                'BL',
-                'SH',
-                'KN',
-                'LC',
-                'MF',
-                'PM',
-                'VC',
-                'WS',
-                'SM',
-                'ST',
-                'SA',
-                'SN',
-                'SS',
-                'RS',
-                'SC',
-                'SL',
-                'SG',
-                'SK',
-                'SI',
-                'SB',
-                'SO',
-                'ZA',
-                'GS',
-                'ES',
-                'LK',
-                'SD',
-                'SR',
-                'SJ',
-                'SZ',
-                'SE',
-                'CH',
-                'SY',
-                'TW',
-                'TJ',
-                'TZ',
-                'TH',
-                'TL',
-                'TG',
-                'TK',
-                'TO',
-                'TT',
-                'TN',
-                'TR',
-                'TM',
-                'TC',
-                'TV',
-                'UG',
-                'UA',
-                'AE',
-                'GB',
-                'US',
-                'UM',
-                'UY',
-                'UZ',
-                'VU',
-                'VE',
-                'VN',
-                'VG',
-                'VI',
-                'WF',
-                'EH',
-                'YE',
-                'ZM',
-                'ZW',
-                'BQ',
-                'KP',
-                'SX',
-                'XK',
-                'AC'
-            ]),
-            phone_number: z.string(),
-            attribute_type: z.enum(['phone-number'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            status: zStatus,
-            attribute_type: z.enum(['status'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.number(),
-            attribute_type: z.enum(['rating'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            option: zSelectOption,
-            attribute_type: z.enum(['select'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            value: z.string(),
-            attribute_type: z.enum(['text'])
-        }),
-        z.object({
-            active_from: z.iso.datetime(),
-            active_until: z.iso.datetime().nullable(),
-            created_by_actor: z.object({
-                id: z.string().nullish(),
-                type: z.enum([
-                    'api-token',
-                    'workspace-member',
-                    'system',
-                    'app'
-                ]).nullish()
-            }),
-            attribute_type: z.enum(['timestamp']),
-            value: z.iso.datetime()
-        })
-    ]))
-});
-
-export const zGetV2ObjectsByObjectRecordsByRecordIdEntriesPath = z.object({
-    object: z.string(),
-    record_id: z.uuid()
-});
-
-export const zGetV2ObjectsByObjectRecordsByRecordIdEntriesQuery = z.object({
-    limit: z.int().optional(),
-    offset: z.int().optional()
-});
-
-/**
- * Success
- */
-export const zGetV2ObjectsByObjectRecordsByRecordIdEntriesResponse = z.object({
-    data: z.array(z.object({
-        list_id: z.uuid(),
-        list_api_slug: z.string(),
-        entry_id: z.uuid(),
-        created_at: z.string()
-    }))
-});
-
-export const zPostV2ObjectsRecordsSearchBody = z.object({
-    query: z.string().max(256),
-    limit: z.number().gte(1).lte(25).optional().default(25),
-    objects: z.array(z.string()).min(1),
-    request_as: z.union([
-        z.object({
-            type: z.enum(['workspace'])
-        }),
-        z.object({
-            type: z.enum(['workspace-member']),
-            workspace_member_id: z.uuid()
-        }),
-        z.object({
-            type: z.enum(['workspace-member']),
-            email_address: z.email()
-        })
-    ])
-});
-
-/**
- * Success
- */
-export const zPostV2ObjectsRecordsSearchResponse = z.object({
-    data: z.array(z.union([
-        z.object({
-            id: z.object({
-                workspace_id: z.uuid(),
-                object_id: z.uuid(),
-                record_id: z.uuid()
-            }),
-            record_text: z.string(),
-            record_image: z.string().nullable(),
-            object_slug: z.string()
-        }),
-        z.object({
-            id: z.object({
-                workspace_id: z.uuid(),
-                object_id: z.uuid(),
-                record_id: z.uuid()
-            }),
-            record_text: z.string(),
-            record_image: z.string().nullable(),
-            object_slug: z.enum(['people']),
-            email_addresses: z.array(z.string()),
-            phone_numbers: z.array(z.string())
-        }),
-        z.object({
-            id: z.object({
-                workspace_id: z.uuid(),
-                object_id: z.uuid(),
-                record_id: z.uuid()
-            }),
-            record_text: z.string(),
-            record_image: z.string().nullable(),
-            object_slug: z.enum(['companies']),
-            domains: z.array(z.string())
-        })
-    ]))
 });
 
 export const zPostV2SqlBody = z.object({
