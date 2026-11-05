@@ -12965,6 +12965,36 @@ export const zPostV2SequencesUnsubscribedEmailsResponse = z.object({
     }))
 });
 
+export const zPutV2WorkspaceBlocklistAddressesBody = z.object({
+    data: z.object({
+        addresses: z.array(z.object({
+            address: z.string(),
+            enforcement_level: z.enum(['protected', 'blocked'])
+        })).min(1).max(500)
+    })
+});
+
+/**
+ * Success
+ */
+export const zPutV2WorkspaceBlocklistAddressesResponse = z.object({
+    data: z.array(z.object({
+        address: z.string(),
+        address_type: z.enum(['email_address', 'domain']),
+        enforcement_level: z.enum(['protected', 'blocked']),
+        created_at: z.iso.datetime()
+    }))
+});
+
+export const zDeleteV2WorkspaceBlocklistAddressesByAddressPath = z.object({
+    address: z.string()
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2WorkspaceBlocklistAddressesByAddressResponse = z.record(z.string(), z.unknown());
+
 export const zGetV2MeetingsQuery = z.object({
     limit: z.int().gte(1).lte(200).optional().default(50),
     cursor: z.string().optional(),
