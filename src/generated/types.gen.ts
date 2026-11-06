@@ -12850,6 +12850,214 @@ export type PostV2SequencesUnsubscribedEmailsResponses = {
 
 export type PostV2SequencesUnsubscribedEmailsResponse = PostV2SequencesUnsubscribedEmailsResponses[keyof PostV2SequencesUnsubscribedEmailsResponses];
 
+export type GetV2WorkspaceBlocklistAddressesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * The maximum number of addresses to return. Must be between 1 and 500. Defaults to 500.
+         */
+        limit?: number;
+        /**
+         * A pagination cursor used to fetch the next page of addresses. Responses with more addresses will include a cursor for you to use here. If not provided, the first page will be returned.
+         */
+        cursor?: string;
+    };
+    url: '/v2/workspace_blocklist_addresses';
+};
+
+export type GetV2WorkspaceBlocklistAddressesErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'validation_type';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+};
+
+export type GetV2WorkspaceBlocklistAddressesError = GetV2WorkspaceBlocklistAddressesErrors[keyof GetV2WorkspaceBlocklistAddressesErrors];
+
+export type GetV2WorkspaceBlocklistAddressesResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Array<{
+            /**
+             * The normalized email address or domain. It is the address's key on the workspace blocklist.
+             */
+            address: string;
+            /**
+             * Whether the address is an email address or a domain.
+             */
+            address_type: 'email_address' | 'domain';
+            /**
+             * `protected`: emails and calendar events are hidden unless at least one participant is not on the workspace blocklist. `blocked`: they are hidden even when other participants are included.
+             */
+            enforcement_level: 'protected' | 'blocked';
+            /**
+             * When the address was given its current enforcement level.
+             */
+            created_at: string;
+        }>;
+        pagination: {
+            next_cursor: string | null;
+        };
+    };
+};
+
+export type GetV2WorkspaceBlocklistAddressesResponse = GetV2WorkspaceBlocklistAddressesResponses[keyof GetV2WorkspaceBlocklistAddressesResponses];
+
+export type PutV2WorkspaceBlocklistAddressesData = {
+    body: {
+        data: {
+            /**
+             * The addresses to set and the enforcement level each should have. A maximum of 500 addresses can be provided per request. The same address may not appear with two different enforcement levels.
+             */
+            addresses: Array<{
+                /**
+                 * An email address or a domain. Attio works out which one it is. Email addresses are trimmed and lowercased, and their host must be a valid domain. Domains are trimmed and lowercased, a URL is reduced to its hostname, and a leading `www.` is removed; subdomains are kept. Single labels (`acme`), bare public suffixes (`com`), unknown suffixes, IP addresses, wildcards and values over 253 characters are rejected.
+                 */
+                address: string;
+                /**
+                 * `protected`: emails and calendar events are hidden unless at least one participant is not on the workspace blocklist. `blocked`: they are hidden even when other participants are included.
+                 */
+                enforcement_level: 'protected' | 'blocked';
+            }>;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/v2/workspace_blocklist_addresses';
+};
+
+export type PutV2WorkspaceBlocklistAddressesErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'validation_type';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized' | 'billing_error';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'uniqueness_conflict';
+        message: string;
+    };
+};
+
+export type PutV2WorkspaceBlocklistAddressesError = PutV2WorkspaceBlocklistAddressesErrors[keyof PutV2WorkspaceBlocklistAddressesErrors];
+
+export type PutV2WorkspaceBlocklistAddressesResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Array<{
+            /**
+             * The normalized email address or domain. It is the address's key on the workspace blocklist.
+             */
+            address: string;
+            /**
+             * Whether the address is an email address or a domain.
+             */
+            address_type: 'email_address' | 'domain';
+            /**
+             * `protected`: emails and calendar events are hidden unless at least one participant is not on the workspace blocklist. `blocked`: they are hidden even when other participants are included.
+             */
+            enforcement_level: 'protected' | 'blocked';
+            /**
+             * When the address was given its current enforcement level.
+             */
+            created_at: string;
+        }>;
+    };
+};
+
+export type PutV2WorkspaceBlocklistAddressesResponse = PutV2WorkspaceBlocklistAddressesResponses[keyof PutV2WorkspaceBlocklistAddressesResponses];
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressData = {
+    body?: never;
+    path: {
+        /**
+         * An email address or a domain. Attio works out which one it is. Email addresses are trimmed and lowercased, and their host must be a valid domain. Domains are trimmed and lowercased, a URL is reduced to its hostname, and a leading `www.` is removed; subdomains are kept. Single labels (`acme`), bare public suffixes (`com`), unknown suffixes, IP addresses, wildcards and values over 253 characters are rejected.
+         */
+        address: string;
+    };
+    query?: never;
+    url: '/v2/workspace_blocklist_addresses/{address}';
+};
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'validation_type';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressError = DeleteV2WorkspaceBlocklistAddressesByAddressErrors[keyof DeleteV2WorkspaceBlocklistAddressesByAddressErrors];
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressResponse = DeleteV2WorkspaceBlocklistAddressesByAddressResponses[keyof DeleteV2WorkspaceBlocklistAddressesByAddressResponses];
+
 export type GetV2MeetingsData = {
     body?: never;
     path?: never;
