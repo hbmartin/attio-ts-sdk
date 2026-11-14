@@ -844,6 +844,271 @@ export type ObjectView = {
     created_at: string;
 };
 
+export type ViewObjectAttributeRef = {
+    /**
+     * A slug or ID of the object that the reference of the previous attribute points to. It is required because a reference can allow several objects.
+     */
+    object: string;
+    /**
+     * A slug or ID of an attribute of this object.
+     */
+    attribute: string;
+};
+
+/**
+ * A slug or ID of an attribute of the view's object, or an array that follows record references. The array starts with a slug or ID of an attribute of the view's object. Each later item is an `{object, attribute}` pair. Use a slug or ID, not an array, for a single attribute. Responses use IDs only.
+ */
+export type ViewAttributePath = string | [
+    string,
+    ViewObjectAttributeRef
+];
+
+/**
+ * Condition
+ *
+ * A condition on one attribute.
+ */
+export type ViewFilterCondition = {
+    attribute: ViewAttributePath;
+    /**
+     * The field of the attribute. If omitted, the default field of the attribute type is used.
+     */
+    field?: string;
+    /**
+     * The operator. `in` takes a non-empty array and matches when one `eq` condition with one of its values matches. Responses never contain `in`.
+     */
+    op: 'eq' | 'not_eq' | 'lt' | 'gt' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with' | 'empty' | 'not_empty' | 'entered' | 'not_entered' | 'in';
+    /**
+     * The value. Its shape depends on the attribute type, the field and the operator:
+     *
+     * | Attribute type | Field | Operators | Value |
+     * | --- | --- | --- | --- |
+     * | `text` | `value` (default) | `eq`, `not_eq`, `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `text` | `value` (default) | `empty`, `not_empty` | No value |
+     * | `number` | `value` (default) | `eq`, `not_eq`, `lt`, `gt` | A number |
+     * | `number` | `value` (default) | `empty`, `not_empty` | No value |
+     * | `rating` | `value` (default) | `eq`, `not_eq`, `lt`, `gt` | A number |
+     * | `rating` | `value` (default) | `empty`, `not_empty` | No value |
+     * | `checkbox` | `value` (default) | `eq` | `true` or `false` |
+     * | `select` | `option` (default) | `eq`, `not_eq`, `lt`, `gt` | A select option ID or title |
+     * | `select` | `option` (default) | `empty`, `not_empty` | No value |
+     * | `status` | `status` (default) | `eq`, `not_eq` | A status ID or title |
+     * | `status` | `status` (default) | `entered`, `not_entered` | `{"status": <status ID or title>}` with exactly one of `after` or `before`, each an ISO 8601 timestamp or `{"relative": <ISO 8601 duration>}` with one unit of years, months, weeks, days, hours, minutes or seconds, e.g. `-PT12H` |
+     * | `status` | `status` (default) | `empty`, `not_empty` | No value |
+     * | `actor-reference` | `referenced_actor_id` (default) | `eq`, `not_eq` | A workspace member ID, or `{"current_member": true}` |
+     * | `actor-reference` | `referenced_actor_id` (default) | `empty`, `not_empty` | No value |
+     * | `actor-reference` | `referenced_actor_type` | `eq`, `not_eq` | An actor type, such as `workspace-member` or `api-token` |
+     * | `actor-reference` | `referenced_actor_team_id` | `eq`, `not_eq` | A team ID |
+     * | `currency` | `currency_value` (default) | `eq`, `not_eq`, `lt`, `gt` | A number |
+     * | `currency` | `currency_value` (default) | `empty`, `not_empty` | No value |
+     * | `date` | `value` (default) | `eq`, `not_eq` | A date in the format `YYYY-MM-DD` |
+     * | `date` | `value` (default) | `lt`, `gt` | A date in the format `YYYY-MM-DD`, or `{"relative": <ISO 8601 duration>}` with one unit of years, months, weeks or days, e.g. `-P30D` |
+     * | `date` | `value` (default) | `empty`, `not_empty` | No value |
+     * | `timestamp` | `value` (default) | `eq`, `not_eq` | An ISO 8601 timestamp |
+     * | `timestamp` | `value` (default) | `lt`, `gt` | An ISO 8601 timestamp, or `{"relative": <ISO 8601 duration>}` with one unit of years, months, weeks, days, hours, minutes or seconds, e.g. `-PT12H` |
+     * | `timestamp` | `value` (default) | `empty`, `not_empty` | No value |
+     * | `record-reference` | `target_record_id` (default) | `eq`, `not_eq` | `{"target_object": <object slug or ID>, "target_record_id": <record ID>}` |
+     * | `record-reference` | `target_object` | `eq`, `not_eq` | An object slug or ID |
+     * | `record-reference` | `target_record_id` (default) | `empty`, `not_empty` | No value |
+     * | `interaction` | `interacted_at` (default) | `lt`, `gt` | An ISO 8601 timestamp, or `{"relative": <ISO 8601 duration>}` with one unit of years, months, weeks, days, hours, minutes or seconds, e.g. `-PT12H` |
+     * | `interaction` | `interacted_at` (default) | `empty`, `not_empty` | No value |
+     * | `interaction` | `owner_member_id` | `eq`, `not_eq` | A workspace member ID, or `{"current_member": true}` |
+     * | `interaction` | `owner_member_id` | `empty`, `not_empty` | No value |
+     * | `interaction` | `referenced_actor_team_id` | `eq`, `not_eq` | A team ID |
+     * | `location` | `locality` | `eq`, `not_eq`, `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `location` | `locality` | `empty`, `not_empty` | No value |
+     * | `location` | `region` | `eq`, `not_eq`, `contains`, `not_contains` | A non-empty string |
+     * | `location` | `region` | `empty`, `not_empty` | No value |
+     * | `location` | `postcode` | `eq`, `not_eq`, `contains`, `not_contains` | A non-empty string |
+     * | `location` | `postcode` | `empty`, `not_empty` | No value |
+     * | `location` | `country_code` | `eq`, `not_eq` | An ISO 3166-1 alpha-2 country code |
+     * | `location` | `country_code` | `empty`, `not_empty` | No value |
+     * | `domain` | `domain` (default) | `eq`, `not_eq` | A domain or URL, e.g. `example.com` |
+     * | `domain` | `domain` (default) | `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `domain` | `domain` (default) | `empty`, `not_empty` | No value |
+     * | `email-address` | `email_address` (default) | `eq`, `not_eq`, `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `email-address` | `email_address` (default) | `empty`, `not_empty` | No value |
+     * | `email-address` | `email_domain` | `eq`, `not_eq`, `contains`, `not_contains` | A non-empty string |
+     * | `phone-number` | `phone_number` (default) | `eq`, `not_eq`, `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `phone-number` | `phone_number` (default) | `empty`, `not_empty` | No value |
+     * | `phone-number` | `country_code` | `eq`, `not_eq` | An ISO 3166-1 alpha-2 country code |
+     * | `phone-number` | `country_code` | `empty`, `not_empty` | No value |
+     * | `personal-name` | `full_name` (default) | `eq`, `not_eq`, `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `personal-name` | `full_name` (default) | `empty`, `not_empty` | No value |
+     * | `personal-name` | `first_name` | `eq`, `not_eq`, `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `personal-name` | `first_name` | `empty`, `not_empty` | No value |
+     * | `personal-name` | `last_name` | `eq`, `not_eq`, `contains`, `not_contains`, `starts_with`, `ends_with` | A non-empty string |
+     * | `personal-name` | `last_name` | `empty`, `not_empty` | No value |
+     */
+    value?: unknown;
+};
+
+/**
+ * A condition, or a group of filters of which all (`and`) or at least one (`or`) must match.
+ */
+export type ViewFilter = ViewFilterCondition | {
+    and: Array<ViewFilter>;
+} | {
+    or: Array<ViewFilter>;
+};
+
+/**
+ * A sort on one attribute.
+ */
+export type ViewSort = {
+    attribute: ViewAttributePath;
+    /**
+     * The field to sort by. If omitted, the default field of the attribute type is used. A record reference cannot be sorted directly; sort by a path to an attribute of the referenced record.
+     *
+     * | Attribute type | Fields |
+     * | --- | --- |
+     * | `text` | `value` (default) |
+     * | `number` | `value` (default) |
+     * | `checkbox` | `value` (default) |
+     * | `date` | `value` (default) |
+     * | `timestamp` | `value` (default) |
+     * | `rating` | `value` (default) |
+     * | `currency` | `currency_value` (default) |
+     * | `select` | `option` (default) |
+     * | `status` | `status` (default), `active_from` |
+     * | `personal-name` | `first_name`, `last_name`, `full_name` (default) |
+     * | `location` | `locality`, `region`, `country_code` |
+     * | `domain` | `domain` (default) |
+     * | `email-address` | `email_address` (default) |
+     * | `phone-number` | `phone_number` (default) |
+     * | `actor-reference` | `referenced_actor_id` (default) |
+     * | `interaction` | `interacted_at` (default), `owner_member_id` |
+     */
+    field?: string;
+    direction: 'asc' | 'desc';
+};
+
+/**
+ * An attribute that the view shows.
+ */
+export type ViewAttribute = {
+    attribute: ViewAttributePath;
+    /**
+     * The field of the attribute that the column shows.
+     */
+    field?: string;
+    /**
+     * The column title. If omitted, the column shows the title of the attribute.
+     */
+    title?: string;
+    /**
+     * The calculation that the column footer of a table view shows, on the field that the column shows. Omitted when the column has none. Not allowed on a kanban view, which uses `kanban.aggregation`. In an update, an omitted aggregation keeps the aggregation of a column with the same attribute and field, and `null` removes it. Each field can count and give the percentage of records where it is empty or not empty. `sum`, `mean`, `min` and `max` are only for number, currency and rating attributes.
+     */
+    aggregation?: 'count_empty' | 'count_not_empty' | 'percent_empty' | 'percent_not_empty' | 'sum' | 'mean' | 'max' | 'min' | null;
+};
+
+/**
+ * The calculation that the footer of each column of the board shows. `null` when the board has none.
+ */
+export type ViewKanbanAggregation = {
+    attribute: ViewAttributePath;
+    /**
+     * The field to aggregate. If omitted, the default field of the attribute type is used. Location and interaction attributes need a field.
+     */
+    field?: string;
+    /**
+     * The calculation. Each field can count and give the percentage of records where it is empty or not empty. `sum`, `mean`, `min` and `max` are only for number, currency and rating attributes.
+     */
+    type: 'count_empty' | 'count_not_empty' | 'percent_empty' | 'percent_not_empty' | 'sum' | 'mean' | 'max' | 'min';
+};
+
+export type ObjectViewWithDefinition = ObjectView & {
+    /**
+     * How the view shows records.
+     */
+    type: 'table' | 'kanban';
+    filter?: ViewFilter & unknown;
+    /**
+     * The sorts, in order.
+     */
+    sorts: Array<ViewSort>;
+    /**
+     * The attributes that the view shows, in display order.
+     */
+    attributes: Array<ViewAttribute>;
+    /**
+     * The settings of a kanban view. Omitted for table views.
+     */
+    kanban?: {
+        status_attribute: ViewAttributePath & (string | [
+            string,
+            ViewObjectAttributeRef
+        ] | null);
+        /**
+         * Whether the board shows a column for the records that have no status.
+         */
+        show_no_status_column: boolean;
+        /**
+         * How the cards label the attributes that they show: with the attribute icon or with the attribute title.
+         */
+        attribute_label_display: 'icon' | 'text';
+        aggregation: ViewKanbanAggregation & ({
+            [key: string]: unknown;
+        } | null);
+    };
+    /**
+     * The title and slug of each attribute and object ID in the view, and the title of each option, status and team ID in the filter values. The view only uses IDs, so that it does not change when a slug changes.
+     */
+    metadata: {
+        [key: string]: {
+            kind: 'attribute' | 'object' | 'option' | 'status' | 'team';
+            title: string;
+            api_slug: string | null;
+        };
+    };
+};
+
+export type ListViewWithDefinition = ListView & {
+    /**
+     * How the view shows records.
+     */
+    type: 'table' | 'kanban';
+    filter?: ViewFilter & unknown;
+    /**
+     * The sorts, in order.
+     */
+    sorts: Array<ViewSort>;
+    /**
+     * The attributes that the view shows, in display order.
+     */
+    attributes: Array<ViewAttribute>;
+    /**
+     * The settings of a kanban view. Omitted for table views.
+     */
+    kanban?: {
+        status_attribute: ViewAttributePath & (string | [
+            string,
+            ViewObjectAttributeRef
+        ] | null);
+        /**
+         * Whether the board shows a column for the records that have no status.
+         */
+        show_no_status_column: boolean;
+        /**
+         * How the cards label the attributes that they show: with the attribute icon or with the attribute title.
+         */
+        attribute_label_display: 'icon' | 'text';
+        aggregation: ViewKanbanAggregation & ({
+            [key: string]: unknown;
+        } | null);
+    };
+    /**
+     * The title and slug of each attribute and object ID in the view, and the title of each option, status and team ID in the filter values. The view only uses IDs, so that it does not change when a slug changes.
+     */
+    metadata: {
+        [key: string]: {
+            kind: 'attribute' | 'object' | 'option' | 'status' | 'team';
+            title: string;
+            api_slug: string | null;
+        };
+    };
+};
+
 export type WorkspaceMember = {
     id: {
         /**
@@ -1899,6 +2164,313 @@ export type GetV2ObjectsByObjectViewsResponses = {
 };
 
 export type GetV2ObjectsByObjectViewsResponse = GetV2ObjectsByObjectViewsResponses[keyof GetV2ObjectsByObjectViewsResponses];
+
+export type PostV2ObjectsByObjectViewsData = {
+    body: {
+        data: {
+            /**
+             * The title of the view.
+             */
+            title: string;
+            /**
+             * How the view shows records.
+             */
+            type: 'table' | 'kanban';
+            /**
+             * The filter of the view. Omitted or `null` to show all records.
+             */
+            filter?: ViewFilter | null;
+            /**
+             * The sorts, in order. Omitted for no sorts.
+             */
+            sorts?: Array<ViewSort>;
+            /**
+             * The attributes that the view shows, in display order. Omitted for no attributes, as a new view in the app has.
+             */
+            attributes?: Array<ViewAttribute>;
+            /**
+             * The settings of a kanban view. Required for kanban views and not allowed for table views.
+             */
+            kanban?: {
+                /**
+                 * The status attribute whose statuses are the columns of the board, on the view's object or on the parent record of a list entry.
+                 */
+                status_attribute: ViewAttributePath;
+                /**
+                 * Whether the board shows a column for the records that have no status. If omitted, the setting of a new kanban view in the app is used: `true`, `icon` and `null`.
+                 */
+                show_no_status_column?: boolean;
+                /**
+                 * How the cards label the attributes that they show: with the attribute icon or with the attribute title. If omitted, the setting of a new kanban view in the app is used: `true`, `icon` and `null`.
+                 */
+                attribute_label_display?: 'icon' | 'text';
+                /**
+                 * The calculation that the footer of each column of the board shows. `null` when the board has none. If omitted, the setting of a new kanban view in the app is used: `true`, `icon` and `null`.
+                 */
+                aggregation?: ViewKanbanAggregation | null;
+            };
+        };
+    };
+    path: {
+        /**
+         * A UUID or slug to identify the object.
+         */
+        object: string;
+    };
+    query?: never;
+    url: '/v2/objects/{object}/views';
+};
+
+export type PostV2ObjectsByObjectViewsErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: string;
+        message: string;
+        path: Array<string | number>;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type PostV2ObjectsByObjectViewsError = PostV2ObjectsByObjectViewsErrors[keyof PostV2ObjectsByObjectViewsErrors];
+
+export type PostV2ObjectsByObjectViewsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: ObjectViewWithDefinition;
+    };
+};
+
+export type PostV2ObjectsByObjectViewsResponse = PostV2ObjectsByObjectViewsResponses[keyof PostV2ObjectsByObjectViewsResponses];
+
+export type DeleteV2ObjectsByObjectViewsByViewIdData = {
+    body?: never;
+    path: {
+        /**
+         * A UUID or slug to identify the object.
+         */
+        object: string;
+        /**
+         * A UUID identifying the view.
+         */
+        view_id: string;
+    };
+    query?: never;
+    url: '/v2/objects/{object}/views/{view_id}';
+};
+
+export type DeleteV2ObjectsByObjectViewsByViewIdErrors = {
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type DeleteV2ObjectsByObjectViewsByViewIdError = DeleteV2ObjectsByObjectViewsByViewIdErrors[keyof DeleteV2ObjectsByObjectViewsByViewIdErrors];
+
+export type DeleteV2ObjectsByObjectViewsByViewIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type DeleteV2ObjectsByObjectViewsByViewIdResponse = DeleteV2ObjectsByObjectViewsByViewIdResponses[keyof DeleteV2ObjectsByObjectViewsByViewIdResponses];
+
+export type GetV2ObjectsByObjectViewsByViewIdData = {
+    body?: never;
+    path: {
+        /**
+         * A UUID or slug to identify the object.
+         */
+        object: string;
+        /**
+         * A UUID identifying the view.
+         */
+        view_id: string;
+    };
+    query?: never;
+    url: '/v2/objects/{object}/views/{view_id}';
+};
+
+export type GetV2ObjectsByObjectViewsByViewIdErrors = {
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+    /**
+     * Unprocessable Entity
+     */
+    422: {
+        status_code: 422;
+        type: 'invalid_request_error';
+        code: 'view_not_encodable';
+        message: string;
+        view_part: 'filter' | 'sorts' | 'attributes' | 'kanban';
+        reason: string;
+        stored_id: string | null;
+    };
+};
+
+export type GetV2ObjectsByObjectViewsByViewIdError = GetV2ObjectsByObjectViewsByViewIdErrors[keyof GetV2ObjectsByObjectViewsByViewIdErrors];
+
+export type GetV2ObjectsByObjectViewsByViewIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: ObjectViewWithDefinition;
+    };
+};
+
+export type GetV2ObjectsByObjectViewsByViewIdResponse = GetV2ObjectsByObjectViewsByViewIdResponses[keyof GetV2ObjectsByObjectViewsByViewIdResponses];
+
+export type PatchV2ObjectsByObjectViewsByViewIdData = {
+    body: {
+        data: {
+            /**
+             * The title of the view.
+             */
+            title?: string;
+            /**
+             * How the view shows records. A change to `kanban` requires `kanban.status_attribute`. A change to `table` removes the kanban settings.
+             */
+            type?: 'table' | 'kanban';
+            /**
+             * The filter of the view, which replaces the current filter. `null` to show all records.
+             */
+            filter?: ViewFilter | null;
+            /**
+             * The sorts, in order, which replace the current sorts.
+             */
+            sorts?: Array<ViewSort>;
+            /**
+             * The attributes that the view shows, in display order, which replace the current attributes. A shown attribute with the same attribute and field keeps its column width and display settings, and its aggregation when it omits `aggregation`.
+             */
+            attributes?: Array<ViewAttribute>;
+            /**
+             * The kanban settings to change. A change of the type to kanban requires `status_attribute`. Not allowed for table views.
+             */
+            kanban?: {
+                /**
+                 * The status attribute whose statuses are the columns of the board, on the view's object or on the parent record of a list entry.
+                 */
+                status_attribute?: ViewAttributePath;
+                /**
+                 * Whether the board shows a column for the records that have no status. If omitted, the setting stays as it is.
+                 */
+                show_no_status_column?: boolean;
+                /**
+                 * How the cards label the attributes that they show: with the attribute icon or with the attribute title. If omitted, the setting stays as it is.
+                 */
+                attribute_label_display?: 'icon' | 'text';
+                /**
+                 * The calculation that the footer of each column of the board shows. `null` when the board has none. If omitted, the setting stays as it is.
+                 */
+                aggregation?: ViewKanbanAggregation | null;
+            };
+        };
+    };
+    path: {
+        /**
+         * A UUID or slug to identify the object.
+         */
+        object: string;
+        /**
+         * A UUID identifying the view.
+         */
+        view_id: string;
+    };
+    query?: never;
+    url: '/v2/objects/{object}/views/{view_id}';
+};
+
+export type PatchV2ObjectsByObjectViewsByViewIdErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: string;
+        message: string;
+        path: Array<string | number>;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type PatchV2ObjectsByObjectViewsByViewIdError = PatchV2ObjectsByObjectViewsByViewIdErrors[keyof PatchV2ObjectsByObjectViewsByViewIdErrors];
+
+export type PatchV2ObjectsByObjectViewsByViewIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: ObjectViewWithDefinition;
+    };
+};
+
+export type PatchV2ObjectsByObjectViewsByViewIdResponse = PatchV2ObjectsByObjectViewsByViewIdResponses[keyof PatchV2ObjectsByObjectViewsByViewIdResponses];
 
 export type GetV2ActivitiesData = {
     body?: never;
@@ -9777,6 +10349,313 @@ export type GetV2ListsByListViewsResponses = {
 
 export type GetV2ListsByListViewsResponse = GetV2ListsByListViewsResponses[keyof GetV2ListsByListViewsResponses];
 
+export type PostV2ListsByListViewsData = {
+    body: {
+        data: {
+            /**
+             * The title of the view.
+             */
+            title: string;
+            /**
+             * How the view shows records.
+             */
+            type: 'table' | 'kanban';
+            /**
+             * The filter of the view. Omitted or `null` to show all records.
+             */
+            filter?: ViewFilter | null;
+            /**
+             * The sorts, in order. Omitted for no sorts.
+             */
+            sorts?: Array<ViewSort>;
+            /**
+             * The attributes that the view shows, in display order. Omitted for no attributes, as a new view in the app has.
+             */
+            attributes?: Array<ViewAttribute>;
+            /**
+             * The settings of a kanban view. Required for kanban views and not allowed for table views.
+             */
+            kanban?: {
+                /**
+                 * The status attribute whose statuses are the columns of the board, on the view's object or on the parent record of a list entry.
+                 */
+                status_attribute: ViewAttributePath;
+                /**
+                 * Whether the board shows a column for the records that have no status. If omitted, the setting of a new kanban view in the app is used: `true`, `icon` and `null`.
+                 */
+                show_no_status_column?: boolean;
+                /**
+                 * How the cards label the attributes that they show: with the attribute icon or with the attribute title. If omitted, the setting of a new kanban view in the app is used: `true`, `icon` and `null`.
+                 */
+                attribute_label_display?: 'icon' | 'text';
+                /**
+                 * The calculation that the footer of each column of the board shows. `null` when the board has none. If omitted, the setting of a new kanban view in the app is used: `true`, `icon` and `null`.
+                 */
+                aggregation?: ViewKanbanAggregation | null;
+            };
+        };
+    };
+    path: {
+        /**
+         * A UUID or slug to identify the list.
+         */
+        list: string;
+    };
+    query?: never;
+    url: '/v2/lists/{list}/views';
+};
+
+export type PostV2ListsByListViewsErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: string;
+        message: string;
+        path: Array<string | number>;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type PostV2ListsByListViewsError = PostV2ListsByListViewsErrors[keyof PostV2ListsByListViewsErrors];
+
+export type PostV2ListsByListViewsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: ListViewWithDefinition;
+    };
+};
+
+export type PostV2ListsByListViewsResponse = PostV2ListsByListViewsResponses[keyof PostV2ListsByListViewsResponses];
+
+export type DeleteV2ListsByListViewsByViewIdData = {
+    body?: never;
+    path: {
+        /**
+         * A UUID or slug to identify the list.
+         */
+        list: string;
+        /**
+         * A UUID identifying the view.
+         */
+        view_id: string;
+    };
+    query?: never;
+    url: '/v2/lists/{list}/views/{view_id}';
+};
+
+export type DeleteV2ListsByListViewsByViewIdErrors = {
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type DeleteV2ListsByListViewsByViewIdError = DeleteV2ListsByListViewsByViewIdErrors[keyof DeleteV2ListsByListViewsByViewIdErrors];
+
+export type DeleteV2ListsByListViewsByViewIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type DeleteV2ListsByListViewsByViewIdResponse = DeleteV2ListsByListViewsByViewIdResponses[keyof DeleteV2ListsByListViewsByViewIdResponses];
+
+export type GetV2ListsByListViewsByViewIdData = {
+    body?: never;
+    path: {
+        /**
+         * A UUID or slug to identify the list.
+         */
+        list: string;
+        /**
+         * A UUID identifying the view.
+         */
+        view_id: string;
+    };
+    query?: never;
+    url: '/v2/lists/{list}/views/{view_id}';
+};
+
+export type GetV2ListsByListViewsByViewIdErrors = {
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+    /**
+     * Unprocessable Entity
+     */
+    422: {
+        status_code: 422;
+        type: 'invalid_request_error';
+        code: 'view_not_encodable';
+        message: string;
+        view_part: 'filter' | 'sorts' | 'attributes' | 'kanban';
+        reason: string;
+        stored_id: string | null;
+    };
+};
+
+export type GetV2ListsByListViewsByViewIdError = GetV2ListsByListViewsByViewIdErrors[keyof GetV2ListsByListViewsByViewIdErrors];
+
+export type GetV2ListsByListViewsByViewIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: ListViewWithDefinition;
+    };
+};
+
+export type GetV2ListsByListViewsByViewIdResponse = GetV2ListsByListViewsByViewIdResponses[keyof GetV2ListsByListViewsByViewIdResponses];
+
+export type PatchV2ListsByListViewsByViewIdData = {
+    body: {
+        data: {
+            /**
+             * The title of the view.
+             */
+            title?: string;
+            /**
+             * How the view shows records. A change to `kanban` requires `kanban.status_attribute`. A change to `table` removes the kanban settings.
+             */
+            type?: 'table' | 'kanban';
+            /**
+             * The filter of the view, which replaces the current filter. `null` to show all records.
+             */
+            filter?: ViewFilter | null;
+            /**
+             * The sorts, in order, which replace the current sorts.
+             */
+            sorts?: Array<ViewSort>;
+            /**
+             * The attributes that the view shows, in display order, which replace the current attributes. A shown attribute with the same attribute and field keeps its column width and display settings, and its aggregation when it omits `aggregation`.
+             */
+            attributes?: Array<ViewAttribute>;
+            /**
+             * The kanban settings to change. A change of the type to kanban requires `status_attribute`. Not allowed for table views.
+             */
+            kanban?: {
+                /**
+                 * The status attribute whose statuses are the columns of the board, on the view's object or on the parent record of a list entry.
+                 */
+                status_attribute?: ViewAttributePath;
+                /**
+                 * Whether the board shows a column for the records that have no status. If omitted, the setting stays as it is.
+                 */
+                show_no_status_column?: boolean;
+                /**
+                 * How the cards label the attributes that they show: with the attribute icon or with the attribute title. If omitted, the setting stays as it is.
+                 */
+                attribute_label_display?: 'icon' | 'text';
+                /**
+                 * The calculation that the footer of each column of the board shows. `null` when the board has none. If omitted, the setting stays as it is.
+                 */
+                aggregation?: ViewKanbanAggregation | null;
+            };
+        };
+    };
+    path: {
+        /**
+         * A UUID or slug to identify the list.
+         */
+        list: string;
+        /**
+         * A UUID identifying the view.
+         */
+        view_id: string;
+    };
+    query?: never;
+    url: '/v2/lists/{list}/views/{view_id}';
+};
+
+export type PatchV2ListsByListViewsByViewIdErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: string;
+        message: string;
+        path: Array<string | number>;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type PatchV2ListsByListViewsByViewIdError = PatchV2ListsByListViewsByViewIdErrors[keyof PatchV2ListsByListViewsByViewIdErrors];
+
+export type PatchV2ListsByListViewsByViewIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: ListViewWithDefinition;
+    };
+};
+
+export type PatchV2ListsByListViewsByViewIdResponse = PatchV2ListsByListViewsByViewIdResponses[keyof PatchV2ListsByListViewsByViewIdResponses];
+
 export type PostV2ListsByListEntriesQueryData = {
     body: {
         /**
@@ -12849,6 +13728,214 @@ export type PostV2SequencesUnsubscribedEmailsResponses = {
 };
 
 export type PostV2SequencesUnsubscribedEmailsResponse = PostV2SequencesUnsubscribedEmailsResponses[keyof PostV2SequencesUnsubscribedEmailsResponses];
+
+export type GetV2WorkspaceBlocklistAddressesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * The maximum number of addresses to return. Must be between 1 and 500. Defaults to 500.
+         */
+        limit?: number;
+        /**
+         * A pagination cursor used to fetch the next page of addresses. Responses with more addresses will include a cursor for you to use here. If not provided, the first page will be returned.
+         */
+        cursor?: string;
+    };
+    url: '/v2/workspace_blocklist_addresses';
+};
+
+export type GetV2WorkspaceBlocklistAddressesErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'validation_type';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+};
+
+export type GetV2WorkspaceBlocklistAddressesError = GetV2WorkspaceBlocklistAddressesErrors[keyof GetV2WorkspaceBlocklistAddressesErrors];
+
+export type GetV2WorkspaceBlocklistAddressesResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Array<{
+            /**
+             * The normalized email address or domain. It is the address's key on the workspace blocklist.
+             */
+            address: string;
+            /**
+             * Whether the address is an email address or a domain.
+             */
+            address_type: 'email_address' | 'domain';
+            /**
+             * `protected`: emails and calendar events are hidden unless at least one participant is not on the workspace blocklist. `blocked`: they are hidden even when other participants are included.
+             */
+            enforcement_level: 'protected' | 'blocked';
+            /**
+             * When the address was given its current enforcement level.
+             */
+            created_at: string;
+        }>;
+        pagination: {
+            next_cursor: string | null;
+        };
+    };
+};
+
+export type GetV2WorkspaceBlocklistAddressesResponse = GetV2WorkspaceBlocklistAddressesResponses[keyof GetV2WorkspaceBlocklistAddressesResponses];
+
+export type PutV2WorkspaceBlocklistAddressesData = {
+    body: {
+        data: {
+            /**
+             * The addresses to set and the enforcement level each should have. A maximum of 500 addresses can be provided per request. The same address may not appear with two different enforcement levels.
+             */
+            addresses: Array<{
+                /**
+                 * An email address or a domain. Attio works out which one it is. Email addresses are trimmed and lowercased, and their host must be a valid domain. Domains are trimmed and lowercased, a URL is reduced to its hostname, and a leading `www.` is removed; subdomains are kept. Single labels (`acme`), bare public suffixes (`com`), unknown suffixes, IP addresses, wildcards and values over 253 characters are rejected.
+                 */
+                address: string;
+                /**
+                 * `protected`: emails and calendar events are hidden unless at least one participant is not on the workspace blocklist. `blocked`: they are hidden even when other participants are included.
+                 */
+                enforcement_level: 'protected' | 'blocked';
+            }>;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/v2/workspace_blocklist_addresses';
+};
+
+export type PutV2WorkspaceBlocklistAddressesErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'validation_type';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized' | 'billing_error';
+        message: string;
+    };
+    /**
+     * Conflict
+     */
+    409: {
+        status_code: 409;
+        type: 'invalid_request_error';
+        code: 'uniqueness_conflict';
+        message: string;
+    };
+};
+
+export type PutV2WorkspaceBlocklistAddressesError = PutV2WorkspaceBlocklistAddressesErrors[keyof PutV2WorkspaceBlocklistAddressesErrors];
+
+export type PutV2WorkspaceBlocklistAddressesResponses = {
+    /**
+     * Success
+     */
+    200: {
+        data: Array<{
+            /**
+             * The normalized email address or domain. It is the address's key on the workspace blocklist.
+             */
+            address: string;
+            /**
+             * Whether the address is an email address or a domain.
+             */
+            address_type: 'email_address' | 'domain';
+            /**
+             * `protected`: emails and calendar events are hidden unless at least one participant is not on the workspace blocklist. `blocked`: they are hidden even when other participants are included.
+             */
+            enforcement_level: 'protected' | 'blocked';
+            /**
+             * When the address was given its current enforcement level.
+             */
+            created_at: string;
+        }>;
+    };
+};
+
+export type PutV2WorkspaceBlocklistAddressesResponse = PutV2WorkspaceBlocklistAddressesResponses[keyof PutV2WorkspaceBlocklistAddressesResponses];
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressData = {
+    body?: never;
+    path: {
+        /**
+         * An email address or a domain. Attio works out which one it is. Email addresses are trimmed and lowercased, and their host must be a valid domain. Domains are trimmed and lowercased, a URL is reduced to its hostname, and a leading `www.` is removed; subdomains are kept. Single labels (`acme`), bare public suffixes (`com`), unknown suffixes, IP addresses, wildcards and values over 253 characters are rejected.
+         */
+        address: string;
+    };
+    query?: never;
+    url: '/v2/workspace_blocklist_addresses/{address}';
+};
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        status_code: 400;
+        type: 'invalid_request_error';
+        code: 'validation_type';
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        status_code: 403;
+        type: 'auth_error';
+        code: 'unauthorized';
+        message: string;
+    };
+    /**
+     * Not Found
+     */
+    404: {
+        status_code: 404;
+        type: 'invalid_request_error';
+        code: 'not_found';
+        message: string;
+    };
+};
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressError = DeleteV2WorkspaceBlocklistAddressesByAddressErrors[keyof DeleteV2WorkspaceBlocklistAddressesByAddressErrors];
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type DeleteV2WorkspaceBlocklistAddressesByAddressResponse = DeleteV2WorkspaceBlocklistAddressesByAddressResponses[keyof DeleteV2WorkspaceBlocklistAddressesByAddressResponses];
 
 export type GetV2MeetingsData = {
     body?: never;
