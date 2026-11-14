@@ -1776,6 +1776,158 @@ export const zObjectView = z.object({
     created_at: z.string()
 });
 
+export const zViewObjectAttributeRef = z.object({
+    object: z.string(),
+    attribute: z.string()
+});
+
+/**
+ * A slug or ID of an attribute of the view's object, or an array that follows record references. The array starts with a slug or ID of an attribute of the view's object. Each later item is an `{object, attribute}` pair. Use a slug or ID, not an array, for a single attribute. Responses use IDs only.
+ */
+export const zViewAttributePath = z.union([
+    z.string(),
+    z.tuple([z.string(), zViewObjectAttributeRef])
+]);
+
+/**
+ * Condition
+ *
+ * A condition on one attribute.
+ */
+export const zViewFilterCondition = z.object({
+    attribute: zViewAttributePath,
+    field: z.string().optional(),
+    op: z.enum([
+        'eq',
+        'not_eq',
+        'lt',
+        'gt',
+        'contains',
+        'not_contains',
+        'starts_with',
+        'ends_with',
+        'empty',
+        'not_empty',
+        'entered',
+        'not_entered',
+        'in'
+    ]),
+    value: z.unknown().optional()
+});
+
+/**
+ * A condition, or a group of filters of which all (`and`) or at least one (`or`) must match.
+ */
+export const zViewFilter = z.union([
+    zViewFilterCondition,
+    z.object({
+        and: z.array(z.lazy((): any => zViewFilter)).min(1)
+    }),
+    z.object({
+        or: z.array(z.lazy((): any => zViewFilter)).min(1)
+    })
+]);
+
+/**
+ * A sort on one attribute.
+ */
+export const zViewSort = z.object({
+    attribute: zViewAttributePath,
+    field: z.string().optional(),
+    direction: z.enum(['asc', 'desc'])
+});
+
+/**
+ * An attribute that the view shows.
+ */
+export const zViewAttribute = z.object({
+    attribute: zViewAttributePath,
+    field: z.string().optional(),
+    title: z.string().optional(),
+    aggregation: z.enum([
+        'count_empty',
+        'count_not_empty',
+        'percent_empty',
+        'percent_not_empty',
+        'sum',
+        'mean',
+        'max',
+        'min'
+    ]).nullish()
+});
+
+/**
+ * The calculation that the footer of each column of the board shows. `null` when the board has none.
+ */
+export const zViewKanbanAggregation = z.object({
+    attribute: zViewAttributePath,
+    field: z.string().optional(),
+    type: z.enum([
+        'count_empty',
+        'count_not_empty',
+        'percent_empty',
+        'percent_not_empty',
+        'sum',
+        'mean',
+        'max',
+        'min'
+    ])
+});
+
+export const zObjectViewWithDefinition = zObjectView.and(z.object({
+    type: z.enum(['table', 'kanban']),
+    filter: zViewFilter.and(z.unknown()).optional(),
+    sorts: z.array(zViewSort),
+    attributes: z.array(zViewAttribute),
+    kanban: z.object({
+        status_attribute: zViewAttributePath.and(z.union([
+            z.string(),
+            z.tuple([z.string(), zViewObjectAttributeRef])
+        ])).nullable(),
+        show_no_status_column: z.boolean(),
+        attribute_label_display: z.enum(['icon', 'text']),
+        aggregation: zViewKanbanAggregation.and(z.record(z.string(), z.unknown())).nullable()
+    }).optional(),
+    metadata: z.record(z.string(), z.object({
+        kind: z.enum([
+            'attribute',
+            'object',
+            'option',
+            'status',
+            'team'
+        ]),
+        title: z.string(),
+        api_slug: z.string().nullable()
+    }))
+}));
+
+export const zListViewWithDefinition = zListView.and(z.object({
+    type: z.enum(['table', 'kanban']),
+    filter: zViewFilter.and(z.unknown()).optional(),
+    sorts: z.array(zViewSort),
+    attributes: z.array(zViewAttribute),
+    kanban: z.object({
+        status_attribute: zViewAttributePath.and(z.union([
+            z.string(),
+            z.tuple([z.string(), zViewObjectAttributeRef])
+        ])).nullable(),
+        show_no_status_column: z.boolean(),
+        attribute_label_display: z.enum(['icon', 'text']),
+        aggregation: zViewKanbanAggregation.and(z.record(z.string(), z.unknown())).nullable()
+    }).optional(),
+    metadata: z.record(z.string(), z.object({
+        kind: z.enum([
+            'attribute',
+            'object',
+            'option',
+            'status',
+            'team'
+        ]),
+        title: z.string(),
+        api_slug: z.string().nullable()
+    }))
+}));
+
 export const zWorkspaceMember = z.object({
     id: z.object({
         workspace_id: z.uuid(),
@@ -2209,6 +2361,83 @@ export const zGetV2ObjectsByObjectViewsResponse = z.object({
     pagination: z.object({
         next_cursor: z.string().nullable()
     })
+});
+
+export const zPostV2ObjectsByObjectViewsBody = z.object({
+    data: z.object({
+        title: z.string().min(1),
+        type: z.enum(['table', 'kanban']),
+        filter: zViewFilter.nullish(),
+        sorts: z.array(zViewSort).max(5).optional(),
+        attributes: z.array(zViewAttribute).max(100).optional(),
+        kanban: z.object({
+            status_attribute: zViewAttributePath,
+            show_no_status_column: z.boolean().optional(),
+            attribute_label_display: z.enum(['icon', 'text']).optional(),
+            aggregation: zViewKanbanAggregation.nullish()
+        }).optional()
+    })
+});
+
+export const zPostV2ObjectsByObjectViewsPath = z.object({
+    object: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2ObjectsByObjectViewsResponse = z.object({
+    data: zObjectViewWithDefinition
+});
+
+export const zDeleteV2ObjectsByObjectViewsByViewIdPath = z.object({
+    object: z.string(),
+    view_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2ObjectsByObjectViewsByViewIdResponse = z.record(z.string(), z.unknown());
+
+export const zGetV2ObjectsByObjectViewsByViewIdPath = z.object({
+    object: z.string(),
+    view_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ObjectsByObjectViewsByViewIdResponse = z.object({
+    data: zObjectViewWithDefinition
+});
+
+export const zPatchV2ObjectsByObjectViewsByViewIdBody = z.object({
+    data: z.object({
+        title: z.string().min(1).optional(),
+        type: z.enum(['table', 'kanban']).optional(),
+        filter: zViewFilter.nullish(),
+        sorts: z.array(zViewSort).max(5).optional(),
+        attributes: z.array(zViewAttribute).max(100).optional(),
+        kanban: z.object({
+            status_attribute: zViewAttributePath.optional(),
+            show_no_status_column: z.boolean().optional(),
+            attribute_label_display: z.enum(['icon', 'text']).optional(),
+            aggregation: zViewKanbanAggregation.nullish()
+        }).optional()
+    })
+});
+
+export const zPatchV2ObjectsByObjectViewsByViewIdPath = z.object({
+    object: z.string(),
+    view_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2ObjectsByObjectViewsByViewIdResponse = z.object({
+    data: zObjectViewWithDefinition
 });
 
 export const zGetV2ActivitiesQuery = z.object({
@@ -10152,6 +10381,83 @@ export const zGetV2ListsByListViewsResponse = z.object({
     })
 });
 
+export const zPostV2ListsByListViewsBody = z.object({
+    data: z.object({
+        title: z.string().min(1),
+        type: z.enum(['table', 'kanban']),
+        filter: zViewFilter.nullish(),
+        sorts: z.array(zViewSort).max(5).optional(),
+        attributes: z.array(zViewAttribute).max(100).optional(),
+        kanban: z.object({
+            status_attribute: zViewAttributePath,
+            show_no_status_column: z.boolean().optional(),
+            attribute_label_display: z.enum(['icon', 'text']).optional(),
+            aggregation: zViewKanbanAggregation.nullish()
+        }).optional()
+    })
+});
+
+export const zPostV2ListsByListViewsPath = z.object({
+    list: z.string()
+});
+
+/**
+ * Success
+ */
+export const zPostV2ListsByListViewsResponse = z.object({
+    data: zListViewWithDefinition
+});
+
+export const zDeleteV2ListsByListViewsByViewIdPath = z.object({
+    list: z.string(),
+    view_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2ListsByListViewsByViewIdResponse = z.record(z.string(), z.unknown());
+
+export const zGetV2ListsByListViewsByViewIdPath = z.object({
+    list: z.string(),
+    view_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zGetV2ListsByListViewsByViewIdResponse = z.object({
+    data: zListViewWithDefinition
+});
+
+export const zPatchV2ListsByListViewsByViewIdBody = z.object({
+    data: z.object({
+        title: z.string().min(1).optional(),
+        type: z.enum(['table', 'kanban']).optional(),
+        filter: zViewFilter.nullish(),
+        sorts: z.array(zViewSort).max(5).optional(),
+        attributes: z.array(zViewAttribute).max(100).optional(),
+        kanban: z.object({
+            status_attribute: zViewAttributePath.optional(),
+            show_no_status_column: z.boolean().optional(),
+            attribute_label_display: z.enum(['icon', 'text']).optional(),
+            aggregation: zViewKanbanAggregation.nullish()
+        }).optional()
+    })
+});
+
+export const zPatchV2ListsByListViewsByViewIdPath = z.object({
+    list: z.string(),
+    view_id: z.uuid()
+});
+
+/**
+ * Success
+ */
+export const zPatchV2ListsByListViewsByViewIdResponse = z.object({
+    data: zListViewWithDefinition
+});
+
 export const zPostV2ListsByListEntriesQueryBody = z.object({
     filter: z.record(z.string(), z.unknown()).optional(),
     filter_view_id: z.uuid().optional(),
@@ -12964,6 +13270,56 @@ export const zPostV2SequencesUnsubscribedEmailsResponse = z.object({
         created_at: z.iso.datetime()
     }))
 });
+
+export const zGetV2WorkspaceBlocklistAddressesQuery = z.object({
+    limit: z.int().gte(1).lte(500).optional().default(500),
+    cursor: z.string().optional()
+});
+
+/**
+ * Success
+ */
+export const zGetV2WorkspaceBlocklistAddressesResponse = z.object({
+    data: z.array(z.object({
+        address: z.string(),
+        address_type: z.enum(['email_address', 'domain']),
+        enforcement_level: z.enum(['protected', 'blocked']),
+        created_at: z.iso.datetime()
+    })),
+    pagination: z.object({
+        next_cursor: z.string().nullable()
+    })
+});
+
+export const zPutV2WorkspaceBlocklistAddressesBody = z.object({
+    data: z.object({
+        addresses: z.array(z.object({
+            address: z.string(),
+            enforcement_level: z.enum(['protected', 'blocked'])
+        })).min(1).max(500)
+    })
+});
+
+/**
+ * Success
+ */
+export const zPutV2WorkspaceBlocklistAddressesResponse = z.object({
+    data: z.array(z.object({
+        address: z.string(),
+        address_type: z.enum(['email_address', 'domain']),
+        enforcement_level: z.enum(['protected', 'blocked']),
+        created_at: z.iso.datetime()
+    }))
+});
+
+export const zDeleteV2WorkspaceBlocklistAddressesByAddressPath = z.object({
+    address: z.string()
+});
+
+/**
+ * Success
+ */
+export const zDeleteV2WorkspaceBlocklistAddressesByAddressResponse = z.record(z.string(), z.unknown());
 
 export const zGetV2MeetingsQuery = z.object({
     limit: z.int().gte(1).lte(200).optional().default(50),
